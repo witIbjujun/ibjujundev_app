@@ -83,7 +83,7 @@ class ImageBox extends StatefulWidget {
 }
 
 class _ImageBoxState extends State<ImageBox> {
-  final CarouselController _controller = CarouselController();
+  //final CarouselController _controller = CarouselController();
   int _current = 0;
 
   @override
