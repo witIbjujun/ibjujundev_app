@@ -9,6 +9,7 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 
 import '../../util/wit_api_ut.dart';
 import '../board/wit_board_main_sc.dart';
+import '../preInspaction/wit_preInsp_main_sc.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({super.key});
@@ -233,7 +234,16 @@ class _MyProfileState extends State<MyProfile> {
                 child: _buildListTile(Icons.assignment, '견적내역'),
               ),
 
-              _buildListTile(Icons.check_circle, 'MY 체크리스트'),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PreInspaction(), // MyProfile 페이지로 이동
+                    ),
+                  );
+                },
+                child:  _buildListTile(Icons.group, 'MY 체크리스트'),
+              ),
 
               GestureDetector(
                 onTap: () {
