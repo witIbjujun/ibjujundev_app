@@ -1,13 +1,17 @@
+import 'dart:collection';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
-import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
+import 'package:flutter/material.dart';
 
 // import '../../main_toss.dart';
 import '../../util/wit_api_ut.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 
 class EstimateRequestDetail extends StatefulWidget {
+  final dynamic estNo;
+  const EstimateRequestDetail({Key? key, required this.estNo}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return EstimateRequestDetailState();
@@ -18,14 +22,13 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   Map estimateRequestInfoForSend = new Map<String, dynamic>();
 
   TextEditingController itemPrice1Controller = TextEditingController();
-  TextEditingController itemPrice2Controller = TextEditingController();
   TextEditingController estimateContentController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    // 견적리스트 조회
-    getEstimateRequestInfoForSend();
+    // 견적 상세 조회
+    getEstimateRequestInfoForSend(widget.estNo);
   }
 
   @override
@@ -37,7 +40,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     String itemName = estimateRequestInfoForSend['itemName'] ?? "itemName 정보 없음";
     String customerContent = estimateRequestInfoForSend['customerContent'] ?? "customerContent 정보 없음";
     String itemPrice1 = estimateRequestInfoForSend['itemPrice1'] ?? "itemPrice1 정보 없음";
-    String itemPrice2= estimateRequestInfoForSend['itemPrice2'] ?? "itemPrice2 정보 없음";
 
     print("customerContent : " + customerContent);
 
@@ -195,7 +197,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         String estNo = estimateRequestInfoForSend['estNo'] ?? "";
                         String estimateContent = estimateContentController.text;
                         String inputItemPrice1 = itemPrice1Controller.text;
-                        //String inputItemPrice2 = itemPrice2Controller.text;
                         updateEstimateInfo(sllrNo, estNo, estimateContent, inputItemPrice1);
                       },
                       child: Text('견적보내기'),
@@ -219,13 +220,13 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   }
 
   // [서비스] 견적발송 용 데이터 조회
-  Future<void> getEstimateRequestInfoForSend() async {
+  Future<void> getEstimateRequestInfoForSend(estNo) async {
     // REST ID
     String restId = "getEstimateRequestInfoForSend";
 
     // PARAM
     final param = jsonEncode({
-
+      "estNo": estNo,
     });
 
     // API 호출 (견적발송 용 데이터 조회)
@@ -251,11 +252,22 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       "sllrNo": sllrNoInt,
     });
 
-    // API 호출
-    final response = await sendPostRequest(restId2, param2);
+    // API 호출 임시 주석처리
+    //final response = await sendPostRequest(restId2, param2);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PointOKDialog(
+          estNo: estNo,
+          estimateContent: estimateContent,
+          inputItemPrice1: inputItemPrice1,
+        );
+      },
+    );
 
     // API 응답 처리
-    if (response != null) {
+    /*if (response != null) {
       dynamic cashInfo = response;
       dynamic cash = cashInfo['cash'];
 
@@ -304,7 +316,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("캐시 조회가 실패하였습니다.")),
       );
-    }
+    }*/
   }
 }
 
@@ -339,7 +351,6 @@ class PointOKDialog extends StatelessWidget {
             // 견적발송 당 차감 캐쉬도 정의 해야함
             String cash = "1200";
 
-            //String inputItemPrice2 = itemPrice2Controller.text;
             updateEstimateInfo2(context, estNo, estimateContent, inputItemPrice1, cash);
             Navigator.of(context).pop();
             // 견적 보내기 후 SellerProfileDetail로 화면 이동

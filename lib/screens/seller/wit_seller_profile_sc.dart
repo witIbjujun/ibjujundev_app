@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
-import 'package:witibju/util/wit_api_ut.dart';
+import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
 class SellerProfile extends StatefulWidget {
@@ -44,8 +44,8 @@ class SellerProfileState extends State<SellerProfile> {
 
   // 샘플 이미지 경로
   final List<String> sampleImages = [
-    'assets/seller/aaa.jpg',
-    'assets/seller/aaa.jpg',
+    'assets/image/aaa.jpg',
+    'assets/image/aaa.jpg',
   ];
   final List<String> locations = [
     '용인시 기흥구',
@@ -141,7 +141,7 @@ class SellerProfileState extends State<SellerProfile> {
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide:
-                    BorderSide(color: Color.fromARGB(255, 3, 199, 90)),
+                        BorderSide(color: Color.fromARGB(255, 3, 199, 90)),
                   ),
                 ),
               ),
@@ -181,14 +181,14 @@ class SellerProfileState extends State<SellerProfile> {
                 spacing: 8.0,
                 children: selectedLocations
                     .map((location) => Chip(
-                  label: Text(location),
-                  deleteIcon: Icon(Icons.close),
-                  onDeleted: () {
-                    setState(() {
-                      selectedLocations.remove(location);
-                    });
-                  },
-                ))
+                          label: Text(location),
+                          deleteIcon: Icon(Icons.close),
+                          onDeleted: () {
+                            setState(() {
+                              selectedLocations.remove(location);
+                            });
+                          },
+                        ))
                     .toList(),
               ),
               SizedBox(height: 16),
@@ -227,14 +227,14 @@ class SellerProfileState extends State<SellerProfile> {
                 spacing: 8.0,
                 children: selectedServiceTypes
                     .map((serviceType) => Chip(
-                  label: Text(serviceType),
-                  deleteIcon: Icon(Icons.close),
-                  onDeleted: () {
-                    setState(() {
-                      selectedServiceTypes.remove(serviceType);
-                    });
-                  },
-                ))
+                          label: Text(serviceType),
+                          deleteIcon: Icon(Icons.close),
+                          onDeleted: () {
+                            setState(() {
+                              selectedServiceTypes.remove(serviceType);
+                            });
+                          },
+                        ))
                     .toList(),
               ),
               SizedBox(height: 16),
@@ -412,24 +412,24 @@ class SellerProfileState extends State<SellerProfile> {
 
   // [서비스]견적 정보 저장
   Future<void> saveSellerProfile(
-      dynamic storeName,
-      dynamic itemPrice1,
-      //dynamic itemPrice2,
-      //dynamic itemPrice3,
-      dynamic sllrContent,
-      dynamic sllrImage,
-      dynamic name,
-      dynamic ceoName,
-      dynamic email,
-      dynamic storeCode,
-      dynamic storeImage,
-      dynamic hp1,
-      dynamic zipCode,
-      dynamic address1,
-      dynamic address2,
-      dynamic serviceArea,
-      dynamic serviceItem,
-      ) async {
+    dynamic storeName,
+    dynamic itemPrice1,
+    //dynamic itemPrice2,
+    //dynamic itemPrice3,
+    dynamic sllrContent,
+    dynamic sllrImage,
+    dynamic name,
+    dynamic ceoName,
+    dynamic email,
+    dynamic storeCode,
+    dynamic storeImage,
+    dynamic hp1,
+    dynamic zipCode,
+    dynamic address1,
+    dynamic address2,
+    dynamic serviceArea,
+    dynamic serviceItem,
+  ) async {
     // REST ID
     String restId = "saveSellerProfile";
 

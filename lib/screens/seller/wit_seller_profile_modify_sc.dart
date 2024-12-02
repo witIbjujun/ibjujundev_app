@@ -141,8 +141,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
   // 샘플 이미지 경로
   final List<String> sampleImages = [
-    'assets/seller/aaa.jpg',
-    'assets/seller/aaa.jpg',
+    'assets/image/aaa.jpg',
+    'assets/image/aaa.jpg',
   ];
   final List<String> locations = [
     '용인시 기흥구',
@@ -317,14 +317,14 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 spacing: 8.0,
                 children: selectedLocations
                     .map((location) => Chip(
-                  label: Text(location),
-                  deleteIcon: Icon(Icons.close),
-                  onDeleted: () {
-                    setState(() {
-                      selectedLocations.remove(location);
-                    });
-                  },
-                ))
+                          label: Text(location),
+                          deleteIcon: Icon(Icons.close),
+                          onDeleted: () {
+                            setState(() {
+                              selectedLocations.remove(location);
+                            });
+                          },
+                        ))
                     .toList(),
               ),
               SizedBox(height: 10),
@@ -459,7 +459,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     ),
                   );
                 }).toList()
-                // 샘플 이미지 추가
+                  // 샘플 이미지 추가
                   ..addAll(sampleImages.map((imagePath) {
                     return Container(
                       margin: EdgeInsets.only(bottom: 8.0),
@@ -535,15 +535,15 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ),*/
                 ],
               ),
-              receiverZipTextField(),
+            receiverZipTextField(),
 
 
 
-              receiverAddress1TextField(),
+            receiverAddress1TextField(),
 
 
 
-              receiverAddress2TextField(),
+            receiverAddress2TextField(),
 
               /*Row(
                 children: [

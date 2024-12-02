@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:intl/intl.dart';
 
-// import 'package:multi_dropdown/multiselect_dropdown.dart';
+
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -18,9 +18,9 @@ import 'package:witibju/screens/seller/wit_seller_estimaterequest_detail_sc.dart
 import 'package:witibju/screens/seller/wit_seller_estimaterequest_list_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_modify_sc.dart';
 
-
+// import '../../main_toss.dart';
 import '../board/wit_board_main_sc.dart';
-
+//import '../intro.dart';
 
 dynamic sllrNo;
 
@@ -123,7 +123,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       width: double.infinity,
                       height: 200,
                       child: Image.asset(
-                        'assets/seller/image/aaa.jpg', // 광고 이미지 URL
+                        'assets/image/aaa.jpg', // 광고 이미지 URL
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -247,7 +247,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       children: [
                                         Text("거래내역목록", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                                         SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
-                                        EstimateRequestList(""), // 리스트를 추가
+                                        EstimateRequestList(stat: ''), // 리스트를 추가
                                         SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
                                         TextButton(
                                           onPressed: () {
@@ -304,7 +304,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       children: [
                                         Text("견적요청목록", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                                         SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
-                                        EstimateRequestList("02"), // 리스트를 추가
+                                        EstimateRequestList(stat: '02'), // 리스트를 추가
                                         SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
                                         TextButton(
                                           onPressed: () {
@@ -346,7 +346,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Board('B1')),
+                                builder: (context) => Board("A")),
                           );
                         },
                         child: Row(
@@ -443,7 +443,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Board('B1')),
+                                builder: (context) => Board("A")),
                           );
                         },
                         child: Row(

@@ -8,7 +8,7 @@ import '../../util/wit_api_ut.dart';
 class EstimateRequestList extends StatefulWidget {
   final String stat; // stat을 멤버 변수로 추가
 
-  EstimateRequestList(this.stat);
+  const EstimateRequestList({Key? key, required this.stat}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -88,7 +88,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                 // 견적 요청 관련 작업 추가
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EstimateRequestDetail()),
+                  MaterialPageRoute(builder: (context) => EstimateRequestDetail(estNo : request['estNo'])),
                 );
               }
                   : null, // 상태가 아닐 경우 null로 설정하여 비활성화
@@ -114,7 +114,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8), // 모서리 둥글게
                     child: Image.asset(
-                      'assets/image/' + request['itemImage'] , // 광고 이미지 URL
+                      request['itemImage'] , // 광고 이미지 URL
                       fit: BoxFit.cover, // 이미지가 Container를 채우도록 설정
                       errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
                         // 이미지 로드 실패 시 대체 텍스트 표시
@@ -138,7 +138,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                 padding: EdgeInsets.all(8), // 내부 여백 추가
                 child: Center( // 텍스트를 중앙 정렬
                   child: Text(
-                    request['content'], // 견적 요청 내용
+                    request['content'] ?? '내용 없음', // 내용이 없을 경우 기본 텍스트
                     style: TextStyle(fontSize: 14),
                     textAlign: TextAlign.center, // 텍스트 중앙 정렬
                   ),
@@ -157,7 +157,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
     // REST ID
     String restId = "getEstimateRequestList";
 
-    print("stat: " + widget.stat);
+    print("stat11111: " + widget.stat);
 
     // PARAM
     final param = jsonEncode({
