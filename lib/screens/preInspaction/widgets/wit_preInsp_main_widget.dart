@@ -2,6 +2,72 @@ import 'package:flutter/material.dart';
 import '../wit_preInsp_detail_sc.dart';
 import '../wit_preInsp_main_sc.dart';
 
+class CustomSliverAppBar extends StatelessWidget {
+  final bool isEditing;
+  final VoidCallback onRefreshPressed;
+  final VoidCallback onEditTogglePressed;
+
+  const CustomSliverAppBar({
+    Key? key,
+    required this.isEditing,
+    required this.onRefreshPressed,
+    required this.onEditTogglePressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      expandedHeight: 250.0, // AppBar의 확장 높이
+      floating: false,
+      pinned: true,
+      flexibleSpace: LayoutBuilder(
+        builder: (context, constraints) {
+          // 스크롤 높이에 따라 배경색 결정
+          Color backgroundColor = constraints.maxHeight < 200 ? Colors.lightBlue : Colors.transparent; // 하늘색
+
+          return FlexibleSpaceBar(
+            title: Text(
+              isEditing ? "사전 체크리스트 설정" : "사전 체크리스트", // 텍스트 변경
+              style: TextStyle(
+                color: constraints.maxHeight < 200 ? Colors.black : Colors.white, // 텍스트 색상 결정
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            titlePadding: EdgeInsets.all(16.0), // 제목의 패딩 설정
+            background: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.network(
+                  'https://images.unsplash.com/photo-1521747116042-5a810fda9664', // 밝고 화사한 배경 이미지 URL
+                  fit: BoxFit.cover, // 이미지 크기를 조정
+                ),
+                Container(
+                  color: backgroundColor.withOpacity(0.7), // 배경색에 반투명 처리
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      actions: [
+        if (isEditing) // 수정 모드일 때만 초기화 버튼 표시
+          IconButton(
+            icon: Icon(Icons.refresh), // 초기화 아이콘
+            color: Colors.black,
+            onPressed: onRefreshPressed,
+          ),
+        IconButton(
+          icon: Icon(isEditing ? Icons.check : Icons.settings), // 상태에 따라 아이콘 변경
+          color: Colors.black,
+          onPressed: onEditTogglePressed,
+        ),
+      ],
+    );
+  }
+}
+
+
 class CardList extends StatefulWidget {
 
   // 사전점검 항목

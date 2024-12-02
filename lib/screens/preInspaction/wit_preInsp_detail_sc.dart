@@ -92,7 +92,7 @@ class PreInspactionDetailState extends State<PreInspactionDetail> with TickerPro
   Future<void> getPreinspactionListByLv3(String inspId) async {
     String restId = "getPreinspactionListByLv3";
     final param = jsonEncode({
-        "parentsInspId": preinspactionInfo["inspId"],
+      "parentsInspId": preinspactionInfo["inspId"],
       "inspId": inspId,
     });
 
@@ -120,7 +120,25 @@ class PreInspactionDetailState extends State<PreInspactionDetail> with TickerPro
     // API 호출 (사전점검 상세 항목 저장)
     final result = await sendPostRequest(restId, param);
 
-    print(result);
+    // 결과값이 0보다 크면 카운트 업데이트
+    if (result > 0) {
+      updateCheckCountInLv2();
+    }
+  }
+
+  // 체크 카운트 업데이트
+  void updateCheckCountInLv2() {
+    // "Y" 값 카운트
+    int yCount = preinspactionListByLv3.where((item) => item["checkYn"] == "Y").length;
+
+    // 현재 활성화된 탭의 인덱스
+    var currentTabIndex = _tabController?.index;
+    if (currentTabIndex != null && currentTabIndex < preinspactionListByLv2.length) {
+      // 해당 탭의 checkCnt 업데이트
+      setState(() {
+        preinspactionListByLv2[currentTabIndex]["checkCnt"] = yCount;
+      });
+    }
   }
 
   @override
@@ -129,4 +147,3 @@ class PreInspactionDetailState extends State<PreInspactionDetail> with TickerPro
     super.dispose();
   }
 }
-
