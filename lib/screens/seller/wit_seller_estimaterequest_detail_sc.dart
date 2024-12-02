@@ -28,6 +28,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   void initState() {
     super.initState();
     // 견적 상세 조회
+    print("widget.estNo : " + widget.estNo);
     getEstimateRequestInfoForSend(widget.estNo);
   }
 
@@ -35,13 +36,13 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   Widget build(BuildContext context) {
     String estNo = estimateRequestInfoForSend['estNo'] ?? "";
     String aptName = estimateRequestInfoForSend['aptName'] ?? "고객 APT 정보 없음";
-    String content = estimateRequestInfoForSend['content'] ?? "content 정보 없음";
+    String reqContents = estimateRequestInfoForSend['reqContents'] ?? "content 정보 없음";
     String itemImage = estimateRequestInfoForSend['itemImage'] ?? "itemImage 정보 없음";
     String itemName = estimateRequestInfoForSend['itemName'] ?? "itemName 정보 없음";
-    String customerContent = estimateRequestInfoForSend['customerContent'] ?? "customerContent 정보 없음";
+    String itemContents = estimateRequestInfoForSend['reqContents'] ?? "reqContents 정보 없음";
     String itemPrice1 = estimateRequestInfoForSend['itemPrice1'] ?? "itemPrice1 정보 없음";
 
-    print("customerContent : " + customerContent);
+    print("estNo : " + estNo);
 
     return MaterialApp(
       home: Scaffold(
@@ -114,7 +115,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              content,
+                              reqContents,
                               style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
                             ),
                             Text(
@@ -138,7 +139,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       SizedBox(width: 35),
                       Expanded(
                         child: Text(
-                          '',
+                          reqContents,
                           style: TextStyle(fontSize: 16, color: Colors.blue),
                           textAlign: TextAlign.left,
                         ),
@@ -227,6 +228,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     // PARAM
     final param = jsonEncode({
       "estNo": estNo,
+      "sllrNo" : "COMP001",
     });
 
     // API 호출 (견적발송 용 데이터 조회)
@@ -246,6 +248,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     String restId2 = "getCashInfo";
 
     int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0;
+
 
     // 1. 견적 발송 전 캐시 정보 조회
     final param2 = jsonEncode({
@@ -387,9 +390,9 @@ class PointOKDialog extends StatelessWidget {
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": "17",
+      "sllrNo": "COMP001",
       "estNo": estNo,
-      "customerContent": estimateContent,
+      "estimateContent": estimateContent,
       "itemPrice1": inputItemPrice1,
       "stat": "02", // 02 : 판매자가 견적발송
       "cash": cash,
