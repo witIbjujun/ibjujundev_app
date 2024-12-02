@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:app/util/wit_api_ut.dart';
-import 'package:app/screens/preInspection/widgets/wit_preInsp_main_widget.dart';
+
+import 'package:witibju/screens/preInspaction/widgets/wit_preInsp_main_widget.dart';
+
+import '../../util/wit_api_ut.dart';
 
 /**
  * 사전점검

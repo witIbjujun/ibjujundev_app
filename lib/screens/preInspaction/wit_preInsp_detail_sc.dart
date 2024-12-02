@@ -1,8 +1,9 @@
-import 'package:app/screens/preInspection/widgets/wit_preInsp_detail_widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:app/util/wit_api_ut.dart';
 import 'package:flutter/services.dart';
+import 'package:witibju/screens/preInspaction/widgets/wit_preInsp_detail_widget.dart';
+
+import '../../util/wit_api_ut.dart';
 
 dynamic preinspactionInfo = {}; // 선택한 체크리스트 객체
 

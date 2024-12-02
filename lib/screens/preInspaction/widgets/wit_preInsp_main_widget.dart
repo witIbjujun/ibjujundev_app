@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:app/screens/preInspection/wit_preInsp_main_sc.dart';
-import 'package:app/screens/preInspection/wit_preInsp_detail_sc.dart';
+import '../wit_preInsp_detail_sc.dart';
+import '../wit_preInsp_main_sc.dart';
 
 class CardList extends StatefulWidget {
 
@@ -44,25 +43,6 @@ class cardTileState extends State<CardList> {
         color: Colors.white,
         child: Row(
           children: [
-            // 좌측 진행률 항목
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: CircularPercentIndicator(
-                radius: 30.0,
-                lineWidth: 4.0,
-                animation: true,
-                percent: percentage,
-                center: Text(
-                  "${(percentage * 100).toStringAsFixed(0)}%",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12.0,
-                  ),
-                ),
-                circularStrokeCap: CircularStrokeCap.round,
-                progressColor: choiceColor,
-              ),
-            ),
             // 중앙 사전점검 항목
             Expanded(
               child: Padding(

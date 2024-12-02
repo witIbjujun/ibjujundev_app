@@ -1,4 +1,3 @@
-// pre_inspaction_detail_ui.dart
 import 'package:flutter/material.dart';
 
 class PreInspactionDetailUI extends StatelessWidget {
