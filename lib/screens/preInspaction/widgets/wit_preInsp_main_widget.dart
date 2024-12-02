@@ -59,10 +59,47 @@ class CustomSliverAppBar extends StatelessWidget {
           ),
         IconButton(
           icon: Icon(isEditing ? Icons.check : Icons.settings), // 상태에 따라 아이콘 변경
-          color: Colors.black,
+          color: Colors.white,
           onPressed: onEditTogglePressed,
         ),
       ],
+    );
+  }
+}
+
+class ScrollToTopButton extends StatelessWidget {
+  final bool isVisible;
+  final VoidCallback onPressed;
+
+  const ScrollToTopButton({
+    Key? key,
+    required this.isVisible,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: isVisible, // 버튼 가시성 제어
+      child: Container(
+        alignment: Alignment.bottomCenter, // 중앙 하단에 배치
+        padding: EdgeInsets.only(left: 30.0), // 오른쪽 여백 추가
+        child: SizedBox(
+          width: 45.0,
+          height: 45.0,
+          child: Material(
+            color: Colors.white, // 배경 색상
+            shape: CircleBorder(side: BorderSide(color: Colors.black, width: 2)), // 테두리 설정
+            child: InkWell(
+              borderRadius: BorderRadius.circular(22.5), // 원형 효과
+              onTap: onPressed, // 버튼 클릭 시 동작
+              child: Center(
+                child: Icon(Icons.arrow_upward, color: Colors.black), // 위로 가는 아이콘
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -91,8 +128,6 @@ class cardTileState extends State<CardList> {
     int totalCount = int.tryParse(widget.preinspactionInfo["inspDetlAllCnt"] ?? '0') ?? 0;
     // 완료 건수
     int checkedCount = int.tryParse(widget.preinspactionInfo["inspDetlChoiceCnt"] ?? '0') ?? 0;
-    // 미선택 건수
-    int inspDetlNoCnt = int.tryParse(widget.preinspactionInfo["inspDetlNoCnt"] ?? '0') ?? 0;
     // 진행률
     double percentage = totalCount > 0 ? checkedCount / totalCount : 0.0;
     // 진행률에 따른 컬러
@@ -126,24 +161,19 @@ class cardTileState extends State<CardList> {
                         fontSize: 16,
                       ),
                     ),
-                    SizedBox(height: 5),
-                    Text(
-                      "전체 : $totalCount건 / 완료 : $checkedCount건",
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
                   ],
                 ),
               ),
             ),
             // 우측 띠 항목
             Container(
-              width: 50, // 필요에 따라 너비 조정
+              width: 80, // 필요에 따라 너비 조정
               decoration: BoxDecoration(
                 color: choiceColor,
               ),
               child: Center(
                 child: Text(
-                  totalCount == 0 ? "" : totalCount == checkedCount ? "완료" : "$inspDetlNoCnt건",
+                  "$totalCount / $checkedCount건",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

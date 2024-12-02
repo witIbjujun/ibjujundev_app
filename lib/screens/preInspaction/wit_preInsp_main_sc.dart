@@ -31,87 +31,92 @@ class PreInspactionList extends StatefulWidget {
   State<StatefulWidget> createState() {
     return PreInspactionState();
   }
+
 }
 
 /**
  * 사전점검 항목
  */
 class PreInspactionState extends State<PreInspactionList> {
+
   // 사전검검 리스트
   List<dynamic> preinspactionList = [];
   bool isEditing = false; // 수정 모드 상태 변수
-  final ScrollController _scrollController = ScrollController(); // 스크롤 컨트롤러
+  late final ScrollController _scrollController; // 스크롤 컨트롤러
+  bool _isButtonVisible = false;
 
   /*****************************************************************************************
    * 초기화
    *****************************************************************************************/
+
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+
+    // 사전점검 항목 리스트 조회
     getPreinspactionList();
+
+    _scrollController.addListener(() {
+      setState(() {
+        // 스크롤 위치가 100 이상일 때 버튼을 보이게 함
+        _isButtonVisible = _scrollController.offset >= 100;
+      });
+    });
   }
 
-  /*****************************************************************************************
-   * UI 영역
-   *****************************************************************************************/
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     // isSelected가 true인 항목만 필터링
     final filteredList = preinspactionList.where((item) => item["isSelected"] == true).toList();
 
     return Scaffold(
-      // AppBar 영역
-      appBar: AppBar(
-        title: Text(
-          isEditing ? "사전 체크리스트 설정" : "사전 체크리스트",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.black,
-          ),
-        ),
-        actions: [
-          if (isEditing) // 수정 모드일 때만 초기화 버튼 표시
-            IconButton(
-              icon: Icon(Icons.refresh), // 초기화 아이콘
-              onPressed: () {
-                // 확인 다이얼로그 표시
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("초기화 확인"),
-                      content: Text("모든 항목을 초기화 하시겠습니까?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(); // 다이얼로그 닫기
-                          },
-                          child: Text("취소"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            setState(() {
-                              // 초기화 동작 구현
-                              for (var item in preinspactionList) {
-                                item["isSelected"] = true; // 모든 항목의 isSelected를 true로 초기화
-                              }
-                              // 저장값 초기화
-                              initSwitchStates();
-                            });
-                            Navigator.of(context).pop(); // 다이얼로그 닫기
-                          },
-                          child: Text("확인"),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-          IconButton(
-            icon: Icon(isEditing ? Icons.check : Icons.settings), // 상태에 따라 아이콘 변경
-            onPressed: () {
+      body: CustomScrollView(
+        controller: _scrollController, // 스크롤 컨트롤러 연결
+        slivers: [
+          CustomSliverAppBar(
+            isEditing: isEditing,
+            onRefreshPressed: () {
+              // 확인 다이얼로그 표시
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("초기화 확인"),
+                    content: Text("모든 항목을 초기화 하시겠습니까?"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // 다이얼로그 닫기
+                        },
+                        child: Text("취소"),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            // 초기화 동작 구현
+                            for (var item in preinspactionList) {
+                              item["isSelected"] = true; // 모든 항목의 isSelected를 true로 초기화
+                            }
+                            // 저장값 초기화
+                            initSwitchStates();
+                          });
+                          Navigator.of(context).pop(); // 다이얼로그 닫기
+                        },
+                        child: Text("확인"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            onEditTogglePressed: () {
               if (isEditing) {
                 _saveAllSwitchStates(); // 체크 아이콘 클릭 시 상태 저장
               }
@@ -121,25 +126,33 @@ class PreInspactionState extends State<PreInspactionList> {
               });
             },
           ),
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 2,
+              childAspectRatio: 4.3,
+            ),
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                return isEditing
+                    ? EditableCardList(preinspactionInfo: preinspactionList[index]) // 전체 리스트
+                    : CardList(preinspactionInfo: filteredList[index]); // 필터링된 리스트
+              },
+              childCount: isEditing ? preinspactionList.length : filteredList.length, // 수정 모드에 따라 아이템 수 결정
+            ),
+          ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: GridView.builder(
-          controller: _scrollController, // 스크롤 컨트롤러 연결
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-            mainAxisSpacing: 0,
-            crossAxisSpacing: 2,
-            childAspectRatio: 4.3,
-          ),
-          itemCount: isEditing ? preinspactionList.length : filteredList.length, // 수정 모드에 따라 아이템 수 결정
-          itemBuilder: (context, index) {
-            return isEditing
-                ? EditableCardList(preinspactionInfo: preinspactionList[index]) // 전체 리스트
-                : CardList(preinspactionInfo: filteredList[index]); // 필터링된 리스트
-          },
-        ),
+      floatingActionButton: ScrollToTopButton(
+        isVisible: _isButtonVisible, // 버튼 가시성 제어
+        onPressed: () {
+          _scrollController.animateTo(
+            0, // 최상단으로 이동
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        },
       ),
     );
   }
