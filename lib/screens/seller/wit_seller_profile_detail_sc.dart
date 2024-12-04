@@ -304,7 +304,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       children: [
                                         Text("견적요청목록", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                                         SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
-                                        EstimateRequestList(stat: '02'), // 리스트를 추가
+                                        EstimateRequestList(stat: '01'), // 리스트를 추가
                                         SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
                                         TextButton(
                                           onPressed: () {

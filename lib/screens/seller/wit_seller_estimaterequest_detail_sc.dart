@@ -9,8 +9,10 @@ import '../../util/wit_api_ut.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 
 class EstimateRequestDetail extends StatefulWidget {
-  final dynamic estNo;
-  const EstimateRequestDetail({Key? key, required this.estNo}) : super(key: key);
+  final String estNo;
+  final String seq;
+
+  const EstimateRequestDetail({Key? key, required this.estNo, required this.seq}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,20 +31,21 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     super.initState();
     // 견적 상세 조회
     print("widget.estNo : " + widget.estNo);
-    getEstimateRequestInfoForSend(widget.estNo);
+    print("widget.seq : " + widget.seq);
+    getEstimateRequestInfoForSend(widget.estNo, widget.seq);
   }
 
   @override
   Widget build(BuildContext context) {
     String estNo = estimateRequestInfoForSend['estNo'] ?? "";
+    String seq = estimateRequestInfoForSend['seq'] ?? "";
     String aptName = estimateRequestInfoForSend['aptName'] ?? "고객 APT 정보 없음";
     String reqContents = estimateRequestInfoForSend['reqContents'] ?? "content 정보 없음";
     String itemImage = estimateRequestInfoForSend['itemImage'] ?? "itemImage 정보 없음";
     String itemName = estimateRequestInfoForSend['itemName'] ?? "itemName 정보 없음";
-    String itemContents = estimateRequestInfoForSend['reqContents'] ?? "reqContents 정보 없음";
+    String estimateContent = estimateRequestInfoForSend['estimateContent'] ?? "estimateContent 정보 없음";
     String itemPrice1 = estimateRequestInfoForSend['itemPrice1'] ?? "itemPrice1 정보 없음";
-
-    print("estNo : " + estNo);
+    String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "itemPrice1 정보 없음";
 
     return MaterialApp(
       home: Scaffold(
@@ -194,11 +197,13 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     child: ElevatedButton(
                       onPressed: () {
                         // 견적 보내기 로직
-                        String sllrNo = estimateRequestInfoForSend['sllrNo'] ?? "";
-                        String estNo = estimateRequestInfoForSend['estNo'] ?? "";
+                        String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";;
+                        String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";;
+                        String estNo = estimateRequestInfoForSend['estNo'] ?? "";;
+                        String seq = estimateRequestInfoForSend['seq'] ?? "";;
                         String estimateContent = estimateContentController.text;
                         String inputItemPrice1 = itemPrice1Controller.text;
-                        updateEstimateInfo(sllrNo, estNo, estimateContent, inputItemPrice1);
+                        updateEstimateInfo(sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1);
                       },
                       child: Text('견적보내기'),
                       style: ElevatedButton.styleFrom(
@@ -221,14 +226,15 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   }
 
   // [서비스] 견적발송 용 데이터 조회
-  Future<void> getEstimateRequestInfoForSend(estNo) async {
+  Future<void> getEstimateRequestInfoForSend(estNo, seq) async {
     // REST ID
     String restId = "getEstimateRequestInfoForSend";
 
     // PARAM
     final param = jsonEncode({
       "estNo": estNo,
-      "sllrNo" : "COMP001",
+      "seq": seq,
+      //"sllrNo" : "COMP001",
     });
 
     // API 호출 (견적발송 용 데이터 조회)
@@ -237,15 +243,17 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     // 결과 셋팅
     setState(() {
       estimateRequestInfoForSend = _estimateRequestInfoForSend;
+      print("estNo : " + estimateRequestInfoForSend["estNo"]);
+      print("seq : " + estimateRequestInfoForSend["seq"]);
     });
   }
 
   // [서비스]견적 정보 저장
-  Future<void> updateEstimateInfo(dynamic sllrNo, dynamic estNo, dynamic estimateContent, dynamic inputItemPrice1) async {
+  Future<void> updateEstimateInfo(dynamic sllrNo, dynamic sllrClerkNo, dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1) async {
     // REST ID
-    String restId = "updateEstimateInfo";
+    //String restId = "updateEstimateInfo";
 
-    String restId2 = "getCashInfo";
+    String restId = "getCashInfo";
 
     int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0;
 
@@ -256,13 +264,16 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     });
 
     // API 호출 임시 주석처리
-    //final response = await sendPostRequest(restId2, param2);
+    final response = await sendPostRequest(restId, param2);
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return PointOKDialog(
+          sllrNo: sllrNo,
+          sllrClerkNo: sllrClerkNo,
           estNo: estNo,
+          seq: seq,
           estimateContent: estimateContent,
           inputItemPrice1: inputItemPrice1,
         );
@@ -270,7 +281,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     );
 
     // API 응답 처리
-    /*if (response != null) {
+    if (response != null) {
       dynamic cashInfo = response;
       dynamic cash = cashInfo['cash'];
 
@@ -295,17 +306,21 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
         // 다이얼로그 표시
         WidgetsBinding.instance?.addPostFrameCallback((_) {
           if (context.mounted) {
-            String estNo = estimateRequestInfoForSend['estNo'] ?? "";
+            String sllrNo = estimateRequestInfoForSend['companyId'];
+            String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'];
+            String estNo = estimateRequestInfoForSend['estNo'];
+            String seq = estimateRequestInfoForSend['seq'];
             String estimateContent = estimateContentController.text;
             String inputItemPrice1 = itemPrice1Controller.text;
-
-            print("inputItemPrice1 : " + inputItemPrice1);
 
             showDialog(
               context: context,
               builder: (BuildContext context) {
                 return PointOKDialog(
+                  sllrNo: sllrNo,
+                  sllrClerkNo: sllrClerkNo,
                   estNo: estNo,
+                  seq: seq,
                   estimateContent: estimateContent,
                   inputItemPrice1: inputItemPrice1,
                 );
@@ -319,20 +334,22 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("캐시 조회가 실패하였습니다.")),
       );
-    }*/
+    }
   }
 }
 
 class PointOKDialog extends StatelessWidget {
+  final String sllrNo;
+  final String sllrClerkNo;
   final String estNo;
+  final String seq;
   final String estimateContent;
   final String inputItemPrice1;
 
-  PointOKDialog({required this.estNo, required this.estimateContent, required this.inputItemPrice1});
+  PointOKDialog({required this.sllrNo, required this.sllrClerkNo, required this.estNo, required this.seq, required this.estimateContent, required this.inputItemPrice1});
 
   @override
   Widget build(BuildContext context) {
-    print("estNo : " +  this.estNo);
 
     return AlertDialog(
       title: Text('캐시가 충분합니다.'),
@@ -347,14 +364,17 @@ class PointOKDialog extends StatelessWidget {
             // 충전 로직 추가
             // Navigator.of(context).pop(); // 다이얼로그 닫기
             //String estNo = estimateRequestInfoForSend['estNo'] ?? "";
+            String sllrNo = this.sllrNo;
+            String sllrClerkNo = this.sllrClerkNo;
             String estNo = this.estNo;
+            String seq = this.seq;
             String estimateContent = this.estimateContent;
             String inputItemPrice1 = this.inputItemPrice1;
             
             // 견적발송 당 차감 캐쉬도 정의 해야함
             String cash = "1200";
 
-            updateEstimateInfo2(context, estNo, estimateContent, inputItemPrice1, cash);
+            updateEstimateInfo2(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash);
             Navigator.of(context).pop();
             // 견적 보내기 후 SellerProfileDetail로 화면 이동
             Navigator.push(
@@ -379,7 +399,8 @@ class PointOKDialog extends StatelessWidget {
   }
 
   // [서비스]견적 정보 저장
-  Future<void> updateEstimateInfo2(BuildContext context, dynamic estNo, dynamic estimateContent, dynamic inputItemPrice1
+  Future<void> updateEstimateInfo2(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
+      dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
       , dynamic cash) async {
     // REST ID
     String restId = "updateEstimateInfo";
@@ -390,8 +411,10 @@ class PointOKDialog extends StatelessWidget {
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": "COMP001",
+      "sllrNo": sllrNo,
+      "sllrClerkNo": sllrClerkNo,
       "estNo": estNo,
+      "seq": seq,
       "estimateContent": estimateContent,
       "itemPrice1": inputItemPrice1,
       "stat": "02", // 02 : 판매자가 견적발송

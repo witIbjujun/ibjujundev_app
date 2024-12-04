@@ -88,7 +88,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                 // 견적 요청 관련 작업 추가
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EstimateRequestDetail(estNo : request['estNo'])),
+                  MaterialPageRoute(builder: (context) => EstimateRequestDetail(estNo : request['estNo'], seq: request['seq'])),
                 );
               }
                   : null, // 상태가 아닐 경우 null로 설정하여 비활성화
@@ -157,11 +157,10 @@ class EstimateRequestListState extends State<EstimateRequestList> {
     // REST ID
     String restId = "getEstimateRequestList";
 
-    print("stat11111: " + widget.stat);
-
     // PARAM
     final param = jsonEncode({
       "stat": widget.stat, // stat을 사용하여 API에 전달
+      "sllrNo" : 17,
     });
 
     // API 호출 (사전 점검 미완료 리스트 조회)
