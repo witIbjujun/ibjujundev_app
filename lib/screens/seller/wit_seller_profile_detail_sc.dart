@@ -20,12 +20,11 @@ import 'package:witibju/screens/seller/wit_seller_profile_modify_sc.dart';
 
 // import '../../main_toss.dart';
 import '../board/wit_board_main_sc.dart';
+import '../home/wit_home_sc.dart';
 //import '../intro.dart';
-
-dynamic sllrNo;
-
 class SellerProfileDetail extends StatefulWidget {
-  final dynamic sllrNo;
+  //final dynamic sllrNo;
+  final dynamic sllrNo; // 초기 sllrNo를 받기 위한 변수
   const SellerProfileDetail({Key? key, required this.sllrNo}) : super(key: key);
 
   @override
@@ -39,12 +38,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   dynamic sellerInfo;
   String storeName = "";
   Map cashInfo = {};
+  dynamic sllrNo; // 새로운 sllrNo 변수 추가
+  final TextEditingController _sllrNoController = TextEditingController(); // 입력 필드 컨트롤러
+
 
   @override
   void initState() {
     super.initState();
-    getSellerInfo(widget.sllrNo);
-    getCashInfo(); // 초기화 시 캐시정보를 가져옵니다.
+    sllrNo = widget.sllrNo; // 초기값 설정
+    getSellerInfo(sllrNo);
+    getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵니다.
   }
 
   Future<void> getSellerInfo(dynamic sllrNo) async {
@@ -55,7 +58,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
       "sllrNo": sllrNo,
     });
 
-    print("sllrNo :" + sllrNo.toString());
+
 
     // API 호출
     final response = await sendPostRequest(restId, param);
@@ -64,7 +67,6 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
       setState(() {
         sellerInfo = response;
         storeName = sellerInfo['storeName'];
-        print('Store Name: $storeName');
       });
     } else {
       // 오류 처리
@@ -75,22 +77,39 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
 
   }
 
-  Future<void> getCashInfo() async {
+  Future<void> getCashInfo(dynamic sllrNo) async {
     // REST ID
     String restId = "getCashInfo";
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": "17",
+      "sllrNo": sllrNo,
     });
 
-    // API 호출 (사전 점검 미완료 리스트 조회)
-    final _cashInfo = await sendPostRequest(restId, param);
+    print("getCashInfo : " + sllrNo.toString());
 
-    // 결과 셋팅
-    setState(() {
-      cashInfo = _cashInfo;
-    });
+    try {
+      // API 호출 (사전 점검 미완료 리스트 조회)
+      final response = await sendPostRequest(restId, param);
+
+      if (response != null && response.isNotEmpty) {
+        setState(() {
+          cashInfo = response; // 유효한 응답일 경우 cashInfo 설정
+        });
+      } else {
+        setState(() {
+          cashInfo = {}; // 응답이 null이거나 비어있으면 빈 맵으로 초기화
+        });
+      }
+    } catch (e) {
+      print("Error occurred: $e"); // 오류 출력
+      setState(() {
+        cashInfo = {}; // 오류 발생 시 빈 맵으로 초기화
+      });
+      /*ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("서버와의 통신 중 오류가 발생했습니다.")),
+      );*/
+    }
   }
 
   @override
@@ -108,9 +127,46 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
           centerTitle: true,
           backgroundColor: Colors.lightBlue,
           actions: [
-            // 우측의 액션 버튼들
-            IconButton(onPressed: () {}, icon: Icon(Icons.perm_identity)),
-            IconButton(onPressed: () {}, icon: Icon(Icons.mail))
+            // 입력 필드 추가
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: SizedBox(
+                width: 100, // 입력 필드의 너비 설정
+                child: TextField(
+                  controller: _sllrNoController,
+                  decoration: InputDecoration(
+                    hintText: 'sllrNo 입력',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number, // 숫자 키패드로 설정
+                ),
+              ),
+            ),
+            // 버튼 추가
+            IconButton(
+              onPressed: () {
+                // 입력된 값을 sllrNo로 변경
+                dynamic newSllrNo = _sllrNoController.text;
+                if (newSllrNo.isNotEmpty) {
+                  setState(() {
+                    sllrNo = int.tryParse(newSllrNo); // sllrNo 업데이트
+                    getSellerInfo(sllrNo); // 화면 재조회
+                    getCashInfo(sllrNo); // 화면 재조회
+                  });
+                }
+              },
+              icon: Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()), // HomeScreen으로 이동
+                );
+              },
+              icon: Icon(Icons.perm_identity),
+            ),
+            IconButton(onPressed: () {}, icon: Icon(Icons.mail)),
           ],
         ),
         body:
@@ -123,7 +179,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       width: double.infinity,
                       height: 200,
                       child: Image.asset(
-                        'assets/image/aaa.jpg', // 광고 이미지 URL
+                        'assets/seller/aaa.jpg', // 광고 이미지 URL
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -153,7 +209,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          SellerCashHistory(sllrNo: 17)),
+                                          SellerCashHistory(sllrNo: sellerInfo["sllrNo"])),
                                 );
                               },
 
@@ -205,11 +261,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     padding: EdgeInsets.symmetric(
                                         vertical: 5, horizontal: 10),
                                     child: Text(
-                                      cashInfo['cash'] != null ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C' : '0 C',
+                                      (cashInfo['cash'] != null && cashInfo['cash'] != '')
+                                          ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
+                                          : '0 C',
                                       style: TextStyle(
                                         fontSize: 20,
                                         color: Colors.black,
-
                                       ),
                                     ),
                                   ),
@@ -247,7 +304,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       children: [
                                         Text("거래내역목록", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                                         SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
-                                        EstimateRequestList(stat: ''), // 리스트를 추가
+                                        EstimateRequestList(stat: '', sllrNo: sllrNo.toString(),), // 리스트를 추가
                                         SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
                                         TextButton(
                                           onPressed: () {
@@ -304,7 +361,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       children: [
                                         Text("견적요청목록", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                                         SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
-                                        EstimateRequestList(stat: '01'), // 리스트를 추가
+                                        EstimateRequestList(stat: '01', sllrNo: sllrNo.toString(),), // 리스트를 추가
                                         SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
                                         TextButton(
                                           onPressed: () {

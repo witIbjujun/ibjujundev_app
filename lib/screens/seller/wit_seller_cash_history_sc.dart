@@ -64,7 +64,7 @@ class SellerCashHistoryState extends State<SellerCashHistory> {
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": "17",
+      "sllrNo": widget.sllrNo,
     });
 
     // API 호출 (사전 점검 미완료 리스트 조회)
@@ -206,7 +206,7 @@ class SellerCashHistoryState extends State<SellerCashHistory> {
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": "17", // stat을 사용하여 API에 전달
+      "sllrNo": widget.sllrNo, // stat을 사용하여 API에 전달
     });
 
     // API 호출 (사전 점검 미완료 리스트 조회)

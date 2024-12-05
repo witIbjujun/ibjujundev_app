@@ -11,8 +11,9 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 class EstimateRequestDetail extends StatefulWidget {
   final String estNo;
   final String seq;
+  final String sllrNo;
 
-  const EstimateRequestDetail({Key? key, required this.estNo, required this.seq}) : super(key: key);
+  const EstimateRequestDetail({Key? key, required this.estNo, required this.seq, required this.sllrNo}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -45,6 +46,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     String itemName = estimateRequestInfoForSend['itemName'] ?? "itemName 정보 없음";
     String estimateContent = estimateRequestInfoForSend['estimateContent'] ?? "estimateContent 정보 없음";
     String itemPrice1 = estimateRequestInfoForSend['itemPrice1'] ?? "itemPrice1 정보 없음";
+    String sllrNo = estimateRequestInfoForSend['sllrNo'] ?? "sllrNo 정보 없음";
     String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "itemPrice1 정보 없음";
 
     return MaterialApp(
@@ -108,7 +110,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         height: 100,
                         color: Colors.grey[300],
                         child: Image.asset(
-                          'assets/image/' + itemImage,
+                          'assets/seller/' + itemImage,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -266,20 +268,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     // API 호출 임시 주석처리
     final response = await sendPostRequest(restId, param2);
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return PointOKDialog(
-          sllrNo: sllrNo,
-          sllrClerkNo: sllrClerkNo,
-          estNo: estNo,
-          seq: seq,
-          estimateContent: estimateContent,
-          inputItemPrice1: inputItemPrice1,
-        );
-      },
-    );
-
     // API 응답 처리
     if (response != null) {
       dynamic cashInfo = response;
@@ -295,14 +283,14 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return PointNotOKDialog();
+                return PointNotOKDialog( sllrNo: sllrNo,);
               },
             );
           }
         });
       }
       else {
-        print("캐시가 충븐합니다." + cashInt.toString());
+        print("캐시가 충분합니다." + cashInt.toString());
         // 다이얼로그 표시
         WidgetsBinding.instance?.addPostFrameCallback((_) {
           if (context.mounted) {
@@ -467,6 +455,10 @@ class PointOKDialog extends StatelessWidget {
 
 
 class PointNotOKDialog extends StatelessWidget {
+  final String sllrNo; // sllrNo 변수를 추가합니다.
+
+  PointNotOKDialog({required this.sllrNo}); // 생성자에 추가합니다.
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -489,7 +481,7 @@ class PointNotOKDialog extends StatelessWidget {
               },*/
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CashRecharge(sllrNo: 17)),
+              MaterialPageRoute(builder: (context) => CashRecharge(sllrNo: sllrNo)),
             );
           },
           child: Text('캐시충전'),

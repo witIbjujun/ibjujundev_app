@@ -7,8 +7,9 @@ import '../../util/wit_api_ut.dart';
 
 class EstimateRequestList extends StatefulWidget {
   final String stat; // stat을 멤버 변수로 추가
+  final String sllrNo; // stat을 멤버 변수로 추가
 
-  const EstimateRequestList({Key? key, required this.stat}) : super(key: key);
+  const EstimateRequestList({Key? key, required this.stat, required this.sllrNo}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -88,7 +89,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                 // 견적 요청 관련 작업 추가
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EstimateRequestDetail(estNo : request['estNo'], seq: request['seq'])),
+                  MaterialPageRoute(builder: (context) => EstimateRequestDetail(estNo : request['estNo'], seq: request['seq'], sllrNo: widget.sllrNo,)),
                 );
               }
                   : null, // 상태가 아닐 경우 null로 설정하여 비활성화
@@ -160,7 +161,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
     // PARAM
     final param = jsonEncode({
       "stat": widget.stat, // stat을 사용하여 API에 전달
-      "sllrNo" : 17,
+      "sllrNo" : widget.sllrNo,
     });
 
     // API 호출 (사전 점검 미완료 리스트 조회)
