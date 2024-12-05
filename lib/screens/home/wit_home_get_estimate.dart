@@ -159,7 +159,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
         selectedItems.add(categoryList[i].categoryId); // 선택된 카테고리 ID 수집
       }
     }
-
+    aptNo = aptNo ?? '1';  // aptNo가 null일 경우 기본값 1을 할당
     final param = jsonEncode({
       "reqGubun": 'T',
       "aptNo": aptNo,

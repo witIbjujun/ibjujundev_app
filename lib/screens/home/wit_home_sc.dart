@@ -28,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   ///로그인 상태를 true로 설정해서 테스트 (실제로는 로그인 여부를 판단하는 로직이 필요)
-  bool isLogined = true;
+  bool isLogined =true;
   // SelectBox에 표시할 옵션 리스트
   Map<String, String> options = {};
   String selectedOption = ""; // 기본 선택된 옵션
@@ -134,7 +134,14 @@ class _HomeScreenState extends State<HomeScreen> {
           print('mainAptNo가 secureStorage에 저장되었습니다: $mainAptNo');
 
           String? kakaoId = await secureStorage.read(key: 'kakaoId');
-           getUserInfo('3676364728');
+          print("kakaoId: ${kakaoId}");
+          if (kakaoId != null) {
+            getUserInfo(kakaoId);
+          } else {
+            print("kakaoId is null");
+          }
+
+         /// getUserInfo('3676364728');
 
         } else {
           print("MY 닉네임 저장 실패: ${response['message']}");

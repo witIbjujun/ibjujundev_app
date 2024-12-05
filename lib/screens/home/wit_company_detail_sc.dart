@@ -209,7 +209,8 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   Future<void> sendRequestInfo() async {
     String restId = "saveRequestInfo";
     String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');  //아파트 번호
-
+    aptNo = aptNo ?? '1';  // aptNo가 null일 경우 기본값 1을 할당
+    print('aptNoaptNoaptNoaptNoaptNoaptNoaptNoaptNoaptNo: $aptNo');
     final param = jsonEncode({
       "reqGubun": 'S',
       "reqUser": '72091587',

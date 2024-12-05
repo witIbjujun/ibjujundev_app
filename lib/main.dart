@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       ///home: NavigationHomeScreen(),  기존 밀어서
-      //home: HomeScreen(), //현재 메인
+      home: HomeScreen(), //현재 메인
       //home: PreInspaction(),
       ///home: ImageSlider(),
       //home: Board("B01"),  //게시판
