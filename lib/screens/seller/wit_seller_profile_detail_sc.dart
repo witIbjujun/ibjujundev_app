@@ -53,9 +53,13 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   Future<void> getSellerInfo(dynamic sllrNo) async {
 
     String restId = "getSellerInfo";
+
+    print("aaaaa:" + sllrNo.toString());
+    int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0; // 기본값은 0
+
     // PARAM
     final param = jsonEncode({
-      "sllrNo": sllrNo,
+      "sllrNo": sllrNoInt,
     });
 
 

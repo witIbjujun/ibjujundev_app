@@ -31,8 +31,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   void initState() {
     super.initState();
     // 견적 상세 조회
-    print("widget.estNo : " + widget.estNo);
-    print("widget.seq : " + widget.seq);
     getEstimateRequestInfoForSend(widget.estNo, widget.seq);
   }
 
@@ -41,13 +39,26 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     String estNo = estimateRequestInfoForSend['estNo'] ?? "";
     String seq = estimateRequestInfoForSend['seq'] ?? "";
     String aptName = estimateRequestInfoForSend['aptName'] ?? "고객 APT 정보 없음";
-    String reqContents = estimateRequestInfoForSend['reqContents'] ?? "content 정보 없음";
-    String itemImage = estimateRequestInfoForSend['itemImage'] ?? "itemImage 정보 없음";
-    String itemName = estimateRequestInfoForSend['itemName'] ?? "itemName 정보 없음";
-    String estimateContent = estimateRequestInfoForSend['estimateContent'] ?? "estimateContent 정보 없음";
-    String itemPrice1 = estimateRequestInfoForSend['itemPrice1'] ?? "itemPrice1 정보 없음";
+    String reqContents = estimateRequestInfoForSend['reqContents'] ??
+        "content 정보 없음";
+    String itemImage = estimateRequestInfoForSend['itemImage'] ??
+        "itemImage 정보 없음";
+    String itemName = estimateRequestInfoForSend['itemName'] ??
+        "itemName 정보 없음";
+    String estimateContent = estimateRequestInfoForSend['estimateContent'] ??
+        "";
+    String itemPrice1 = estimateRequestInfoForSend['itemPrice1'] ?? "";
     String sllrNo = estimateRequestInfoForSend['sllrNo'] ?? "sllrNo 정보 없음";
-    String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "itemPrice1 정보 없음";
+    String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ??
+        "itemPrice1 정보 없음";
+    String reqState = estimateRequestInfoForSend['reqState'] ??
+        "reqState 정보 없음";
+
+    // 입력 필드에 초기값 설정
+    if (reqState != "01") {
+      itemPrice1Controller.text = itemPrice1; // reqState가 01이 아닐 때 기존 값 표시
+      estimateContentController.text = estimateContent; // 기존 설명 표시
+    }
 
     return MaterialApp(
       home: Scaffold(
@@ -58,7 +69,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             child: Center(
               child: Text(
                 "친절한 사장님",
-                style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -88,15 +101,19 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         padding: EdgeInsets.all(10),
                         child: Text(
                           "고객 APT",
-                          style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                       SizedBox(width: 10),
-                      Expanded( // Expanded로 감싸서 공간을 차지하게 함
+                      Expanded(
                         child: Text(
                           aptName,
-                          style: TextStyle(fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis, // 텍스트가 넘칠 경우 생략
+                          style: TextStyle(fontSize: 22,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -110,29 +127,31 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         height: 100,
                         color: Colors.grey[300],
                         child: Image.asset(
-                          'assets/seller/' + itemImage,
+                          itemImage,
                           fit: BoxFit.cover,
                         ),
                       ),
                       SizedBox(width: 10),
-                      Flexible(  // Flexible로 감싸기
+                      Flexible(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               reqContents,
-                              style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 20,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
                             ),
                             Text(
                               itemName,
-                              style: TextStyle(fontSize: 18, color: Colors.grey[800]),
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.grey[800]),
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -163,6 +182,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                             border: OutlineInputBorder(),
                           ),
                           keyboardType: TextInputType.number,
+                          enabled: reqState == "01", // reqState가 01일 때만 활성화
                         ),
                       ),
                       SizedBox(width: 8),
@@ -171,7 +191,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   ),
                   Text(
                     "견적 추가 설명",
-                    style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Container(
@@ -186,28 +208,53 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         border: InputBorder.none,
                         hintText: '여기에 추가 설명을 입력하세요',
                         contentPadding: EdgeInsets.all(8),
+                        enabled: reqState == "01", // reqState가 01일 때만 활성화
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Text(
-                    "*업체 전화번호나 위치 설명 금지",
-                    style: TextStyle(fontSize: 14, color: Colors.red),
-                  ),
+
                   SizedBox(height: 20),
                   Center(
-                    child: ElevatedButton(
+                    child: reqState == "05" ? Container() : ElevatedButton(
                       onPressed: () {
-                        // 견적 보내기 로직
-                        String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";;
-                        String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";;
-                        String estNo = estimateRequestInfoForSend['estNo'] ?? "";;
-                        String seq = estimateRequestInfoForSend['seq'] ?? "";;
-                        String estimateContent = estimateContentController.text;
-                        String inputItemPrice1 = itemPrice1Controller.text;
-                        updateEstimateInfo(sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1);
+                        if (reqState == "01") {
+                          // 견적 보내기 로직
+                          String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";
+                          String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";
+                          String estNo = estimateRequestInfoForSend['estNo'] ?? "";
+                          String seq = estimateRequestInfoForSend['seq'] ?? "";
+                          String estimateContent = estimateContentController.text;
+                          String inputItemPrice1 = itemPrice1Controller.text;
+                          String reqState = '02';
+                          updateEstimateInfo(
+                              sllrNo,
+                              sllrClerkNo,
+                              estNo,
+                              seq,
+                              estimateContent,
+                              inputItemPrice1,
+                              '02'
+                          );
+                        } else {
+                          String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";
+                          String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";
+                          String estNo = estimateRequestInfoForSend['estNo'] ?? "";
+                          String seq = estimateRequestInfoForSend['seq'] ?? "";
+                          String estimateContent = estimateContentController.text;
+                          String inputItemPrice1 = itemPrice1Controller.text;
+                          String reqState = '05';
+                          updateEstimateInfo(
+                              sllrNo,
+                              sllrClerkNo,
+                              estNo,
+                              seq,
+                              estimateContent,
+                              inputItemPrice1,
+                              '05'
+                          );
+                        }
                       },
-                      child: Text('견적보내기'),
+                      child: Text(reqState == "01" ? '견적보내기' : '견적취소'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 3, 199, 90),
                         foregroundColor: Colors.white,
@@ -250,22 +297,25 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     });
   }
 
-  // [서비스]견적 정보 저장
-  Future<void> updateEstimateInfo(dynamic sllrNo, dynamic sllrClerkNo, dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1) async {
-    // REST ID
-    //String restId = "updateEstimateInfo";
-
+  // [서비스] 견적 정보 저장
+  Future<void> updateEstimateInfo(dynamic sllrNo,
+      dynamic sllrClerkNo,
+      dynamic estNo,
+      dynamic seq,
+      dynamic estimateContent,
+      dynamic inputItemPrice1,
+      dynamic reqState, // 인자로 전달된 reqState를 그대로 사용
+      ) async {
     String restId = "getCashInfo";
 
     int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0;
-
 
     // 1. 견적 발송 전 캐시 정보 조회
     final param2 = jsonEncode({
       "sllrNo": sllrNoInt,
     });
 
-    // API 호출 임시 주석처리
+    // API 호출
     final response = await sendPostRequest(restId, param2);
 
     // API 응답 처리
@@ -275,25 +325,25 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
       int cashInt = int.tryParse(cash.toString()) ?? 0;
 
-      if(cashInt == 0) {
+      if (cashInt == 0) {
         print("캐시가 부족합니다.");
         // 다이얼로그 표시
         WidgetsBinding.instance?.addPostFrameCallback((_) {
-          if (context.mounted) { // context가 유효한지 확인
+          if (context.mounted) {
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return PointNotOKDialog( sllrNo: sllrNo,);
+                return PointNotOKDialog(sllrNo: sllrNo);
               },
             );
           }
         });
-      }
-      else {
-        print("캐시가 충분합니다." + cashInt.toString());
+      } else {
+        print("캐시가 충분합니다: " + cashInt.toString());
         // 다이얼로그 표시
         WidgetsBinding.instance?.addPostFrameCallback((_) {
           if (context.mounted) {
+            // 필요한 데이터 수집
             String sllrNo = estimateRequestInfoForSend['companyId'];
             String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'];
             String estNo = estimateRequestInfoForSend['estNo'];
@@ -311,6 +361,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   seq: seq,
                   estimateContent: estimateContent,
                   inputItemPrice1: inputItemPrice1,
+                  reqState: reqState, // 인자로 전달된 reqState 사용
                 );
               },
             );
@@ -333,8 +384,9 @@ class PointOKDialog extends StatelessWidget {
   final String seq;
   final String estimateContent;
   final String inputItemPrice1;
+  final String reqState;
 
-  PointOKDialog({required this.sllrNo, required this.sllrClerkNo, required this.estNo, required this.seq, required this.estimateContent, required this.inputItemPrice1});
+  PointOKDialog({required this.sllrNo, required this.sllrClerkNo, required this.estNo, required this.seq, required this.estimateContent, required this.inputItemPrice1, required this.reqState});
 
   @override
   Widget build(BuildContext context) {
@@ -358,17 +410,13 @@ class PointOKDialog extends StatelessWidget {
             String seq = this.seq;
             String estimateContent = this.estimateContent;
             String inputItemPrice1 = this.inputItemPrice1;
+            String reqState = this.reqState;
             
             // 견적발송 당 차감 캐쉬도 정의 해야함
             String cash = "1200";
 
-            updateEstimateInfo2(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash);
+            updateEstimateInfo2(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState);
             Navigator.of(context).pop();
-            // 견적 보내기 후 SellerProfileDetail로 화면 이동
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: 17)),
-            );
           },
           child: Text('보내기'),
         ),
@@ -389,14 +437,15 @@ class PointOKDialog extends StatelessWidget {
   // [서비스]견적 정보 저장
   Future<void> updateEstimateInfo2(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
       dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
-      , dynamic cash) async {
+      , dynamic cash, dynamic reqState) async {
     // REST ID
     String restId = "updateEstimateInfo";
 
     print("estNo : " + estNo);
     print("inputItemPrice1 : " + inputItemPrice1);
     print("estimateContent : " + estimateContent);
-
+ 
+    
     // PARAM
     final param = jsonEncode({
       "sllrNo": sllrNo,
@@ -405,7 +454,7 @@ class PointOKDialog extends StatelessWidget {
       "seq": seq,
       "estimateContent": estimateContent,
       "itemPrice1": inputItemPrice1,
-      "stat": "02", // 02 : 판매자가 견적발송
+      "stat": reqState, // 02 : 판매자가 견적발송
       "cash": cash,
       "cashGbn": "02", // 02 : 견적발송
     });
@@ -442,7 +491,10 @@ class PointOKDialog extends StatelessWidget {
                 foregroundColor: Colors.white, // 하얀색 글씨
               ),
               onPressed: () {
-                Navigator.of(context).pop(); // 다이얼로그 닫기
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
+                );
               },
               child: Text('확인'),
             ),
