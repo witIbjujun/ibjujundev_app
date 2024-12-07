@@ -10,7 +10,7 @@ class WitSocket {
   void connectWebSocket({ required String destination, required Function onMessageReceived}) {
     _stompClient = StompClient(
       config: StompConfig(
-        url: webSoketUrl, // WebSocket 서버 URL
+        url: notificationSoketUrl, // WebSocket 서버 URL
         onConnect: (frame) {
           debugPrint('WebSocket connected');
 
