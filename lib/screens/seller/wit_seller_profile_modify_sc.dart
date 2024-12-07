@@ -141,8 +141,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
   // 샘플 이미지 경로
   final List<String> sampleImages = [
-    'assets/image/aaa.jpg',
-    'assets/image/aaa.jpg',
+    'assets/seller/aaa.jpg',
+    'assets/seller/aaa.jpg',
   ];
   final List<String> locations = [
     '용인시 기흥구',

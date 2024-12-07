@@ -63,7 +63,7 @@ class BoardState extends State<Board> {
 
     final param = jsonEncode({
       "bordNo": "1",
-      "bordType": "B1",
+      "bordType": "C1",
       "searchText": "",
       "currentPage": 0,
       "pageSize": 1,
