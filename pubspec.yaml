@@ -53,7 +53,7 @@ dependencies:
   flutter_secure_storage: ^8.0.0 # Session
   #채팅
   uuid: ^3.0.7 #고유한 식별자를 생성 채팅의 키생성등
-  stomp_dart_client: ^2.1.0 # 채팅 WebSocket 클라이언트 라이브러리
+  stomp_dart_client: ^2.0.0 # 채팅 WebSocket 클라이언트 라이브러리
   flutter_chat_types: ^3.6.2 #채팅 애플리케이션을 개발할 때 사용되는 데이터 모델과 타입
   flutter_chat_ui: ^1.6.15 #채팅 애플리케이션 UI
 
@@ -61,6 +61,15 @@ dependencies:
   #tosspayments_widget_sdk_flutter: 2.0.0
   #우편번호
   kpostal: ^1.0.0
+
+  #웹소켓
+  web_socket_channel: ^2.1.0
+  timezone: ^0.9.4
+  # 푸쉬알림
+  flutter_local_notifications: ^18.0.1
+  # 권한 핸들러
+  permission_handler: ^11.3.1
+
 
 
 dev_dependencies:
