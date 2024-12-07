@@ -120,6 +120,17 @@ class SellerProfileState extends State<SellerProfile> {
 
   @override
   Widget build(BuildContext context) {
+
+    // 필수 입력 체크를 위한 상태 변수 추가
+    bool isStoreNameValid = true;
+    bool isNameValid = true;
+    bool isCeoNameValid = true;
+    bool isEmailValid = true;
+    bool isStoreCodeValid = true;
+    bool isHpValid = true;
+    bool isReceiverZipValid = true;
+    bool isReceiverAddress1Valid = true;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('회원가입', style: TextStyle(fontSize: 24)),
@@ -138,11 +149,10 @@ class SellerProfileState extends State<SellerProfile> {
                 controller: storeNameController,
                 decoration: InputDecoration(
                   hintText: 'Ex) 친절한사장',
-                  border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Color.fromARGB(255, 3, 199, 90)),
+                    borderSide: BorderSide(color: isStoreNameValid ? Color.fromARGB(255, 3, 199, 90) : Colors.red),
                   ),
+
                 ),
               ),
               SizedBox(height: 16),
@@ -308,7 +318,9 @@ class SellerProfileState extends State<SellerProfile> {
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: isNameValid ? Color.fromARGB(255, 3, 199, 90) : Colors.red),
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -317,7 +329,9 @@ class SellerProfileState extends State<SellerProfile> {
               TextField(
                 controller: ceoNameController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: isCeoNameValid ? Color.fromARGB(255, 3, 199, 90) : Colors.red),
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -326,7 +340,9 @@ class SellerProfileState extends State<SellerProfile> {
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: isEmailValid ? Color.fromARGB(255, 3, 199, 90) : Colors.red),
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -335,7 +351,9 @@ class SellerProfileState extends State<SellerProfile> {
               TextField(
                 controller: storeCodeController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: isStoreCodeValid ? Color.fromARGB(255, 3, 199, 90) : Colors.red),
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -344,7 +362,9 @@ class SellerProfileState extends State<SellerProfile> {
               TextField(
                 controller: hp1Controller,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: isHpValid ? Color.fromARGB(255, 3, 199, 90) : Colors.red),
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -355,6 +375,25 @@ class SellerProfileState extends State<SellerProfile> {
               Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
                 child: ElevatedButton(
                   onPressed: () {
+                    // 필수 입력 체크
+                    setState(() {
+                      isStoreNameValid = storeNameController.text.isNotEmpty;
+                      isNameValid = nameController.text.isNotEmpty;
+                      isCeoNameValid = ceoNameController.text.isNotEmpty;
+                      isEmailValid = emailController.text.isNotEmpty;
+                      isStoreCodeValid = storeCodeController.text.isNotEmpty;
+                      isHpValid = hp1Controller.text.isNotEmpty;
+                      isReceiverZipValid = receiverZipController.text.isNotEmpty;
+                      isReceiverAddress1Valid = receiverAddress1Controller.text.isNotEmpty;
+                    });
+
+                    if (!isStoreNameValid || !isNameValid || !isCeoNameValid || !isEmailValid || !isStoreCodeValid || !isHpValid || !isReceiverZipValid || !isReceiverAddress1Valid) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("모든 필수 필드를 입력해주세요.")),
+                      );
+                      return; // 필수 필드가 비어있으면 메서드를 종료
+                    }
+
                     // 사업자 프로필 등록 로직
                     String storeName = storeNameController.text;
                     String itemPrice1 = itemPrice1Controller.text;
