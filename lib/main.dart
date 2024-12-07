@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
-import 'package:witibju/screens/board/wit_board_main_sc.dart';
-import 'package:witibju/screens/chat/chatMain.dart';
 import 'package:witibju/screens/home/models/main_view_model.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_kakaoLogin.dart';
-import 'package:witibju/screens/home/wit_kakaoLogin_home_sc.dart';
-import 'package:witibju/screens/home/wit_navigation_home_sc.dart'; // NavigationHomeScreen 임포트
-import 'package:witibju/screens/preInspaction/wit_preInsp_main_sc.dart';
-import 'package:witibju/screens/question/wit_question_main_sc.dart';
-import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
-import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

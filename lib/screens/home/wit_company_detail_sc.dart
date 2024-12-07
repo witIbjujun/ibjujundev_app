@@ -208,12 +208,14 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   // 견적 요청 정보 보내기 메서드 - 2024-10-19
   Future<void> sendRequestInfo() async {
     String restId = "saveRequestInfo";
-    String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');  //아파트 번호
-    aptNo = aptNo ?? '1';  // aptNo가 null일 경우 기본값 1을 할당
+    String? aptNo = await widget.secureStorage.read(key: 'mainAptNo'); // 첫 번째 선언
+    String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
+    aptNo = aptNo ?? '1'; // aptNo가 null일 경우 기본값 1을 할당
+
     print('aptNoaptNoaptNoaptNoaptNoaptNoaptNoaptNoaptNo: $aptNo');
     final param = jsonEncode({
       "reqGubun": 'S',
-      "reqUser": '72091587',
+      "reqUser": clerkNo,
       "aptNo": aptNo,
       "categoryId": widget.categoryId,
       "companyIds": selectedItems  // 선택된 회사 ID 배열 - 2024-10-19

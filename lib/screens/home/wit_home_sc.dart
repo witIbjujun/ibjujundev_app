@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/home/wit_compay_view_sc_.dart';
 import 'package:witibju/screens/home/wit_home_get_estimate.dart';
@@ -10,6 +11,7 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/wit_estimate_detail.dart';
 import 'package:witibju/screens/home/wit_myprofile_sc.dart';
 import 'dart:convert';
+import '../../main.dart';
 import '../../util/wit_api_ut.dart';
 import '../question/wit_question_main_sc.dart';
 import '../seller/wit_seller_profile_detail_sc.dart';
@@ -17,35 +19,39 @@ import 'models/main_view_model.dart';
 import 'wit_login_pop_home_sc.dart'; // 로그인 파송창 파일을 임포트
 import 'models/category.dart';
 import 'models/userInfo.dart';
-
 ///메인 홈
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatefulWidget  {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+ State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   ///로그인 상태를 true로 설정해서 테스트 (실제로는 로그인 여부를 판단하는 로직이 필요)
-  bool isLogined =true;
+
+
   // SelectBox에 표시할 옵션 리스트
   Map<String, String> options = {};
   String selectedOption = ""; // 기본 선택된 옵션
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
+  String  isLogined = "false";
+
 
 
   @override
   void initState() {
     super.initState();
     _loadOptions();
+
   }
   // 데이터를 조회하는 비동기 함수
-  Future<void> getUserInfo(String kakaoId) async {
+  Future<void> getUserInfo(String kakaoId,String Idnum) async {
     String restId = "getUserInfo";
-    final param = jsonEncode({"kakaoId": kakaoId});
+    final param = jsonEncode({"kakaoId": kakaoId,
+      "clerkNo": Idnum});
 
     try {
       final response = await sendPostRequest(restId, param);
@@ -55,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
         } else {
           userInfo = UserInfo.fromJson(jsonDecode(response));
         }
-
 
         print('고객 번호: ' + (userInfo!.clerkNo ?? 'Unknown'));
         print('닉네임: '+(userInfo!.nickName??''));
@@ -73,32 +78,19 @@ class _HomeScreenState extends State<HomeScreen> {
         secureStorage.write(key: 'aptNo', value: userInfo!.aptNo?.join(',') ?? '');
         secureStorage.write(key: 'aptName', value: userInfo!.aptName?.join(',') ?? '');
 
-
-        // 사용자 정보에서 아파트 이름을 가져와 옵션 리스트에 추가
-        options.clear();
-
-        for (int i = 0; i < userInfo!.aptName!.length; i++) {
-          options[userInfo!.aptName![i]] = userInfo!.aptNo![i]; // 사용자 정보의 아파트 이름과 번호를 옵션으로 추가합니다 (10/19)
-        }
-        if (options.isNotEmpty) {
-
-          if (userInfo!.mainAptNo != null && userInfo!.mainAptNm != null) {
-            selectedOption = userInfo!.mainAptNm!;
-          } else {
-            selectedOption = options.keys.first;
-          }
-        }
       });
     } catch (e) {
-      print('사용자 정보 조회 중 오류 발생: $e');
+      print('사용자 정보 조회 중 오류 발생1111: $e');
     }
   }
+
 
   Future<void> _loadOptions() async {
     String? aptNameString  = await secureStorage.read(key: 'aptName'); //아파트 명칭
     String? aptNoString  = await secureStorage.read(key: 'aptNo'); //아파트 번호
 
-
+    print('_loadOptions 아파트 이름: $aptNameString');
+    print('_loadOptions 아파트 번호: $aptNoString');
 
     if (aptNameString != null && aptNoString != null) {
 
@@ -115,7 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-
 
   Future<void> updateMyInfo(String mainAptNo) async {
     print('아파트 번호 모야???'+mainAptNo);
@@ -136,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
           String? kakaoId = await secureStorage.read(key: 'kakaoId');
           print("kakaoId: ${kakaoId}");
           if (kakaoId != null) {
-            getUserInfo(kakaoId);
+            getUserInfo(kakaoId,'');
           } else {
             print("kakaoId is null");
           }
@@ -154,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final mainViewModel = Provider.of<MainViewModel>(context);
+
     return Container(
       color: WitHomeTheme.nearlyWhite,
       child: Scaffold(
@@ -165,17 +157,29 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 // account_circle 아이콘 클릭 시 MyProfile 페이지로 이동
                 IconButton(
-                  iconSize: 35.0,
+                  iconSize: 25.0,
                   onPressed: () {
-                    if (isLogined) {
-                      getUserInfo("3676364728").then((_) {
+                    logOut(context);
+                  },
+                  icon: const Icon(
+                      Icons.logout, // account_circle 아이콘
+                  ),
+                ),
+
+                IconButton(
+                  iconSize: 35.0,
+                  onPressed: () async {
+                    bool isLoggedIn = await checkLoginStatus(); // 비동기 함수 호출로 로그인 상태 확인
+                    if (isLoggedIn) {
+                      print("로그인 성공??");
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const MyProfile(), // MyProfile 페이지로 이동
                           ),
                         );
-                      });
+
                     } else {
+                      print("로그인 안함!!");
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -188,10 +192,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 300,
                               padding: const EdgeInsets.all(20.0),
                               child: loingPopHome(
-                                onLoginSuccess: () {
+                                onLoginSuccess: () async  {
                                   setState(() {
-                                    isLogined = true;
+                                    isLogined = "true";
+                                    print("로그인 완료!!!!!!!");
                                   });
+
                                 },
                               ),
                             ),
@@ -207,15 +213,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 /// 결제함 아이콘
                 IconButton(
                   iconSize: 35.0,
-                  onPressed: () {
-                    if (isLogined) {
-                      getUserInfo("3676364728").then((_) {
+                  onPressed: () async{
+                    bool isLoggedIn = await checkLoginStatus();
+                    if (isLoggedIn) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => EstimateScreen(), // 결제함 페이지로 이동
                           ),
                         );
-                      });
+
                     } else {
                       showDialog(
                         context: context,
@@ -231,7 +237,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: loingPopHome(
                                 onLoginSuccess: () {
                                   setState(() {
-                                    isLogined = true;
+                                    isLogined = "true";
+                                   // _loadOptions();
                                   });
                                 },
                               ),
@@ -245,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icons.email,
                   ),
                 ),
-                IconButton(
+               /* IconButton(
                   iconSize: 35.0,
                   onPressed: () {
                     // 다른 버튼 클릭 시 동작 정의 (이메일 버튼 클릭)
@@ -253,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   icon: const Icon(
                     Icons.menu_rounded,
                   ),
-                ),
+                ),*/
                 IconButton(
                   iconSize: 35.0,
                   onPressed: () {

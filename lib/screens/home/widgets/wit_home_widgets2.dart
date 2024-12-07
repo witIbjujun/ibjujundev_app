@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/preInspaction/wit_preInsp_main_sc.dart'; // PreInspaction 화면 import
 
 class ImageSlider extends StatefulWidget {
   final double heightRatio; // 높이 비율 파라미터
@@ -77,13 +78,23 @@ class _ImageSliderState extends State<ImageSlider> {
             itemCount: _images.length,
             onPageChanged: _onPageChanged,
             itemBuilder: (context, index) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(16), // 둥근 모서리 추가
-                child: Image.asset(
-                  _images[index],
-                  fit: BoxFit.cover,
-                  width: width,
-                  height: height,
+              return GestureDetector(
+                onTap: () {
+                  if (_images[index] == 'assets/home/image1.png') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PreInspaction()),
+                    );
+                  }
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16), // 둥근 모서리 추가
+                  child: Image.asset(
+                    _images[index],
+                    fit: BoxFit.cover,
+                    width: width,
+                    height: height,
+                  ),
                 ),
               );
             },

@@ -22,7 +22,12 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-        <!-- 카카오 로그인 커스텀 URL 스킴 설정 -->
+        <!-- 카카오 로그인 커스텀 URL 스킨 설정 -->
+        <activity
+            android:name="com.kakao.sdk.auth.authorization.authCode.KakaoWebViewActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="true" />
+
         <activity
             android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity"
             android:exported="true">

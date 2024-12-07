@@ -236,3 +236,6 @@ Widget getApartmentCommunity() {
     child: Text('아파트 커뮤니티 탭의 내용'),
   );
 }
+
+
+

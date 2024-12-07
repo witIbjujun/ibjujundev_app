@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:witibju/screens/home/wit_social_login_sc.dart';
 
@@ -14,8 +15,11 @@ class KaKaoLogin implements SocialLogin {
         //카카오톡으로 로그인
         try{
           await UserApi.instance.loginWithKakaoTalk();
+          print('카카오톡으로 로그인 성공');
           return true;
-        }catch(e){
+        }catch(error){
+          print('카카오톡으로 로그인 실패2222 $error');
+
           return false;
         }
       }else{
@@ -23,8 +27,11 @@ class KaKaoLogin implements SocialLogin {
         //카카오톡 계정으로 로그인 시도
         try{
           await UserApi.instance.loginWithKakaoAccount();
+
+          print('카카오계정으로 로그인 성공');
           return true;
-        }catch(e){
+        }catch(error){
+          print('카카오계정으로 로그인 실패111 $error');
           return false;
         }
       }

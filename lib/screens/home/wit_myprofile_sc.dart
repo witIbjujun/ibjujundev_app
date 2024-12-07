@@ -1,24 +1,27 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_estimate_detail.dart';
+import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
 import '../../util/wit_api_ut.dart';
 import '../board/wit_board_main_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
 
-class MyProfile extends StatefulWidget {
+class MyProfile extends ConsumerStatefulWidget  {
   const MyProfile({super.key});
 
   @override
   _MyProfileState createState() => _MyProfileState();
 }
 
-class _MyProfileState extends State<MyProfile> {
+class _MyProfileState extends ConsumerState<MyProfile> {
   String selectedOption = ''; // 기본 선택 값
   List<String> options = [];
 
@@ -53,6 +56,18 @@ class _MyProfileState extends State<MyProfile> {
 
   Future<void> _loadOptions() async {
     String? aptName = await _storage.read(key: 'aptName');
+    String? clerkNo = await _storage.read(key: 'clerkNo');
+    String? nickName = await _storage.read(key: 'nickName');
+    String? name = await _storage.read(key: 'name');
+    String? role = await _storage.read(key: 'role');
+    String? mainAptNo = await _storage.read(key: 'mainAptNo');
+
+    print('myprofile 고객 번호: $clerkNo');
+    print('myprofile 닉네임: $nickName');
+    print('myprofile 이름: $name');
+    print('myprofile 역할: $role');
+    print('myprofile Main아파트 번호: $mainAptNo');
+    print('myprofile Main아파트 이름: $aptName');
 
     if (aptName != null) {
       setState(() {
@@ -99,6 +114,7 @@ class _MyProfileState extends State<MyProfile> {
 
   @override
   Widget build(BuildContext context) {
+    print("Rendering MyProfile...");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: WitHomeTheme.nearlyWhite,
@@ -255,6 +271,14 @@ class _MyProfileState extends State<MyProfile> {
                 child:  _buildListTile(Icons.group, '커뮤니티'),
               ),
               _buildListTile(Icons.notifications, '공지사항'),
+              GestureDetector(
+                onTap: () async {
+
+                  // 로그아웃 처리
+                  logOut(context);
+                },
+                child:  _buildListTile(Icons.group, '로그아웃'),
+              ),
             ],
           ),
         ),

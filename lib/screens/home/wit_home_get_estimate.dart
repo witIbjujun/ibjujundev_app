@@ -152,7 +152,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     // 선택된 항목들에 대한 정보 (카테고리 및 회사 목록)를 준비
 
     String? aptNo = await secureStorage.read(key: 'mainAptNo');  //아파트 번호
-
+    String? clerkNo = await secureStorage.read(key: 'clerkNo');
     List<String> selectedItems = [];
     for (int i = 0; i < categoryList.length; i++) {
       if (selectedList[i]) {
@@ -163,7 +163,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     final param = jsonEncode({
       "reqGubun": 'T',
       "aptNo": aptNo,
-      "reqUser": '72091587', // 사용자의 정보 또는 ID를 넣을 수 있음
+      "reqUser": clerkNo, // 사용자의 정보 또는 ID를 넣을 수 있음
       "categoryIds": selectedItems // 선택된 카테고리 ID 목록
     });
 

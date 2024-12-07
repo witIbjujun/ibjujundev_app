@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:witibju/screens/home/models/main_view_model.dart';
+import 'package:witibju/screens/home/widgets/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/wit_kakaoLogin.dart';
 
-class loingPopHome extends StatefulWidget {
+class loingPopHome extends ConsumerStatefulWidget {
   final VoidCallback? onLoginSuccess; // 로그인 성공 시 호출되는 콜백 함수
 
   loingPopHome({this.onLoginSuccess});
 
   @override
-  State<loingPopHome> createState() => _loingPopHomeState();
+  ConsumerState<loingPopHome> createState() => _loingPopHomeState();
 }
 
-class _loingPopHomeState extends State<loingPopHome> {
+class _loingPopHomeState extends ConsumerState<loingPopHome> {
   final viewModel = MainViewModel(KaKaoLogin());
+  final TextEditingController _idController = TextEditingController(); // 아이디 입력 컨트롤러
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +31,84 @@ class _loingPopHomeState extends State<loingPopHome> {
               decoration: TextDecoration.none,
             ),
           ),
-          SizedBox(height: 12),
+          SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  String userId = _idController.text.trim();
+
+                  print('입력된 아이디: $userId');
+                  getUserInfo('', '72091587',ref,context);
+                  // 로그인 로직 추가 가능
+
+                  if (widget.onLoginSuccess != null) {
+                    widget.onLoginSuccess!();
+                  }
+                  // 팝업창 닫기
+                  Navigator.of(context).pop();
+                },
+                child: Text('이'),
+              ),
+              SizedBox(width: 8), // 버튼 사이 간격
+              ElevatedButton(
+                onPressed: () {
+                  String userId = _idController.text.trim();
+
+                  print('입력된 아이디: $userId');
+                  getUserInfo('', '72091586',ref,context);
+                  // 로그인 로직 추가 가능
+
+                  if (widget.onLoginSuccess != null) {
+                    widget.onLoginSuccess!();
+                  }
+                  // 팝업창 닫기
+                  Navigator.of(context).pop();
+                },
+                child: Text('백'),
+              ),
+              SizedBox(width: 8), // 버튼 사이 간격
+              ElevatedButton(
+                onPressed: () {
+                  String userId = _idController.text.trim();
+
+                  print('입력된 아이디: $userId');
+                  getUserInfo('', '72091588',ref,context);
+                  // 로그인 로직 추가 가능
+
+                  if (widget.onLoginSuccess != null) {
+                    widget.onLoginSuccess!();
+                  }
+                  // 팝업창 닫기
+                  Navigator.of(context).pop();
+                },
+                child: Text('조'),
+              ),
+              SizedBox(width: 8), // 버튼 사이 간격
+              ElevatedButton(
+                onPressed: () {
+                  String userId = _idController.text.trim();
+
+                  print('입력된 아이디: $userId');
+                  getUserInfo('', '72091584',ref,context);
+                  // 로그인 로직 추가 가능
+
+                  if (widget.onLoginSuccess != null) {
+                    widget.onLoginSuccess!();
+                  }
+                  // 팝업창 닫기
+                  Navigator.of(context).pop();
+                },
+                child: Text('우'),
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
           GestureDetector(
             onTap: () async {
               bool isLoginSuccessful = await viewModel.login();
-
+              print('아파트 번호 모야???$isLoginSuccessful');
               if (isLoginSuccessful) {
                 // 로그인 성공 시 콜백 호출
                 if (widget.onLoginSuccess != null) {
