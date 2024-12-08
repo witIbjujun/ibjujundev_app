@@ -1,9 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_api_ut.dart';
-import 'dart:convert';
+import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/board/wit_board_detail_sc.dart';
 import 'package:witibju/screens/board/wit_board_write_sc.dart';
-import 'package:witibju/util/wit_code_ut.dart';
 
 // 게시판 메인
 class Board extends StatefulWidget {

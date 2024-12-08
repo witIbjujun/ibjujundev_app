@@ -1,11 +1,9 @@
-import 'package:witibju/screens/board/wit_board_main_sc.dart';
-import 'package:witibju/screens/board/wit_board_write_sc.dart';
-import 'package:witibju/util/wit_code_ut.dart';
-import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_api_ut.dart';
-
-import '../common/wit_ImageViewer_sc.dart';
+import 'package:witibju/util/wit_code_ut.dart';
+import 'package:witibju/screens/board/wit_board_write_sc.dart';
+import 'package:witibju/screens/common/wit_ImageViewer_sc.dart';
 
 dynamic boardDetailInfo = {};
 

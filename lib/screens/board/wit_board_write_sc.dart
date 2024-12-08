@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:witibju/screens/board/wit_board_main_sc.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:witibju/util/wit_api_ut.dart';
+import 'package:witibju/screens/board/wit_board_main_sc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class BoardWrite extends StatefulWidget {
 
