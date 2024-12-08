@@ -281,7 +281,7 @@ class _BoardWriteState extends State<BoardWrite> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Board(bordNo: widget.bordNo, bordType: widget.bordType),
+          builder: (context) => Board(widget.bordNo, widget.bordType),
         ),
       );
     } else {

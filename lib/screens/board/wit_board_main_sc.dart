@@ -11,7 +11,7 @@ class Board extends StatefulWidget {
   final int? bordNo;
   final String? bordType;
 
-  const Board({Key? key, this.bordNo, this.bordType}) : super(key: key);
+  const Board(this.bordNo, this.bordType, {super.key});
 
   @override
   State<StatefulWidget> createState() {
