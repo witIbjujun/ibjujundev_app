@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/board/wit_board_main_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,11 +7,13 @@ import 'package:witibju/util/wit_api_ut.dart';
 
 class BoardWrite extends StatefulWidget {
 
-  final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
+  final int? bordNo;
+  final String? bordType;
+
   final dynamic? boardInfo;
   final List<dynamic>? imageList;
 
-  BoardWrite({Key? key, this.boardInfo, this.imageList}) : super(key: key);
+  const BoardWrite({Key? key, this.boardInfo, this.imageList, this.bordNo, this.bordType}) : super(key: key);
 
   @override
   _BoardWriteState createState() => _BoardWriteState();
@@ -243,16 +244,6 @@ class _BoardWriteState extends State<BoardWrite> {
 
   // [서비스] 게시판 저장
   Future<void> saveBoardInfo(dynamic fileInfo) async {
-    String? boardNo = await widget.secureStorage.read(key: 'mainAptNo');
-    String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
-
-
-    if (boardNo == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("게시판 번호를 가져오지 못했습니다.")),
-      );
-      return;
-    }
 
     String restId = "";
     var param = null;
@@ -261,11 +252,11 @@ class _BoardWriteState extends State<BoardWrite> {
 
       restId = "saveBoardInfo";
       param = jsonEncode({
-        "bordNo": boardNo,
         "bordTitle": _titleController.text,
         "bordContent": _contentController.text,
-        "bordType": "B1",
-        "creUser":clerkNo,
+        "bordNo": widget.bordNo,
+        "bordType": widget.bordType,
+        "creUser": "user1",
         "fileInfo": fileInfo
       });
 
@@ -276,9 +267,9 @@ class _BoardWriteState extends State<BoardWrite> {
         "bordTitle": _titleController.text,
         "bordContent": _contentController.text,
         "bordNo" : widget.boardInfo["bordNo"],
+        "bordType": widget.boardInfo["bordType"],
         "bordSeq" : widget.boardInfo["bordSeq"],
-        "bordType": "B1",
-        "updUser": clerkNo,
+        "updUser": "user1",
         "fileInfo": fileInfo
       });
     }
@@ -290,7 +281,7 @@ class _BoardWriteState extends State<BoardWrite> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>  Board('B1'), // 키 값을 넘겨줍니다.
+          builder: (context) => Board(bordNo: widget.bordNo, bordType: widget.bordType),
         ),
       );
     } else {
