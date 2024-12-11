@@ -1,12 +1,9 @@
-import 'package:witibju/screens/board/wit_board_main_sc.dart';
-import 'package:witibju/screens/board/wit_board_write_sc.dart';
-import 'package:witibju/util/wit_code_ut.dart';
-import 'package:witibju/util/wit_api_ut.dart';
-import 'package:flutter/material.dart';
 import 'dart:convert';
-
-
-import '../common/wit_ImageViewer_sc.dart';
+import 'package:flutter/material.dart';
+import 'package:witibju/util/wit_api_ut.dart';
+import 'package:witibju/util/wit_code_ut.dart';
+import 'package:witibju/screens/board/wit_board_write_sc.dart';
+import 'package:witibju/screens/common/wit_ImageViewer_sc.dart';
 
 dynamic boardDetailInfo = {};
 
@@ -102,7 +99,8 @@ class BoardDetailState extends State<BoardDetail> {
                                 // 수정하기 선택 시 화면 이동
                                 Navigator.of(context).push(
                                   PageRouteBuilder(
-                                    pageBuilder: (context, animation, secondaryAnimation) => BoardWrite(boardInfo: boardDetailInfo, imageList: boardDetailImageList),
+                                    pageBuilder: (context, animation, secondaryAnimation) =>
+                                        BoardWrite(boardInfo: boardDetailInfo, imageList: boardDetailImageList, bordNo: boardDetailInfo["bordNo"], bordType: boardDetailInfo["bordType"]),
                                     transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                       return FadeTransition(
                                         opacity: animation,
@@ -376,8 +374,8 @@ class BoardDetailState extends State<BoardDetail> {
 
     // PARAM
     final param = jsonEncode({
-      "bordType": "B1",
       "bordNo": boardDetailInfo["bordNo"],
+      "bordType": boardDetailInfo["bordType"],
       "bordSeq": boardDetailInfo["bordSeq"],
     });
 
@@ -397,8 +395,8 @@ class BoardDetailState extends State<BoardDetail> {
 
     // PARAM
     final param = jsonEncode({
-      "bordType": "B1",
       "bordNo": boardDetailInfo["bordNo"],
+      "bordType": boardDetailInfo["bordType"],
       "bordSeq": boardDetailInfo["bordSeq"],
     });
 
@@ -418,8 +416,8 @@ class BoardDetailState extends State<BoardDetail> {
 
     // PARAM
     final param = jsonEncode({
-      "bordType": "B1",
       "bordNo": boardDetailInfo["bordNo"],
+      "bordType": boardDetailInfo["bordType"],
     });
 
     // API 호출 (게시판 상세 조회)
@@ -441,6 +439,7 @@ class BoardDetailState extends State<BoardDetail> {
     // PARAM
     final param = jsonEncode({
       "bordNo": boardDetailInfo["bordNo"],
+      "bordType": boardDetailInfo["bordType"],
       "bordSeq": boardDetailInfo["bordSeq"],
     });
 
@@ -465,6 +464,7 @@ class BoardDetailState extends State<BoardDetail> {
       // PARAM
       final param = jsonEncode({
         "bordNo": boardDetailInfo["bordNo"],
+        "bordType": boardDetailInfo["bordType"],
         "bordSeq": boardDetailInfo["bordSeq"],
         "cmmtContent": cmmtContent,
         "creUser": "테스트",
@@ -488,8 +488,8 @@ class BoardDetailState extends State<BoardDetail> {
 
     // PARAM
     final param = jsonEncode({
-      "bordType": "B1",
       "bordNo": boardDetailInfo["bordNo"],
+      "bordType": boardDetailInfo["bordType"],
       "bordSeq": boardDetailInfo["bordSeq"],
       "updUser": "테스트",
     });
@@ -519,6 +519,7 @@ class BoardDetailState extends State<BoardDetail> {
       // PARAM
       final param = jsonEncode({
         "bordNo": boardDetailInfo["bordNo"],
+        "bordType": boardDetailInfo["bordType"],
         "bordSeq": boardDetailInfo["bordSeq"],
         "cmmtContent": cmmtContent,
         "updUser": "테스트",

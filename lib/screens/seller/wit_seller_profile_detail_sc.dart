@@ -5,6 +5,7 @@ import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetList_
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
 import 'dart:convert';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:intl/intl.dart';
@@ -171,6 +172,15 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               icon: Icon(Icons.perm_identity),
             ),
             IconButton(onPressed: () {}, icon: Icon(Icons.mail)),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SellerProfile()), // HomeScreen으로 이동
+                );
+              },
+              icon: Icon(Icons.login),
+            ),
           ],
         ),
         body:
@@ -407,13 +417,13 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Board("A")),
+                                builder: (context) => Board(widget.sllrNo,"C1")),
                           );
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("커뮤니티"),
+                            Text("업체후기"),
                           ],
                         ),
                       ),
@@ -504,7 +514,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Board("A")),
+                                builder: (context) => Board(widget.sllrNo,"C1")),
                           );
                         },
                         child: Row(
