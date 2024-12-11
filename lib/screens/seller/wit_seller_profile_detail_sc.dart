@@ -417,7 +417,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Board("C1")),
+                                builder: (context) => Board(widget.sllrNo,"C1")),
                           );
                         },
                         child: Row(
@@ -514,7 +514,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Board("A")),
+                                builder: (context) => Board(widget.sllrNo,"C1")),
                           );
                         },
                         child: Row(
