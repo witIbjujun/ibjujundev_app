@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../util/wit_api_ut.dart';
@@ -9,7 +8,7 @@ import '../models/userInfo.dart';
 import '../wit_home_sc.dart';
 
 // 데이터를 조회하는 비동기 함수
-Future<void> getUserInfo(String kakaoId,String Idnum, WidgetRef ref, BuildContext context) async {
+Future<void> getUserInfo(String kakaoId,String Idnum) async {
 
   String restId = "getUserInfo";
   final param = jsonEncode({"kakaoId": kakaoId,

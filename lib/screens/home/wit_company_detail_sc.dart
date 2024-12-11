@@ -94,7 +94,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => Board(boardType),
+        builder: (context) => Board(1,boardType),
       ),
     );
   }
@@ -178,9 +178,9 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
           child: TabBarView(
             controller: _communityTabController,
             children: [
-              Board('B1'), // "내 APT" 탭
-              Board('H1'), // "HOT 정보" 탭
-              Board('C1'), // "업체후기" 탭
+              Board(1,'B1'), // "내 APT" 탭
+              Board(1,'H1'), // "HOT 정보" 탭
+              Board(1,'C1'), // "업체후기" 탭
             ],
           ),
         ),

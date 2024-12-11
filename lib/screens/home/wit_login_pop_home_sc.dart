@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:witibju/screens/home/models/main_view_model.dart';
 import 'package:witibju/screens/home/widgets/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/wit_kakaoLogin.dart';
 
-class loingPopHome extends ConsumerStatefulWidget {
+class loingPopHome extends StatefulWidget {
   final VoidCallback? onLoginSuccess; // 로그인 성공 시 호출되는 콜백 함수
 
   loingPopHome({this.onLoginSuccess});
 
   @override
-  ConsumerState<loingPopHome> createState() => _loingPopHomeState();
+  State<loingPopHome> createState() => _loingPopHomeState();
 }
 
-class _loingPopHomeState extends ConsumerState<loingPopHome> {
+class _loingPopHomeState extends State<loingPopHome> {
   final viewModel = MainViewModel(KaKaoLogin());
   final TextEditingController _idController = TextEditingController(); // 아이디 입력 컨트롤러
 
@@ -40,7 +40,7 @@ class _loingPopHomeState extends ConsumerState<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo('', '72091587',ref,context);
+                  getUserInfo('', '72091587');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -57,7 +57,7 @@ class _loingPopHomeState extends ConsumerState<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo('', '72091586',ref,context);
+                  getUserInfo('', '72091586');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -74,7 +74,7 @@ class _loingPopHomeState extends ConsumerState<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo('', '72091588',ref,context);
+                  getUserInfo('', '72091588');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -91,7 +91,7 @@ class _loingPopHomeState extends ConsumerState<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo('', '72091584',ref,context);
+                  getUserInfo('', '72091584');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {

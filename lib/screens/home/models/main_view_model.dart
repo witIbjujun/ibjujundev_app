@@ -21,7 +21,7 @@ class MainViewModel extends ChangeNotifier {
           await _initializeUserInfo();  // userInfo 초기화
           isLogined = true;
         } catch (error) {
-          print('카카오톡으로 로그인 실패 $error');
+          print('카카오톡으로 로그인 실패2222 $error');
           // 카카오톡 로그인이 실패하면 카카오 계정으로 로그인 시도
           await _loginWithKakaoAccount();
         }
@@ -46,7 +46,7 @@ class MainViewModel extends ChangeNotifier {
       isLogined = true;
       await _handleAdditionalAgreements();
     } catch (error) {
-      print('카카오계정으로 로그인 실패 $error');
+      print('카카오계정으로 로그인 실패4124124124124 $error');
       isLogined = false;
     }
     notifyListeners();  // 로그인 상태 변경 알림

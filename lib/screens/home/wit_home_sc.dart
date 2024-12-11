@@ -303,7 +303,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               // SelectBox 추가 (하단 파올 표시)
               if (options.isNotEmpty) GestureDetector(
-                onTap: () {
+                onTap: () async {
+
+                // 세션 상태 확인
+                bool isLoggedIn = await checkLoginStatus();
+                if (isLoggedIn) {
+                  _loadOptions();
+                }
+
                   WitHomeWidgets.showSelectBox(context, selectedOption, options.keys.toList(), (option) {
                     setState(() {
                       selectedOption = option;

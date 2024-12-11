@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
@@ -14,14 +13,14 @@ import '../../util/wit_api_ut.dart';
 import '../board/wit_board_main_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
 
-class MyProfile extends ConsumerStatefulWidget  {
+class MyProfile extends StatefulWidget  {
   const MyProfile({super.key});
 
   @override
   _MyProfileState createState() => _MyProfileState();
 }
 
-class _MyProfileState extends ConsumerState<MyProfile> {
+class _MyProfileState extends State<MyProfile> {
   String selectedOption = ''; // 기본 선택 값
   List<String> options = [];
 
@@ -265,7 +264,7 @@ class _MyProfileState extends ConsumerState<MyProfile> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Board('B1')),
+                    MaterialPageRoute(builder: (context) => Board(1,'B1')),
                   );
                 },
                 child:  _buildListTile(Icons.group, '커뮤니티'),

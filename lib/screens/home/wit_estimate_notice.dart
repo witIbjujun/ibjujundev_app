@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert'; // JSON 인코딩을 위해 추가
 import 'package:intl/intl.dart'; // 날짜 처리를 위한 패키지 추가
 import '../../util/wit_api_ut.dart';
@@ -14,16 +15,21 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
   List<RequestInfo> todayEstimates = [];
   List<RequestInfo> previousEstimates = [];
 
+  final secureStorage = FlutterSecureStorage();
+
   @override
   void initState() {
     super.initState();
-    getNoticeList("72091587");
+    getNoticeList();
   }
 
   // 데이터를 조회하는 비동기 함수
-  Future<void> getNoticeList(String reqUserNo) async {
+  Future<void> getNoticeList() async {
     String restId = "getNoticeList";
-    final param = jsonEncode({"reqUser": reqUserNo});
+
+    String? clerkNo = await secureStorage.read(key: 'clerkNo');
+
+    final param = jsonEncode({"reqUser": clerkNo});
 
     try {
       final _noticeList = await sendPostRequest(restId, param);

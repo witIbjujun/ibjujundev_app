@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
@@ -22,6 +23,8 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
   List<RequestInfo> requestDetailList = [];
   RequestInfo? _selectedRequest; // 선택된 요청 정보를 저장할 변수 추가
 
+  final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
+
   // formatCurrency 함수 추가
   String formatCurrency(String amount) {
     if (amount.isEmpty || amount == "-") {
@@ -39,7 +42,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     // 견적목록 조회
-    getRequestAsisList('72091587');
+    getRequestAsisList();
   }
 
   @override
@@ -135,7 +138,9 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
               SizedBox(height: 8.0),
               for (var entry in categoryGroupedRequests.entries) ...[
                 SectionWidget(
-                  title: '${entry.value.first.categoryNm} (${requests.first.companyCnt}건)',
+                  title: entry.value.first.companyCnt == '-'
+                      ? '${entry.value.first.categoryNm} '
+                      : '${entry.value.first.categoryNm} (${entry.value.first.companyCnt}건)',
                   items: entry.value.map((request) {
                     print("무엇인가???==== ${request.reqState}");
                     // reqState가 '02'가 아닌 경우, estimateAmount만 표시하는 ListItem 구성
@@ -182,6 +187,15 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
   }
 
   void _showDetailPopup(BuildContext context, List<RequestInfo> requests) {
+
+    if (requests.isEmpty) {
+      // 요청이 없을 경우 에러 메시지 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('요청 정보가 없습니다.')),
+      );
+      return;
+    }
+
     setState(() {
       _selectedRequest = requests.first; // 첫 번째 요청을 기본 선택값으로 설정
     });
@@ -285,6 +299,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
 
   /// 팝업 하단
   Widget _buildRequestDetail(RequestInfo request) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -326,7 +341,9 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                 '${request.reqStateNm}',
                 style: TextStyle(
                   fontSize: 14,
-                  color: request.reqState != '02' ? Colors.grey : Colors.blue,
+                  //진행중 상태값 진행
+                  ///color: request.reqState != '02' ? Colors.grey : Colors.blue,
+                  color: Colors.blue,
                 ),
               ),
             ),
@@ -429,7 +446,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('작업 요청을 완료했습니다.')),
         );
-        await getRequestAsisList('72091587');
+        await getRequestAsisList();
         Navigator.of(context).pop();
       } else {
         print("요청 상태 업데이트 실패: ${response['message']}");
@@ -439,9 +456,11 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
     }
   }
 
-  Future<void> getRequestAsisList(String reqUserNo) async {
+  Future<void> getRequestAsisList() async {
     String restId = "getRequestAsisList";
-    final param = jsonEncode({"reqUser": reqUserNo});
+    String? clerkNo = await secureStorage.read(key: 'clerkNo');
+
+    final param = jsonEncode({"reqUser": clerkNo});
 
     try {
       final _requestList = await sendPostRequest(restId, param);
@@ -455,10 +474,13 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
 
   Future<void> getRequesDetailtList(RequestInfo request) async {
     String restId = "getRequesDetailtList";
+
+    String? clerkNo = await secureStorage.read(key: 'clerkNo');
+
     final param = jsonEncode({
       "categoryId": request.categoryId,
       "reqNo": request.reqNo,
-      "reqUser": '72091587',
+      "reqUser": clerkNo,
     });
 
     try {
