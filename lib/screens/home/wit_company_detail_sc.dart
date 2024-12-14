@@ -114,13 +114,14 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
               SizedBox(height: 8.0),
               TextField(
                 controller: _additionalRequirementsController,
-                maxLines: 4,
+                maxLines: 3,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
+                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0), // 여백 조정
                 ),
               ),
-              SizedBox(height: 16.0),
+              SizedBox(height: 14.0),
               GestureDetector(
                 onTap: () async {
                   // "견적 요청하기" 버튼 클릭 시
@@ -207,6 +208,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
 
     Widget getAppBarUI() {
     return AppBar(
+      backgroundColor: WitHomeTheme.nearlyWhite,
       title: Text(widget.title),
     );
   }
@@ -255,6 +257,15 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 bool isSelected = selectedItems.contains(company.companyId);
 
                 return ListTile(
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        selectedItems.remove(company.companyId);
+                      } else {
+                        selectedItems.add(company.companyId);
+                      }
+                    });
+                  },
                   leading: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -285,37 +296,37 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                     company.companyNm,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Board(1, 'C1'),
-                            ),
-                          );
-                        },
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/star.png',
-                              width: 20,
-                              height: 20,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              company.rateNum,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: WitHomeTheme.nearlyBlue,
-                              ),
-                            ),
-                          ],
+                  trailing: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Board(1, 'C1'),
                         ),
-                      ),
-                    ],
+                      );
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/star.png', // star.png 파일 경로
+                          width: 20,
+                          height: 20,
+                        ),
+                        SizedBox(width: 4),
+                        SizedBox(
+                          width: 30,
+                          child: Text(
+                            company.rateNum,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: WitHomeTheme.nearlyBlue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -325,6 +336,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
       ),
     );
   }
+
 
   Future<void> sendRequestInfo() async {
     String restId = "saveRequestInfo";
