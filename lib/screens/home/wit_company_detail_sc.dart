@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
@@ -23,17 +24,15 @@ class DetailCompany extends StatefulWidget {
   State<DetailCompany> createState() => _DetailCompanyState();
 }
 
-// 수정된 부분: SingleTickerProviderStateMixin에서 TickerProviderStateMixin으로 변경 - 10/21
-class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateMixin { // 10/21
-  List<Company> companyList = []; // API로부터 받아오는 회사 리스트
+class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateMixin {
+  List<Company> companyList = [];
   final List<String> tabNames = ['견적서비스', '아파트 커뮤니티'];
   final List<String> communityTabNames = ['내 APT', 'HOT 정보', '업체후기']; // 10/21
   List<String> selectedItems = []; // 선택된 항목 리스트
   late TabController _tabController;
   late TabController _communityTabController; // 10/21 아파트 커뮤니티 탭 컨트롤러
   bool isAllSelected = true;
-  bool showBottomButton = true;
-  String? mainAptNo; // 'mainAptNo'를 저장할 변수 선언
+  TextEditingController _additionalRequirementsController = TextEditingController();
 
   @override
   void initState() {
@@ -41,46 +40,14 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     _tabController = TabController(length: 2, vsync: this);
     _communityTabController = TabController(length: 3, vsync: this); // 10/21 아파트 커뮤니티 탭 컨트롤러 초기화
 
-    // 회사 목록 조회 - 2024-10-19
+    // 회사 목록 조회
     getCompanyList(widget.categoryId);
 
-    // 초기 mainAptNo 읽기
-    _loadMainAptNo(); // 10/21
-
-    // 탭 변경 시 상태 변경 - 2024-10-19
-    _tabController.addListener(() async {
-      setState(() {
-        showBottomButton = _tabController.index == 0; // 첫 번째 탭일 때만 버튼 표시 - 2024-10-19
-      });
+    // 탭 변경 시 상태 업데이트
+    _tabController.addListener(() {
+      setState(() {}); // 탭 변경 시 상태 업데이트
     });
-
-    // 기존 Community 탭 리스너 제거
-    // _communityTabController.addListener(() {
-    //   if (_communityTabController.indexIsChanging) return; // 탭이 선택될 때만 처리
-
-    //   switch (_communityTabController.index) {
-    //     case 0:
-    //       navigateToBoard('B1');
-    //       break;
-    //     case 1:
-    //       navigateToBoard('H1');
-    //       break;
-    //     case 2:
-    //       navigateToBoard('C1');
-    //       break;
-    //   }
-    // });
   }
-
-  // mainAptNo를 Flutter Secure Storage에서 읽어오는 비동기 함수 - 10/21
-  Future<void> _loadMainAptNo() async { // 10/21
-    String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
-
-    setState(() {
-      mainAptNo = aptNo;
-      print('======$mainAptNo'); // 확인용 로그
-    });
-  } // 10/21
 
   @override
   void dispose() {
@@ -129,33 +96,66 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
             ],
           ),
         ),
-        bottomNavigationBar: showBottomButton
+        bottomNavigationBar: _tabController.index == 0 // 견적서비스 탭일 때만 표시
             ? Container(
           color: Colors.white,
           padding: EdgeInsets.all(16.0),
-          child: GestureDetector(
-            onTap: () {
-              // "견적 요청하기" 버튼 클릭 시 sendRequestInfo 메서드 호출 - 2024-10-19
-              sendRequestInfo();
-            },
-            child: Container(
-              width: double.infinity,
-              height: 50.0,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "추가조건/요구사항",
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              child: Center(
-                child: Text(
-                  '견적 요청하기',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+              SizedBox(height: 8.0),
+              TextField(
+                controller: _additionalRequirementsController,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
+                ),
+              ),
+              SizedBox(height: 16.0),
+              GestureDetector(
+                onTap: () async {
+                  // "견적 요청하기" 버튼 클릭 시
+                  bool isConfirmed = await DialogUtils.showConfirmationDialog(
+                    context: context,
+                    title: '견적 요청 확인',
+                    content: '견적 요청을 진행하시겠습니까?',
+                    confirmButtonText: '진행',
+                    cancelButtonText: '취소',
+                  );
+
+                  if (isConfirmed) {
+                    sendRequestInfo();
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '견적 요청하기',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         )
             : null,
@@ -205,49 +205,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     }
   }
 
-  // 견적 요청 정보 보내기 메서드 - 2024-10-19
-  Future<void> sendRequestInfo() async {
-    String restId = "saveRequestInfo";
-    String? aptNo = await widget.secureStorage.read(key: 'mainAptNo'); // 첫 번째 선언
-    String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
-    aptNo = aptNo ?? '1'; // aptNo가 null일 경우 기본값 1을 할당
-
-    print('aptNoaptNoaptNoaptNoaptNoaptNoaptNoaptNoaptNo: $aptNo');
-    final param = jsonEncode({
-      "reqGubun": 'S',
-      "reqUser": clerkNo,
-      "aptNo": aptNo,
-      "categoryId": widget.categoryId,
-      "companyIds": selectedItems  // 선택된 회사 ID 배열 - 2024-10-19
-    });
-
-    try {
-      final response = await sendPostRequest(restId, param);
-
-      if (response != null) {
-        // 성공 시 알림을 띄우고 HomeScreen으로 이동 - 2024-10-19
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('견적 요청을 완료했습니다.')),
-        );
-
-        // HomeScreen으로 이동 - 2024-10-19
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-      } else {
-        throw Exception('응답 없음');
-      }
-    } catch (e) {
-      print('견적 요청 실패: $e');
-      // 실패 시 에러 메시지 - 2024-10-19
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('견적 요청에 실패했습니다. 다시 시도해 주세요.')),
-      );
-    }
-  }
-
-  Widget getAppBarUI() {
+    Widget getAppBarUI() {
     return AppBar(
       title: Text(widget.title),
     );
@@ -316,48 +274,49 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                         border: Border.all(
                           color: Colors.grey,
                           width: 2.0,
-                        ), // 10/21
+                        ),
                       ),
                       child: isSelected
                           ? Icon(Icons.check, color: Colors.white, size: 18)
                           : null,
                     ),
                   ),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  title: Text(
+                    company.companyNm,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        company.companyNm,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: WitHomeTheme.nearlyBlue,
-                            size: 20,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            company.rateNum,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: WitHomeTheme.nearlyBlue,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Board(1, 'C1'),
                             ),
-                          ),
-                        ],
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/star.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              company.rateNum,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: WitHomeTheme.nearlyBlue,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedItems.remove(company.companyId);
-                      } else {
-                        selectedItems.add(company.companyId);
-                      }
-                    });
-                  },
                 );
               },
             ),
@@ -367,4 +326,50 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     );
   }
 
+  Future<void> sendRequestInfo() async {
+    String restId = "saveRequestInfo";
+    String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
+    String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
+    String reqContents = _additionalRequirementsController.text.replaceAll("\n", " ");
+    aptNo = aptNo ?? '1';
+
+    final param = jsonEncode({
+      "reqGubun": 'S',
+      "reqUser": clerkNo,
+      "aptNo": aptNo,
+      "categoryId": widget.categoryId,
+      "companyIds": selectedItems,
+      "reqContents": reqContents,
+    });
+
+    try {
+      final response = await sendPostRequest(restId, param);
+
+      if (response != null) {
+        await DialogUtils.showCustomDialog(
+          context: context,
+          title: '견적 요청 완료',
+          content: '견적 요청이 성공적으로 완료되었습니다.',
+          confirmButtonText: '확인',
+          onConfirm: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
+        );
+      } else {
+        throw Exception('응답 없음');
+      }
+    } catch (e) {
+      print('견적 요청 실패: $e');
+      await DialogUtils.showCustomDialog(
+        context: context,
+        title: '요청 실패',
+        content: '견적 요청에 실패했습니다. 다시 시도해 주세요.',
+        confirmButtonText: '확인',
+        onConfirm: () => Navigator.pop(context),
+      );
+    }
+  }
 }

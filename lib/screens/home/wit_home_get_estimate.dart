@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/home/wit_compay_view_sc_horizontal.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
@@ -12,6 +13,7 @@ import 'package:witibju/screens/home/wit_estimate_detail.dart';
 
 import '../../util/wit_api_ut.dart';
 import 'models/category.dart';
+
 /// 다건 견적진행
 dynamic companyInfo = {};
 
@@ -29,7 +31,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
   List<bool> selectedList = [];
   bool isLoading = true;
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
-
+  TextEditingController _additionalRequirementsController = TextEditingController(); // 추가조건/요구사항 컨트롤러
 
   @override
   void initState() {
@@ -43,6 +45,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
   @override
   void dispose() {
     _tabController.dispose();
+    _additionalRequirementsController.dispose(); // 컨트롤러 해제
     super.dispose();
   }
 
@@ -67,187 +70,184 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     return Scaffold(
       appBar: AppBar(
         title: Text('견적받기'),
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(48.0),
-          child: TabBar(
-            controller: _tabController,
-            tabs: ['견적서비스', '아파트커뮤니티'].map((name) => Tab(text: name)).toList(),
-            indicator: UnderlineTabIndicator(
-              borderSide: BorderSide(width: 4.0, color: Colors.blue),
-            ),
-            labelColor: Colors.blue,
-            unselectedLabelColor: Colors.grey,
-          ),
-        ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                getPopularCourseUI(), // 첫 번째 탭의 내용
-                getApartmentCommunity(), // 두 번째 탭의 내용
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GestureDetector(
-              onTap: () {
-                sendRequestInfo(); // 버튼 클릭 시 견적 요청 메서드 호출
-              },
-              child: Container(
-                width: double.infinity,
-                height: 50.0,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Center(
-                  child: RichText( // 기존 Text 위젯 대신 RichText 사용
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '견적 요청하기 ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '(${_selectedItemCount})', // 선택된 아이템 갯수를 표시
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 12/14: getPopularCourseUI 영역만 스크롤 가능하도록 설정
+            Expanded(
+              child: SingleChildScrollView(
+                child: getPopularCourseUI(), // 인기 코스 UI만 스크롤 가능
               ),
             ),
-          ),
-        ],
+            // 12/14: 추가조건/요구사항은 고정
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "추가조건/요구사항",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  TextField(
+                    controller: _additionalRequirementsController,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
+                    ),
+                    style: TextStyle(fontSize: 14.0),
+                  ),
+                  SizedBox(height: 8.0),
+                  GestureDetector(
+                    onTap: () async {
+                      bool isConfirmed = await DialogUtils.showConfirmationDialog(
+                        context: context,
+                        title: '견적 요청 확인',
+                        content: '견적 요청을 진행하시겠습니까?',
+                        confirmButtonText: '진행',
+                        cancelButtonText: '취소',
+                      );
+
+                        if (isConfirmed) {
+                          sendRequestInfo(); // 버튼 클릭 시 견적 요청 메서드 호출
+                        }
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: 50.0,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '견적 요청하기 ',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              TextSpan(
+                                text: '(${_selectedItemCount})',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
- /* void _loadMessages() async {
-    final response = await rootBundle.loadString('assets/messages.json');
-    final messages = (jsonDecode(response) as List)
-        .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
-        .toList();
-
-    setState(() {
-      _messages = messages;
-    });
-  }*/
-  // 견적 요청 정보 보내기 메서드
   Future<void> sendRequestInfo() async {
     String restId = "saveTotalRequestInfo";
-    // 선택된 항목들에 대한 정보 (카테고리 및 회사 목록)를 준비
 
-    String? aptNo = await secureStorage.read(key: 'mainAptNo');  //아파트 번호
+    String? aptNo = await secureStorage.read(key: 'mainAptNo'); // 아파트 번호
     String? clerkNo = await secureStorage.read(key: 'clerkNo');
+    String reqContents = _additionalRequirementsController.text.replaceAll("\n", " ");
     List<String> selectedItems = [];
     for (int i = 0; i < categoryList.length; i++) {
       if (selectedList[i]) {
         selectedItems.add(categoryList[i].categoryId); // 선택된 카테고리 ID 수집
       }
     }
-    aptNo = aptNo ?? '1';  // aptNo가 null일 경우 기본값 1을 할당
+    aptNo = aptNo ?? '1'; // aptNo가 null일 경우 기본값 1을 할당
+    print("내용이 뭣인가??????$reqContents");
+    print("내용이 뭣인가??????$reqContents");
+    print("내용이 뭣인가??????$reqContents");
     final param = jsonEncode({
       "reqGubun": 'T',
       "aptNo": aptNo,
       "reqUser": clerkNo, // 사용자의 정보 또는 ID를 넣을 수 있음
-      "categoryIds": selectedItems // 선택된 카테고리 ID 목록
+      "categoryIds": selectedItems, // 선택된 카테고리 ID 목록
+      "reqContents": reqContents // 추가 조건/요구 사항
     });
 
     try {
       final response = await sendPostRequest(restId, param);
 
       if (response != null) {
-        // 성공 시 알림을 띄우고 HomeScreen으로 이동
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('견적 요청을 완료했습니다.')),
-        );
-
-        // HomeScreen으로 이동
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+        await DialogUtils.showCustomDialog(
+          context: context,
+          title: '견적 요청 완료',
+          content: '견적 요청이 성공적으로 완료되었습니다.',
+          confirmButtonText: '확인',
+          onConfirm: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
         );
       } else {
         throw Exception('응답 없음');
       }
     } catch (e) {
       print('견적 요청 실패: $e');
-      // 실패 시 에러 메시지
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('견적 요청에 실패했습니다. 다시 시도해 주세요.')),
       );
     }
   }
 
-  // 카테고리 ID를 기준으로 인덱스 찾기
   int findCategoryIndex(String categoryId) {
     return categoryList.indexWhere((category) => category.categoryId == categoryId);
   }
 
   Widget getPopularCourseUI() {
-    return Column(
-      children: [
-        Container(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: PopularCourseListHorizontalView(
-                    /// 2024-08-10: 콜백 함수에서 두 인자 (Company, bool) 처리하도록 수정
-                    callBack: (Category category, bool isSelected) {
-                      setState(() {
-                        // categoryId를 사용해 인덱스 찾기
-                        int index = findCategoryIndex(category.categoryId);
+    return Container(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0), // 좌우 패딩
+        child: Column(
+          mainAxisSize: MainAxisSize.min, // 최소 크기만 차지
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Flexible(
+              fit: FlexFit.loose,
+              child: PopularCourseListHorizontalView(
+                callBack: (Category category, bool isSelected) {
+                  setState(() {
+                    int index = findCategoryIndex(category.categoryId);
 
-                        print('Selected category: ${category.categoryId}, Index: $index');
-
-                        if (index != -1) {
-                          if (isSelected) {
-                            _selectedItemCount++; // 아이템이 선택되면 갯수 증가
-                            selectedList[index] = true;
-                          } else {
-                            _selectedItemCount--; // 선택 해제되면 갯수 감소
-                            selectedList[index] = false;
-                          }
-                          // 카운트가 음수로 가지 않도록 방어 로직 추가
-                          if (_selectedItemCount < 0) _selectedItemCount = 0;
-                          print('_selectedItemCount: $_selectedItemCount'); // 현재 선택된 갯수를 출력 (디버깅용)
-                        }
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(height: 4), // 간격 줄이기
-              ],
+                    if (index != -1) {
+                      if (isSelected) {
+                        _selectedItemCount++;
+                        selectedList[index] = true;
+                      } else {
+                        _selectedItemCount--;
+                        selectedList[index] = false;
+                      }
+                      if (_selectedItemCount < 0) _selectedItemCount = 0;
+                    }
+                  });
+                },
+              ),
             ),
-          ),
+          ],
         ),
-      ],
-    );
-  }
-
-  Widget getApartmentCommunity() {
-    return Center(
-      child: Text('아파트 커뮤니티 탭의 내용'), // 두 번째 탭의 내용
+      ),
     );
   }
 }

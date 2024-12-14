@@ -86,3 +86,7 @@ Future<bool> checkLoginStatus() async {
   final token = await secureStorage.read(key: 'authToken');
   return token != null; // 토큰이 있으면 로그인 상태
 }
+
+
+
+

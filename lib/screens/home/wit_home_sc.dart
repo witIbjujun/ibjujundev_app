@@ -152,6 +152,21 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           backgroundColor: WitHomeTheme.nearlyWhite,
           iconTheme: const IconThemeData(color: Colors.black),
+          leading: IconButton(
+            iconSize: 35.0,
+            onPressed: () {
+              // Icons.manage_accounts 선택 시 SellerProfileDetail 화면으로 이동
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SellerProfileDetail(sllrNo: 17),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.manage_accounts,
+            ),
+          ),
+
           actions: [
             Row(
               children: [
@@ -180,30 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     } else {
                       print("로그인 안함!!");
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              height: 300,
-                              padding: const EdgeInsets.all(20.0),
-                              child: loingPopHome(
-                                onLoginSuccess: () async  {
-                                  setState(() {
-                                    isLogined = "true";
-                                    print("로그인 완료!!!!!!!");
-                                  });
-
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      );
+                      _showLoginDialog(context); // 로그인 다이얼로그 표시
                     }
                   },
                   icon: const Icon(
@@ -223,29 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
 
                     } else {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              height: 300,
-                              padding: const EdgeInsets.all(20.0),
-                              child: loingPopHome(
-                                onLoginSuccess: () {
-                                  setState(() {
-                                    isLogined = "true";
-                                   // _loadOptions();
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      );
+                      _showLoginDialog(context); // 로그인 다이얼로그 표시
                     }
                   },
                   icon: const Icon(
@@ -261,34 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icons.menu_rounded,
                   ),
                 ),*/
-                IconButton(
-                  iconSize: 35.0,
-                  onPressed: () {
-                    // Icons.manage_accounts 선택 시 SellerProfileDetail 화면으로 이동
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => SellerProfileDetail(sllrNo: 17),
-                      ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.manage_accounts,
-                  ),
-                ),
-                IconButton(
-                  iconSize: 35.0,
-                  onPressed: () {
-                    // Icons.manage_accounts 선택 시 SellerProfileDetail 화면으로 이동
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => Question(qustCd: 'Q00001'),
-                      ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.auto_awesome ,
-                  ),
-                ),
+
               ],
             ),
           ],
@@ -370,12 +313,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => getEstimate(),
-                      ),
-                    );
+                  onPressed: () async {
+                    bool isLoggedIn = await checkLoginStatus(); // 로그인 상태 확인
+                    if (isLoggedIn) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => getEstimate(),
+                        ),
+                      );
+                    }else{
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              height: 300,
+                              padding: const EdgeInsets.all(20.0),
+                              child: loingPopHome(
+                                onLoginSuccess: () {
+                                  setState(() {
+                                    isLogined = "true";
+                                    // _loadOptions();
+                                  });
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
@@ -400,6 +370,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+
+
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
     return Container(
@@ -412,8 +384,13 @@ class _HomeScreenState extends State<HomeScreen> {
           Flexible(
             fit: FlexFit.loose,
             child: PopularCourseListView(
-              callBack: (Category category) {
-                moveTo(category);
+              callBack: (Category category) async {
+                bool isLoggedIn = await checkLoginStatus();
+                if (isLoggedIn) {
+                  moveTo(category); // 로그인 상태일 때만 이동
+                } else {
+                  _showLoginDialog(context); // 로그인 다이얼로그 표시
+                }
               },
             ),
           ),
@@ -431,4 +408,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  /// 로그인 다이얼로그를 보여주는 메서드
+  void _showLoginDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: 300,
+            padding: const EdgeInsets.all(20.0),
+            child: loingPopHome(
+              onLoginSuccess: () {
+                setState(() {
+                  isLogined = "true";
+                });
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }
