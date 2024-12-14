@@ -34,11 +34,15 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String zipCode = "";
   String address1 = "";
   String address2 = "";
+  String asGbn = "";
+  String bizCertification = "";
+  String selectedServiceWithAsPeriodCd = "";
 
   @override
   void initState() {
     super.initState();
-    getSellerInfo(widget.sllrNo);
+    getCodeList();
+    getCategoryList();
   }
 
   Future<void> getSellerInfo(dynamic sllrNo) async {
@@ -57,50 +61,98 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     if (response != null) {
       setState(() {
         sellerInfo = response;
-        storeName = sellerInfo['storeName'];
-        storeNameController.text = storeName; // sellerInfo에서 가져온 sllrName 설정
 
-        serviceArea = sellerInfo['serviceArea'];
-        serviceItem = sellerInfo['serviceItem'];
+        // 기본값 설정 및 null 체크
+        storeName = sellerInfo['storeName'] ?? '';
+        storeNameController.text = storeName;
+
+        serviceArea = sellerInfo['serviceArea'] ?? '';
+        serviceItem = sellerInfo['serviceItem'] ?? '';
+        asGbn = sellerInfo['asGbn'] ?? '';
+
+        print("serviceItem : " + serviceItem);
+        print("asGbn : " + asGbn);
 
         // 선택된 지역이 있으면 selectedLocations에 추가
-        if (serviceArea != null) {
-          selectedLocations.add(serviceArea!);
+        if (serviceArea.isNotEmpty) {
+          var matchedArea = areaList.firstWhere(
+                (area) => area['cd'] == serviceArea,
+            orElse: () => {'cd': '', 'cdNm': ''}, // 매칭되는 값이 없을 경우 기본값 반환
+          );
+
+          // matchedArea가 기본값이 아닌 경우에만 추가
+          if (matchedArea['cd'] != '') {
+            selectedLocations.add(matchedArea); // 매칭된 지역 코드 추가
+          }
         }
 
-        // 선택된 지역이 있으면 selectedItems에 추가
-        if (serviceItem != null) {
-          selectedServiceTypes.add(serviceItem!);
+        // 선택된 서비스 항목과 AS 기간을 매칭하여 추가
+        if (serviceItem.isNotEmpty) {
+          var matchedServiceItem = categoryList.firstWhere(
+                (category) => category['categoryId'] == serviceItem,
+            orElse: () => {'categoryId': '', 'categoryNm': ''}, // 기본값으로 빈 Map 반환
+          );
+
+          print("Matched matchedServiceItem: $matchedServiceItem");
+
+          if (matchedServiceItem['categoryId'] != '') {
+            String serviceName = matchedServiceItem['categoryNm'] ?? 'Unknown Service'; // null 체크 추가
+            String serviceNameCd = matchedServiceItem['categoryId'] ?? 'Unknown Service'; // null 체크 추가
+            // asGbn이 있을 경우 매칭하여 추가
+            String combinedService = serviceName; // 기본값으로 서비스 이름 설정
+            String combineCd = serviceNameCd;
+
+            if (asGbn.isNotEmpty) {
+              var matchedAsGbn = asList.firstWhere(
+                    (as) => as['cd'] == asGbn,
+                orElse: () => {'cd': '', 'cdNm': ''}, // 기본값으로 빈 Map 반환
+              );
+
+              print("Matched asGbn: $matchedAsGbn");
+
+              if (matchedAsGbn['cd'] != '') {
+                String asName = matchedAsGbn['cdNm'] ?? 'Unknown AS'; // null 체크 추가
+                String asCd = matchedAsGbn['cd'] ?? 'Unknown AS'; // null 체크 추가
+                combinedService += ' ($asName)'; // 예: "서비스 이름 (AS 기간)"
+                combineCd += '/$asCd';
+              }
+            }
+
+            // 최종 조합된 서비스 이름을 리스트에 추가
+            selectedServiceWithAsPeriod.add(combinedService);
+            selectedServiceWithAsPeriodCd = combineCd;
+          }
         }
 
-        itemPrice1 =  sellerInfo['itemPrice1'];
+        // 나머지 필드 설정
+        itemPrice1 = sellerInfo['itemPrice1'] ?? '';
         itemPrice1Controller.text = itemPrice1;
 
-        sllrContent = sellerInfo['sllrContent'];
+        sllrContent = sellerInfo['sllrContent'] ?? '';
         sllrContentController.text = sllrContent;
 
-        name = sellerInfo['name'];
+        name = sellerInfo['name'] ?? '';
         nameController.text = name;
 
-        ceoName = sellerInfo['ceoName'];
+        ceoName = sellerInfo['ceoName'] ?? '';
         ceoNameController.text = ceoName;
 
-        email = sellerInfo['email'];
+        email = sellerInfo['email'] ?? '';
         emailController.text = email;
 
-        storeCode = sellerInfo['storeCode'];
+        storeCode = sellerInfo['storeCode'] ?? '';
         storeCodeController.text = storeCode;
 
-        hp = sellerInfo['hp'];
+        hp = sellerInfo['hp'] ?? '';
         hp1Controller.text = hp;
 
-        zipCode = sellerInfo['zipCode'];
+        zipCode = sellerInfo['zipCode'] ?? '';
         receiverZipController.text = zipCode;
 
-        address1 = sellerInfo['address1'];
+        address1 = sellerInfo['address1'] ?? '';
         receiverAddress1Controller.text = address1;
 
-        address2 = sellerInfo['address2'];
+        address2 = sellerInfo['address2'] ?? '';
         receiverAddress2Controller.text = address2;
 
         print('selectedLocation: $selectedLocation');
@@ -111,6 +163,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         SnackBar(content: Text("사업자 프로필 조회가 실패하였습니다.")),
       );
     }
+
 
   }
 
@@ -134,31 +187,29 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   TextEditingController receiverAddress1Controller = TextEditingController();
   TextEditingController receiverAddress2Controller = TextEditingController();
 
-  List<String> selectedLocations = [];
+  List<dynamic> selectedLocations = [];
   List<String> selectedServiceTypes = [];
-  final ImagePicker _picker = ImagePicker();
+  List<dynamic> selectedServiceWithAsPeriod = [];
+  List<dynamic>  selectedAsPeriods = []; // AS 기간 선택 변수 추가
   List<XFile>? _imageFiles = [];
+
+  String? selectedLocation;
+  String? selectedServiceType;
+  String? selectedAsPeriod;
 
   // 샘플 이미지 경로
   final List<String> sampleImages = [
     'assets/seller/aaa.jpg',
     'assets/seller/aaa.jpg',
   ];
-  final List<String> locations = [
-    '용인시 기흥구',
-    '용인시 수지구',
-    '수원시 영통구',
-    '화성시',
-  ];
 
-  final List<String> serviceTypes = [
-    '미세방충망',
-    '커텐',
-    '탄성코드',
-  ];
+  List<dynamic> areaList = []; // 지역 정보를 담을 리스트
+  List<dynamic> areaCd = [];
+  List<dynamic> asList = []; // 지역 정보를 담을 리스트
+  List<dynamic> asCd = [];
+  List<dynamic> codeList = [];
+  List<dynamic> categoryList = [];
 
-  String? selectedLocation;
-  String? selectedServiceType;
 
   final TextEditingController generalPriceController = TextEditingController();
   final TextEditingController premiumPriceController = TextEditingController();
@@ -174,30 +225,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   final TextEditingController detailAddressController = TextEditingController();
 
   void _addLocation() {
-    if (selectedLocation != null &&
-        !selectedLocations.contains(selectedLocation)) {
+    if (selectedLocation != null) {
+      // 선택된 지역의 cdNm과 cd 값을 찾기
+      final selectedItem = areaList.firstWhere((item) => item['cd'] == selectedLocation);
       setState(() {
-        selectedLocations.add(selectedLocation!);
-        selectedLocation = null; // 선택 후 초기화
-      });
-    }
-  }
+        // 선택된 지역 추가
+        selectedLocations.add({
 
-  void _addServiceType() {
-    if (selectedServiceType != null &&
-        !selectedServiceTypes.contains(selectedServiceType)) {
-      setState(() {
-        selectedServiceTypes.add(selectedServiceType!); // 선택한 서비스 종류 추가
-        selectedServiceType = null; // 선택 후 초기화
-      });
-    }
-  }
-
-  Future<void> _pickImage() async {
-    final List<XFile>? selectedImages = await _picker.pickMultiImage();
-    if (selectedImages != null) {
-      setState(() {
-        _imageFiles!.addAll(selectedImages);
+          'cdNm': selectedItem['cdNm'], // cdNm 값
+          'cd': selectedItem['cd'],      // cd 값
+        });
+        // 선택된 지역 초기화
+        selectedLocation = null;
       });
     }
   }
@@ -215,43 +254,82 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     }
   }
 
-  void _selectPostalCode() async {
-    String postalCode = ''; // 여기에서 사용자가 입력한 우편번호를 가져와야 합니다.
+  // [서비스] 공통코드 조회
+  Future<void> getCodeList() async {
+    // REST ID
+    String restId = "getCodeList";
 
-    try {
-      List<String> addresses = await fetchAddresses(postalCode);
+    // PARAM
+    final param = jsonEncode({
+      "cdCls": "AREA01,AS01,BIZ01", // DRE01 : 바로견적 설정 횟수
+    });
 
-      // 다이얼로그에서 주소 선택
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('주소 선택'),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: addresses.map((address) {
-                  return GestureDetector(
-                    child: Text(address),
-                    onTap: () {
-                      Navigator.of(context).pop(address);
-                    },
-                  );
-                }).toList(),
-              ),
-            ),
-          );
-        },
-      ).then((value) {
-        if (value != null) {
-          setState(() {
-            selectedPostalCode = postalCode; // 입력한 우편번호
-            selectedAddress = value; // 선택한 주소
-          });
-        }
+    // API 호출 (바로견적 설정 정보 조회)
+    final _codeList = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    // 결과 셋팅
+    if (_codeList != null) {
+      setState(() {
+        codeList = _codeList;
+        // cdCls가 area01인 항목을 areaList에 추가
+        areaList = codeList.where((code) => code['cdCls'] == 'AREA01')
+            .map((code) => {
+          'cdNm': code['cdNm'], // cdNm 값
+          'cd': code['cd'],      // cd 값
+        }).toList();
+
+        asList = codeList.where((code) => code['cdCls'] == 'AS01')
+            .map((code) => {
+          'cdNm': code['cdNm'], // 디스플레이값
+          'cd': code['cd']      // 실제 저장할 값
+        }).toList();
+
       });
-    } catch (e) {
-      // 오류 처리
-      print(e.toString());
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("공통코드 조회가 실패하였습니다.")),
+      );
+    }
+  }
+
+  // [서비스] 공통코드 조회
+  Future<void> getCategoryList() async {
+    // REST ID
+    String restId = "getCategoryList";
+
+    // PARAM
+    final param = jsonEncode({
+
+    });
+
+    // API 호출 (바로견적 설정 정보 조회)
+    final _categoryList = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    // 결과 셋팅
+    if (_categoryList != null) {
+      setState(() {
+        categoryList = _categoryList;
+
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("공통코드 조회가 실패하였습니다.")),
+      );
+    }
+
+    getSellerInfo(widget.sllrNo);
+  }
+
+  void _addServiceWithAsPeriod() {
+    if (selectedServiceType != null && selectedAsPeriod != null) {
+      String combinedService = '$selectedServiceType / $selectedAsPeriod';
+      setState(() {
+        selectedServiceTypes.add(combinedService);
+        selectedServiceType = null; // 선택 후 초기화
+        selectedAsPeriod = null; // 선택 후 초기화
+      });
     }
   }
 
@@ -287,6 +365,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),*/
               ),
               SizedBox(height: 10),
+              // 서비스 지역 선택 위젯
               Row(
                 children: [
                   Expanded(
@@ -298,11 +377,10 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                           selectedLocation = newValue;
                         });
                       },
-                      items: locations
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items: areaList.map<DropdownMenuItem<String>>((item) {
                         return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                          value: item['cd'],
+                          child: Text(item['cdNm']),
                         );
                       }).toList(),
                     ),
@@ -313,60 +391,100 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ),
                 ],
               ),
+
+              // 선택된 지역 표시
               Wrap(
                 spacing: 8.0,
-                children: selectedLocations
-                    .map((location) => Chip(
-                          label: Text(location),
-                          deleteIcon: Icon(Icons.close),
-                          onDeleted: () {
-                            setState(() {
-                              selectedLocations.remove(location);
-                            });
-                          },
-                        ))
-                    .toList(),
+                children: selectedLocations.map((location) => Chip(
+                  //label: Text(location['cdNm']), // cdNm 값을 가져옴
+                  label: Text(location['cdNm']), // cdNm 값을 가져옴
+                  deleteIcon: Icon(Icons.close),
+                  onDeleted: () {
+                    setState(() {
+                      selectedLocations.remove(location);
+                    });
+                  },
+                )).toList(),
               ),
               SizedBox(height: 10),
               Row(
                 children: [
+                  // 서비스 품목 선택 드롭다운
                   Expanded(
                     child: DropdownButton<String>(
-                      hint: Text('서비스 종류 선택'),
+                      hint: Text('서비스 품목 선택'),
                       value: selectedServiceType,
                       onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            selectedServiceType = newValue;
+                            final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == newValue);
+                            selectedServiceTypes.add(selectedItem2['categoryNm']);
+                            // AS 기간과 함께 선택된 경우 추가
+                            if (selectedAsPeriod != null) {
+                              selectedServiceWithAsPeriod.add('${selectedItem2['categoryNm']} / ${asList.firstWhere((item) => item['cd'] == selectedAsPeriod)['cdNm']}');
+                            }
+                          });
+                        }
+                      },
+                      items: categoryList.map<DropdownMenuItem<String>>((item) {
+                        return DropdownMenuItem<String>(
+                          value: item['categoryId'],
+                          child: Text(item['categoryNm']),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  SizedBox(width: 8), // 간격 추가
+                  Expanded(
+                    child: DropdownButton<String>(
+                      hint: Text('AS 기간 선택'),
+                      value: selectedAsPeriod,
+                      onChanged: (String? newValue) {
                         setState(() {
-                          selectedServiceType = newValue;
+                          selectedAsPeriod = newValue;
+                          // AS 기간과 서비스 품목이 함께 선택된 경우 추가
+                          if (selectedServiceType != null) {
+                            final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == selectedServiceType);
+                            // selectedServiceWithAsPeriod.add('${selectedItem2['categoryNm']} ( ${asList.firstWhere((item) => item['cd'] == newValue)['cdNm']})');
+
+
+                            selectedServiceWithAsPeriodCd = '${selectedItem2['categoryId']}/${asList.firstWhere((item) => item['cd'] == newValue)['cd']}';
+
+                            selectedServiceWithAsPeriod.add(
+                                '${selectedItem2['categoryNm']} ( ${asList.firstWhere((item) => item['cd'] == newValue)['cdNm']} )'
+                            );
+
+                          }
+
                         });
                       },
-                      items: serviceTypes
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items: asList.map<DropdownMenuItem<String>>((item) {
                         return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                          value: item['cd'],
+                          child: Text(item['cdNm']),
                         );
                       }).toList(),
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: _addServiceType,
+                    onPressed: _addServiceWithAsPeriod,
                     child: Text('선택'),
                   ),
                 ],
               ),
+              // 선택된 서비스와 AS 기간 표시
               Wrap(
                 spacing: 8.0,
-                children: selectedServiceTypes
-                    .map((location) => Chip(
-                  label: Text(location),
+                children: selectedServiceWithAsPeriod.map((service) => Chip(
+                  label: Text(service),
                   deleteIcon: Icon(Icons.close),
                   onDeleted: () {
                     setState(() {
-                      selectedServiceTypes.remove(location);
+                      selectedServiceWithAsPeriod.remove(service);
                     });
                   },
-                ))
-                    .toList(),
+                )).toList(),
               ),
               SizedBox(height: 20),
               Column(
@@ -389,42 +507,6 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                       ),
                     ],
                   ),
-                  /*Row(
-                    children: [
-                      Expanded(
-                        child: Text('고급'),
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          controller: itemPrice2Controller,
-                          decoration: InputDecoration(
-                            hintText: '금액 입력',
-                            suffixText: '원',
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text('특수'),
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          controller: itemPrice3Controller,
-                          decoration: InputDecoration(
-                            hintText: '금액 입력',
-                            suffixText: '원',
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),*/
                 ],
               ),
               SizedBox(height: 10),
@@ -459,7 +541,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     ),
                   );
                 }).toList()
-                  // 샘플 이미지 추가
+                // 샘플 이미지 추가
                   ..addAll(sampleImages.map((imagePath) {
                     return Container(
                       margin: EdgeInsets.only(bottom: 8.0),
@@ -513,59 +595,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                       ),
                     ),
                   ),
-                  /*SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: hp2Controller,
-                      decoration: InputDecoration(
-                        labelText: '담당자 연락처 2 (필수)',
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: hp3Controller,
-                      decoration: InputDecoration(
-                        labelText: '담당자 연락처 3 (필수)',
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                      ),
-                    ),
-                  ),*/
                 ],
               ),
-            receiverZipTextField(),
-
-
-
-            receiverAddress1TextField(),
-
-
-
-            receiverAddress2TextField(),
-
-              /*Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-                        var postalCode = value; // 사용자가 입력한 우편번호 저장
-                      },
-                      controller: zipCodeController,
-                      decoration: InputDecoration(
-                        labelText: '사업장 주소 (필수)',
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: _selectPostalCode, // 우편번호 검색 메서드 호출
-                    child: Text('우편번호 검색'),
-                  ),
-                ],
-              ),*/
+              receiverZipTextField(),
+              receiverAddress1TextField(),
+              receiverAddress2TextField(),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
@@ -587,8 +621,10 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   String zipCode = receiverZipController.text;
                   String address1 = receiverAddress1Controller.text;
                   String address2 = receiverAddress2Controller.text;
-                  String serviceArea = selectedLocations.join(', '); // 리스트를 문자열로 변환
-                  String serviceItem = selectedServiceTypes.join(', '); // 리스트를 문자열로 변환
+                  //String serviceArea = selectedLocations.join(', '); // 리스트를 문자열로 변환
+                  //String serviceItem = selectedServiceTypes.join(', '); // 리스트를 문자열로 변환
+
+
 
                   updateSellerProfile(
                       storeName,
@@ -605,16 +641,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                       hp1,
                       zipCode,
                       address1,
-                      address2,
-                      serviceArea, // 서비스 지역
-                      serviceItem // 서비스 항목
+                      address2
                   );
-
-                  /*Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SellerProfileDetail(sellerId: null,)),
-                  );*/
                 },
                 child: Text('프로필변경'),
                 style: ElevatedButton.styleFrom(
@@ -649,16 +677,31 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       dynamic hp1,
       dynamic zipCode,
       dynamic address1,
-      dynamic address2,
-      dynamic serviceArea,
-      dynamic serviceItem,
+      dynamic address2
       ) async {
     // REST ID
     String restId = "updateSellerInfo";
 
-    print("itemPrice1 : " + itemPrice1);
-    print("sllrContent : " + sllrContent);
-    print("email : " + email);
+    // 선택된 지역의 cd 값
+
+    String? serviceArea;
+    if (selectedLocations.isNotEmpty && selectedLocations.first['cd'] != null) {
+      serviceArea = selectedLocations.first['cd'].toString(); // String으로 변환
+    } else {
+      serviceArea = ''; // 기본값 설정
+    }
+
+    List<String> parts = selectedServiceWithAsPeriodCd.split('/');
+
+// 각각의 변수에 할당
+    String serviceItem = parts[0]; // 'CATE001'
+    String asGbn = parts[1];       // '01'
+
+    print("update serviceArea: " + serviceArea);
+    print("update serviceItem: " + serviceItem);
+    print("update asGbn: " + asGbn);
+
+
 
     // PARAM
     final param = jsonEncode({
@@ -682,6 +725,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       "zipCode": zipCode,
       "address1": address1,
       "address2": address2,
+      "asGbn": asGbn,
     });
 
     // API 호출

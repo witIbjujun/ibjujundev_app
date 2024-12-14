@@ -179,7 +179,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                   MaterialPageRoute(builder: (context) => SellerProfile()), // HomeScreen으로 이동
                 );
               },
-              icon: Icon(Icons.login),
+              icon: Icon(Icons.logout),
             ),
           ],
         ),
@@ -461,15 +461,13 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         onPressed: () {
                           // 버튼 클릭 시 수행할 작업 추가
                           // 가입정보 변경 페이지로 이동
-
-                          //int sllrNoForModity = widget.sllrNo;
-
-                          print("sllrNo: " + widget.sllrNo.toString());
+                          int sllrNoForModity = widget.sllrNo;
+                          String aaa = widget.sllrNo.toString();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                // builder: (context) => SellerProfileModify(sllrNo: widget.sllrNo)),
-                                builder: (context) => SellerProfileModify(sllrNo: 17)),
+                              builder: (context) => SellerProfileModify(sllrNo: sellerInfo["sllrNo"])),
+                            ), // 이 줄에 괄호 추가
                           );
                         },
                         child: Row(
@@ -491,7 +489,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => EstimateRequestDirectList(sllrNo: 17)),
+                              builder: (context) => EstimateRequestDirectList(sllrNo: sellerInfo["sllrNo"])),
                           );
                         },
                         child: Row(
