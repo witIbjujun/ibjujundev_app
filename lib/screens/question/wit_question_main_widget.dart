@@ -43,7 +43,7 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
       opacity: _opacity,
       duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.7,
+        width: MediaQuery.of(context).size.width * 0.8,
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           color: Colors.grey[300],
@@ -78,8 +78,8 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
               ),
             ...List.generate(widget.options.length, (optionIndex) {
               return Container(
-                margin: const EdgeInsets.symmetric(vertical: 3.0),
-                padding: const EdgeInsets.fromLTRB(0.0, 3.0, 3.0, 3.0),
+                margin: const EdgeInsets.symmetric(vertical: 2.0),
+                padding: const EdgeInsets.all(0.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10.0),
@@ -107,6 +107,7 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
                 ),
               );
             }),
+            if ((widget.isEnabled?.every((enabled) => enabled) ?? false) == true)
             Align(
               alignment: Alignment.centerRight,
               child: Container(
@@ -122,7 +123,7 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
                     minimumSize: Size(double.infinity, 50), // 버튼 높이 설정
                   ),
                   child: Text(
-                    '선택 완료',
+                    '확인',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16, // 텍스트 크기 조정
@@ -182,8 +183,8 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
       opacity: _opacity,
       duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.7, // 화면의 70% 너비
-        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0), // 바깥쪽 여백
+        width: MediaQuery.of(context).size.width * 0.8, // 화면의 80% 너비
+        padding: const EdgeInsets.all(10.0), // 바깥쪽 여백
         decoration: BoxDecoration(
           color: Colors.grey[300], // 바깥 박스 배경색
           borderRadius: BorderRadius.circular(10.0), // 둥근 모서리
@@ -218,7 +219,7 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
             ...List.generate(widget.options.length, (optionIndex) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 3.0), // 위아래 여백
-                padding: const EdgeInsets.fromLTRB(0.0, 3.0, 3.0, 3.0), // 내부 여백
+                padding: const EdgeInsets.all(0.0), // 내부 여백
                 decoration: BoxDecoration(
                   color: Colors.white, // 배경색
                   borderRadius: BorderRadius.circular(10.0), // 둥근 모서리
@@ -252,6 +253,7 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
                 ),
               );
             }),
+            if ((widget.isEnabled?.every((enabled) => enabled) ?? false) == true)
             Align(
               alignment: Alignment.centerRight,
               child: Container(
@@ -267,7 +269,7 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
                     minimumSize: Size(double.infinity, 50), // 버튼 높이 설정
                   ),
                   child: Text(
-                    '선택 완료',
+                    '확인',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 16, // 텍스트 크기 조정
@@ -322,7 +324,7 @@ class _TextColumnState extends State<TextColumn> {
       opacity: _opacity,
       duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.7,
+        width: MediaQuery.of(context).size.width * 0.8,
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           color: Colors.grey[300],
@@ -371,11 +373,18 @@ class _TextColumnState extends State<TextColumn> {
                     ),
                   ],
                 ),
-                child: Text(
-                  widget.options[0]['opTitle'] ?? '옵션이 없습니다.', // 옵션 제목이 없을 경우 기본 텍스트
-                  style: TextStyle(fontSize: 14, color: Colors.black),
+                child: Container(
+                  height: 200, // 기본 높이 설정
+                  alignment: Alignment.topLeft, // 텍스트를 왼쪽으로 정렬
+                  padding: const EdgeInsets.symmetric(horizontal: 0.0), // 좌우 패딩
+                  child: Text(
+                    widget.options[0]['opTitle'] ?? '옵션이 없습니다.', // 옵션 제목이 없을 경우 기본 텍스트
+                    style: TextStyle(fontSize: 14, color: Colors.black),
+                    overflow: TextOverflow.ellipsis, // 텍스트가 넘칠 경우 생략 부호 추가
+                  ),
                 ),
               ),
+            if ((widget.isEnabled?.every((enabled) => enabled) ?? false) == true)
             Align(
               alignment: Alignment.centerRight,
               child: Container(
@@ -521,7 +530,7 @@ class _SelectedOptionsRowState extends State<SelectedOptionsRow> {
         children: [
           Container(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.7, // 최대 너비 70%
+              maxWidth: MediaQuery.of(context).size.width * 0.8, // 최대 너비 80%
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
             decoration: BoxDecoration(

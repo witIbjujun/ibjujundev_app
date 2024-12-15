@@ -217,22 +217,11 @@ class _QuestionState extends State<QuestionList> {
                         isEnabled: List.generate(qustOptionList[index].length, (i) => isBoxEnabled[index] ?? true),
                         onComplete: () {
                           setState(() {
-
-                            print(index);
-                            print("TEST111");
                             selectedValues[index] = 1;
                             // 박스 비활성화
                             isBoxEnabled[index] = false;
                             // 하위 질문 코드
-
-                            print(qustOptionList[index]);
-
-
-
                             String lowQustCd = qustOptionList[index][0]["lowQustCd"] ?? "";
-
-                            print(qustList[index]['qustType']! + " ::: " + lowQustCd + " ::: " + index.toString());
-
                             // 질문 저장 및 다음질문 조회
                             saveQuestionInfo(qustList[index]['qustType']!, lowQustCd, index);
                           });
@@ -469,15 +458,13 @@ class _QuestionState extends State<QuestionList> {
       // 질문 조회
       getNextQuestionInfo(widget.qustCd, 0);
     }
+
+    // 스크롤 하단 이동
+    _scrollToBottom();
   }
 
   // [서비스] 다음 질문 조회
   Future<void> getNextQuestionInfo(String qustCd, int index) async {
-
-    print("1111*********************");
-    print(qustCd);
-    print(index);
-    print("*********************");
 
     // REST ID
     String restId = "getNextQuestionInfo";
@@ -507,10 +494,6 @@ class _QuestionState extends State<QuestionList> {
         'qustOpCd': questionInfo["questionInfo"]["qustOpCd"],   // 질문 옵션 코드
       });
 
-      print("2222*********************");
-      print(questionInfo["questionInfo"]["qustTitle"]);
-      print("*********************");
-
       List<Map<String, String>> optionList = [];
       for (var option in questionInfo["optionList"]) {
         optionList.add({
@@ -523,9 +506,6 @@ class _QuestionState extends State<QuestionList> {
 
         });
 
-        print("3333*********************");
-        print(option["opTitle"]);
-        print("*********************");
       }
       qustOptionList.add(optionList); // 옵션 리스트를 options에 추가
 
