@@ -62,7 +62,7 @@ List<Widget> getImageSliders(BuildContext context) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => Question(qustCd: 'Q00001'), // Question 화면으로 이동
+            builder: (context) => Question(qustCd: 'Q10001'), // Question 화면으로 이동
           ),
         );
       }

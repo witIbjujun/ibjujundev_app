@@ -91,7 +91,7 @@ class _ImageSliderState extends State<ImageSlider> {
                   }else{
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Question(qustCd: 'Q00001')),
+                      MaterialPageRoute(builder: (context) => Question(qustCd: 'Q10001')),
                     );
                   }
                 },

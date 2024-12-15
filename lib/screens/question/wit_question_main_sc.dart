@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/question/wit_question_main_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_api_ut.dart';
@@ -38,8 +39,7 @@ class QuestionList extends StatefulWidget {
 
 class _QuestionState extends State<QuestionList> {
 
-  // 사용자 코드 (세션코드로 변경 필요)
-  String userId = "72091588";
+  final _storage = const FlutterSecureStorage();
 
   List<Map<String, String>> qustList = [];             // 질문 리스트
   List<List<Map<String, String>>> qustOptionList = []; // 질문 옵션 리스트
@@ -205,6 +205,40 @@ class _QuestionState extends State<QuestionList> {
                         },
                       )
 
+                    // 타입이 텍스트 (qustType "T")
+                    else if (qustList[index]['qustType'] == "T")
+
+                      // 텍스트 컬럼 호출
+                      // 호출 파라미터 : data, options, groupValue, onChanged
+                      TextColumn(
+                        data: qustList[index],          // 질문 LIST
+                        options: qustOptionList[index], // 질문 옵션 LIST
+                        // 선택 완료 버튼 이벤트
+                        isEnabled: List.generate(qustOptionList[index].length, (i) => isBoxEnabled[index] ?? true),
+                        onComplete: () {
+                          setState(() {
+
+                            print(index);
+                            print("TEST111");
+                            selectedValues[index] = 1;
+                            // 박스 비활성화
+                            isBoxEnabled[index] = false;
+                            // 하위 질문 코드
+
+                            print(qustOptionList[index]);
+
+
+
+                            String lowQustCd = qustOptionList[index][0]["lowQustCd"] ?? "";
+
+                            print(qustList[index]['qustType']! + " ::: " + lowQustCd + " ::: " + index.toString());
+
+                            // 질문 저장 및 다음질문 조회
+                            saveQuestionInfo(qustList[index]['qustType']!, lowQustCd, index);
+                          });
+                        },
+                      )
+
                     // 타입이 기타 (qustType "E")
                     else if (qustList[index]['qustType'] == "E")
                       EtcOptionColumn(
@@ -212,7 +246,7 @@ class _QuestionState extends State<QuestionList> {
                       ),
                     
                     // 선택된 옵션 우측 버블 보여주기
-                    if (selectedValues[index] != null && isBoxEnabled[index] == false)
+                    if (selectedValues[index] != null && isBoxEnabled[index] == false && qustList[index]['qustType'] != "T")
                       Column(
                         children: [
                           SizedBox(height: 16), // SelectedOptionsRow 위에 공간 추가
@@ -297,7 +331,6 @@ class _QuestionState extends State<QuestionList> {
         )['opTitle']!;
       }).join(', ');
     }
-
     // 그외
     return '선택 없음'; // 기본값 설정
   }
@@ -329,12 +362,15 @@ class _QuestionState extends State<QuestionList> {
 
   // [서비스] 최초 질문 조회
   Future<void> getFirstQuestionInfo() async {
+
+    String? clerkNo = await _storage.read(key: 'clerkNo');
+
     // REST ID
     String restId = "getFirstQuestionInfo";
 
     // PARAM
     final param = jsonEncode({
-      "userId": userId,
+      "userId": clerkNo,
     });
 
     // API 호출 (질문 조회)
@@ -413,14 +449,13 @@ class _QuestionState extends State<QuestionList> {
             qustOptionList.add(optionList);
           }
 
-          print(lastQustCd);
-
           // 다음 질문 진행
           getNextQuestionInfo(lastQustCd, (saveIdx-1));
         });
       
       // "처음부터" 선택시
       } else {
+
         // 사용자가 취소를 선택한 경우
         setState(() {
           // 질문 전체 삭제
@@ -430,6 +465,7 @@ class _QuestionState extends State<QuestionList> {
     
     // 처음 들어온 경우
     } else {
+
       // 질문 조회
       getNextQuestionInfo(widget.qustCd, 0);
     }
@@ -437,6 +473,12 @@ class _QuestionState extends State<QuestionList> {
 
   // [서비스] 다음 질문 조회
   Future<void> getNextQuestionInfo(String qustCd, int index) async {
+
+    print("1111*********************");
+    print(qustCd);
+    print(index);
+    print("*********************");
+
     // REST ID
     String restId = "getNextQuestionInfo";
 
@@ -465,6 +507,10 @@ class _QuestionState extends State<QuestionList> {
         'qustOpCd': questionInfo["questionInfo"]["qustOpCd"],   // 질문 옵션 코드
       });
 
+      print("2222*********************");
+      print(questionInfo["questionInfo"]["qustTitle"]);
+      print("*********************");
+
       List<Map<String, String>> optionList = [];
       for (var option in questionInfo["optionList"]) {
         optionList.add({
@@ -476,6 +522,10 @@ class _QuestionState extends State<QuestionList> {
           'lowQustCd': option["lowQustCd"],     // 옵션 하위 질문
 
         });
+
+        print("3333*********************");
+        print(option["opTitle"]);
+        print("*********************");
       }
       qustOptionList.add(optionList); // 옵션 리스트를 options에 추가
 
@@ -492,6 +542,8 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 저장
   Future<void> saveQuestionInfo(String gustType, String lowQustCd, int index) async {
 
+    String? clerkNo = await _storage.read(key: 'clerkNo');
+
     final selectedOption = selectedValues[index];
 
     // REST ID
@@ -506,7 +558,7 @@ class _QuestionState extends State<QuestionList> {
         "qustCd" : qustList[index]["qustCd"],
         "opCd" : qustOptionList[index].firstWhere((opt) => int.parse(opt['opSeq']!) == selectedOption)["opCd"],
         "opSeq" : qustOptionList[index].firstWhere((opt) => int.parse(opt['opSeq']!) == selectedOption)["opSeq"],
-        "userId" : userId,
+        "userId" : clerkNo,
       });
 
     } else if (gustType == "C") {
@@ -515,7 +567,16 @@ class _QuestionState extends State<QuestionList> {
         "qustCd" : qustList[index]["qustCd"],
         "opCd" : (selectedValues[index] as List<String>).map((cd) {return qustOptionList[index].firstWhere((opt) => opt['opSeq'] == cd)['opCd']!;}).join(','),
         "opSeq" : (selectedValues[index] as List<String>).map((cd) {return qustOptionList[index].firstWhere((opt) => opt['opSeq'] == cd)['opSeq']!;}).join(','),
-        "userId" : userId,
+        "userId" : clerkNo,
+      });
+
+    } else if (gustType == "T") {
+      // 파라미터
+      param = jsonEncode({
+        "qustCd" : qustList[index]["qustCd"],
+        "opCd" : qustOptionList[index][0]["opCd"],
+        "opSeq" : "1",
+        "userId" : clerkNo,
       });
 
     }
@@ -544,6 +605,8 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 삭제
   Future<void> deleteQuestionInfo(String gustType, int index) async {
 
+    String? clerkNo = await _storage.read(key: 'clerkNo');
+
     final selectedOption = selectedValues[index];
 
     // REST ID
@@ -557,7 +620,7 @@ class _QuestionState extends State<QuestionList> {
       param = jsonEncode({
         "qustCd" : qustList[index]["qustCd"],
         "opCd" : qustOptionList[index].firstWhere((opt) => int.parse(opt['opSeq']!) == selectedOption)["opCd"],
-        "userId" : userId,
+        "userId" : clerkNo,
       });
 
     } else if (gustType == "C") {
@@ -565,7 +628,15 @@ class _QuestionState extends State<QuestionList> {
       param = jsonEncode({
         "qustCd" : qustList[index]["qustCd"],
         "opCd" : (selectedValues[index] as List<String>).map((cd) {return qustOptionList[index].firstWhere((opt) => opt['opSeq'] == cd)['opCd']!;}).join(','),
-        "userId" : userId,
+        "userId" : clerkNo,
+      });
+
+    } else if (gustType == "T") {
+      // 파라미터
+      param = jsonEncode({
+        "qustCd" : qustList[index]["qustCd"],
+        "opCd" : qustOptionList[index][0]["opCd"],
+        "userId" : clerkNo,
       });
 
     }
@@ -591,12 +662,14 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 전체 삭제
   Future<void> deleteQuestionInfoByAll() async {
 
+    String? clerkNo = await _storage.read(key: 'clerkNo');
+
     // REST ID
     String restId = "deleteQuestionInfoByAll";
 
     // PARAM
     var param = jsonEncode({
-      "userId" : userId,      // 사용자 ID
+      "userId" : clerkNo,      // 사용자 ID
     });
 
     // API 호출 (질문 조회)

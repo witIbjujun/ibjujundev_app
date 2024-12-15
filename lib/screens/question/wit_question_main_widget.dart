@@ -109,11 +109,29 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
             }),
             Align(
               alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: (widget.isEnabled?.every((enabled) => enabled) ?? false) ? widget.onComplete : null,
-                child: Text('선택 완료', style: TextStyle(color: Colors.blue)),
+              child: Container(
+                width: double.infinity, // 버튼을 화면 너비 가득 차게
+                padding: EdgeInsets.only(top: 8.0), // 버튼 위에 공간 추가
+                child: TextButton(
+                  onPressed: (widget.isEnabled?.every((enabled) => enabled) ?? false) ? widget.onComplete : null,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.green[300], // 옅은 녹색 배경
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
+                    ),
+                    minimumSize: Size(double.infinity, 50), // 버튼 높이 설정
+                  ),
+                  child: Text(
+                    '선택 완료',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16, // 텍스트 크기 조정
+                      fontWeight: FontWeight.bold, // 텍스트 굵기 조정
+                    ),
+                  ),
+                ),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -235,10 +253,28 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
               );
             }),
             Align(
-              alignment: Alignment.centerRight, // 오른쪽 정렬
-              child: TextButton(
-                onPressed: (widget.isEnabled?.every((enabled) => enabled) ?? false) ? widget.onComplete : null, // 체크박스가 모두 비활성화일 때 버튼 비활성화
-                child: Text('선택 완료', style: TextStyle(color: Colors.blue)),
+              alignment: Alignment.centerRight,
+              child: Container(
+                width: double.infinity, // 버튼을 화면 너비 가득 차게
+                padding: EdgeInsets.only(top: 8.0), // 버튼 위에 공간 추가
+                child: TextButton(
+                  onPressed: (widget.isEnabled?.every((enabled) => enabled) ?? false) ? widget.onComplete : null,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.green[300], // 옅은 녹색 배경
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
+                    ),
+                    minimumSize: Size(double.infinity, 50), // 버튼 높이 설정
+                  ),
+                  child: Text(
+                    '선택 완료',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16, // 텍스트 크기 조정
+                      fontWeight: FontWeight.bold, // 텍스트 굵기 조정
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -247,6 +283,131 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
     );
   }
 }
+
+// [위젯] 텍스트 메세지
+class TextColumn extends StatefulWidget {
+  final dynamic data;
+  final List<Map<String, String>> options;
+  final List<bool>? isEnabled;
+  final VoidCallback? onComplete;
+
+  TextColumn({
+    required this.data,
+    required this.options,
+    this.isEnabled,
+    this.onComplete,
+  });
+
+  @override
+  _TextColumnState createState() => _TextColumnState();
+}
+
+class _TextColumnState extends State<TextColumn> {
+  double _opacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // 애니메이션을 시작합니다.
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _opacity = 1.0; // 위젯을 완전히 보이게 설정
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      opacity: _opacity,
+      duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.7,
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (widget.data['qustTitle'] != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  widget.data['qustTitle']!,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            if (widget.data['qustSubTitle'] != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  widget.data['qustSubTitle']!,
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                ),
+              ),
+            // 여기에서 선택된 옵션의 텍스트를 출력합니다.
+            if (widget.options.isNotEmpty)
+              Container(
+                padding: EdgeInsets.all(10.0), // 텍스트 주변 여백
+                decoration: BoxDecoration(
+                  color: Colors.white, // 하얀 배경
+                  borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  widget.options[0]['opTitle'] ?? '옵션이 없습니다.', // 옵션 제목이 없을 경우 기본 텍스트
+                  style: TextStyle(fontSize: 14, color: Colors.black),
+                ),
+              ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                width: double.infinity, // 버튼을 화면 너비 가득 차게
+                padding: EdgeInsets.only(top: 8.0), // 버튼 위에 공간 추가
+                child: TextButton(
+                  onPressed: (widget.isEnabled?.every((enabled) => enabled) ?? false) ? widget.onComplete : null,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.green[300], // 옅은 녹색 배경
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
+                    ),
+                    minimumSize: Size(double.infinity, 50), // 버튼 높이 설정
+                  ),
+                  child: Text(
+                    '다음',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16, // 텍스트 크기 조정
+                      fontWeight: FontWeight.bold, // 텍스트 굵기 조정
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 
 // [위젯] 기타 메세지
 class EtcOptionColumn extends StatefulWidget {
