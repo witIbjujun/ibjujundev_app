@@ -48,7 +48,6 @@ class _QuestionState extends State<QuestionList> {
   Map<int, bool> isBoxEnabled = {};         // 박스 활성화 상태
 
   int currentIndex = 0;                     // 현재 선택된 항목 인덱스
-  double currentProgress = 0.0;             // 진행률
 
   // 스크롤 컨트롤러
   ScrollController _scrollController = ScrollController();
@@ -72,7 +71,6 @@ class _QuestionState extends State<QuestionList> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        //ProgressBar(progress: currentProgress),
         Expanded(
           // 메인 LIST
           child: ListView.builder(
@@ -258,12 +256,19 @@ class _QuestionState extends State<QuestionList> {
                                             deleteQuestionInfo(qustList[delIdx]['qustType']!, delIdx);
                                           }
                                         }
-
+                                        
                                         // 재선택 버튼 클릭 시 해당 항목 이후의 리스트를 숨김
-                                        currentIndex = index; // 현재 인덱스 이후로 표시하지 않도록 설정
-                                        selectedValues.removeWhere((key, value) => key >= index); // 선택한 데이터 초기화
+                                        // 현재 인덱스 이후로 표시하지 않도록 설정
+                                        currentIndex = index;
+                                        // 선택한 데이터 초기화
+                                        selectedValues.removeWhere((key, value) => key >= index);
                                         isBoxEnabled.removeWhere((key, value) => key >= index);
-                                        isBoxEnabled[index] = true; // 체크박스 활성화
+                                        // qustList와 qustOptionList에서 인덱스 이후의 요소 삭제
+                                        qustList.removeRange(index+1, qustList.length);
+                                        qustOptionList.removeRange(index+1, qustOptionList.length);
+                                        // 특정 인덱스의 박스 활성화
+                                        isBoxEnabled[index] = true;
+
                                       });
 
                                       // 스크롤 하단 이동
@@ -352,14 +357,14 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 최초 질문 조회
   Future<void> getFirstQuestionInfo() async {
 
-    String? clerkNo = await _storage.read(key: 'clerkNo');
+    String? userId = await _storage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "getFirstQuestionInfo";
 
     // PARAM
     final param = jsonEncode({
-      "userId": clerkNo,
+      "userId": userId,
     });
 
     // API 호출 (질문 조회)
@@ -459,8 +464,6 @@ class _QuestionState extends State<QuestionList> {
       getNextQuestionInfo(widget.qustCd, 0);
     }
 
-    // 스크롤 하단 이동
-    _scrollToBottom();
   }
 
   // [서비스] 다음 질문 조회
@@ -472,7 +475,6 @@ class _QuestionState extends State<QuestionList> {
     // PARAM
     final param = jsonEncode({
       "qustCd": qustCd,
-      "qustIdx": index
     });
 
     // API 호출 (질문 조회)
@@ -522,7 +524,7 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 저장
   Future<void> saveQuestionInfo(String gustType, String lowQustCd, int index) async {
 
-    String? clerkNo = await _storage.read(key: 'clerkNo');
+    String? userId = await _storage.read(key: 'clerkNo');
 
     final selectedOption = selectedValues[index];
 
@@ -538,7 +540,7 @@ class _QuestionState extends State<QuestionList> {
         "qustCd" : qustList[index]["qustCd"],
         "opCd" : qustOptionList[index].firstWhere((opt) => int.parse(opt['opSeq']!) == selectedOption)["opCd"],
         "opSeq" : qustOptionList[index].firstWhere((opt) => int.parse(opt['opSeq']!) == selectedOption)["opSeq"],
-        "userId" : clerkNo,
+        "userId" : userId,
       });
 
     } else if (gustType == "C") {
@@ -547,7 +549,7 @@ class _QuestionState extends State<QuestionList> {
         "qustCd" : qustList[index]["qustCd"],
         "opCd" : (selectedValues[index] as List<String>).map((cd) {return qustOptionList[index].firstWhere((opt) => opt['opSeq'] == cd)['opCd']!;}).join(','),
         "opSeq" : (selectedValues[index] as List<String>).map((cd) {return qustOptionList[index].firstWhere((opt) => opt['opSeq'] == cd)['opSeq']!;}).join(','),
-        "userId" : clerkNo,
+        "userId" : userId,
       });
 
     } else if (gustType == "T") {
@@ -556,7 +558,7 @@ class _QuestionState extends State<QuestionList> {
         "qustCd" : qustList[index]["qustCd"],
         "opCd" : qustOptionList[index][0]["opCd"],
         "opSeq" : "1",
-        "userId" : clerkNo,
+        "userId" : userId,
       });
 
     }
@@ -569,13 +571,6 @@ class _QuestionState extends State<QuestionList> {
       // 다음 질문 조회
       getNextQuestionInfo(lowQustCd, index);
 
-      setState(() {
-        currentProgress = currentProgress + 0.33;
-        if (currentProgress >= 0.9) {
-          currentProgress = 1.0;
-        }
-      });
-
     } else {
       print("저장중에 오류가 발생 되었습니다.");
     }
@@ -585,71 +580,40 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 삭제
   Future<void> deleteQuestionInfo(String gustType, int index) async {
 
-    String? clerkNo = await _storage.read(key: 'clerkNo');
-
-    final selectedOption = selectedValues[index];
+    String? userId = await _storage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "deleteQuestionInfo";
 
     // PARAM
-    var param = null;
-
-    if (gustType == "R") {
-      // 파라미터
-      param = jsonEncode({
-        "qustCd" : qustList[index]["qustCd"],
-        "opCd" : qustOptionList[index].firstWhere((opt) => int.parse(opt['opSeq']!) == selectedOption)["opCd"],
-        "userId" : clerkNo,
-      });
-
-    } else if (gustType == "C") {
-      // 파라미터
-      param = jsonEncode({
-        "qustCd" : qustList[index]["qustCd"],
-        "opCd" : (selectedValues[index] as List<String>).map((cd) {return qustOptionList[index].firstWhere((opt) => opt['opSeq'] == cd)['opCd']!;}).join(','),
-        "userId" : clerkNo,
-      });
-
-    } else if (gustType == "T") {
-      // 파라미터
-      param = jsonEncode({
-        "qustCd" : qustList[index]["qustCd"],
-        "opCd" : qustOptionList[index][0]["opCd"],
-        "userId" : clerkNo,
-      });
-
-    }
+    var param = jsonEncode({
+      "userId" : userId,
+      "seq" : index.toString(),
+    });
 
     // API 호출 (질문 조회)
     final delResult = await sendPostRequest(restId, param);
 
     // 저장 결과 확인
     if (delResult["delResult"] == "OK") {
-
-      // 진행률 수정
-      setState(() {
-        currentProgress = currentProgress - 0.33;
-        if (currentProgress <= 0.1) {
-          currentProgress = 0.0;
-        }
-      });
+      print("삭제 완료");
     } else {
       print("삭제 오류");
     }
+
   }
 
   // [서비스] 질문 전체 삭제
   Future<void> deleteQuestionInfoByAll() async {
 
-    String? clerkNo = await _storage.read(key: 'clerkNo');
+    String? userId = await _storage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "deleteQuestionInfoByAll";
 
     // PARAM
     var param = jsonEncode({
-      "userId" : clerkNo,      // 사용자 ID
+      "userId" : userId,      // 사용자 ID
     });
 
     // API 호출 (질문 조회)

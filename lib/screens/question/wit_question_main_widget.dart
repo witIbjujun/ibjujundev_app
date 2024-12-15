@@ -373,14 +373,17 @@ class _TextColumnState extends State<TextColumn> {
                     ),
                   ],
                 ),
-                child: Container(
-                  height: 200, // 기본 높이 설정
-                  alignment: Alignment.topLeft, // 텍스트를 왼쪽으로 정렬
-                  padding: const EdgeInsets.symmetric(horizontal: 0.0), // 좌우 패딩
-                  child: Text(
-                    widget.options[0]['opTitle'] ?? '옵션이 없습니다.', // 옵션 제목이 없을 경우 기본 텍스트
-                    style: TextStyle(fontSize: 14, color: Colors.black),
-                    overflow: TextOverflow.ellipsis, // 텍스트가 넘칠 경우 생략 부호 추가
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: 200, // 최소 높이 설정
+                  ),
+                  child: Container(
+                    alignment: Alignment.topLeft, // 텍스트를 왼쪽으로 정렬
+                    padding: const EdgeInsets.symmetric(horizontal: 0.0), // 좌우 패딩
+                    child: Text(
+                      widget.options[0]['opTitle'] ?? '옵션이 없습니다.', // 옵션 제목이 없을 경우 기본 텍스트
+                      style: TextStyle(fontSize: 14, color: Colors.black),
+                    ),
                   ),
                 ),
               ),
