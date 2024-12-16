@@ -466,8 +466,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SellerProfileModify(sllrNo: sellerInfo["sllrNo"])),
-                            ), // 이 줄에 괄호 추가
+                              builder: (context) => SellerProfileModify(sllrNo: sellerInfo["sllrNo"]),
+                            ),
                           );
                         },
                         child: Row(

@@ -28,6 +28,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String name = "";
   String ceoName = "";
   String email = "";
+  String openDate = "";
   String storeCode = "";
   String storeImage = "";
   String hp = "";
@@ -37,6 +38,30 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String asGbn = "";
   String bizCertification = "";
   String selectedServiceWithAsPeriodCd = "";
+
+  /* 이미지추가 S */
+  List<File> _images = [];
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImages(ImageSource source) async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null) {
+      setState(() {
+        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
+      });
+    }
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _images.add(File(pickedFile.path));
+      });
+    }
+  }
+
+  /* 이미지추가 E */
 
   @override
   void initState() {
@@ -140,6 +165,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         email = sellerInfo['email'] ?? '';
         emailController.text = email;
 
+        openDate = sellerInfo['openDate'] ?? '';
+        openDateController.text = openDate;
+
         storeCode = sellerInfo['storeCode'] ?? '';
         storeCodeController.text = storeCode;
 
@@ -176,6 +204,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   TextEditingController nameController = TextEditingController();
   TextEditingController ceoNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController openDateController = TextEditingController();
   TextEditingController storeCodeController = TextEditingController();
   TextEditingController storeImageController = TextEditingController();
   TextEditingController hp1Controller = TextEditingController();
@@ -487,27 +516,13 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 )).toList(),
               ),
               SizedBox(height: 20),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text('일반'),
-                      ),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          controller: itemPrice1Controller,
-                          decoration: InputDecoration(
-                            hintText: '금액 입력',
-                            suffixText: '원',
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              Text(
+                '* AS 무상 보증 기간을 등록하면 AS 보증 뱃지가 표시됩니다.',
+                style: TextStyle(
+                  color: Colors.grey, // 원하는 색상
+                  fontSize: 14, // 원하는 폰트 크기
+                  fontWeight: FontWeight.w500, // 원하는 폰트 굵기
+                ),
               ),
               SizedBox(height: 10),
               TextField(
@@ -520,13 +535,75 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),
               ),
               SizedBox(height: 10),
+              // 이미지 리스트
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
+                child: Row(
+                  children: _images.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    var image = entry.value;
+
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
+                      child: Stack(
+                        children: [
+                          ClipRRect( // 모서리 둥글게 만들기
+                            borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
+                            child: Image.file(
+                              image,
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover, // 이미지 비율 유지
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: IconButton(
+                              icon: Icon(Icons.close, color: Colors.red), // X 아이콘
+                              onPressed: () {
+                                setState(() {
+                                  _images.removeAt(index); // 이미지 삭제
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
               ElevatedButton(
                 onPressed: () {
                   // 사진 추가 기능 구현
                 },
                 child: Text('사진 추가'),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
+                children: [
+                  GestureDetector(
+                    onTap: () => _pickImages(ImageSource.gallery),
+                    child: Column(
+                      children: [
+                        Icon(Icons.photo, size: 40), // 갤러리 아이콘
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 16), // 아이콘 간격
+                  GestureDetector(
+                    onTap: () => _pickImage(ImageSource.camera),
+                    child: Column(
+                      children: [
+                        Icon(Icons.camera_alt, size: 40), // 카메라 아이콘
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              /*SizedBox(height: 10),
               // 추가된 이미지 미리보기
               Wrap(
                 spacing: 8.0,
@@ -553,7 +630,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                       ),
                     );
                   })),
-              ),
+              ),*/
               SizedBox(height: 10),
               TextField(
                 controller: nameController,
@@ -573,6 +650,13 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: '대표 이메일 (필수)',
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
+              TextField(
+                controller: openDateController,
+                decoration: InputDecoration(
+                  labelText: '개업일자 (필수)',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
@@ -602,7 +686,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               receiverAddress2TextField(),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   // 사업자 프로필 변경 로직
                   String storeName = storeNameController.text;
                   String itemPrice1 = itemPrice1Controller.text;
@@ -613,6 +697,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   String name = nameController.text;
                   String ceoName = ceoNameController.text;
                   String email = emailController.text;
+                  String openDate = openDateController.text;
                   String storeCode = storeCodeController.text;
                   String storeImage = storeImageController.text;
                   String hp1 = hp1Controller.text;
@@ -625,8 +710,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   //String serviceItem = selectedServiceTypes.join(', '); // 리스트를 문자열로 변환
 
 
-
-                  updateSellerProfile(
+                  // 이미지 저장 후 프로필 업데이트
+                  await saveImages(storeName, itemPrice1, itemPrice2, itemPrice3, sllrContent, sllrImage, name, ceoName, email, storeCode, storeImage, hp1, zipCode, address1, address2, openDate);
+                  /*updateSellerProfile(
                       storeName,
                       itemPrice1,
                       itemPrice2,
@@ -641,8 +727,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                       hp1,
                       zipCode,
                       address1,
-                      address2
-                  );
+                      address2,
+                      openDate
+                  );*/
                 },
                 child: Text('프로필변경'),
                 style: ElevatedButton.styleFrom(
@@ -661,6 +748,73 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     );
   }
 
+  // [서비스] 이미지 저장
+  Future<void> saveImages(dynamic storeName,
+      dynamic itemPrice1,
+      dynamic itemPrice2,
+      dynamic itemPrice3,
+      dynamic sllrContent,
+      dynamic sllrImage,
+      dynamic name,
+      dynamic ceoName,
+      dynamic email,
+      dynamic storeCode,
+      dynamic storeImage,
+      dynamic hp1,
+      dynamic zipCode,
+      dynamic address1,
+      dynamic address2,
+      dynamic openDate) async {
+
+    // 이미지 확인
+    if (_images.isEmpty) {
+      // 이미지가 없으면 프로필 업데이트 호출
+      updateSellerProfile(
+        storeName,
+        itemPrice1,
+        itemPrice2,
+        itemPrice3,
+        sllrContent,
+        null, // sllrImage는 null로 설정
+        name,
+        ceoName,
+        email,
+        storeCode,
+        null, // storeImage는 null로 설정
+        hp1,
+        zipCode,
+        address1,
+        address2,
+        openDate,
+      );
+    } else {
+      final fileInfo = await sendFilePostRequest("fileUpload", _images);
+      if (fileInfo == "FAIL") {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
+      } else {
+        // 파일 업로드 성공, 프로필 업데이트 호출
+        updateSellerProfile(
+          storeName,
+          itemPrice1,
+          itemPrice2,
+          itemPrice3,
+          sllrContent,
+          fileInfo, // 업로드된 파일 정보
+          name,
+          ceoName,
+          email,
+          storeCode,
+          fileInfo, // storeImage도 업로드된 파일 정보 사용
+          hp1,
+          zipCode,
+          address1,
+          address2,
+          openDate,
+        );
+      }
+    }
+  }
+
   // [서비스]프로필 변경
   Future<void> updateSellerProfile(
       dynamic storeName,
@@ -677,7 +831,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       dynamic hp1,
       dynamic zipCode,
       dynamic address1,
-      dynamic address2
+      dynamic address2,
+      dynamic openDate
       ) async {
     // REST ID
     String restId = "updateSellerInfo";
@@ -726,6 +881,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       "address1": address1,
       "address2": address2,
       "asGbn": asGbn,
+      "openDate": openDate,
     });
 
     // API 호출
