@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:image_picker/image_picker.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +10,14 @@ import 'package:flutter/material.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 
+import '../../util/wit_code_ut.dart';
+import '../board/wit_board_detail_sc.dart';
+import '../common/wit_ImageViewer_sc.dart';
+
+
+/* 이미지추가 S */
+List<File> _images = [];
+final ImagePicker _picker = ImagePicker();
 class EstimateRequestDetail extends StatefulWidget {
   final String estNo;
   final String seq;
@@ -26,6 +36,27 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
   TextEditingController itemPrice1Controller = TextEditingController();
   TextEditingController estimateContentController = TextEditingController();
+
+
+
+  Future<void> _pickImages(ImageSource source) async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null) {
+      setState(() {
+        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
+      });
+    }
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _images.add(File(pickedFile.path));
+      });
+    }
+  }
+  /* 이미지추가 E */
 
   @override
   void initState() {
@@ -158,7 +189,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     children: [
                       Text(
                         "고객님\n 추가 조건/\n요구사항",
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        style: TextStyle(fontSize: 12, color: Colors.black),
                       ),
                       SizedBox(width: 35),
                       Expanded(
@@ -212,7 +243,104 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 16),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
+                    child: Row(
+                      children: _images.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        var image = entry.value;
 
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
+                          child: Stack(
+                            children: [
+                              ClipRRect( // 모서리 둥글게 만들기
+                                borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
+                                child: Image.file(
+                                  image,
+                                  width: 120,
+                                  height: 120,
+                                  fit: BoxFit.cover, // 이미지 비율 유지
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close, color: Colors.red), // X 아이콘
+                                  onPressed: () {
+                                    setState(() {
+                                      _images.removeAt(index); // 이미지 삭제
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Container(
+                    height: 120, // 높이 설정
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: boardDetailImageList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            // 클릭 시 ImageViewer로 이동
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageViewer(
+                                  imageUrls: boardDetailImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                                  initialIndex: index, // 클릭한 이미지 인덱스 전달
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 120,
+                            height: 120,
+                            margin: EdgeInsets.only(right: 8), // 이미지 간격
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12), // 둥글게 처리
+                              image: DecorationImage(
+                                image: NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
+                    children: [
+                      GestureDetector(
+                        onTap: () => _pickImages(ImageSource.gallery),
+                        child: Column(
+                          children: [
+                            Icon(Icons.photo, size: 40), // 갤러리 아이콘
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 16), // 아이콘 간격
+                      GestureDetector(
+                        onTap: () => _pickImage(ImageSource.camera),
+                        child: Column(
+                          children: [
+                            Icon(Icons.camera_alt, size: 40), // 카메라 아이콘
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 20),
                   Center(
                     child: reqState == "05" ? Container() : ElevatedButton(
@@ -295,6 +423,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       print("estNo : " + estimateRequestInfoForSend["estNo"]);
       print("seq : " + estimateRequestInfoForSend["seq"]);
     });
+
+    getSellerDetailImageList();
   }
 
   // [서비스] 견적 정보 저장
@@ -375,6 +505,31 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       );
     }
   }
+
+  // [서비스] 판매자 상세 이미지 조회
+  Future<void> getSellerDetailImageList() async {
+    // REST ID
+    String restId = "getSellerDetailImageList";
+
+    String estNo = estimateRequestInfoForSend["estNo"].toString();
+    String seq = estimateRequestInfoForSend["seq"].toString();
+    String bizKey = estNo + "^" + seq;
+
+    // PARAM
+    final param = jsonEncode({
+      "bizCd": "RQ01",
+      "bizKey": bizKey,
+    });
+
+    // API 호출 (게시판 상세 조회)
+    final _boardDetailImageList = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    setState(() {
+      boardDetailImageList = _boardDetailImageList;
+    });
+  }
+
 }
 
 class PointOKDialog extends StatelessWidget {
@@ -415,7 +570,7 @@ class PointOKDialog extends StatelessWidget {
             // 견적발송 당 차감 캐쉬도 정의 해야함
             String cash = "1200";
 
-            updateEstimateInfo2(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState);
+            saveImages(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState);
             Navigator.of(context).pop();
           },
           child: Text('보내기'),
@@ -434,18 +589,44 @@ class PointOKDialog extends StatelessWidget {
     );
   }
 
+  // [서비스] 이미지 저장
+  Future<void> saveImages(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
+      dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
+      , dynamic cash, dynamic reqState) async {
+
+    // 이미지 확인
+    if (_images.isEmpty) {
+      // 이미지가 없으면 프로필 업데이트 호출
+      updateEstimateInfo2(
+          context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, null
+      );
+    } else {
+      final fileInfo = await sendFilePostRequest("fileUpload", _images);
+      if (fileInfo == "FAIL") {
+        print("파일 실패");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
+      } else {
+        // 파일 업로드 성공, 프로필 업데이트 호출
+        print("파일 성공");
+        updateEstimateInfo2(
+            context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, fileInfo
+        );
+      }
+    }
+  }
+
   // [서비스]견적 정보 저장
   Future<void> updateEstimateInfo2(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
       dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
-      , dynamic cash, dynamic reqState) async {
+      , dynamic cash, dynamic reqState, dynamic fileInfo) async {
     // REST ID
     String restId = "updateEstimateInfo";
 
     print("estNo : " + estNo);
     print("inputItemPrice1 : " + inputItemPrice1);
     print("estimateContent : " + estimateContent);
- 
-    
+
+
     // PARAM
     final param = jsonEncode({
       "sllrNo": sllrNo,
@@ -457,6 +638,7 @@ class PointOKDialog extends StatelessWidget {
       "stat": reqState, // 02 : 판매자가 견적발송
       "cash": cash,
       "cashGbn": "02", // 02 : 견적발송
+      "fileInfo": fileInfo
     });
 
     // API 호출
@@ -465,10 +647,9 @@ class PointOKDialog extends StatelessWidget {
     // API 응답 처리
     if (response != null) {
       // 성공적으로 저장된 경우 처리
-      _showSuccessDialog(context); // 다이얼로그 표시
-      /*ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("견적이 성공적으로 발송되었습니다.")),
-      );*/
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showSuccessDialog(context); // 다이얼로그 표시
+      });
     } else {
       // 오류 처리
       ScaffoldMessenger.of(context).showSnackBar(
@@ -476,6 +657,7 @@ class PointOKDialog extends StatelessWidget {
       );
     }
   }
+
   // 성공 다이얼로그를 표시하는 메서드
   void _showSuccessDialog(BuildContext context) {
     showDialog(

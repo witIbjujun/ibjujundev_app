@@ -7,6 +7,9 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
+import '../../util/wit_code_ut.dart';
+import '../common/wit_ImageViewer_sc.dart';
+
 class SellerProfileModify extends StatefulWidget {
   final dynamic sllrNo;
   const SellerProfileModify({Key? key, required this.sllrNo}) : super(key: key);
@@ -38,6 +41,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String asGbn = "";
   String bizCertification = "";
   String selectedServiceWithAsPeriodCd = "";
+  List<dynamic> boardDetailImageList = [];
 
   /* 이미지추가 S */
   List<File> _images = [];
@@ -60,7 +64,6 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       });
     }
   }
-
   /* 이미지추가 E */
 
   @override
@@ -184,6 +187,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         receiverAddress2Controller.text = address2;
 
         print('selectedLocation: $selectedLocation');
+
+        getSellerDetailImageList();
       });
     } else {
       // 오류 처리
@@ -581,6 +586,42 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 child: Text('사진 추가'),
               ),
               SizedBox(height: 16),
+              Container(
+                height: 120, // 높이 설정
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: boardDetailImageList.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        // 클릭 시 ImageViewer로 이동
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageViewer(
+                              imageUrls: boardDetailImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                              initialIndex: index, // 클릭한 이미지 인덱스 전달
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        margin: EdgeInsets.only(right: 8), // 이미지 간격
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12), // 둥글게 처리
+                          image: DecorationImage(
+                            image: NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
                 children: [
@@ -786,6 +827,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         address1,
         address2,
         openDate,
+        null,
       );
     } else {
       final fileInfo = await sendFilePostRequest("fileUpload", _images);
@@ -810,6 +852,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
           address1,
           address2,
           openDate,
+          fileInfo,
         );
       }
     }
@@ -832,7 +875,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       dynamic zipCode,
       dynamic address1,
       dynamic address2,
-      dynamic openDate
+      dynamic openDate,
+      dynamic fileInfo
       ) async {
     // REST ID
     String restId = "updateSellerInfo";
@@ -882,6 +926,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       "address2": address2,
       "asGbn": asGbn,
       "openDate": openDate,
+      "fileInfo": fileInfo
     });
 
     // API 호출
@@ -909,6 +954,36 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         SnackBar(content: Text("사업자 프로필 변경에 실패했습니다.")),
       );
     }
+  }
+
+  // [서비스] 판매자 상세 이미지 조회
+  Future<void> getSellerDetailImageList() async {
+    // REST ID
+    String restId = "getSellerDetailImageList";
+
+    print("여기 : " + sellerInfo["sllrNo"].toString());
+
+    // PARAM
+    final param = jsonEncode({
+      "bizCd": "SR01",
+      "bizKey": sellerInfo["sllrNo"],
+    });
+
+    // API 호출 (게시판 상세 조회)
+    final _boardDetailImageList = await sendPostRequest(restId, param);
+
+    if (boardDetailImageList.isNotEmpty) {
+      // 값이 있을 때 수행할 작업
+      print("보드 상세 이미지 리스트에 값이 있습니다: ${boardDetailImageList.length}개");
+    } else {
+      // 값이 없을 때 수행할 작업
+      print("보드 상세 이미지 리스트가 비어 있습니다.");
+    }
+
+    // 결과 셋팅
+    setState(() {
+      boardDetailImageList = _boardDetailImageList;
+    });
   }
 
   Widget receiverZipTextField() {
