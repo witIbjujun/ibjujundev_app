@@ -42,6 +42,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String bizCertification = "";
   String selectedServiceWithAsPeriodCd = "";
   List<dynamic> boardDetailImageList = [];
+  List<dynamic> bizImageList = [];
+  String buttonText = "인증요청";
 
   /* 이미지추가 S */
   List<File> _images = [];
@@ -186,9 +188,12 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         address2 = sellerInfo['address2'] ?? '';
         receiverAddress2Controller.text = address2;
 
-        print('selectedLocation: $selectedLocation');
+        buttonText = sellerInfo['bizCertificationNm'] != null && sellerInfo['bizCertificationNm'].isNotEmpty
+            ? sellerInfo['bizCertificationNm']
+            : '인증요청';
 
-        getSellerDetailImageList();
+        getSellerDetailImageList("SR01");
+        getSellerDetailImageList("SR02");
       });
     } else {
       // 오류 처리
@@ -644,34 +649,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ),
                 ],
               ),
-              /*SizedBox(height: 10),
-              // 추가된 이미지 미리보기
-              Wrap(
-                spacing: 8.0,
-                children: _imageFiles!.map((image) {
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 8.0),
-                    child: Image.file(
-                      File(image.path),
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                  );
-                }).toList()
-                // 샘플 이미지 추가
-                  ..addAll(sampleImages.map((imagePath) {
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 8.0),
-                      child: Image.asset(
-                        imagePath,
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  })),
-              ),*/
+
               SizedBox(height: 10),
               TextField(
                 controller: nameController,
@@ -701,11 +679,124 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
-              TextField(
-                controller: storeCodeController,
-                decoration: InputDecoration(
-                  labelText: '사업자 등록번호 (필수)',
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '사업자 등록증 사본',
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                  SizedBox(width: 16.0), // 버튼 간격
+                  ElevatedButton(
+                    onPressed: () async {
+                      print("12312312312");
+                      // 첨부 버튼 클릭 시 이미지 선택
+                      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+
+                      if (image != null) {
+                        // 이미지가 선택된 경우
+                        print('선택된 이미지: ${image.path}');
+                        setState(() {
+                          bizImageList.add(image); // 선택된 이미지를 리스트에 추가
+                        });
+                        saveSellerBizImage();
+                        // 선택된 이미지 경로 출력
+                      } else {
+                        // 이미지 선택이 취소된 경우
+                        print('이미지 선택 취소됨');
+                      }
+                    },
+                    child: Text('첨부'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green, // 회색 배경
+                    ),
+                  ),
+                  SizedBox(width: 16.0), // 버튼 간격
+                  ElevatedButton(
+                    onPressed: () {
+                      updateBizCertification(); // 인증 요청 버튼 클릭 시 로직 추가
+                    },
+                    child: Text(buttonText),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.yellow, // 노란색 배경
+                    ),
+                  ),
+                ],
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
+                child: Row(
+                  children: _images.asMap().entries.map((entry) {
+                    int index = entry.key;
+                    var image = entry.value;
+
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
+                      child: Stack(
+                        children: [
+                          ClipRRect( // 모서리 둥글게 만들기
+                            borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
+                            child: Image.file(
+                              image,
+                              width: 120,
+                              height: 120,
+                              fit: BoxFit.cover, // 이미지 비율 유지
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: IconButton(
+                              icon: Icon(Icons.close, color: Colors.red), // X 아이콘
+                              onPressed: () {
+                                setState(() {
+                                  _images.removeAt(index); // 이미지 삭제
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              SizedBox(height: 16),
+              Container(
+                height: 120, // 높이 설정
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: bizImageList.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        // 클릭 시 ImageViewer로 이동
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageViewer(
+                              imageUrls: bizImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                              initialIndex: index, // 클릭한 이미지 인덱스 전달
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        margin: EdgeInsets.only(right: 8), // 이미지 간격
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12), // 둥글게 처리
+                          image: DecorationImage(
+                            image: NetworkImage(apiUrl + bizImageList[index]["imagePath"]),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
               // 담당자 연락처 입력란 수정
@@ -858,6 +949,48 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     }
   }
 
+  // 사업자 등록증 이미지 저장
+  Future<void> saveSellerBizImage() async {
+
+    // 이미지 확인
+    if (_images.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("사업자등록증을 첨부해주세요.")));
+
+    } else {
+      final fileInfo = await sendFilePostRequest("fileUpload", _images);
+      if (fileInfo == "FAIL") {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("사업자등록증 업로드 실패")));
+      } else {
+        String restId = "saveSellerBizImage";
+
+        print("여기 : " + sellerInfo["sllrNo"].toString());
+
+        // PARAM
+        final param = jsonEncode({
+          "bizCd": "SR02",
+          "bizKey": sellerInfo["sllrNo"],
+        });
+
+        // API 호출 (게시판 상세 조회)
+        final _bizImageList = await sendPostRequest(restId, param);
+
+        if (_bizImageList.isNotEmpty) {
+          // 값이 있을 때 수행할 작업
+          print("보드 상세 이미지 리스트에 값이 있습니다: ${bizImageList.length}개");
+        } else {
+          // 값이 없을 때 수행할 작업
+          print("보드 상세 이미지 리스트가 비어 있습니다.");
+        }
+
+        // 결과 셋팅
+        setState(() {
+          bizImageList = _bizImageList;
+        });
+
+      }
+    }
+  }
+
   // [서비스]프로필 변경
   Future<void> updateSellerProfile(
       dynamic storeName,
@@ -957,7 +1090,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   }
 
   // [서비스] 판매자 상세 이미지 조회
-  Future<void> getSellerDetailImageList() async {
+  Future<void> getSellerDetailImageList(dynamic bizCd) async {
     // REST ID
     String restId = "getSellerDetailImageList";
 
@@ -965,25 +1098,76 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
     // PARAM
     final param = jsonEncode({
-      "bizCd": "SR01",
+      "bizCd": bizCd,
       "bizKey": sellerInfo["sllrNo"],
     });
 
-    // API 호출 (게시판 상세 조회)
-    final _boardDetailImageList = await sendPostRequest(restId, param);
+    if(bizCd == "SR01") {
+      // API 호출 (게시판 상세 조회)
+      final _boardDetailImageList = await sendPostRequest(restId, param);
 
-    if (boardDetailImageList.isNotEmpty) {
-      // 값이 있을 때 수행할 작업
-      print("보드 상세 이미지 리스트에 값이 있습니다: ${boardDetailImageList.length}개");
-    } else {
-      // 값이 없을 때 수행할 작업
-      print("보드 상세 이미지 리스트가 비어 있습니다.");
+      if (boardDetailImageList.isNotEmpty) {
+        // 값이 있을 때 수행할 작업
+        print("보드 상세 이미지 리스트에 값이 있습니다: ${boardDetailImageList.length}개");
+      } else {
+        // 값이 없을 때 수행할 작업
+        print("보드 상세 이미지 리스트가 비어 있습니다.");
+      }
+
+      // 결과 셋팅
+      setState(() {
+        boardDetailImageList = _boardDetailImageList;
+      });
     }
+    else if(bizCd == "SR02") {
+      // API 호출 (게시판 상세 조회)
+      final _bizImageList = await sendPostRequest(restId, param);
 
-    // 결과 셋팅
-    setState(() {
-      boardDetailImageList = _boardDetailImageList;
+      if (bizImageList.isNotEmpty) {
+        // 값이 있을 때 수행할 작업
+        print("보드 상세 이미지 리스트에 값이 있습니다: ${bizImageList.length}개");
+      } else {
+        // 값이 없을 때 수행할 작업
+        print("보드 상세 이미지 리스트가 비어 있습니다.");
+      }
+
+      // 결과 셋팅
+      setState(() {
+        bizImageList = _bizImageList;
+      });
+    }
+  }
+
+  // [서비스] 사업자 인증 상태 수정
+  Future<void> updateBizCertification() async {
+    // REST ID
+    String restId = "updateBizCertification";
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": sellerInfo["sllrNo"],
+      "bizCertification": "01",
     });
+
+    // API 호출 (사업자 인증 상태 수정)
+    final response = await sendPostRequest(restId, param);
+
+    if (response != null) {
+      print("API 호출 성공");
+      print("sellerInfo: $sellerInfo"); // sellerInfo의 상태 출력
+      setState(() {
+        buttonText = "요청중";
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("사업자 인증 요청이 성공하였습니다.")),
+      );
+    } else {
+      print("API 호출 실패");
+      // 오류 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("사업자 인증 요청이 실패했습니다.")),
+      );
+    }
   }
 
   Widget receiverZipTextField() {

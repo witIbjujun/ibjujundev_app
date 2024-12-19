@@ -470,7 +470,70 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
         });
       } else {
         print("캐시가 충분합니다: " + cashInt.toString());
+        // 이미지 저장
+        saveImages(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState);
+
         // 다이얼로그 표시
+
+      }
+    } else {
+      // 오류 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("캐시 조회가 실패하였습니다.")),
+      );
+    }
+  }
+
+  // [서비스] 이미지 저장
+  Future<void> saveImages(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
+      dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
+      , dynamic cash, dynamic reqState) async {
+
+    // 이미지 확인
+    if (_images.isEmpty) {
+      // 이미지가 없으면 프로필 업데이트 호출
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        if (context.mounted) {
+          // 필요한 데이터 수집
+          String sllrNo = estimateRequestInfoForSend['companyId'];
+          String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'];
+          String estNo = estimateRequestInfoForSend['estNo'];
+          String seq = estimateRequestInfoForSend['seq'];
+          String estimateContent = estimateContentController.text;
+          String inputItemPrice1 = itemPrice1Controller.text;
+
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return PointOKDialog(
+                sllrNo: sllrNo,
+                sllrClerkNo: sllrClerkNo,
+                estNo: estNo,
+                seq: seq,
+                estimateContent: estimateContent,
+                inputItemPrice1: inputItemPrice1,
+                reqState: reqState,
+                fileInfo: null,
+                onSuccess: () {
+                  // 다이얼로그가 닫힌 후 이동 로직
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
+                  );
+                },
+              );
+            },
+          );
+        }
+      });
+    } else {
+      final fileInfo = await sendFilePostRequest("fileUpload", _images);
+      if (fileInfo == "FAIL") {
+        print("파일 실패");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
+      } else {
+        // 파일 업로드 성공
+        print("파일 성공");
         WidgetsBinding.instance?.addPostFrameCallback((_) {
           if (context.mounted) {
             // 필요한 데이터 수집
@@ -481,6 +544,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             String estimateContent = estimateContentController.text;
             String inputItemPrice1 = itemPrice1Controller.text;
 
+            // 다이얼로그 표시 후, 성공적인 이미지 저장 후 화면 이동
             showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -491,20 +555,24 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   seq: seq,
                   estimateContent: estimateContent,
                   inputItemPrice1: inputItemPrice1,
-                  reqState: reqState, // 인자로 전달된 reqState 사용
+                  reqState: reqState,
+                  fileInfo: fileInfo,
+                  onSuccess: () {
+                    // 다이얼로그가 닫힌 후에 화면 이동
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
+                    );
+                  },
                 );
               },
             );
           }
         });
       }
-    } else {
-      // 오류 처리
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("캐시 조회가 실패하였습니다.")),
-      );
     }
   }
+
 
   // [서비스] 판매자 상세 이미지 조회
   Future<void> getSellerDetailImageList() async {
@@ -532,6 +600,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
 }
 
+// PointOKDialog 클래스에 onSuccess 콜백 추가
 class PointOKDialog extends StatelessWidget {
   final String sllrNo;
   final String sllrClerkNo;
@@ -540,12 +609,13 @@ class PointOKDialog extends StatelessWidget {
   final String estimateContent;
   final String inputItemPrice1;
   final String reqState;
+  final dynamic fileInfo;
+  final VoidCallback onSuccess; // 추가된 부분
 
-  PointOKDialog({required this.sllrNo, required this.sllrClerkNo, required this.estNo, required this.seq, required this.estimateContent, required this.inputItemPrice1, required this.reqState});
+  PointOKDialog({required this.sllrNo, required this.sllrClerkNo, required this.estNo, required this.seq, required this.estimateContent, required this.inputItemPrice1, required this.reqState, required this.fileInfo, required this.onSuccess}); // 수정된 부분
 
   @override
   Widget build(BuildContext context) {
-
     return AlertDialog(
       title: Text('캐시가 충분합니다.'),
       content: Text('*견적을 보내기 위해 캐시가 1200 차감됩니다.'),
@@ -557,20 +627,11 @@ class PointOKDialog extends StatelessWidget {
           ),
           onPressed: () {
             // 충전 로직 추가
-            // Navigator.of(context).pop(); // 다이얼로그 닫기
-            //String estNo = estimateRequestInfoForSend['estNo'] ?? "";
-            String sllrNo = this.sllrNo;
-            String sllrClerkNo = this.sllrClerkNo;
-            String estNo = this.estNo;
-            String seq = this.seq;
-            String estimateContent = this.estimateContent;
-            String inputItemPrice1 = this.inputItemPrice1;
-            String reqState = this.reqState;
-            
-            // 견적발송 당 차감 캐쉬도 정의 해야함
             String cash = "1200";
-
-            saveImages(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState);
+            updateEstimateInfo2(
+                context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, fileInfo
+            );
+            onSuccess(); // 성공 시 콜백 호출
             Navigator.of(context).pop();
           },
           child: Text('보내기'),
@@ -589,31 +650,6 @@ class PointOKDialog extends StatelessWidget {
     );
   }
 
-  // [서비스] 이미지 저장
-  Future<void> saveImages(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
-      dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
-      , dynamic cash, dynamic reqState) async {
-
-    // 이미지 확인
-    if (_images.isEmpty) {
-      // 이미지가 없으면 프로필 업데이트 호출
-      updateEstimateInfo2(
-          context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, null
-      );
-    } else {
-      final fileInfo = await sendFilePostRequest("fileUpload", _images);
-      if (fileInfo == "FAIL") {
-        print("파일 실패");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
-      } else {
-        // 파일 업로드 성공, 프로필 업데이트 호출
-        print("파일 성공");
-        updateEstimateInfo2(
-            context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, fileInfo
-        );
-      }
-    }
-  }
 
   // [서비스]견적 정보 저장
   Future<void> updateEstimateInfo2(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
@@ -622,7 +658,7 @@ class PointOKDialog extends StatelessWidget {
     // REST ID
     String restId = "updateEstimateInfo";
 
-    print("estNo : " + estNo);
+    print("sllrNo : " + sllrNo);
     print("inputItemPrice1 : " + inputItemPrice1);
     print("estimateContent : " + estimateContent);
 
@@ -646,10 +682,15 @@ class PointOKDialog extends StatelessWidget {
 
     // API 응답 처리
     if (response != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
+      );
       // 성공적으로 저장된 경우 처리
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showSuccessDialog(context); // 다이얼로그 표시
-      });
+      //_showSuccessDialog(context); // 다이얼로그 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("견적이 성공적으로 발송되었습니다.")),
+      );
     } else {
       // 오류 처리
       ScaffoldMessenger.of(context).showSnackBar(

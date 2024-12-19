@@ -26,7 +26,7 @@ import '../home/wit_home_sc.dart';
 class SellerProfileDetail extends StatefulWidget {
   //final dynamic sllrNo;
   final dynamic sllrNo; // 초기 sllrNo를 받기 위한 변수
-  const SellerProfileDetail({Key? key, required this.sllrNo}) : super(key: key);
+  const SellerProfileDetail({super.key, required this.sllrNo});
 
   @override
   State<StatefulWidget> createState() {
@@ -46,7 +46,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   @override
   void initState() {
     super.initState();
-    sllrNo = widget.sllrNo; // 초기값 설정
+    sllrNo = widget.sllrNo.toString(); // 초기값 설정
+    print("상세 sllrNo : " + sllrNo.toString() );
     getSellerInfo(sllrNo);
     getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵니다.
   }
@@ -56,11 +57,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
     String restId = "getSellerInfo";
 
     print("aaaaa:" + sllrNo.toString());
-    int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0; // 기본값은 0
+    //int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0; // 기본값은 0
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": sllrNoInt,
+      "sllrNo": sllrNo,
     });
 
 
@@ -417,7 +418,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Board(widget.sllrNo,"C1")),
+                                builder: (context) => Board(sellerInfo["sllrNo"],"C1")),
                           );
                         },
                         child: Row(
@@ -461,12 +462,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         onPressed: () {
                           // 버튼 클릭 시 수행할 작업 추가
                           // 가입정보 변경 페이지로 이동
-                          int sllrNoForModity = widget.sllrNo;
-                          String aaa = widget.sllrNo.toString();
+                          String aaa = sellerInfo["sllrNo"].toString();
+                          print("aaaaa123123:" + aaa);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SellerProfileModify(sllrNo: sellerInfo["sllrNo"]),
+                              builder: (context) => SellerProfileModify(sllrNo: sellerInfo["sllrNo"].toString()),
                             ),
                           );
                         },
