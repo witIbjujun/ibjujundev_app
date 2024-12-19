@@ -4,14 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../../util/wit_api_ut.dart';
+import '../models/main_view_model.dart';
 import '../models/userInfo.dart';
 import '../wit_home_sc.dart';
 
 // 데이터를 조회하는 비동기 함수
-Future<void> getUserInfo(String kakaoId,String Idnum) async {
+Future<void> getUserInfo(MainViewModel viewModel,String Idnum) async {
+
+  String? kakaoId = viewModel.userInfo?.id; // Kakao ID
+  String? nickName = viewModel.userInfo?.nickName; // Kakao ID
+  String? profileImageUrl = viewModel.userInfo?.profileImageUrl; // Kakao ID
+  String? email = viewModel.userInfo?.email; // Kakao ID
+
+
+  //String? kakaoId =  "3776364728"; // Kakao ID
+  //String? nickName = "이재명"; // Kakao ID
+  //String? profileImageUrl = "https://k.kakaocdn.net/dn/6q8Rc/btsHRu6jL8c/Sg8L10BEavaSQJ1w9qKgeK/img_640x640.jpg"; // Kakao ID
+  //String? email = "jaemeong3131@kakao.com"; // Kakao ID
+
 
   String restId = "getUserInfo";
-  final param = jsonEncode({"kakaoId": kakaoId,
+  final param = jsonEncode({
+    "kakaoId": kakaoId,
+    "nickName": nickName,
+    "profileImageUrl": profileImageUrl,
+    "email": email,
     "clerkNo": Idnum});
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수

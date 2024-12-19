@@ -24,9 +24,17 @@ class _kakoLoingHomeState extends State<kakoLoingHome> {
             '${viewModel.isLogined}',
             style: WitHomeTheme.title,
           ),
+          const SizedBox(height: 16), // 간격 추가
+          if (viewModel.userInfo != null) ...[
+            Text('회원번호: ${viewModel.userInfo?.id ?? "정보 없음"}'),
+            Text('닉네임: ${viewModel.userInfo?.nickName ?? "정보 없음"}'),
+            Text('이미지 URL: ${viewModel.userInfo?.profileImageUrl ?? "정보 없음"}'),
+            Text('이메일: ${viewModel.userInfo?.email ?? "정보 없음"}'),
+          ]else
+            const Text('로그인하지 않았습니다.'),
           ElevatedButton(
             onPressed: () async{
-              await viewModel.login();
+              await viewModel.login(context);
               setState(() {  });
             },
             child: const Text('Login'),

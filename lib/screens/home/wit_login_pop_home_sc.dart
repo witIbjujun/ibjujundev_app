@@ -40,7 +40,7 @@ class _loingPopHomeState extends State<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo('', '72091587');
+                  getUserInfo(viewModel, '72091587');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -57,7 +57,7 @@ class _loingPopHomeState extends State<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo('', '72091586');
+                  getUserInfo(viewModel, '72091586');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -74,7 +74,7 @@ class _loingPopHomeState extends State<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo('', '72091588');
+                  getUserInfo(viewModel, '72091588');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -91,7 +91,7 @@ class _loingPopHomeState extends State<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo('', '72091584');
+                  getUserInfo(viewModel, '72091584');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -107,10 +107,13 @@ class _loingPopHomeState extends State<loingPopHome> {
           SizedBox(height: 8),
           GestureDetector(
             onTap: () async {
-              bool isLoginSuccessful = await viewModel.login();
+              bool isLoginSuccessful = await viewModel.login(context);
               print('아파트 번호 모야???$isLoginSuccessful');
               if (isLoginSuccessful) {
                 // 로그인 성공 시 콜백 호출
+                String userId = _idController.text.trim();
+                getUserInfo(viewModel, '');
+
                 if (widget.onLoginSuccess != null) {
                   widget.onLoginSuccess!();
                 }
@@ -134,4 +137,23 @@ class _loingPopHomeState extends State<loingPopHome> {
       ),
     );
   }
+
+  void showAlertWithUserId(BuildContext context, String userId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('입력된 아이디'),
+        content: Text('입력된 아이디: $userId'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // AlertDialog 닫기
+            },
+            child: const Text('확인'),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

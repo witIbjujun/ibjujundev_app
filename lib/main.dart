@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/models/main_view_model.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_kakaoLogin.dart';
+import 'package:witibju/screens/home/wit_kakaoLogin_home_sc.dart';
 
 
 void main() {
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       ///home: NavigationHomeScreen(),  기존 밀어서
     home: HomeScreen(), //현재 메인
-      //home: PreInspaction(),
+      /// home: kakoLoingHome(),
 
       ///home: ImageSlider(),
       //home: Board("B01"),  //게시판

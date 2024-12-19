@@ -5,6 +5,8 @@ class UserInfo {
   final String? email;
   final String? clerkNo;
   final String? kakaoId;
+  final String? birthday;
+  final String? birthyear;
   final String? role;
   final String? name;
   final String? mainAptNo;
@@ -19,6 +21,8 @@ class UserInfo {
     this.email,
     this.clerkNo,
     this.kakaoId,
+    this.birthday,
+    this.birthyear,
     this.role,
     this.name,
     this.mainAptNo,
@@ -29,7 +33,7 @@ class UserInfo {
 
   @override
   String toString() {
-    return 'UserInfo{id: $id, nickName: $nickName, profileImageUrl: $profileImageUrl, email: $email}';
+    return 'UserInfo{id: $id, nickName: $nickName, profileImageUrl: $profileImageUrl, email: $email, birthday: $birthday, birthyear: $birthyear}';
   }
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
@@ -40,6 +44,8 @@ class UserInfo {
       email: json['email'],
       clerkNo: json['clerkNo'],
       kakaoId: json['kakaoId'],
+      birthday: json['birthday'],
+      birthyear: json['birthyear'],
       mainAptNo: json['mainAptNo'],
       mainAptNm: json['mainAptNm'],
       role: json['role'],
@@ -57,6 +63,8 @@ class UserInfo {
       'email': email,
       'clerkNo': clerkNo,
       'kakaoId': kakaoId,
+      'birthday': birthday,
+      'birthyear': birthyear,
       'mainAptNo': mainAptNo,
       'mainAptNm': mainAptNm,
       'role': role,

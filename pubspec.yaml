@@ -48,7 +48,7 @@ dependencies:
   get: ^4.6.0 # REST API 호출
 
   #카카오
-  kakao_flutter_sdk_user: ^1.9.5 # 카카오 로그인 API 패키지
+  kakao_flutter_sdk: ^1.9.5 # 전체 추가
 
   flutter_secure_storage: ^8.0.0 # Session
   #채팅
