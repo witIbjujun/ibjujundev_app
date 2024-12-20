@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:witibju/screens/home/carousel_slider.dart';
 import 'package:witibju/screens/home/models/main_view_model.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
-import 'package:witibju/screens/home/wit_kakaoLogin.dart';
+import 'package:witibju/screens/home/login/wit_kakaoLogin.dart';
 
 class kakoLoingHome extends StatefulWidget {
   @override

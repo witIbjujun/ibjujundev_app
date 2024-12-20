@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:witibju/screens/home/models/main_view_model.dart';
-import 'package:witibju/screens/home/widgets/wit_user_login.dart';
+import 'package:witibju/screens/home/login/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
-import 'package:witibju/screens/home/wit_kakaoLogin.dart';
+import 'package:witibju/screens/home/login/wit_kakaoLogin.dart';
 
 class loingPopHome extends StatefulWidget {
   final VoidCallback? onLoginSuccess; // 로그인 성공 시 호출되는 콜백 함수
@@ -36,11 +36,18 @@ class _loingPopHomeState extends State<loingPopHome> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   String userId = _idController.text.trim();
 
-                  print('입력된 아이디: $userId');
-                  getUserInfo(viewModel, '72091587');
+                  int result = await getChckUserInfo(viewModel);
+
+                  if(result == 0){
+                    showRegistrationPopup(context);
+                  }else{
+                    getUserInfo(viewModel, '72091587');
+                  }
+                  print('입력된 11111111: $result');
+                  ///getUserInfo(viewModel, '72091587');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -155,5 +162,58 @@ class _loingPopHomeState extends State<loingPopHome> {
       ),
     );
   }
+
+  void showRegistrationPopup(BuildContext context) {
+    // 최상위 컨텍스트를 사용
+    final rootContext = Navigator.of(context).overlay!.context;
+
+    // 기존 Dialog 닫기
+    Navigator.of(context).pop();
+
+    // 새로운 팝업 표시
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: rootContext,
+        barrierColor: Colors.transparent, // 배경색 투명
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Color(0xFFF5F5FF), // 원하는 팝업 배경색 설정
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            title: Text(
+              '등록 선택',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            content: Text('등록 유형을 선택하세요:'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // 팝업 닫기
+                  print('사용자 등록 선택');
+                },
+                child: Text(
+                  '사용자 등록',
+                  style: TextStyle(color: Colors.purple),
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // 팝업 닫기
+                  print('판매자 등록 선택');
+                },
+                child: Text(
+                  '판매자 등록',
+                  style: TextStyle(color: Colors.purple),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+
 
 }

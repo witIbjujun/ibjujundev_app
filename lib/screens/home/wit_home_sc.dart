@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
-import 'package:witibju/screens/home/widgets/wit_user_login.dart';
+import 'package:witibju/screens/home/login/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/home/wit_compay_view_sc_.dart';
 import 'package:witibju/screens/home/wit_home_get_estimate.dart';
@@ -15,8 +15,9 @@ import '../../main.dart';
 import '../../util/wit_api_ut.dart';
 import '../question/wit_question_main_sc.dart';
 import '../seller/wit_seller_profile_detail_sc.dart';
+import 'login/wit_user_loginStep1.dart';
 import 'models/main_view_model.dart';
-import 'wit_login_pop_home_sc.dart'; // 로그인 파송창 파일을 임포트
+import 'login/wit_login_pop_home_sc.dart'; // 로그인 파송창 파일을 임포트
 import 'models/category.dart';
 import 'models/userInfo.dart';
 ///메인 홈
@@ -30,7 +31,6 @@ class HomeScreen extends StatefulWidget  {
 class _HomeScreenState extends State<HomeScreen> {
   ///로그인 상태를 true로 설정해서 테스트 (실제로는 로그인 여부를 판단하는 로직이 필요)
 
-
   // SelectBox에 표시할 옵션 리스트
   Map<String, String> options = {};
   String selectedOption = ""; // 기본 선택된 옵션
@@ -38,8 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
   String  isLogined = "false";
-
-
 
   @override
   void initState() {
@@ -370,8 +368,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
     return Container(
@@ -411,24 +407,78 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// 로그인 다이얼로그를 보여주는 메서드
   void _showLoginDialog(BuildContext context) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
+      ),
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: 300,
-            padding: const EdgeInsets.all(20.0),
-            child: loingPopHome(
-              onLoginSuccess: () {
-                setState(() {
-                  isLogined = "true";
-                });
-              },
-            ),
+        return Container(
+          padding: const EdgeInsets.all(20.0),
+          height: 250,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "로그인 선택",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop(); // 팝업 닫기
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => WitUserLoginStep1(), // 사용자 등록 화면으로 이동
+                    ),
+                  );
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                    color: WitHomeTheme.nearlyslowBlue,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    "사용자 등록",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // 팝업 닫기
+                  // 관리자 등록 로직 추가
+                  print("관리자 등록 선택됨");
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: const Text(
+                  "관리자 등록",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },

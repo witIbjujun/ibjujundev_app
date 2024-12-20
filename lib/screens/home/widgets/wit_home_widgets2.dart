@@ -37,7 +37,7 @@ class _ImageSliderState extends State<ImageSlider> {
 
   void _startAutoSlide() {
     _timer?.cancel(); // 기존 타이머 취소
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 8), (_) {
       if (_pageController.hasClients) {
         setState(() {
           _currentPage = (_currentPage + 1) % _images.length;
