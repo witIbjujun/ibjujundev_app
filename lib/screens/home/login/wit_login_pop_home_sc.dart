@@ -44,7 +44,7 @@ class _loingPopHomeState extends State<loingPopHome> {
                   if(result == 0){
                     showRegistrationPopup(context);
                   }else{
-                    getUserInfo(viewModel, '72091587');
+                    getUserInfo(context,viewModel,'1', '72091587');
                   }
                   print('입력된 11111111: $result');
                   ///getUserInfo(viewModel, '72091587');
@@ -64,7 +64,7 @@ class _loingPopHomeState extends State<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo(viewModel, '72091586');
+                  getUserInfo(context,viewModel,'1', '72091586');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -81,7 +81,7 @@ class _loingPopHomeState extends State<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo(viewModel, '72091588');
+                  getUserInfo(context,viewModel,'1', '72091588');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -98,7 +98,7 @@ class _loingPopHomeState extends State<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo(viewModel, '72091584');
+                  getUserInfo(context,viewModel,'1', '72091584');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
@@ -119,7 +119,7 @@ class _loingPopHomeState extends State<loingPopHome> {
               if (isLoginSuccessful) {
                 // 로그인 성공 시 콜백 호출
                 String userId = _idController.text.trim();
-                getUserInfo(viewModel, '');
+                getUserInfo(context,viewModel, '1','72091587');
 
                 if (widget.onLoginSuccess != null) {
                   widget.onLoginSuccess!();
