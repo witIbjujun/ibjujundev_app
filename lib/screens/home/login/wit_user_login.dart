@@ -9,14 +9,14 @@ import '../models/userInfo.dart';
 import '../wit_home_sc.dart';
 
 
-Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String aptNo,String clerkNo) async {
+Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String clerkNo) async {
 
   String? kakaoId = viewModel.userInfo?.id; // Kakao ID
   String? nickName = viewModel.userInfo?.nickName; // Kakao ID
   String? profileImageUrl = viewModel.userInfo?.profileImageUrl; // Kakao ID
   String? email = viewModel.userInfo?.email; // Kakao ID
-
-
+  String? mainAptNo = viewModel.userInfo?.mainAptNo; // Kakao ID
+  String? mainAptPyoung = viewModel.userInfo?.mainAptPyoung; // Kakao ID
   //String? kakaoId =  "3776364728"; // Kakao ID
   //String? nickName = "이재명"; // Kakao ID
  //String? profileImageUrl = "https://k.kakaocdn.net/dn/6q8Rc/btsHRu6jL8c/Sg8L10BEavaSQJ1w9qKgeK/img_640x640.jpg"; // Kakao ID
@@ -28,7 +28,8 @@ Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String apt
     "nickName": nickName,
     "profileImageUrl": profileImageUrl,
     "email": email,
-    "aptNo": aptNo,
+    "aptNo": mainAptNo,
+    "mainAptPyoung": mainAptPyoung,
     "clerkNo":clerkNo});
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
