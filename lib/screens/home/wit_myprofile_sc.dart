@@ -238,7 +238,7 @@ class _MyProfileState extends State<MyProfile> {
 
               // 카시, 거래내역, 겸재내역, MY 체크리스트, 커뮤니티, 공지사항 리스트 항목 디자인
               _buildListTile(Icons.attach_money, '캐시'),
-              _buildListTile(Icons.history, '거래내역'),
+              ///_buildListTile(Icons.history, '거래내역'),
               GestureDetector(
                 onTap: () {
                   Navigator.push(
