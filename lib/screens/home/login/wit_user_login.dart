@@ -29,7 +29,7 @@ Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String cle
     "profileImageUrl": profileImageUrl,
     "email": email,
     "aptNo": mainAptNo,
-    "mainAptPyoung": mainAptPyoung,
+    "pyoung": mainAptPyoung,
     "clerkNo":clerkNo});
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수

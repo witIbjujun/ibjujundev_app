@@ -7,11 +7,10 @@ import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
 import '../board/wit_board_main_sc.dart';
+import 'models/category.dart';
 import 'models/company.dart';
 
-/// 단건 견적상세
-dynamic companyInfo = {};
-
+/// `단건 견적상세
 class DetailCompany extends StatefulWidget {
   final String title;
   final String categoryId;
@@ -26,11 +25,12 @@ class DetailCompany extends StatefulWidget {
 
 class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateMixin {
   List<Company> companyList = [];
+  Category? categoryInfo; // 한 건의 카테고리 정보를 저장
   final List<String> tabNames = ['견적서비스', '아파트 커뮤니티'];
-  final List<String> communityTabNames = ['내 APT', 'HOT 정보', '업체후기']; // 10/21
-  List<String> selectedItems = []; // 선택된 항목 리스트
+  final List<String> communityTabNames = ['내 APT', 'HOT 정보', '업체후기'];
+  List<String> selectedItems = [];
   late TabController _tabController;
-  late TabController _communityTabController; // 10/21 아파트 커뮤니티 탭 컨트롤러
+  late TabController _communityTabController;
   bool isAllSelected = true;
   TextEditingController _additionalRequirementsController = TextEditingController();
 
@@ -38,32 +38,61 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _communityTabController = TabController(length: 3, vsync: this); // 10/21 아파트 커뮤니티 탭 컨트롤러 초기화
+    _communityTabController = TabController(length: 3, vsync: this);
+
+    // 카테고리 정보 조회
+    getCategoryInfo(widget.categoryId);
 
     // 회사 목록 조회
     getCompanyList(widget.categoryId);
 
     // 탭 변경 시 상태 업데이트
     _tabController.addListener(() {
-      setState(() {}); // 탭 변경 시 상태 업데이트
+      setState(() {});
     });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _communityTabController.dispose(); // 10/21 커뮤니티 탭 컨트롤러 해제
+    _communityTabController.dispose();
     super.dispose();
   }
 
-  // Board 화면으로 이동하는 메서드 - 10/21 (이제 사용하지 않음)
-  void navigateToBoard(String boardType) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Board(1,boardType),
-      ),
-    );
+  Future<void> getCategoryInfo(String categoryId) async {
+    String restId = "getCategoryInfo";
+    categoryInfo = null;
+    print("카테고리 번호가?? = "+categoryId);
+    final param = jsonEncode({"categoryId": categoryId});
+    try {
+      final response = await sendPostRequest(restId, param);
+
+      if (response != null && response is List<dynamic> && response.isNotEmpty) {
+        setState(() {
+          categoryInfo = Category().parseCategoryList(response)?.first; // 서버에서 넘어온 첫 번째 데이터를 Category 객체로 변환
+          print('카테고리 정보: ${categoryInfo?.categoryNm}');
+        });
+      } else {
+        print('카테고리 정보가 없습니다.');
+      }
+    } catch (e) {
+      print('카테고리 정보 조회 중 오류 발생: $e');
+    }
+  }
+
+  Future<void> getCompanyList(String categoryId) async {
+    String restId = "getCompanyList";
+    final param = jsonEncode({"categoryId": widget.categoryId});
+    try {
+      final _companyList = await sendPostRequest(restId, param);
+      setState(() {
+        companyList = Company().parseCompanyList(_companyList) ?? [];
+        selectedItems = companyList.map((company) => company.companyId).toList();
+        isAllSelected = true;
+      });
+    } catch (e) {
+      print('회사 목록 조회 중 오류 발생: $e');
+    }
   }
 
   @override
@@ -80,6 +109,32 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                   children: [
                     SizedBox(height: MediaQuery.of(context).padding.top),
                     getAppBarUI(),
+                    if (categoryInfo != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              categoryInfo?.imagePath ?? '',
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                            SizedBox(width: 16.0),
+                            Expanded(
+                              child: Text(
+                                categoryInfo?.detail ?? '',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[700],
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     WitHomeWidgets.getTabBarUI(_tabController, tabNames),
                   ],
                 ),
@@ -89,83 +144,86 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                   controller: _tabController,
                   children: [
                     getEstimateService(),
-                    getCommunityTabs(), // 10/21 아파트 커뮤니티 탭 뷰 호출
+                    getCommunityTabs(),
                   ],
                 ),
               ),
             ],
           ),
         ),
-        bottomNavigationBar: _tabController.index == 0 // 견적서비스 탭일 때만 표시
-            ? Container(
-          color: Colors.white,
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "추가조건/요구사항",
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8.0),
-              TextField(
-                controller: _additionalRequirementsController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
-                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0), // 여백 조정
-                ),
-              ),
-              SizedBox(height: 14.0),
-              GestureDetector(
-                onTap: () async {
-                  // "견적 요청하기" 버튼 클릭 시
-                  bool isConfirmed = await DialogUtils.showConfirmationDialog(
-                    context: context,
-                    title: '견적 요청 확인',
-                    content: '견적 요청을 진행하시겠습니까?',
-                    confirmButtonText: '진행',
-                    cancelButtonText: '취소',
-                  );
-
-                  if (isConfirmed) {
-                    sendRequestInfo();
-                  }
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 50.0,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '견적 요청하기',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
+        bottomNavigationBar: _tabController.index == 0
+            ? buildBottomNavigationBar()
             : null,
       ),
     );
   }
 
-  // 10/21 아파트 커뮤니티 탭 뷰 위젯 생성
-  Widget getCommunityTabs() { // 10/21
+
+  Widget buildBottomNavigationBar() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "추가조건/요구사항",
+            style: TextStyle(
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8.0),
+          TextField(
+            controller: _additionalRequirementsController,
+            maxLines: 3,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
+              contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+            ),
+          ),
+          SizedBox(height: 14.0),
+          GestureDetector(
+            onTap: () async {
+              bool isConfirmed = await DialogUtils.showConfirmationDialog(
+                context: context,
+                title: '견적 요청 확인',
+                content: '견적 요청을 진행하시겠습니까?',
+                confirmButtonText: '진행',
+                cancelButtonText: '취소',
+              );
+
+              if (isConfirmed) {
+                sendRequestInfo();
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              height: 50.0,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Center(
+                child: Text(
+                  '견적 요청하기',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getCommunityTabs() {
     return Column(
       children: [
         TabBar(
@@ -179,34 +237,17 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
           child: TabBarView(
             controller: _communityTabController,
             children: [
-              Board(1,'B1'), // "내 APT" 탭
-              Board(1,'H1'), // "HOT 정보" 탭
-              Board(1,'C1'), // "업체후기" 탭
+              Board(1, 'B1'),
+              Board(1, 'H1'),
+              Board(1, 'C1'),
             ],
           ),
         ),
       ],
     );
-  } // 10/21
-
-  // 회사 목록 조회 메서드 - 2024-10-19
-  Future<void> getCompanyList(String categoryId) async {
-    String restId = "getCompanyList";
-    final param = jsonEncode({"categoryId": widget.categoryId});
-    try {
-      final _companyList = await sendPostRequest(restId, param);
-      setState(() {
-        companyList = Company().parseCompanyList(_companyList) ?? [];
-        // 기본적으로 모든 회사가 선택되도록 selectedItems 초기화 - 2024-10-19
-        selectedItems = companyList.map((company) => company.companyId).toList();
-        isAllSelected = true;  // 처음에는 전체 선택 상태로 설정 - 2024-10-19
-      });
-    } catch (e) {
-      print('회사 목록 조회 중 오류 발생: $e');
-    }
   }
 
-    Widget getAppBarUI() {
+  Widget getAppBarUI() {
     return AppBar(
       backgroundColor: WitHomeTheme.nearlyWhite,
       title: Text(widget.title),
@@ -309,7 +350,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
-                          'assets/images/star.png', // star.png 파일 경로
+                          'assets/images/star.png',
                           width: 20,
                           height: 20,
                         ),
@@ -336,7 +377,6 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
       ),
     );
   }
-
 
   Future<void> sendRequestInfo() async {
     String restId = "saveRequestInfo";

@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
   Future<void> _loadOptions() async {
-    String? aptNameString  = await secureStorage.read(key: 'aptName'); //아파트 명칭
+    String? aptNameString  = await secureStorage.read(key: 'mainAptNm'); //아파트 명칭
     String? aptNoString  = await secureStorage.read(key: 'aptNo'); //아파트 번호
 
     print('_loadOptions 아파트 이름: $aptNameString');
