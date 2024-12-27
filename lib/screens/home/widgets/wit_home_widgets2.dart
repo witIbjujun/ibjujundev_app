@@ -70,8 +70,7 @@ class _ImageSliderState extends State<ImageSlider> {
     final double height = MediaQuery.of(context).size.height * widget.heightRatio; // 외부에서 전달받은 비율로 높이 계산
     final double width = MediaQuery.of(context).size.width * widget.widthRatio;   // 외부에서 전달받은 비율로 너비 계산
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Stack(
       children: [
         SizedBox(
           height: height,
@@ -88,7 +87,7 @@ class _ImageSliderState extends State<ImageSlider> {
                       context,
                       MaterialPageRoute(builder: (context) => PreInspaction()),
                     );
-                  }else{
+                  } else {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Question(qustCd: 'Q10001')),
@@ -108,31 +107,29 @@ class _ImageSliderState extends State<ImageSlider> {
             },
           ),
         ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 16.0, top: 8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: List.generate(
-                _images.length,
-                    (index) => GestureDetector(
-                  onTap: () {
-                    _onPageChanged(index);
-                    _pageController.animateToPage(
-                      index,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(4),
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      color: _currentPage == index ? Colors.blue : Colors.grey,
-                      shape: BoxShape.circle,
-                    ),
+        Positioned(
+          bottom: 16.0, // 이미지 하단에서의 위치
+          right: 16.0,  // 이미지 우측에서의 위치
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(
+              _images.length,
+                  (index) => GestureDetector(
+                onTap: () {
+                  _onPageChanged(index);
+                  _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(4),
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: _currentPage == index ? Colors.blue : Colors.grey,
+                    shape: BoxShape.circle,
                   ),
                 ),
               ),
@@ -143,7 +140,6 @@ class _ImageSliderState extends State<ImageSlider> {
     );
   }
 }
-
 
 class DialogUtils {
   // 12/14: 공통 다이얼로그 메서드
@@ -185,7 +181,7 @@ class DialogUtils {
                 ),
               ),
               child: Text(
-                  cancelButtonText,
+                cancelButtonText,
                 style: TextStyle(
                   color: WitHomeTheme.lightText, // 취소 텍스트 색상
                   fontWeight: FontWeight.bold,
@@ -219,7 +215,6 @@ class DialogUtils {
     );
     return result ?? false; // result가 null이면 false 반환
   }
-
 
   static Future<void> showCustomDialog({
     required BuildContext context,

@@ -9,10 +9,15 @@ import 'package:witibju/util/wit_api_ut.dart';
 dynamic companyInfo = {};
 
 class PopularCourseListHorizontalView extends StatefulWidget {
-  const PopularCourseListHorizontalView({Key? key, this.callBack}) : super(key: key);
-
+  const PopularCourseListHorizontalView({
+    Key? key,
+    this.callBack,
+    required this.type, // type 매개변수를 추가
+  }) : super(key: key);
   /// 2024-08-10: 콜백 함수가 선택 상태를 포함하도록 수정
   final Function(Category, bool)? callBack;
+
+  final dynamic type;
 
   @override
   _PopularCourseListHorizontalViewState createState() => _PopularCourseListHorizontalViewState();
@@ -26,14 +31,14 @@ class _PopularCourseListHorizontalViewState extends State<PopularCourseListHoriz
   @override
   void initState() {
     super.initState();
-    getCategoryList();
+    getCategoryList(widget.type);
   }
 
-  Future<void> getCategoryList() async {
+  Future<void> getCategoryList(String type) async {
     String restId = "getCategoryList";
 
     final param = jsonEncode({
-      "inspId": companyInfo["inspId"],
+      "type": type,
     });
 
     final _categoryList = await sendPostRequest(restId, param);

@@ -287,13 +287,79 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 6),
               // ImageBox를 화면에 표시
               SizedBox(
-                height: 200,
-                child: ImageSlider(
-                  heightRatio: 0.18, // 화면 높이의 18%
-                  widthRatio: 0.9,  // 화면 너비의 90%
+                height: 280,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ImageSlider(
+                        heightRatio: 0.18, // 화면 높이의 18%
+                        widthRatio: 0.9,  // 화면 너비의 90%
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // getEstimate() 호출 시 화면 이동
+                        showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                          ),
+                          builder: (BuildContext context) {
+                            return Container(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ListTile(
+                                    title: const Text('Simple 인테리어 추천'),
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => getEstimate('S'),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  ListTile(
+                                    title: const Text('Standard 인테리어 추천'),
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => getEstimate('T'),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  ListTile(
+                                    title: const Text('Premium 인테리어 추천'),
+                                    onTap: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => getEstimate('P'),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Image.asset(
+                        'assets/home/guide.png', // 이미지 경로를 수정하세요
+                        height: 80, // 원하는 높이로 설정
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
                 ),  //이미지 슬라이스 위젯
               ),
               const SizedBox(height: 2),
@@ -316,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     if (isLoggedIn) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => getEstimate(),
+                          builder: (context) => getEstimate('A'),
                         ),
                       );
                     }else{

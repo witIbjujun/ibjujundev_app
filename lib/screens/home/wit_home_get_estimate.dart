@@ -18,7 +18,9 @@ import 'models/category.dart';
 dynamic companyInfo = {};
 
 class getEstimate extends StatefulWidget {
-  const getEstimate({super.key});
+  final String type; // 파라미터 추가
+
+  const getEstimate(this.type, {super.key});
 
   @override
   State<getEstimate> createState() => _getEstimateState();
@@ -39,7 +41,11 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     _tabController = TabController(length: 2, vsync: this);
 
     // 회사 목록 조회
-    getCategoryList();
+    ///getCategoryList(widget.type);
+
+
+    // 파라미터 확인
+    print("Passed Type Parameter: ${widget.type}");
   }
 
   @override
@@ -49,13 +55,14 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     super.dispose();
   }
 
-  Future<void> getCategoryList() async {
+  Future<void> getCategoryList(String type) async {
     String restId = "getCategoryList";
 
     final param = jsonEncode({
-      "inspId": companyInfo["inspId"],
+      "type": type,
     });
 
+    print('호출인건가??==='+type);
     final _categoryList = await sendPostRequest(restId, param);
 
     setState(() {
@@ -78,7 +85,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
             // 12/14: getPopularCourseUI 영역만 스크롤 가능하도록 설정
             Expanded(
               child: SingleChildScrollView(
-                child: getPopularCourseUI(), // 인기 코스 UI만 스크롤 가능
+                child: getPopularCourseUI(widget.type), // 인기 코스 UI만 스크롤 가능
               ),
             ),
             // 12/14: 추가조건/요구사항은 고정
@@ -115,9 +122,9 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
                         cancelButtonText: '취소',
                       );
 
-                        if (isConfirmed) {
-                          sendRequestInfo(); // 버튼 클릭 시 견적 요청 메서드 호출
-                        }
+                      if (isConfirmed) {
+                        sendRequestInfo(); // 버튼 클릭 시 견적 요청 메서드 호출
+                      }
                     },
                     child: Container(
                       width: double.infinity,
@@ -216,7 +223,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     return categoryList.indexWhere((category) => category.categoryId == categoryId);
   }
 
-  Widget getPopularCourseUI() {
+  Widget getPopularCourseUI(String type) {
     return Container(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0), // 좌우 패딩
@@ -227,6 +234,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
             Flexible(
               fit: FlexFit.loose,
               child: PopularCourseListHorizontalView(
+                type: type, // type 값을 전달
                 callBack: (Category category, bool isSelected) {
                   setState(() {
                     int index = findCategoryIndex(category.categoryId);
