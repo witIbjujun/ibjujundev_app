@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -22,6 +23,13 @@ Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String cle
  //String? profileImageUrl = "https://k.kakaocdn.net/dn/6q8Rc/btsHRu6jL8c/Sg8L10BEavaSQJ1w9qKgeK/img_640x640.jpg"; // Kakao ID
   //String? email = "jaemeong3131@kakao.com"; // Kakao ID
 
+  // 토큰 가져오기
+  String? token = await FirebaseMessaging.instance.getToken();
+
+
+  print("나의 토큰은???====$token");
+
+
   String restId = "getUserInfo";
   final param = jsonEncode({
     "kakaoId": kakaoId,
@@ -30,7 +38,8 @@ Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String cle
     "email": email,
     "aptNo": mainAptNo,
     "pyoung": mainAptPyoung,
-    "clerkNo":clerkNo});
+    "clerkNo":clerkNo,
+     "token":token});
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
   final secureStorage = FlutterSecureStorage(); //

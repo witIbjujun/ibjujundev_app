@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">>
 
     <!-- 통신 -->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -17,13 +18,22 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <!-- Android 애플리케이션이 포그라운드 서비스를 시작할 수 있도록 허용 -->
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
+    <!-- Android 애플리케이션이 app_push 허용 -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
 
     <application
         android:label="ibjujun"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
-        <!-- 카카오 로그인 커스텀 URL 스킨 설정 -->
+        <!-- FCM 기본 알림 채널 설정 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
+        <!-- 중요도가 높은 기본 알림 채널 설정 -->
+
+
+     <!-- 카카오 로그인 커스텀 URL 스킨 설정 -->
         <activity
             android:name="com.kakao.sdk.auth.authorization.authCode.KakaoWebViewActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"
@@ -67,7 +77,24 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
+            <!-- FCM 알림 클릭 이벤트 처리 -->
+            <intent-filter>
+                <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
+
+        <!-- FCM 메시지 수신을 위한 FirebaseMessagingService -->
+        <service
+            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+            android:exported="true"
+            tools:replace="android:exported">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
@@ -90,11 +117,7 @@
         </receiver>
 
     </application>
-    <!-- Required to query activities that can process text, see:
-         https://developer.android.com/training/package-visibility and
-         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
 
-         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>

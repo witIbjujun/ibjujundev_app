@@ -70,7 +70,10 @@ dependencies:
   # 권한 핸들러
   permission_handler: ^11.3.1
 
-
+  # Firsebase 연동
+  firebase_core: ^2.15.0
+  firebase_messaging: ^14.3.0
+  googleapis_auth: ^1.4.1
 
 dev_dependencies:
   flutter_test:

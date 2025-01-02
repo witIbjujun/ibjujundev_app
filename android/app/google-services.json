@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "901929410424",
+    "project_id": "ibjujun",
+    "storage_bucket": "ibjujun.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:901929410424:android:c7e51e78d3b70607b5728d",
+        "android_client_info": {
+          "package_name": "com.example.ibjujun"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCevXb_q82A_gzTLwKROuvA8Si1ogZ55yY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
