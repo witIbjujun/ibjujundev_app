@@ -71,9 +71,15 @@ dependencies:
   permission_handler: ^11.3.1
 
   # Firsebase 연동
-  firebase_core: ^2.15.0
-  firebase_messaging: ^14.3.0
+  #firebase_core: ^2.15.0
+  #firebase_messaging: ^14.3.0
+  firebase_core: ^3.9.0
+  firebase_messaging: ^15.1.6
   googleapis_auth: ^1.4.1
+
+  # Firebase SMS
+  firebase_auth: ^5.3.4
+  sms_autofill: ^2.0.0
 
 dev_dependencies:
   flutter_test:

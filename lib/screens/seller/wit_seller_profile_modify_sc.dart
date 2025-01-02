@@ -3,14 +3,18 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:sms_autofill/sms_autofill.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
 import '../../util/wit_code_ut.dart';
 import '../common/wit_ImageViewer_sc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SellerProfileModify extends StatefulWidget {
+
   final dynamic sllrNo;
   const SellerProfileModify({Key? key, required this.sllrNo}) : super(key: key);
 
@@ -21,6 +25,8 @@ class SellerProfileModify extends StatefulWidget {
 }
 
 class SellerProfileModifyState extends State<SellerProfileModify> {
+
+
   dynamic sellerInfo;
   String storeName = "";
   String serviceArea = "";
@@ -70,7 +76,12 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
   @override
   void initState() {
+    /*Firebase.initializeApp().whenComplete(() {
+      print("completed");
+      setState(() {});
+    });*/
     super.initState();
+    _startListeningForSms();
     getCodeList();
     getCategoryList();
   }
@@ -226,6 +237,10 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   TextEditingController receiverAddress1Controller = TextEditingController();
   TextEditingController receiverAddress2Controller = TextEditingController();
 
+  final TextEditingController _smsController = TextEditingController();
+  String? _verificationId;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   List<dynamic> selectedLocations = [];
   List<String> selectedServiceTypes = [];
   List<dynamic> selectedServiceWithAsPeriod = [];
@@ -257,11 +272,82 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   final TextEditingController contact1Controller = TextEditingController();
   final TextEditingController contact2Controller = TextEditingController();
   final TextEditingController contact3Controller = TextEditingController();
+  final TextEditingController verificationCodeController = TextEditingController();
+
 
   // 새로운 변수 추가
   String? selectedPostalCode;
   String? selectedAddress;
   final TextEditingController detailAddressController = TextEditingController();
+
+  void _startListeningForSms() async {
+    await SmsAutoFill().listenForCode;
+  }
+
+  // firebase
+  void _verifyPhone() async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: hp1Controller.text,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await _auth.signInWithCredential(credential);
+        _showAlertDialog('인증 완료', '로그인에 성공했습니다.');
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        print('인증 실패: ${e.message}');
+        _showAlertDialog('인증 실패', e.message ?? '알 수 없는 오류입니다.');
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        setState(() {
+          _verificationId = verificationId;
+          print("verificationId : " + verificationId);
+          print("resendToken : " + resendToken.toString());
+          _smsController.text = ""; // 입력란 초기화
+        });
+        print('코드가 전송되었습니다.');
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        setState(() {
+          _verificationId = verificationId;
+        });
+      },
+    );
+  }
+
+  void _signInWithPhoneNumber() async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: _verificationId!,
+        smsCode: _smsController.text,
+      );
+
+      await _auth.signInWithCredential(credential);
+      _showAlertDialog('로그인 성공', '전화번호 인증에 성공했습니다.');
+    } catch (e) {
+      print('로그인 실패: $e');
+      _showAlertDialog('로그인 실패', '인증 코드가 잘못되었습니다.');
+    }
+  }
+
+  void _showAlertDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  // firebase
 
   void _addLocation() {
     if (selectedLocation != null) {
@@ -371,6 +457,17 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       });
     }
   }
+
+  /*void verifyPhoneNumber() {
+    // 인증 API 호출 로직
+    String phoneNumber = hp1Controller.text;
+
+    // 여기서 API 호출
+    // 예시: await ApiService.verifyPhoneNumber(phoneNumber);
+
+    // 인증 코드 요청 후 결과 처리
+    // 성공 시 사용자에게 알림 표시
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -800,7 +897,33 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),
               ),
               // 담당자 연락처 입력란 수정
-              Row(
+              SizedBox(height: 16),
+              Column(
+                children: [
+                  TextField(
+                    controller: hp1Controller,
+                    decoration: InputDecoration(labelText: '휴대폰 번호'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _verifyPhone,
+                    child: Text('인증 코드 요청'),
+                  ),
+                  TextField(
+                    controller: _smsController,
+                    decoration: InputDecoration(labelText: '인증 코드 입력'),
+                    readOnly: false, // 사용자 입력을 방지
+                    onTap: () async {
+                      await SmsAutoFill().listenForCode; // SMS 코드 수신 시작
+                    },
+                  ),
+                  ElevatedButton(
+                    onPressed: _signInWithPhoneNumber,
+                    child: Text('인증 코드 확인'),
+                  ),
+                ],
+              ),
+              // 담당자 연락처 입력란
+              /*Row(
                 children: [
                   Expanded(
                     child: TextField(
@@ -811,8 +934,33 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                       ),
                     ),
                   ),
+                  IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () {
+                      verifyPhoneNumber(); // 인증 API 호출
+                    },
+                  ),
                 ],
               ),
+              SizedBox(height: 16), // 간격 조정
+              ElevatedButton(
+                onPressed: () {
+                  // 인증 코드 확인 로직 추가
+                  String verificationCode = verificationCodeController.text;
+                  // 예시: await ApiService.verifyCode(verificationCode);
+                },
+                child: Text('인증 확인'),
+              ),
+              SizedBox(height: 16), // 간격 조정
+              // 인증 문자 입력란
+              TextField(
+                controller: verificationCodeController,
+                decoration: InputDecoration(
+                  labelText: '인증 코드 입력',
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
+              SizedBox(height: 16),*/
               receiverZipTextField(),
               receiverAddress1TextField(),
               receiverAddress2TextField(),

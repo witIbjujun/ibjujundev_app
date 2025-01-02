@@ -21,6 +21,10 @@
     <!-- Android 애플리케이션이 app_push 허용 -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
 
+    <!-- Android 애플리케이션이 SMS수신 허용 -->
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+
     <application
         android:label="ibjujun"
         android:name="${applicationName}"

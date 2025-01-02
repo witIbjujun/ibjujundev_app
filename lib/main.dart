@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/models/main_view_model.dart';
-import 'package:witibju/screens/home/wit_home2.dart';
+// import 'package:witibju/screens/home/wit_home2.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/login/wit_kakaoLogin.dart';
 import 'package:witibju/screens/home/login/wit_kakaoLogin_home_sc.dart';
-import 'package:witibju/util/wit_apppush.dart';
+// import 'package:witibju/util/wit_apppush.dart';
 
 /// 백그라운드 메시지 처리 함수
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
