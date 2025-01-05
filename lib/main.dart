@@ -27,13 +27,19 @@ Future<void> main() async {
   // 백그라운드 메시지 처리
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-
   // 알림 권한 요청
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
     badge: true,
     sound: true,
   );
+
+  // 포그라운드 메시지 핸들러 등록
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print("포그라운드에서 메시지 수신: ${message.notification?.title}");
+    print("내용: ${message.notification?.body}");
+  });
+
 
   if (settings.authorizationStatus == AuthorizationStatus.denied) {
     print("알림 권한이 거부되었습니다.");

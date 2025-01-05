@@ -13,6 +13,7 @@ import 'package:witibju/screens/home/wit_myprofile_sc.dart';
 import 'dart:convert';
 import '../../main.dart';
 import '../../util/wit_api_ut.dart';
+import '../../util/wit_apppush.dart';
 import '../question/wit_question_main_sc.dart';
 import '../seller/wit_seller_profile_detail_sc.dart';
 import 'login/wit_user_loginStep1.dart';
@@ -143,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final mainViewModel = Provider.of<MainViewModel>(context);
-
+    // FirebaseMessageService 초기화
+    FirebaseMessageService.initialize(context);
     return Container(
       color: WitHomeTheme.nearlyWhite,
       child: Scaffold(
