@@ -62,7 +62,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                   ),
                   SizedBox(width: 8), // 아파트명과 이름 사이의 간격
                   Text(
-                    request['prsnName'], // 요청자명
+                    request['prsnName'] ?? '요청자명 없음', // null 체크 추가
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
                   ),
                 ],
@@ -155,6 +155,8 @@ class EstimateRequestListState extends State<EstimateRequestList> {
   Future<void> getEstimateRequestList() async {
     // REST ID
     String restId = "getEstimateRequestList";
+    print('sllrNo123123123: ' +  widget.sllrNo);
+    print('stat: ' +  widget.stat);
 
     // PARAM
     final param = jsonEncode({

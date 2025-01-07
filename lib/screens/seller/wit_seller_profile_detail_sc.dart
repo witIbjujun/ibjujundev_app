@@ -6,6 +6,7 @@ import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.d
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_view_sc.dart';
 import 'dart:convert';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:intl/intl.dart';
@@ -497,6 +498,28 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text("바로견적 서비스"),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                        ),
+                        onPressed: () {
+                          // 버튼 클릭 시 수행할 작업 추가
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SellerProfileView(sllrNo: sellerInfo["sllrNo"])),
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("파트너 프로필"),
                           ],
                         ),
                       ),

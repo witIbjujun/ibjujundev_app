@@ -33,6 +33,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String serviceItem = "";
   String itemPrice1 = "";
   String sllrContent = "";
+  String categoryContent = "";
   String sllrImage = "";
   String name = "";
   String ceoName = "";
@@ -172,6 +173,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         sllrContent = sellerInfo['sllrContent'] ?? '';
         sllrContentController.text = sllrContent;
 
+        categoryContent = sellerInfo['categoryContent'] ?? '';
+        categoryContentController.text = categoryContent;
+
         name = sellerInfo['name'] ?? '';
         nameController.text = name;
 
@@ -222,6 +226,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   TextEditingController itemPrice3Controller = TextEditingController();
   TextEditingController sllrContentController = TextEditingController();
   TextEditingController sllrImageController = TextEditingController();
+  TextEditingController categoryContentController = TextEditingController();
+  //TextEditingController sllrImageController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController ceoNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -501,6 +507,16 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),*/
               ),
               SizedBox(height: 10),
+              TextField(
+                controller: sllrContentController,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  labelText: '업체 설명',
+                  hintText: '업체 홍보문구를 입력하세요~',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 10),
               // 서비스 지역 선택 위젯
               Row(
                 children: [
@@ -633,15 +649,16 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               ),
               SizedBox(height: 10),
               TextField(
-                controller: sllrContentController,
+                controller: categoryContentController,
                 maxLines: 5,
                 decoration: InputDecoration(
-                  labelText: '업체 설명',
-                  hintText: '업체 홍보문구를 입력하세요~',
+                  labelText: '품목 설명',
+                  hintText: '판매 품목 설명을 입력하세요.~',
                   border: OutlineInputBorder(),
                 ),
               ),
               SizedBox(height: 10),
+
               // 이미지 리스트
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
@@ -986,12 +1003,14 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   String zipCode = receiverZipController.text;
                   String address1 = receiverAddress1Controller.text;
                   String address2 = receiverAddress2Controller.text;
+                  String categoryContent = categoryContentController.text;
                   //String serviceArea = selectedLocations.join(', '); // 리스트를 문자열로 변환
                   //String serviceItem = selectedServiceTypes.join(', '); // 리스트를 문자열로 변환
 
 
                   // 이미지 저장 후 프로필 업데이트
-                  await saveImages(storeName, itemPrice1, itemPrice2, itemPrice3, sllrContent, sllrImage, name, ceoName, email, storeCode, storeImage, hp1, zipCode, address1, address2, openDate);
+                  await saveImages(storeName, itemPrice1, itemPrice2, itemPrice3, sllrContent, sllrImage, name,
+                      ceoName, email, storeCode, storeImage, hp1, zipCode, address1, address2, openDate, categoryContent);
                   /*updateSellerProfile(
                       storeName,
                       itemPrice1,
@@ -1044,7 +1063,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       dynamic zipCode,
       dynamic address1,
       dynamic address2,
-      dynamic openDate) async {
+      dynamic openDate,
+      dynamic categoryContent) async {
 
     // 이미지 확인
     if (_images.isEmpty) {
@@ -1066,6 +1086,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         address1,
         address2,
         openDate,
+        categoryContent,
         null,
       );
     } else {
@@ -1091,6 +1112,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
           address1,
           address2,
           openDate,
+          categoryContent,
           fileInfo,
         );
       }
@@ -1157,6 +1179,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       dynamic address1,
       dynamic address2,
       dynamic openDate,
+      dynamic categoryContent,
       dynamic fileInfo
       ) async {
     // REST ID
@@ -1207,6 +1230,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       "address2": address2,
       "asGbn": asGbn,
       "openDate": openDate,
+      "categoryContent" : categoryContent,
       "fileInfo": fileInfo
     });
 
