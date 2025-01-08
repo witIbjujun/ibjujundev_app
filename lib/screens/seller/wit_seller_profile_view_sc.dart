@@ -332,19 +332,42 @@ class SellerProfileViewState extends State<SellerProfileView> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8), // 모서리 둥글게
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8), // 모서리 둥글게
-                            child: sellerInfo?['storeImage'] != null // null 체크
-                                ? Image.asset(
-                              sellerInfo['storeImage'], // 광고 이미지 URL
-                              fit: BoxFit.cover, // 이미지가 Container를 채우도록 설정
-                              errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                                // 이미지 로드 실패 시 대체 텍스트 표시
-                                return Center(child: Text('사진 로드 실패'));
-                              },
-                            )
-                                : Center(child: Text('사진 로드 실패')), // storeImage가 null일 경우 대체 텍스트
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: storeImageList.isNotEmpty ? 1 : 0, // 리스트가 비어있지 않은 경우 1로 설정
+                            itemBuilder: (context, index) {
+                              if (storeImageList.isEmpty) {
+                                return Center(child: Text('이미지가 없습니다.')); // 이미지가 없을 때 표시할 위젯
+                              }
+                              return GestureDetector(
+                                onTap: () {
+                                  // 클릭 시 ImageViewer로 이동
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ImageViewer(
+                                        imageUrls: storeImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                                        initialIndex: 0, // 첫 번째 이미지를 항상 표시
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 110,
+                                  height: 100,
+                                  margin: EdgeInsets.only(right: 8), // 이미지 간격
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12), // 둥글게 처리
+                                    image: DecorationImage(
+                                      image: NetworkImage(apiUrl + storeImageList[0]["imagePath"]), // 첫 번째 이미지를 사용
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
+
                         ),
                         SizedBox(width: 10), // 이미지와 판매자명 간격
                         // 판매자명 및 인증 정보
@@ -485,7 +508,6 @@ class SellerProfileViewState extends State<SellerProfileView> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ImageViewer(
-                                print("itemPath : " + item["imagePath"]);
                                 imageUrls: storeImageList.map((item) => apiUrl + item["imagePath"]).toList(),
                                 initialIndex: index, // 클릭한 이미지 인덱스 전달
                               ),
@@ -493,8 +515,8 @@ class SellerProfileViewState extends State<SellerProfileView> {
                           );
                         },
                         child: Container(
-                          width: 120,
-                          height: 120,
+                          width: 110,
+                          height: 100,
                           margin: EdgeInsets.only(right: 8), // 이미지 간격
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12), // 둥글게 처리
@@ -516,7 +538,23 @@ class SellerProfileViewState extends State<SellerProfileView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Expanded(
-                      child: Text(sellerInfo?['reviews'] ?? ''),
+                      // child: Text(sellerInfo?['reviews'] ?? ''),
+                      //child: Text("좋은 업체입니다. 서비스좋아요^^"),
+                      child: Text(
+                        "업체명: ABC 방충망\n"
+                            "위치: 서울 강남구\n\n"
+                            "ABC 방충망에서 방충망을 구매하고 설치했습니다. 제품의 품질이 매우 뛰어나고, "
+                            "재질이 튼튼하여 오래 사용할 수 있을 것 같습니다. 디자인도 깔끔해서 집 인테리어와 잘 어울립니다.\n\n"
+                            "설치 서비스도 매우 만족스러웠습니다. 설치팀이 친절하고 전문적이었으며, "
+                            "예상보다 빠르게 작업을 마쳤습니다.\n\n"
+                            "가격은 다른 업체들과 비교했을 때 적당한 편이었고, 가성비가 좋다고 느꼈습니다.\n\n"
+                            "전체적으로 매우 만족하며, 방충망을 설치한 이후로 벌레 걱정이 없어져서 기쁩니다. "
+                            "다음에도 필요할 경우 다시 이용할 생각입니다.",
+                        style: TextStyle(fontSize: 14),
+                        maxLines: null, // 줄 수에 제한이 없도록 설정
+                        overflow: TextOverflow.visible, // 넘치는 부분도 보이도록 설정
+                      ),
+
                     ),
                     Text(sellerInfo?['rating'] ?? ''),
                   ],
@@ -553,8 +591,6 @@ class SellerProfileViewState extends State<SellerProfileView> {
     // REST ID
     String restId = "getSellerDetailImageList";
 
-    print("여기 : " + sellerInfo["sllrNo"].toString());
-
     // PARAM
     final param = jsonEncode({
       "bizCd": bizCd,
@@ -580,4 +616,34 @@ class SellerProfileViewState extends State<SellerProfileView> {
     }
 
   }
+
+  /*Future<void> getSellerBoardList() async {
+    // REST ID
+    String restId = "getSellerBoardList";
+
+    // PARAM
+    final param = jsonEncode({
+      "bizCd": bizCd,
+      "bizKey": sellerInfo["sllrNo"],
+    });
+
+    if (bizCd == "SR01") {
+      // API 호출 (게시판 상세 조회)
+      final _storeImageList = await sendPostRequest(restId, param);
+
+      if (_storeImageList.isNotEmpty) {
+        // 값이 있을 때 수행할 작업
+        print("보드 상세 이미지 리스트에 값이 있습니다: ${_storeImageList.length}개");
+      } else {
+        // 값이 없을 때 수행할 작업
+        print("보드 상세 이미지 리스트가 비어 있습니다.");
+      }
+
+      // 결과 셋팅
+      setState(() {
+        storeImageList = _storeImageList;
+      });
+    }
+
+  }*/
 }
