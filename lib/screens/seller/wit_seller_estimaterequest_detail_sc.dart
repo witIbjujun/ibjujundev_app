@@ -344,16 +344,16 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   SizedBox(height: 20),
                   Center(
                     child: reqState == "05" ? Container() : ElevatedButton(
-                      onPressed: () {
+                      onPressed: (reqState == "03" || reqState == "04") ? null : () {
+                        String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";
+                        String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";
+                        String estNo = estimateRequestInfoForSend['estNo'] ?? "";
+                        String seq = estimateRequestInfoForSend['seq'] ?? "";
+                        String estimateContent = estimateContentController.text;
+                        String inputItemPrice1 = itemPrice1Controller.text;
+
                         if (reqState == "01") {
                           // 견적 보내기 로직
-                          String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";
-                          String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";
-                          String estNo = estimateRequestInfoForSend['estNo'] ?? "";
-                          String seq = estimateRequestInfoForSend['seq'] ?? "";
-                          String estimateContent = estimateContentController.text;
-                          String inputItemPrice1 = itemPrice1Controller.text;
-                          String reqState = '02';
                           updateEstimateInfo(
                               sllrNo,
                               sllrClerkNo,
@@ -361,16 +361,10 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               seq,
                               estimateContent,
                               inputItemPrice1,
-                              '02'
+                              '02' // 상태를 '02'로 변경
                           );
-                        } else {
-                          String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";
-                          String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";
-                          String estNo = estimateRequestInfoForSend['estNo'] ?? "";
-                          String seq = estimateRequestInfoForSend['seq'] ?? "";
-                          String estimateContent = estimateContentController.text;
-                          String inputItemPrice1 = itemPrice1Controller.text;
-                          String reqState = '05';
+                        } else if (reqState == "02") {
+                          // 작업 진행 로직
                           updateEstimateInfo(
                               sllrNo,
                               sllrClerkNo,
@@ -378,11 +372,39 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               seq,
                               estimateContent,
                               inputItemPrice1,
-                              '05'
+                              '03' // 상태를 '05'로 변경
+                          );
+                        } else if (reqState == "03") {
+                          // 작업 진행 로직
+                          updateEstimateInfo(
+                              sllrNo,
+                              sllrClerkNo,
+                              estNo,
+                              seq,
+                              estimateContent,
+                              inputItemPrice1,
+                              '04' // 상태를 '05'로 변경
+                          );
+                        }
+                        else {
+                          // 견적 취소 로직
+                          updateEstimateInfo(
+                              sllrNo,
+                              sllrClerkNo,
+                              estNo,
+                              seq,
+                              estimateContent,
+                              inputItemPrice1,
+                              '05' // 상태를 '05'로 변경
                           );
                         }
                       },
-                      child: Text(reqState == "01" ? '견적보내기' : '견적취소'),
+                      child: Text(
+                        reqState == "01" ? '견적보내기' :
+                        reqState == "02" ? '작업진행' :
+                        reqState == "03" || reqState == "04" ? '진행완료' :
+                        '견적취소',
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(255, 3, 199, 90),
                         foregroundColor: Colors.white,
@@ -393,6 +415,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ),
                     ),
                   ),
+
                 ],
               ),
             ),
