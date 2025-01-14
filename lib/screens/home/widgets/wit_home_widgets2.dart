@@ -155,60 +155,69 @@ class APTStatusWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "오늘의 내APT의 체크 현황",
-              textAlign: TextAlign.center,
-              style: WitHomeTheme.headline, // subtitle 스타일 적용
-            ),
-            const SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(
-                  children: const [
-                    Icon(
-                      Icons.wb_sunny,
-                      color: Colors.orange,
-                      size: 26.0,
-                    ),
-                    SizedBox(width: 4.0),
-                    Text(
-                      "120",
-                      style: TextStyle(
-                        fontSize: 26.0,
-                        color: Colors.blue,
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PreInspaction(),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "오늘의 내APT의 체크 현황",
+                textAlign: TextAlign.center,
+                style: WitHomeTheme.headline, // subtitle 스타일 적용
+              ),
+              const SizedBox(height: 8.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.wb_sunny,
+                        color: Colors.orange,
+                        size: 26.0,
                       ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: const [
-                    Icon(
-                      Icons.cloud,
-                      color: Colors.grey,
-                      size: 26.0,
-                    ),
-                    SizedBox(width: 4.0),
-                    Text(
-                      "21",
-                      style: TextStyle(
-                        fontSize: 26.0,
+                      SizedBox(width: 4.0),
+                      Text(
+                        "120",
+                        style: TextStyle(
+                          fontSize: 26.0,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.cloud,
                         color: Colors.grey,
+                        size: 26.0,
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                      SizedBox(width: 4.0),
+                      Text(
+                        "21",
+                        style: TextStyle(
+                          fontSize: 26.0,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
