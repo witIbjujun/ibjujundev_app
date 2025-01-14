@@ -40,11 +40,13 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
 
-    // 회사 목록 조회
-    ///getCategoryList(widget.type);
+    // 2025-01-12: getCategoryList 호출 후 로딩 상태 업데이트
+    getCategoryList(widget.type).then((_) {
+      setState(() {
+        isLoading = false;
+      });
+    });
 
-
-    // 파라미터 확인
     print("Passed Type Parameter: ${widget.type}");
   }
 
@@ -62,13 +64,12 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
       "type": type,
     });
 
-    print('호출인건가??==='+type);
+    print('호출인건가??===${type}');
     final _categoryList = await sendPostRequest(restId, param);
 
     setState(() {
       categoryList = Category().parseCategoryList(_categoryList)!;
       selectedList = List<bool>.filled(categoryList.length, false); // categoryList의 길이에 맞춰 selectedList를 초기화
-      isLoading = false;
     });
   }
 
@@ -79,16 +80,16 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
         title: Text('견적받기'),
       ),
       body: SafeArea(
-        child: Column(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator()) // 로딩 상태 표시
+            : Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 12/14: getPopularCourseUI 영역만 스크롤 가능하도록 설정
             Expanded(
               child: SingleChildScrollView(
                 child: getPopularCourseUI(widget.type), // 인기 코스 UI만 스크롤 가능
               ),
             ),
-            // 12/14: 추가조건/요구사항은 고정
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -181,15 +182,12 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
       }
     }
     aptNo = aptNo ?? '1'; // aptNo가 null일 경우 기본값 1을 할당
-    print("내용이 뭣인가??????$reqContents");
-    print("내용이 뭣인가??????$reqContents");
-    print("내용이 뭣인가??????$reqContents");
     final param = jsonEncode({
       "reqGubun": 'T',
       "aptNo": aptNo,
-      "reqUser": clerkNo, // 사용자의 정보 또는 ID를 넣을 수 있음
-      "categoryIds": selectedItems, // 선택된 카테고리 ID 목록
-      "reqContents": reqContents // 추가 조건/요구 사항
+      "reqUser": clerkNo,
+      "categoryIds": selectedItems,
+      "reqContents": reqContents,
     });
 
     try {
@@ -225,36 +223,32 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
 
   Widget getPopularCourseUI(String type) {
     return Container(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0), // 좌우 패딩
-        child: Column(
-          mainAxisSize: MainAxisSize.min, // 최소 크기만 차지
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Flexible(
-              fit: FlexFit.loose,
-              child: PopularCourseListHorizontalView(
-                type: type, // type 값을 전달
-                callBack: (Category category, bool isSelected) {
-                  setState(() {
-                    int index = findCategoryIndex(category.categoryId);
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Flexible(
+            fit: FlexFit.loose,
+            child: PopularCourseListHorizontalView(
+              type: type,
+              callBack: (Category category, bool isSelected) {
+                // 2025-01-12: 선택 상태와 카운트 동기화
+                print('Category selected: ${category.categoryId}, isSelected: $isSelected');
+                setState(() {
+                  int index = findCategoryIndex(category.categoryId);
 
-                    if (index != -1) {
-                      if (isSelected) {
-                        _selectedItemCount++;
-                        selectedList[index] = true;
-                      } else {
-                        _selectedItemCount--;
-                        selectedList[index] = false;
-                      }
-                      if (_selectedItemCount < 0) _selectedItemCount = 0;
-                    }
-                  });
-                },
-              ),
+                  if (index != -1) {
+                    selectedList[index] = isSelected;
+                    _selectedItemCount = selectedList.where((isSelected) => isSelected).length;
+                  } else {
+                    print('Index not found for category ID: ${category.categoryId}');
+                  }
+                });
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

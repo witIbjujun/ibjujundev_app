@@ -6,7 +6,7 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/login/wit_kakaoLogin.dart';
 
 class loingPopHome extends StatefulWidget {
-  final VoidCallback? onLoginSuccess; // 로그인 성공 시 호출되는 콜백 함수
+  final Function(String)? onLoginSuccess; //
 
   loingPopHome({this.onLoginSuccess});
 
@@ -38,20 +38,11 @@ class _loingPopHomeState extends State<loingPopHome> {
               ElevatedButton(
                 onPressed: () async {
                   String userId = _idController.text.trim();
-
-                  int result = await getChckUserInfo(viewModel);
-
-                  if(result == 0){
-                    showRegistrationPopup(context);
-                  }else{
-                    getUserInfo(context,viewModel, '72091587');
-                  }
-                  print('입력된 11111111: $result');
-                  ///getUserInfo(viewModel, '72091587');
-                  // 로그인 로직 추가 가능
+                    ///await getUserInfo(context,viewModel, '72091587');
+                  String result =  await getChckUser(viewModel, '72091587');
 
                   if (widget.onLoginSuccess != null) {
-                    widget.onLoginSuccess!();
+                    widget.onLoginSuccess!(result);
                   }
                   // 팝업창 닫기
                   Navigator.of(context).pop();
@@ -60,15 +51,16 @@ class _loingPopHomeState extends State<loingPopHome> {
               ),
               SizedBox(width: 8), // 버튼 사이 간격
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo(context,viewModel, '72091586');
+                ///  await getUserInfo(context,viewModel, '72091586');
+                  String result =  await getChckUser(viewModel, '72091586');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
-                    widget.onLoginSuccess!();
+                    widget.onLoginSuccess!(result);
                   }
                   // 팝업창 닫기
                   Navigator.of(context).pop();
@@ -77,15 +69,17 @@ class _loingPopHomeState extends State<loingPopHome> {
               ),
               SizedBox(width: 8), // 버튼 사이 간격
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo(context,viewModel,'72091588');
+                  ///await getUserInfo(context,viewModel,'72091588');
+
+                  String result =  await getChckUser(viewModel, '72091588');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
-                    widget.onLoginSuccess!();
+                    widget.onLoginSuccess!(result);
                   }
                   // 팝업창 닫기
                   Navigator.of(context).pop();
@@ -94,15 +88,17 @@ class _loingPopHomeState extends State<loingPopHome> {
               ),
               SizedBox(width: 8), // 버튼 사이 간격
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  getUserInfo(context,viewModel,'72091584');
+                 /// await getUserInfo(context,viewModel,'72091584');
+
+                  String result =  await getChckUser(viewModel, '72091584');
                   // 로그인 로직 추가 가능
 
                   if (widget.onLoginSuccess != null) {
-                    widget.onLoginSuccess!();
+                    widget.onLoginSuccess!(result);
                   }
                   // 팝업창 닫기
                   Navigator.of(context).pop();
@@ -119,10 +115,12 @@ class _loingPopHomeState extends State<loingPopHome> {
               if (isLoginSuccessful) {
                 // 로그인 성공 시 콜백 호출
                 String userId = _idController.text.trim();
-                getUserInfo(context,viewModel, '72091587');
+
+                String result =  await getChckUser(viewModel, '');
+                ///await getUserInfo(context,viewModel, '');
 
                 if (widget.onLoginSuccess != null) {
-                  widget.onLoginSuccess!();
+                  widget.onLoginSuccess!(result);
                 }
 
                 // 팝업창 닫기

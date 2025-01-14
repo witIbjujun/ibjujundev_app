@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   }
   // 데이터를 조회하는 비동기 함수
-  Future<void> getUserInfo(String kakaoId,String Idnum) async {
+  Future<void> getUserInfo1(String kakaoId,String Idnum) async {
     String restId = "getUserInfo";
     final param = jsonEncode({"kakaoId": kakaoId,
       "clerkNo": Idnum});
@@ -63,14 +63,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
         print('고객 번호: ' + (userInfo!.clerkNo ?? 'Unknown'));
         print('닉네임: '+(userInfo!.nickName??''));
-        print('이름: '+(userInfo!.name??''));
         print('역할: '+(userInfo!.role??''));
         print('Main아파트 번호: '+(userInfo!.mainAptNo??''));
         print('Main아파트 이름: '+(userInfo!.mainAptNm??''));
         // 사용자 정보를 Flutter Secure Storage에 저장
         secureStorage.write(key: 'clerkNo', value: userInfo!.clerkNo);
         secureStorage.write(key: 'nickName', value: userInfo!.nickName);
-        secureStorage.write(key: 'name', value: userInfo!.name);
         secureStorage.write(key: 'mainAptNo', value: userInfo!.mainAptNo);
         secureStorage.write(key: 'mainAptNm', value: userInfo!.mainAptNm);
         secureStorage.write(key: 'role', value: userInfo!.role);
@@ -86,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadOptions() async {
     String? aptNameString  = await secureStorage.read(key: 'mainAptNm'); //아파트 명칭
-    String? aptNoString  = await secureStorage.read(key: 'aptNo'); //아파트 번호
+    String? aptNoString  = await secureStorage.read(key: 'mainAptNo'); //아파트 번호
 
     print('_loadOptions 아파트 이름: $aptNameString');
     print('_loadOptions 아파트 번호: $aptNoString');
@@ -105,40 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       });
     }
-  }
-
-  Future<void> updateMyInfo(String mainAptNo) async {
-    print('아파트 번호 모야???'+mainAptNo);
-
-      String restId = "updateMyInfo";
-      final param = jsonEncode({
-        "clerkNo": await secureStorage.read(key: 'clerkNo'),
-        "nickName": await secureStorage.read(key: 'nickName'),
-        "mainAptNo": mainAptNo,
-      });
-
-      try {
-        final response = await sendPostRequest(restId, param);
-        if (response != null) {
-          await secureStorage.write(key: 'mainAptNo', value: mainAptNo);
-          print('mainAptNo가 secureStorage에 저장되었습니다: $mainAptNo');
-
-          String? kakaoId = await secureStorage.read(key: 'kakaoId');
-          print("kakaoId: ${kakaoId}");
-          if (kakaoId != null) {
-            getUserInfo(kakaoId,'');
-          } else {
-            print("kakaoId is null");
-          }
-
-         /// getUserInfo('3676364728');
-
-        } else {
-          print("MY 닉네임 저장 실패: ${response['message']}");
-        }
-      } catch (e) {
-        print('요청 상태 업데이트 중 오류 발생: $e');
-      }
   }
 
   @override
@@ -222,16 +186,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     Icons.email,
                   ),
                 ),
-               /* IconButton(
-                  iconSize: 35.0,
-                  onPressed: () {
-                    // 다른 버튼 클릭 시 동작 정의 (이메일 버튼 클릭)
-                  },
-                  icon: const Icon(
-                    Icons.menu_rounded,
-                  ),
-                ),*/
-
               ],
             ),
           ],
@@ -261,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     });
                     if (options.containsKey(selectedOption)) {
                       String selectedAptNo = options[selectedOption]!;
-                      updateMyInfo(selectedAptNo); // updateMyInfo 호출
+                      ///updateMyInfo(selectedAptNo); // updateMyInfo 호출
                     } else {
                       print('선택한 옵션에 해당하는 번호를 찾을 수 없습니다.');
                     }
@@ -292,15 +246,20 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 6),
               // ImageBox를 화면에 표시
               SizedBox(
-                height: 280,
+                height: 180,
                 child: Column(
                   children: [
-                    Expanded(
+
+                   /** Expanded(
                       child: ImageSlider(
                         heightRatio: 0.18, // 화면 높이의 18%
                         widthRatio: 0.9,  // 화면 너비의 90%
                       ),
-                    ),
+                    ),**/
+
+                    // 오늘의 내APT 체크현황 및 날씨 정보 공통 위젯 사용
+                    APTStatusWidget(width: MediaQuery.of(context).size.width * 0.9, height: MediaQuery.of(context).size.height * 0.12),
+
                     GestureDetector(
                       onTap: () {
                         // getEstimate() 호출 시 화면 이동
@@ -354,21 +313,58 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         );
                       },
-                      child: Image.asset(
-                        'assets/home/guide.png', // 이미지 경로를 수정하세요
-                        height: 80, // 원하는 높이로 설정
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        fit: BoxFit.cover,
+                      child: Container(
+                        // 01/14: 버튼 디자인 개선 및 패딩 추가
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(8.0),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4.0,
+                              offset: Offset(0, 2), // 그림자 위치
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.lightbulb_outline, // 가이드 관련 아이콘
+                                  color: Colors.blue,
+                                  size: 24.0,
+                                ),
+                                const SizedBox(width: 8.0),
+                                Text(
+                                  "내예산에 맞춰 부분시공 입주가이드",
+                                  style: WitHomeTheme.title, // 01/14: 텍스트 스타일 적용
+                                ),
+                              ],
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.black,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),  //이미지 슬라이스 위젯
               ),
               const SizedBox(height: 2),
+
+              /**
               Text(
                 "우리 입주할때 인테리어 비교경제를 받아보세요~",
                 style: WitHomeTheme.title,
               ),
+
               const SizedBox(height: 8),
               // 견적받으러 가기 버튼
               Container(
@@ -400,7 +396,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 300,
                               padding: const EdgeInsets.all(20.0),
                               child: loingPopHome(
-                                onLoginSuccess: () {
+                                onLoginSuccess: (String result) {
                                   setState(() {
                                     isLogined = "true";
                                     // _loadOptions();
@@ -426,7 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-              ),
+              ),**/
               const SizedBox(height: 4),
               getPopularCourseUI(),  /// 견적받으러 가기
             ],
@@ -473,84 +469,58 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// 로그인 다이얼로그를 보여주는 메서드
-  void _showLoginDialog(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20.0),
-        ),
-      ),
-      builder: (BuildContext context) {
-        return Container(
-          padding: const EdgeInsets.all(20.0),
-          height: 250,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "로그인 선택",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop(); // 팝업 닫기
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => WitUserLoginStep1(), // 사용자 등록 화면으로 이동
-                    ),
-                  );
+  /**
+   * 로그인 팝업
+   */
+  void _showLoginDialog(BuildContext parentContext) async {
+    bool isLoggedIn = await checkLoginStatus();
+    if (!isLoggedIn) {
+      showDialog(
+        context: parentContext,
+        barrierDismissible: false, // 팝업 외부 클릭 방지
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Container(
+              width: MediaQuery.of(parentContext).size.width * 0.8,
+              height: 300,
+              padding: const EdgeInsets.all(20.0),
+              child: loingPopHome(
+                onLoginSuccess: (String result) async {
+                  print("뭐가 넘어온거지111111??$result");
+                  print("뭐가 넘어온거지111111??$result");
+                  print("뭐가 넘어온거지111111??$result");
+                  print("뭐가 넘어온거지111111??$result");
+                  if (result == '0') {
+                    Navigator.of(dialogContext).pop();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.of(parentContext).push(
+                        MaterialPageRoute(
+                          builder: (context) => WitUserLoginStep1(),
+                        ),
+                      );
+                    });
+                  } else {
+                    print("뭐가 넘어온거지??$result");
+                    final viewModel = Provider.of<MainViewModel>(parentContext, listen: false);
+                    await getUserInfo(context, viewModel, result);
+                    Navigator.of(dialogContext).pop();
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.of(parentContext).push(
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                      );
+                    });
+                  }
                 },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 50.0,
-                  decoration: BoxDecoration(
-                    color: WitHomeTheme.nearlyslowBlue,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    "사용자 등록",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
               ),
-              const SizedBox(height: 10.0),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // 팝업 닫기
-                  // 관리자 등록 로직 추가
-                  print("관리자 등록 선택됨");
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: const Text(
-                  "관리자 등록",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+            ),
+          );
+        },
+      );
+    }
   }
-
 }

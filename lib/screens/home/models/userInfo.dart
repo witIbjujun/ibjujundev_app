@@ -1,5 +1,5 @@
 class UserInfo {
-  final String id;
+  final String? id;
   final String? nickName;
   final String? profileImageUrl;
   final String? email;
@@ -8,7 +8,6 @@ class UserInfo {
   final String? birthday;
   final String? birthyear;
   final String? role;
-  final String? name;
    String? mainAptNo;
    String? mainAptNm;
    String? mainAptPyoung;
@@ -16,7 +15,7 @@ class UserInfo {
   final List<String>? aptName;
 
   UserInfo({
-    required this.id,
+    this.id,
     this.nickName,
     this.profileImageUrl,
     this.email,
@@ -25,7 +24,6 @@ class UserInfo {
     this.birthday,
     this.birthyear,
     this.role,
-    this.name,
     this.mainAptNo,
     this.mainAptNm,
     this.mainAptPyoung,
@@ -52,7 +50,6 @@ class UserInfo {
       mainAptNm: json['mainAptNm'],
       mainAptPyoung: json['mainAptPyoung'],
       role: json['role'],
-      name: json['name'],
       aptNo: json['aptNo'] != null ? List<String>.from(json['aptNo']) : null,
       aptName: json['aptName'] != null ? List<String>.from(json['aptName']) : null,
     );
@@ -72,7 +69,6 @@ class UserInfo {
       'mainAptNm': mainAptNm,
       'mainAptPyoung': mainAptPyoung,
       'role': role,
-      'name': name,
       'aptNo': aptNo,
       'aptName': aptName,
     };

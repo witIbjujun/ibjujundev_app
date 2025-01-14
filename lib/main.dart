@@ -73,15 +73,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      ///home: NavigationHomeScreen(),  기존 밀어서
+
       home: HomeScreen(), //현재 메인
       // home: FCMSender(), //현재 메인
-      /// home: kakoLoingHome(),
+       ///home: kakoLoingHome(),
 
-      ///home: ImageSlider(),
-      //home: Board("B01"),  //게시판
-      ///home: Question(qustCd: 'Q00001'),  // 질의문
-      ///home: SellerProfileDetail(sllrNo: '17'),  // 판매자
       ///home: Directionality(
       ///   textDirection: TextDirection.ltr,
       /// child: ChatPage(),

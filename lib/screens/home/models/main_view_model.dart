@@ -23,18 +23,20 @@ class MainViewModel extends ChangeNotifier {
           await _initializeUserInfo(context);  // userInfo 초기화
           isLogined = true;
         } catch (error) {
-          //_showErrorDialog(context, '카카오톡으로 로그인 실패2222', error.toString());
+         /// _showErrorDialog(context, '카카오톡으로 로그인 실패2222', error.toString());
           // 카카오톡 로그인이 실패하면 카카오 계정으로 로그인 시도
           await _loginWithKakaoAccount(context);
         }
       } else {
         // 카카오톡이 설치되어 있지 않으면 바로 카카오 계정으로 로그인 시도
 
-        //_showErrorDialog(context, '카카오톡이 설치되어 있지 않으면 바로 카카오 계정으로 로그인 시도', "성공");
+        ///_showErrorDialog(context, '카카오톡이 설치되어 있지 않으면 바로 카카오 계정으로 로그인 시도', "성공");
 
         await _loginWithKakaoAccount(context);
       }
     } catch (error) {
+      ///_showErrorDialog(context, '카카오톡으로 로그인 실패111', error.toString());
+
       print('로그인 실패 $error');
 
       // _showErrorDialog(context, '로그인 실패', error.toString());
@@ -50,12 +52,14 @@ class MainViewModel extends ChangeNotifier {
       token = await UserApi.instance.loginWithKakaoAccount();
       print('카카오계정으로 로그인 성공2: ${token?.accessToken}');
 
-      //_showErrorDialog(context, '카카오계정으로 로그인 성공2:', "성공");
+      ///_showErrorDialog(context, '카카오계정으로 로그인 성공2:', "성공");
 
       await _initializeUserInfo(context);  // userInfo 초기화
       isLogined = true;
       await _handleAdditionalAgreements(context);
     } catch (error) {
+
+      ///_showErrorDialog(context, '카카오계정으로 로그인 실패4124124124124', error.toString());
       print('카카오계정으로 로그인 실패4124124124124 $error');
 
       isLogined = false;

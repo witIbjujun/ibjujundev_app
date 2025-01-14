@@ -141,6 +141,80 @@ class _ImageSliderState extends State<ImageSlider> {
   }
 }
 
+
+// 공통 위젯: 오늘의 내APT 체크현황 및 날씨 정보
+class APTStatusWidget extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const APTStatusWidget({
+    required this.width,
+    required this.height,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "오늘의 내APT의 체크 현황",
+              textAlign: TextAlign.center,
+              style: WitHomeTheme.headline, // subtitle 스타일 적용
+            ),
+            const SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: const [
+                    Icon(
+                      Icons.wb_sunny,
+                      color: Colors.orange,
+                      size: 26.0,
+                    ),
+                    SizedBox(width: 4.0),
+                    Text(
+                      "120",
+                      style: TextStyle(
+                        fontSize: 26.0,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: const [
+                    Icon(
+                      Icons.cloud,
+                      color: Colors.grey,
+                      size: 26.0,
+                    ),
+                    SizedBox(width: 4.0),
+                    Text(
+                      "21",
+                      style: TextStyle(
+                        fontSize: 26.0,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class DialogUtils {
   // 12/14: 공통 다이얼로그 메서드
   static Future<bool> showConfirmationDialog({

@@ -57,13 +57,11 @@ class _MyProfileState extends State<MyProfile> {
     String? aptName = await _storage.read(key: 'aptName');
     String? clerkNo = await _storage.read(key: 'clerkNo');
     String? nickName = await _storage.read(key: 'nickName');
-    String? name = await _storage.read(key: 'name');
     String? role = await _storage.read(key: 'role');
     String? mainAptNo = await _storage.read(key: 'mainAptNo');
 
     print('myprofile 고객 번호: $clerkNo');
     print('myprofile 닉네임: $nickName');
-    print('myprofile 이름: $name');
     print('myprofile 역할: $role');
     print('myprofile Main아파트 번호: $mainAptNo');
     print('myprofile Main아파트 이름: $aptName');
