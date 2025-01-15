@@ -68,33 +68,30 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                 ],
               ),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                // 글자색
-                foregroundColor: request['reqState'] == '01'
-                    ? Colors.white
-                    : Colors.black, // 회색
-                // 배경색
-                backgroundColor: request['reqState'] == '01'
-                    ? Color.fromARGB(255, 3, 199, 90) // 초록색
-                    : Colors.white70, // 회색
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: EdgeInsets.all(5), // 내부 여백을 0으로 설정
-                minimumSize: Size(0, 30), // 최소 크기 설정 (가로: 0, 세로: 30)
-              ),
-              onPressed: () {
+            InkWell(
+              onTap: () {
                 // 견적 요청 관련 작업 추가
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EstimateRequestDetail(estNo : request['estNo'], seq: request['seq'], sllrNo: widget.sllrNo,)),
+                  MaterialPageRoute(
+                    builder: (context) => EstimateRequestDetail(
+                      estNo: request['estNo'],
+                      seq: request['seq'],
+                      sllrNo: widget.sllrNo,
+                    ),
+                  ),
                 );
               },
-              child: Text(
-                request['stat'], // 견적 요청 상태
-                style: TextStyle(fontSize: 12), // 텍스트 크기 12로 설정
+              child: Icon(
+                Icons.edit_note, // 원하는 아이콘으로 변경 가능
+                size: 24, // 아이콘 크기 설정 (필요에 따라 조정)
+                color: request['reqState'] == '01'
+                    ? Colors.black // 글자색
+                    : Colors.black, // 회색
               ),
+              // 아이콘에 padding 추가 (필요시)
+              splashColor: Colors.grey.withOpacity(0.2), // 클릭 시 스플래시 효과
+              highlightColor: Colors.transparent, // 클릭 시 하이라이트 색상
             ),
           ],
         ),
