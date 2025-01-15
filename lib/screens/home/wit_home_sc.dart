@@ -14,6 +14,7 @@ import 'dart:convert';
 import '../../main.dart';
 import '../../util/wit_api_ut.dart';
 import '../../util/wit_apppush.dart';
+import '../board/wit_board_main_sc.dart';
 import '../question/wit_question_main_sc.dart';
 import '../seller/wit_seller_profile_detail_sc.dart';
 import 'login/wit_user_loginStep1.dart';
@@ -29,9 +30,12 @@ class HomeScreen extends StatefulWidget  {
  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   ///로그인 상태를 true로 설정해서 테스트 (실제로는 로그인 여부를 판단하는 로직이 필요)
-
+  final List<String> tabNames = ['견적서비스', '아파트 커뮤니티'];
+  final List<String> communityTabNames = ['내 APT', 'HOT 정보', '업체후기'];
+  late TabController _tabController;
+  late TabController _communityTabController;
   // SelectBox에 표시할 옵션 리스트
   Map<String, String> options = {};
   String selectedOption = ""; // 기본 선택된 옵션
@@ -43,9 +47,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _communityTabController = TabController(length: 3, vsync: this);
     _loadOptions();
 
+    // 탭 변경 시 상태 업데이트
+    _tabController.addListener(() {
+      setState(() {});
+    });
+
   }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _communityTabController.dispose();
+    super.dispose();
+  }
+
   // 데이터를 조회하는 비동기 함수
   Future<void> getUserInfo1(String kakaoId,String Idnum) async {
     String restId = "getUserInfo";
@@ -199,50 +218,89 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: MediaQuery.of(context).padding.top,
               ),
               // SelectBox 추가 (하단 파올 표시)
-              if (options.isNotEmpty) GestureDetector(
-                onTap: () async {
-
-                // 세션 상태 확인
-                bool isLoggedIn = await checkLoginStatus();
-                if (isLoggedIn) {
-                  _loadOptions();
-                }
-
-                  WitHomeWidgets.showSelectBox(context, selectedOption, options.keys.toList(), (option) {
-                    setState(() {
-                      selectedOption = option;
-                      secureStorage.write(key: 'aptName', value: option);
-                    });
-                    if (options.containsKey(selectedOption)) {
-                      String selectedAptNo = options[selectedOption]!;
-                      ///updateMyInfo(selectedAptNo); // updateMyInfo 호출
-                    } else {
-                      print('선택한 옵션에 해당하는 번호를 찾을 수 없습니다.');
-                    }
-                  });
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 50.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+              if (options.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0), // Row 전체 좌우 여백 추가
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0), // 텍스트 앞에 패딩 추가
-                        child: Text(
-                          options.isEmpty ? "입주 할 APT 선택하세요" : selectedOption,
-                          style: WitHomeTheme.title, // 폰트 스타일 적용
+                      Expanded(
+                        flex: 6, // SelectBox를 5/8 크기로 조정
+                        child: GestureDetector(
+                          onTap: () async {
+                            // 세션 상태 확인
+                            bool isLoggedIn = await checkLoginStatus();
+                            if (isLoggedIn) {
+                              _loadOptions();
+                            }
+
+                            WitHomeWidgets.showSelectBox(
+                                context,
+                                selectedOption,
+                                options.keys.toList(), (option) {
+                              setState(() {
+                                selectedOption = option;
+                                secureStorage.write(key: 'aptName', value: option);
+                              });
+                              if (options.containsKey(selectedOption)) {
+                                String selectedAptNo = options[selectedOption]!;
+                                /// updateMyInfo(selectedAptNo); // updateMyInfo 호출
+                              } else {
+                                print('선택한 옵션에 해당하는 번호를 찾을 수 없습니다.');
+                              }
+                            });
+                          },
+                          child: Container(
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0), // 텍스트 앞에 패딩 추가
+                                  child: Text(
+                                    options.isEmpty
+                                        ? "입주 할 APT 선택하세요"
+                                        : selectedOption,
+                                    style: WitHomeTheme.title, // 폰트 스타일 적용
+                                  ),
+                                ),
+                                const Icon(Icons.arrow_drop_down),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                      const Icon(Icons.arrow_drop_down),
+                      const SizedBox(width: 8), // SelectBox와 평면도 간격을 넓게 설정
+                      Expanded(
+                        flex: 2, // 평면도를 3/8 크기로 조정
+                        child: GestureDetector(
+                          onTap: () {
+                            // 평면도 관련 동작 추가
+                            showImagePopup(
+                              context: context,
+                              imageUrl: '/WIT/12345.png',
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '평면도',
+                                style: WitHomeTheme.title,
+                              ),
+                              const SizedBox(width: 8), // 텍스트와 아이콘 사이 간격 조정
+                              const Icon(Icons.map_outlined, size: 24.0),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ),
               const SizedBox(height: 6),
               // ImageBox를 화면에 표시
               SizedBox(
@@ -358,72 +416,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),  //이미지 슬라이스 위젯
               ),
               const SizedBox(height: 2),
+              WitHomeWidgets.getTabBarUI(_tabController, tabNames),
 
-              /**
-              Text(
-                "우리 입주할때 인테리어 비교경제를 받아보세요~",
-                style: WitHomeTheme.title,
-              ),
-
-              const SizedBox(height: 8),
-              // 견적받으러 가기 버튼
-              Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 50.0,
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.nearlyslowBlue,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    bool isLoggedIn = await checkLoginStatus(); // 로그인 상태 확인
-                    if (isLoggedIn) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => getEstimate('A'),
-                        ),
-                      );
-                    }else{
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              height: 300,
-                              padding: const EdgeInsets.all(20.0),
-                              child: loingPopHome(
-                                onLoginSuccess: (String result) {
-                                  setState(() {
-                                    isLogined = "true";
-                                    // _loadOptions();
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                  ),
-                  child: const Text(
-                    "견적받으러 가기",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),**/
-              const SizedBox(height: 4),
               getPopularCourseUI(),  /// 견적받으러 가기
             ],
           ),
@@ -435,7 +429,7 @@ class _HomeScreenState extends State<HomeScreen> {
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
     return Container(
-      padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+      padding: const EdgeInsets.only(top: 2, left: 8, right: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -468,6 +462,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget getCommunityTabs() {
+    return Column(
+      children: [
+        TabBar(
+          controller: _communityTabController,
+          tabs: communityTabNames.map((name) => Tab(text: name)).toList(),
+          indicatorColor: Colors.blue,
+          labelColor: Colors.blue,
+          unselectedLabelColor: Colors.grey,
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _communityTabController,
+            children: [
+              Board(1, 'B1'),
+              Board(1, 'H1'),
+              Board(1, 'C1'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
 
   /**
    * 로그인 팝업

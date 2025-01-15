@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/preInspaction/wit_preInsp_main_sc.dart';
 
+import '../../../util/wit_code_ut.dart';
 import '../../question/wit_question_main_sc.dart';
 import '../wit_home_theme.dart'; // PreInspaction 화면 import
 
@@ -222,6 +223,58 @@ class APTStatusWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+/**
+ *  이미지 팝업
+ */
+void showImagePopup({
+  required BuildContext context,
+  required String imageUrl, // 이미지 경로
+  String title = '평면도 보기', // 기본 제목
+}) {
+  showDialog(
+    context: context,
+    barrierDismissible: true, // 팝업 외부 클릭 시 닫힘
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0), // 팝업 모서리 둥글게
+        ),
+        contentPadding: const EdgeInsets.all(16.0),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 팝업 제목
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16.0),
+            // 이미지 표시
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10.0), // 이미지 모서리 둥글게
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8, // 화면 너비의 80%
+                height: MediaQuery.of(context).size.height * 0.4, // 화면 높이의 40%
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(apiUrl + imageUrl), // API URL + 이미지 경로
+                    fit: BoxFit.contain, // 이미지 꽉 채우기
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            // 닫기 버튼
+
+          ],
+        ),
+      );
+    },
+  );
 }
 
 class DialogUtils {
