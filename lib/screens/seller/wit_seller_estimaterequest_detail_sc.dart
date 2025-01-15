@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:flutter/material.dart';
@@ -123,127 +124,132 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        color: Colors.blue,
-                        padding: EdgeInsets.all(10),
-                        child: Text(
-                          "고객 APT",
-                          style: TextStyle(fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          aptName,
-                          style: TextStyle(fontSize: 22,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        color: Colors.grey[300],
-                        child: Image.asset(
-                          itemImage,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Flexible(
+                  // 고객 APT 정보 카드
+                  Container(
+                    width: double.infinity, // 가로 공간을 꽉 차게 설정
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              reqContents,
-                              style: TextStyle(fontSize: 20,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
+                              "고객 APT",
+                              style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
                             ),
+                            SizedBox(height: 10),
                             Text(
-                              itemName,
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.grey[800]),
+                              aptName,
+                              style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "고객님\n 추가 조건/\n요구사항",
-                        style: TextStyle(fontSize: 12, color: Colors.black),
-                      ),
-                      SizedBox(width: 35),
-                      Expanded(
-                        child: Text(
-                          reqContents,
-                          style: TextStyle(fontSize: 16, color: Colors.blue),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text("* 견적금액:", style: TextStyle(fontSize: 16)),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: TextField(
-                          controller: itemPrice1Controller,
-                          decoration: InputDecoration(
-                            hintText: "금액을 입력하세요",
-                            border: OutlineInputBorder(),
+                  SizedBox(height: 5),
+                  // 고객 요구사항 카드
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "고객님 요구사항",
+                            style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
                           ),
-                          keyboardType: TextInputType.number,
-                          enabled: reqState == "01", // reqState가 01일 때만 활성화
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text("원", style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                  Text(
-                    "견적 추가 설명",
-                    style: TextStyle(fontSize: 18,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: TextField(
-                      controller: estimateContentController,
-                      maxLines: 3,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '여기에 추가 설명을 입력하세요',
-                        contentPadding: EdgeInsets.all(8),
-                        enabled: reqState == "01", // reqState가 01일 때만 활성화
+                          SizedBox(height: 10),
+                          Text(
+                            reqContents,
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 5),
+                  // 금액 입력란 카드
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("견적금액", style: TextStyle(fontSize: 16)),
+                          SizedBox(height: 8), // 제목과 입력란 사이의 간격
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  style: TextStyle(fontSize: 16, color: Colors.black),
+                                  controller: itemPrice1Controller,
+                                  decoration: InputDecoration(
+                                    hintText: "금액을 입력하세요",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  enabled: reqState == "01", // reqState가 01일 때만 활성화
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly, // 숫자만 입력 가능
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Text("원", style: TextStyle(fontSize: 16)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 5),
+                  // 견적 내용 입력란 카드
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "견적 추가 설명",
+                            style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: TextField(
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              controller: estimateContentController,
+                              minLines: 3, // 최소 3줄
+                              maxLines: null, // 내용에 따라 자동으로 늘어남
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: '여기에 추가 설명을 입력하세요',
+                                contentPadding: EdgeInsets.all(8),
+                                enabled: reqState == "01", // reqState가 01일 때만 활성화
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 5),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
                     child: Row(
@@ -451,7 +457,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   }
 
   // [서비스] 견적 정보 저장
-  Future<void> updateEstimateInfo(dynamic sllrNo,
+  Future<void> updateEstimateInfo(
+      dynamic sllrNo,
       dynamic sllrClerkNo,
       dynamic estNo,
       dynamic seq,
@@ -459,8 +466,26 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       dynamic inputItemPrice1,
       dynamic reqState, // 인자로 전달된 reqState를 그대로 사용
       ) async {
-    String restId = "getCashInfo";
 
+    if (reqState != "02") {
+      // reqState가 02가 아닐 경우, 바로 updateEstimateInfo2 호출
+      String cash = "1200"; // 필요한 경우 cash 값을 설정
+      await updateEstimateInfo3(
+        context,
+        sllrNo,
+        sllrClerkNo,
+        estNo,
+        seq,
+        estimateContent,
+        inputItemPrice1,
+        cash,
+        reqState,
+        null, // fileInfo는 null로 설정
+      );
+      return; // 더 이상 진행하지 않음
+    }
+
+    String restId = "getCashInfo";
     int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0;
 
     // 1. 견적 발송 전 캐시 정보 조회
@@ -495,9 +520,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
         print("캐시가 충분합니다: " + cashInt.toString());
         // 이미지 저장
         saveImages(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState);
-
-        // 다이얼로그 표시
-
       }
     } else {
       // 오류 처리
@@ -506,6 +528,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       );
     }
   }
+
 
   // [서비스] 이미지 저장
   Future<void> saveImages(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
@@ -619,6 +642,53 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     setState(() {
       boardDetailImageList = _boardDetailImageList;
     });
+  }
+
+  Future<void> updateEstimateInfo3(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
+      dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
+      , dynamic cash, dynamic reqState, dynamic fileInfo) async {
+    // REST ID
+    String restId = "updateEstimateInfo";
+
+    print("sllrNo : " + sllrNo);
+    print("inputItemPrice1 : " + inputItemPrice1);
+    print("estimateContent : " + estimateContent);
+
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": sllrNo,
+      "sllrClerkNo": sllrClerkNo,
+      "estNo": estNo,
+      "seq": seq,
+      "estimateContent": estimateContent,
+      "itemPrice1": inputItemPrice1,
+      "stat": reqState, // 02 : 판매자가 견적발송
+      "cash": cash,
+      "cashGbn": "02", // 02 : 견적발송
+      "fileInfo": fileInfo
+    });
+
+    // API 호출
+    final response = await sendPostRequest(restId, param);
+
+    // API 응답 처리
+    if (response != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
+      );
+      // 성공적으로 저장된 경우 처리
+      //_showSuccessDialog(context); // 다이얼로그 표시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("견적이 성공적으로 발송되었습니다.")),
+      );
+    } else {
+      // 오류 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("견적 저장에 실패했습니다.")),
+      );
+    }
   }
 
 }

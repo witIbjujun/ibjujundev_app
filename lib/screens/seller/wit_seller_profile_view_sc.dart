@@ -423,7 +423,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                           SizedBox(width: 5), // 텍스트와 아이콘 간격
                                           Icon(
                                             Icons.emoji_events, // 추천 아이콘
-                                            color: Colors.blue, // 아이콘 색상
+                                            color: Colors.yellow, // 아이콘 색상
                                             size: 20, // 아이콘 크기
                                           ),
                                         ],
