@@ -182,7 +182,7 @@ class _EstimateItemState extends State<EstimateItem> {
                       child: Text(
                         reqContents, // 내용
                         style: TextStyle(fontSize: 14),
-                        textAlign: TextAlign.center, // 텍스트 중앙 정렬
+                        textAlign: TextAlign.start, // 텍스트 중앙 정렬
                         maxLines: _isExpanded ? null : 3, // 기본 3줄 표시
                         overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
                       ),
