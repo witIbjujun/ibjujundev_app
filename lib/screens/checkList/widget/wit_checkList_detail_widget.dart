@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ibjujundev_admin_app/util/wit_code_ut.dart';
+import 'package:witibju/util/wit_code_ut.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../util/wit_api_ut.dart';
-import '../../common/widget/wit_common_util.dart';
+import '../../common/wit_common_util.dart';
 
 /**
  * 체크리스트 상세 화면 UI

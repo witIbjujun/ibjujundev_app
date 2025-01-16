@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:ibjujundev_admin_app/screens/checkList/widget/wit_checkList_detail_widget.dart';
-import 'package:ibjujundev_admin_app/util/wit_api_ut.dart';
-
-import '../common/widget/wit_common_util.dart';
+import 'package:witibju/screens/checkList/widget/wit_checkList_detail_widget.dart';
+import 'package:witibju/util/wit_api_ut.dart';
 
 /**
  * 사전 체크리스트 상세

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ibjujundev_admin_app/util/wit_code_ut.dart';
-import 'package:ibjujundev_admin_app/screens/common/widget/wit_common_widget.dart';
-import 'package:ibjujundev_admin_app/screens/checkList/wit_checkList_detail_sc.dart';
+import 'package:witibju/util/wit_code_ut.dart';
+import 'package:witibju/screens/checkList/wit_checkList_detail_sc.dart';
+
+import '../../common/wit_common_widget.dart';
 
 /**
  * 사전 체크리스트 리스트 뷰

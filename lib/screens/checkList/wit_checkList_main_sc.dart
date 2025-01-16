@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:ibjujundev_admin_app/screens/checkList/widget/wit_checkList_main_widget.dart';
-import 'package:ibjujundev_admin_app/util/wit_api_ut.dart';
+import 'package:witibju/screens/checkList/widget/wit_checkList_main_widget.dart';
+import 'package:witibju/util/wit_api_ut.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /**
