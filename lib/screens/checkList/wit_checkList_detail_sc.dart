@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:witibju/screens/checkList/widget/wit_checkList_detail_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
+import 'package:witibju/screens/common/wit_common_widget.dart';
 
 /**
  * 사전 체크리스트 상세
@@ -128,6 +129,8 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
       "checkDate": item["checkDate"],
       "reprDate": item["reprDate"],
       "checkComt": item["checkComt"],
+      "checkImg1": item["checkImg1"],
+      "checkImg2": item["checkImg2"],
     });
 
     // API 호출 (사전점검 상세 항목 저장)
@@ -135,6 +138,12 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
 
     // 결과값이 0보다 크면 카운트 업데이트
     if (result > 0) {
+
+      if (newCheckYn == "N") {
+        alertDialog.show(context, "하자완료 되었습니다.");
+      } else {
+        alertDialog.show(context, "하자등록 되었습니다.");
+      }
       updateCheckCountInLv2();
     }
   }
