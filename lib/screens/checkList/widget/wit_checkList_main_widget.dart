@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/checkList/wit_checkList_detail_sc.dart';
-
 import '../../common/wit_common_widget.dart';
 
 /**
