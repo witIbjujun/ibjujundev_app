@@ -12,12 +12,9 @@ Future<File> compressImage(File file) async {
   // 이미지 디코딩
   img.Image? image = img.decodeImage(bytes);
 
-  // 이미지 리사이즈 (예: 800x600으로 리사이즈)
-  img.Image resizedImage = img.copyResize(image!, width: 600, height: 800);
-
-  // 압축된 이미지를 파일로 저장
+  // 압축된 이미지를 파일로 저장 (사이즈 조절 없이 압축만 수행)
   final compressedFile = File(file.path);
-  await compressedFile.writeAsBytes(img.encodeJpg(resizedImage, quality: 85)); // quality: 0~100
+  await compressedFile.writeAsBytes(img.encodeJpg(image!, quality: 85)); // quality: 0~100
 
   return compressedFile;
 }

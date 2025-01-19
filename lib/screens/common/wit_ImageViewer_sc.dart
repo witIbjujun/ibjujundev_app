@@ -56,6 +56,10 @@ class _ImageViewerState extends State<ImageViewer> {
                   ),
                 ),
               ),
+              Container(
+                height: 10,
+                color: Colors.grey[200],
+              ),
               Expanded(
                 flex: 2, // 20% 차지
                 child: Container(
@@ -72,9 +76,8 @@ class _ImageViewerState extends State<ImageViewer> {
                           });
                         },
                         child: Container(
-                          margin: EdgeInsets.all(10), // 오른쪽 여백
+                          margin: EdgeInsets.all(20), // 오른쪽 여백
                           width: 100, // 너비 100 설정
-                          height: 100, // 높이 100 설정
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: currentIndex == index ? Colors.red : Colors.transparent,

@@ -27,6 +27,8 @@ class ExamplePhotoPopup extends StatefulWidget {
 
 class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
 
+  bool _isLoading = false; // 로딩 상태 변수
+
   DateTime? checkDate;
   DateTime? reprDate;
   String checkComt = "";
@@ -100,289 +102,301 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+      content: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text("하자 일자",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            Container(height: 10),
-            GestureDetector(
-              onTap: () => _selectDate(context, true),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Container(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      checkDate != null ? '${checkDate!.toLocal()}'.split(' ')[0] : '날짜 선택',
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                    Text("하자 일자",
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                     ),
-                    Icon(Icons.calendar_today),
                   ],
                 ),
-              ),
-            ),
-            Container(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("수리 일자",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            Container(height: 10),
-            GestureDetector(
-              onTap: () => _selectDate(context, false),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      reprDate != null ? '${reprDate!.toLocal()}'.split(' ')[0] : '날짜 선택',
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
-                    Icon(Icons.calendar_today),
-                  ],
-                ),
-              ),
-            ),
-            Container(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "하자 내용",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            Container(height: 10),
-            Container(
-              height: 150,
-              width: 350,
-              child: TextField(
-                controller: _checkComtController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    checkComt = value;
-                  });
-                },
-                maxLines: 5,
-                style: TextStyle(height: 1.5),
-              ),
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "하자 이미지",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // 첫번째 이미지 영역
+                Container(height: 10),
                 GestureDetector(
-                  onTap: () async {
-                    if (imageFile1 == null && imageUrl1 == "") {
-                      _showImagePickerOptions(1);
-                    } else {
-                      List<String> imageUrls = [imageUrl1!];
-                      await Navigator.push(
-                        context,
-                        SlideRoute(
-                          page: ImageViewer(
-                            imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
-                            initialIndex: 0,
-                          )
-                        ),
-                      );
-                    }
-                  },
+                  onTap: () => _selectDate(context, true),
                   child: Container(
-                    width: 120,
-                    height: 120,
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
                     ),
-                    child: Stack(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: imageFile1 != null
-                              ? Image.file(
-                            imageFile1!,
-                            fit: BoxFit.cover,
-                            width: 120,
-                            height: 120,
-                          )
-                              : imageUrl1 != ""
-                              ? Image.network(
-                            apiUrl + imageUrl1!,
-                            fit: BoxFit.cover,
-                            width: 120,
-                            height: 120,
-                          )
-                              : Center(
-                            child: Icon(
-                              Icons.add_a_photo,
-                              size: 40,
-                              color: Colors.grey[600],
-                            ),
-                          ),
+                        Text(
+                          checkDate != null ? '${checkDate!.toLocal()}'.split(' ')[0] : '날짜 선택',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
                         ),
-                        if (imageFile1 != null || imageUrl1 != "")
-                        Positioned(
-                          right: 8,
-                          top: 8,
-                          child: GestureDetector(
-                            onTap: () {
-                              // 엑스 아이콘 클릭 시 이벤트 처리
-                              setState(() {
-                                imageFile1 = null;
-                                imageUrl1 = "";
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red,
-                              ),
-                              padding: EdgeInsets.all(4),
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ),
+                        Icon(Icons.calendar_today),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(width: 20),
+                Container(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text("수리 일자",
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                Container(height: 10),
+                GestureDetector(
+                  onTap: () => _selectDate(context, false),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          reprDate != null ? '${reprDate!.toLocal()}'.split(' ')[0] : '날짜 선택',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                        Icon(Icons.calendar_today),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "하자 내용",
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                Container(height: 10),
+                Container(
+                  height: 150,
+                  width: 350,
+                  child: TextField(
+                    controller: _checkComtController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        checkComt = value;
+                      });
+                    },
+                    maxLines: 5,
+                    style: TextStyle(height: 1.5),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "하자 이미지",
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // 첫번째 이미지 영역
+                    GestureDetector(
+                      onTap: () async {
+                        if (imageFile1 == null && imageUrl1 == "") {
+                          _showImagePickerOptions(1);
+                        } else {
+                          List<String> imageUrls = [imageUrl1!];
+                          await Navigator.push(
+                            context,
+                            SlideRoute(
+                              page: ImageViewer(
+                                imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
+                                initialIndex: 0,
+                              )
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey),
+                        ),
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: imageFile1 != null
+                                  ? Image.file(
+                                imageFile1!,
+                                fit: BoxFit.cover,
+                                width: 120,
+                                height: 120,
+                              )
+                                  : imageUrl1 != ""
+                                  ? Image.network(
+                                apiUrl + imageUrl1!,
+                                fit: BoxFit.cover,
+                                width: 120,
+                                height: 120,
+                              )
+                                  : Center(
+                                child: Icon(
+                                  Icons.add_a_photo,
+                                  size: 40,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ),
+                            if (imageFile1 != null || imageUrl1 != "")
+                            Positioned(
+                              right: 8,
+                              top: 8,
+                              child: GestureDetector(
+                                onTap: () {
+                                  // 엑스 아이콘 클릭 시 이벤트 처리
+                                  setState(() {
+                                    imageFile1 = null;
+                                    imageUrl1 = "";
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red,
+                                  ),
+                                  padding: EdgeInsets.all(4),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 20),
 
-                // 두번째 이미지 영역
-                GestureDetector(
-                  onTap: () async {
-                    if (imageFile2 == null && imageUrl2 == "") {
-                      _showImagePickerOptions(2);
-                    } else {
-                      List<String> imageUrls = [imageUrl2!];
-                      await Navigator.push(
-                        context,
-                        SlideRoute(
-                          page: ImageViewer(
-                            imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
-                            initialIndex: 0,
-                          )
-                        ),
-                      );
-                    }
-                  },
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
+                    // 두번째 이미지 영역
+                    GestureDetector(
+                      onTap: () async {
+                        if (imageFile2 == null && imageUrl2 == "") {
+                          _showImagePickerOptions(2);
+                        } else {
+                          List<String> imageUrls = [imageUrl2!];
+                          await Navigator.push(
+                            context,
+                            SlideRoute(
+                              page: ImageViewer(
+                                imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
+                                initialIndex: 0,
+                              )
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          child: imageFile2 != null
-                              ? Image.file(
-                            imageFile2!,
-                            fit: BoxFit.cover,
-                            width: 120,
-                            height: 120,
-                          )
-                              : imageUrl2 != ""
-                              ? Image.network(
-                            apiUrl + imageUrl2!,
-                            fit: BoxFit.cover,
-                            width: 120,
-                            height: 120,
-                          )
-                              : Center(
-                            child: Icon(
-                              Icons.add_a_photo,
-                              size: 40,
-                              color: Colors.grey[600],
-                            ),
-                          ),
+                          border: Border.all(color: Colors.grey),
                         ),
-                        if (imageFile2 != null || imageUrl2 != "")
-                        Positioned(
-                          right: 8,
-                          top: 8,
-                          child: GestureDetector(
-                            onTap: () {
-                              // 엑스 아이콘 클릭 시 이벤트 처리
-                              setState(() {
-                                imageFile2 = null;
-                                imageUrl2 = "";
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red,
-                              ),
-                              padding: EdgeInsets.all(4),
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 16,
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: imageFile2 != null
+                                  ? Image.file(
+                                imageFile2!,
+                                fit: BoxFit.cover,
+                                width: 120,
+                                height: 120,
+                              )
+                                  : imageUrl2 != ""
+                                  ? Image.network(
+                                apiUrl + imageUrl2!,
+                                fit: BoxFit.cover,
+                                width: 120,
+                                height: 120,
+                              )
+                                  : Center(
+                                child: Icon(
+                                  Icons.add_a_photo,
+                                  size: 40,
+                                  color: Colors.grey[600],
+                                ),
                               ),
                             ),
-                          ),
+                            if (imageFile2 != null || imageUrl2 != "")
+                            Positioned(
+                              right: 8,
+                              top: 8,
+                              child: GestureDetector(
+                                onTap: () {
+                                  // 엑스 아이콘 클릭 시 이벤트 처리
+                                  setState(() {
+                                    imageFile2 = null;
+                                    imageUrl2 = "";
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red,
+                                  ),
+                                  padding: EdgeInsets.all(4),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                    size: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          if (_isLoading) // 로딩 상태일 때만 표시
+            Container(
+              height: MediaQuery.of(context).size.height * 0.5, // 고정 높이 설정 (예: 30% 높이)
+              width: double.infinity, // 전체 너비를 차지하도록 설정
+              child: Center(
+                child: CircularProgressIndicator(), // 로딩 인디케이터
+              ),
+            ),
+        ],
       ),
       actions: [
         Container(
@@ -408,7 +422,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                 ),
               ),
               SizedBox(width: 10),
-              
+
               // 하자등록 버튼
               Expanded(
                 child: TextButton(
@@ -419,8 +433,16 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                     ),
                   ),
                   onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
                     // 하자등록
                     await save(false);
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+
                     Navigator.of(context).pop();
                   },
                   child: Text("하자등록",
@@ -429,7 +451,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                 ),
               ),
               SizedBox(width: 10),
-              
+
               // 하자완료 버튼
               Expanded(
                 child: TextButton(
@@ -440,8 +462,16 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                     ),
                   ),
                   onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
                     // 하자완료
                     await save(true);
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+
                     Navigator.of(context).pop();
                   },
                   child: Text("하자완료",
@@ -559,6 +589,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
   // [유틸] 갤러리, 카메라 피커 호출
   Future<void> _pickImage(ImageSource source, index) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
+
     if (pickedFile != null) {
       setState(() {
         if (index == 1) {
