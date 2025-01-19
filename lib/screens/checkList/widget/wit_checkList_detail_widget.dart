@@ -249,11 +249,11 @@ class ExpandableItem extends StatelessWidget {
                       itemCount: 5,
                       itemBuilder: (context, imageIndex) {
                         final imageUrlList = [
-                          apiUrl + "/WIT/66b83d90-6dde-46f5-9005-2cfdf615bdfc5292261861812877321.jpg", // 첫 번째 이미지
-                          apiUrl + "/WIT/66b83d90-6dde-46f5-9005-2cfdf615bdfc5292261861812877321.jpg", // 두 번째 이미지
-                          apiUrl + "/WIT/66b83d90-6dde-46f5-9005-2cfdf615bdfc5292261861812877321.jpg", // 세 번째 이미지
-                          apiUrl + "/WIT/66b83d90-6dde-46f5-9005-2cfdf615bdfc5292261861812877321.jpg", // 네 번째 이미지
-                          apiUrl + "/WIT/66b83d90-6dde-46f5-9005-2cfdf615bdfc5292261861812877321.jpg", // 다섯 번째 이미지
+                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 첫 번째 이미지
+                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 두 번째 이미지
+                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 세 번째 이미지
+                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 네 번째 이미지
+                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 다섯 번째 이미지
                         ];
 
                         return Container(

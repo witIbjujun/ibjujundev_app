@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:witibju/screens/checkList/wit_checkList_detail_sc.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_util.dart';
 import 'package:witibju/util/wit_code_ut.dart';
+
+import '../common/wit_ImageViewer_sc.dart';
+import '../common/wit_common_widget.dart';
 
 // 하자등록 팝업
 class ExamplePhotoPopup extends StatefulWidget {
@@ -209,66 +213,169 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
             ),
             SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // 중앙 정렬
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // 첫번째 이미지 영역
                 GestureDetector(
-                  onTap: () => _showImagePickerOptions(1), // 첫 번째 이미지 클릭 시 호출
-                  child: Container(
-                    width: 120, // 너비 120 설정
-                    height: 120, // 높이 120 설정
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10), // 라운드 설정
-                      border: Border.all(color: Colors.grey), // 테두리 색상
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10), // 라운드 적용
-                      child: imageFile1 != null
-                          ? Image.file(
-                        imageFile1!,
-                        fit: BoxFit.cover, // 이미지 비율 유지
-                      )
-                          : imageUrl1 != ""
-                          ? Image.network(
-                        apiUrl + imageUrl1!,
-                        fit: BoxFit.cover, // 이미지 비율 유지
-                      ) : Center(
-                          child: Icon(
-                          Icons.add_a_photo, // 이미지 추가 아이콘
-                          size: 40, // 아이콘 크기
-                          color: Colors.grey[600], // 아이콘 색상
+                  onTap: () async {
+                    if (imageFile1 == null && imageUrl1 == "") {
+                      _showImagePickerOptions(1);
+                    } else {
+                      List<String> imageUrls = [imageUrl1!];
+                      await Navigator.push(
+                        context,
+                        SlideRoute(
+                          page: ImageViewer(
+                            imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
+                            initialIndex: 0,
+                          )
                         ),
-                      ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: imageFile1 != null
+                              ? Image.file(
+                            imageFile1!,
+                            fit: BoxFit.cover,
+                            width: 120,
+                            height: 120,
+                          )
+                              : imageUrl1 != ""
+                              ? Image.network(
+                            apiUrl + imageUrl1!,
+                            fit: BoxFit.cover,
+                            width: 120,
+                            height: 120,
+                          )
+                              : Center(
+                            child: Icon(
+                              Icons.add_a_photo,
+                              size: 40,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                        if (imageFile1 != null || imageUrl1 != "")
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: GestureDetector(
+                            onTap: () {
+                              // 엑스 아이콘 클릭 시 이벤트 처리
+                              setState(() {
+                                imageFile1 = null;
+                                imageUrl1 = "";
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              padding: EdgeInsets.all(4),
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(width: 20), // 이미지 사이 간격
+                SizedBox(width: 20),
+
+                // 두번째 이미지 영역
                 GestureDetector(
-                  onTap: () => _showImagePickerOptions(2), // 두 번째 이미지 클릭 시 호출
-                  child: Container(
-                    width: 120, // 너비 120 설정
-                    height: 120, // 높이 120 설정
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10), // 라운드 설정
-                      border: Border.all(color: Colors.grey), // 테두리 색상
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10), // 라운드 적용
-                      child: imageFile2 != null
-                          ? Image.file(
-                        imageFile2!,
-                        fit: BoxFit.cover, // 이미지 비율 유지
-                      )
-                          : imageUrl2 != ""
-                          ? Image.network(
-                        apiUrl + imageUrl2!,
-                        fit: BoxFit.cover, // 이미지 비율 유지
-                      ) : Center(
-                        child: Icon(
-                          Icons.add_a_photo, // 이미지 추가 아이콘
-                          size: 40, // 아이콘 크기
-                          color: Colors.grey[600], // 아이콘 색상
+                  onTap: () async {
+                    if (imageFile2 == null && imageUrl2 == "") {
+                      _showImagePickerOptions(2);
+                    } else {
+                      List<String> imageUrls = [imageUrl2!];
+                      await Navigator.push(
+                        context,
+                        SlideRoute(
+                          page: ImageViewer(
+                            imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
+                            initialIndex: 0,
+                          )
                         ),
-                      ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: imageFile2 != null
+                              ? Image.file(
+                            imageFile2!,
+                            fit: BoxFit.cover,
+                            width: 120,
+                            height: 120,
+                          )
+                              : imageUrl2 != ""
+                              ? Image.network(
+                            apiUrl + imageUrl2!,
+                            fit: BoxFit.cover,
+                            width: 120,
+                            height: 120,
+                          )
+                              : Center(
+                            child: Icon(
+                              Icons.add_a_photo,
+                              size: 40,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                        if (imageFile2 != null || imageUrl2 != "")
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: GestureDetector(
+                            onTap: () {
+                              // 엑스 아이콘 클릭 시 이벤트 처리
+                              setState(() {
+                                imageFile2 = null;
+                                imageUrl2 = "";
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              padding: EdgeInsets.all(4),
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -283,30 +390,32 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
           width: double.infinity,
           child: Row(
             children: [
+              // 취소 버튼
               Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.grey[500], // 취소 버튼 색상
+                    backgroundColor: Colors.grey[500],
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // 라운드 없애기
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text(
-                    "취소",
+                  child: Text("취소",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
               ),
-              SizedBox(width: 10), // 간격 조정
+              SizedBox(width: 10),
+              
+              // 하자등록 버튼
               Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.red[200], // 확인 버튼 색상
+                    backgroundColor: Colors.red[200],
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // 라운드 없애기
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   onPressed: () async {
@@ -319,13 +428,15 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                   ),
                 ),
               ),
-              SizedBox(width: 10), // 간격 조정
+              SizedBox(width: 10),
+              
+              // 하자완료 버튼
               Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.blue[200], // 확인 버튼 색상
+                    backgroundColor: Colors.blue[200],
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10), // 라운드 없애기
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   onPressed: () async {
@@ -351,7 +462,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
     // REST ID
     String restId = "fileUpload";
 
-    // 이미지 없으면....
+    // 이미지 없으면
     if (imageFile1 == null && imageFile2 == null) {
       setState(() {
         widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(checkDate);
@@ -365,15 +476,15 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
     // 이미지 있으면
     } else {
 
-      List<File> _images = [];
+      List<File> images = [];
       if (imageFile1 != null) {
-        _images.add(imageFile1!);
+        images.add(imageFile1!);
       }
       if (imageFile2 != null) {
-        _images.add(imageFile2!);
+        images.add(imageFile2!);
       }
 
-      final fileInfo = await sendFilePostRequest(restId, _images);
+      final fileInfo = await sendFilePostRequest(restId, images);
 
       // 이미지 등록 실패
       if (fileInfo == "FAIL") {
@@ -413,6 +524,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
     }
   }
 
+  // [팝업] 갤러리, 카메라 팝업 호출
   void _showImagePickerOptions(int index) {
     showModalBottomSheet(
       context: context,
@@ -426,8 +538,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                 title: Text('갤러리에서 선택'),
                 onTap: () {
                   _pickImage(ImageSource.gallery, index);
-                  Navigator.pop(context); // 모달 닫기
-
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
@@ -435,8 +546,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                 title: Text('사진 찍기'),
                 onTap: () {
                   _pickImage(ImageSource.camera, index);
-                  Navigator.pop(context); // 모달 닫기
-
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -446,6 +556,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
     );
   }
 
+  // [유틸] 갤러리, 카메라 피커 호출
   Future<void> _pickImage(ImageSource source, index) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
