@@ -1,7 +1,7 @@
 import 'dart:io';
+import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:witibju/screens/checkList/wit_checkList_detail_sc.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_util.dart';
 import 'package:witibju/util/wit_code_ut.dart';
@@ -591,13 +591,26 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
     final XFile? pickedFile = await _picker.pickImage(source: source);
 
     if (pickedFile != null) {
+      // 이미지 파일을 바이트로 읽기
+      final bytes = await File(pickedFile.path).readAsBytes();
+
+      // 이미지 디코딩
+      img.Image? image = img.decodeImage(bytes);
+
+      // 이미지 오른쪽으로 90도 회전
+      img.Image rotatedImage = img.copyRotate(image!, 90);
+
+      // 회전된 이미지를 파일로 저장
+      final rotatedFile = File(pickedFile.path);
+      await rotatedFile.writeAsBytes(img.encodeJpg(rotatedImage));
+
       setState(() {
         if (index == 1) {
-          imageFile1 = File(pickedFile.path);
+          imageFile1 = rotatedFile;
           imageUrl1 = null;
         }
         if (index == 2) {
-          imageFile2 = File(pickedFile.path);
+          imageFile2 = rotatedFile;
           imageUrl2 = null;
         }
       });

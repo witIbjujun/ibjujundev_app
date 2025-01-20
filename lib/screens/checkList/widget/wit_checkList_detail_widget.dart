@@ -246,25 +246,36 @@ class ExpandableItem extends StatelessWidget {
                     height: 320,
                     padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: PageView.builder(
-                      itemCount: 5,
+                      itemCount: 3,
                       itemBuilder: (context, imageIndex) {
-                        final imageUrlList = [
-                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 첫 번째 이미지
-                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 두 번째 이미지
-                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 세 번째 이미지
-                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 네 번째 이미지
-                          apiUrl + "/WIT/4daa21d8-7240-4e98-aa7d-8fda98ef8f58413983538377572021.jpg", // 다섯 번째 이미지
-                        ];
+                        final inspImg = checkInfoLv3["inspImg"] ?? ""; // null 체크 및 디폴트 값 설정
 
+                        final imageUrlList = [
+                          apiUrl + "/WIT/checkList/" + inspImg + "1.png", // 첫 번째 이미지
+                          apiUrl + "/WIT/checkList/" + inspImg + "2.png", // 두 번째 이미지
+                          apiUrl + "/WIT/checkList/" + inspImg + "3.png", // 세 번째 이미지
+                        ];
                         return Container(
-                          width: 0,
+                          width: double.infinity,
                           margin: EdgeInsets.symmetric(horizontal: 0),
                           decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(imageUrlList[imageIndex]),
-                              fit: BoxFit.cover,
-                            ),
                             borderRadius: BorderRadius.circular(0),
+                          ),
+                          child: Image.network(
+                            imageUrlList[imageIndex],
+                            fit: BoxFit.cover,
+                            errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                              // 이미지 로드 실패 시 빈 이미지 또는 대체 이미지를 표시
+                              return Container(
+                                color: Colors.grey[200], // 빈 이미지의 배경색
+                                child: Center(
+                                  child: Text(
+                                    '이미지 없음',
+                                    style: TextStyle(color: Colors.black54),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
