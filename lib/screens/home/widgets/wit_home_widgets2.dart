@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:witibju/screens/preInspaction/wit_preInsp_main_sc.dart';
 
 import '../../../util/wit_code_ut.dart';
+import '../../checkList/wit_checkList_main_sc.dart';
 import '../../question/wit_question_main_sc.dart';
 import '../wit_home_theme.dart'; // PreInspaction 화면 import
 
@@ -160,7 +162,7 @@ class APTStatusWidget extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => PreInspaction(),
+            builder: (context) => CheckListMain(),
           ),
         );
       },
@@ -276,6 +278,94 @@ void showImagePopup({
     },
   );
 }
+
+/**
+ * 가이드 팝업
+ */
+// 2025-01-16: 옵션을 버튼 형태로 표시하고, 색상을 옵션별로 설정
+void showGuirdDialog({
+  required BuildContext context,
+  required String description, // 설명 텍스트
+  required List<Map<String, dynamic>> options, // 옵션 리스트 (텍스트, 색상)
+  required Function(String) onOptionSelected, // 선택 시 호출될 함수
+}) {
+  showDialog(
+    context: context,
+    barrierDismissible: true, // 팝업 외부를 클릭해도 닫히지 않도록 설정
+    builder: (BuildContext dialogContext) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 설명 문구
+              Text(
+                description,
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16.0),
+              // 옵션 버튼 표시
+              ...options.map((option) {
+                final text = option['text'] as String;
+                final color = option['color'] as Color;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: color, // 버튼 색상
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    ),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop(); // 팝업 닫기
+                      onOptionSelected(text); // 선택된 옵션 처리
+                    },
+                    child: Text(
+                      text,
+                      style: const TextStyle(
+                        color: Colors.white, // 텍스트 색상
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+              const SizedBox(height: 8.0),
+
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+/*금액표시 UTil*/
+class FormatUtils {
+  /// 금액 포맷팅 함수
+  static String formatCurrency(String amount) {
+    if (amount.isEmpty || amount == "-") {
+      return "-";
+    }
+    final formatter = NumberFormat('#,###');
+    int intAmount = int.parse(amount);
+    return formatter.format(intAmount);
+  }
+}
+
+
+
 
 class DialogUtils {
   // 12/14: 공통 다이얼로그 메서드

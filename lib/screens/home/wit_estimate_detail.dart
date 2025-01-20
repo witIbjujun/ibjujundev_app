@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
+import 'package:witibju/screens/home/wit_request_detail.dart';
 
 import '../../util/wit_api_ut.dart';
 import '../chat/chatMain.dart';
@@ -127,11 +128,11 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                 children: [
                   Text(
                     '요청 번호: $reqNo',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: WitHomeTheme.body2,
                   ),
                   Text(
                     '${requests.first.timeAgo} 요청 견적',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: WitHomeTheme.body2,
                   ),
                 ],
               ),
@@ -171,6 +172,8 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                     if (entry.value.isNotEmpty) {
                       final selectedRequest = entry.value.first; // 선택한 요청
                       await getRequesDetailtList(selectedRequest); // 선택된 요청을 직접 전달
+                     /// _showDetailPopupAsIs(context, requestDetailList);
+
                       _showDetailPopup(context, requestDetailList);
                     }
                   },
@@ -187,6 +190,27 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
   }
 
   void _showDetailPopup(BuildContext context, List<RequestInfo> requests) {
+    if (requests.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('요청 정보가 없습니다.')),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RequestDetailScreen(  ///상세화면 이동
+          requests: requests,
+          selectedRequest: requests.first,
+          categoryName: requests.first.categoryNm, // categoryNm 전달
+        ),
+      ),
+    );
+  }
+
+
+  void _showDetailPopupAsIs(BuildContext context, List<RequestInfo> requests) {
 
     if (requests.isEmpty) {
       // 요청이 없을 경우 에러 메시지 표시

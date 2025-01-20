@@ -6,6 +6,7 @@ import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
+import '../../util/wit_code_ut.dart';
 import '../board/wit_board_main_sc.dart';
 import 'models/category.dart';
 import 'models/company.dart';
@@ -26,7 +27,7 @@ class DetailCompany extends StatefulWidget {
 class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateMixin {
   List<Company> companyList = [];
   Category? categoryInfo; // 한 건의 카테고리 정보를 저장
-  final List<String> tabNames = ['견적서비스', '아파트 커뮤니티'];
+  final List<String> tabNames = ['상품설명','견적서비스', '아파트 커뮤니티'];
   final List<String> communityTabNames = ['내 APT', 'HOT 정보', '업체후기'];
   List<String> selectedItems = [];
   late TabController _tabController;
@@ -143,6 +144,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 child: TabBarView(
                   controller: _tabController,
                   children: [
+                    getCategoryDetailInfo(),
                     getEstimateService(),
                     getCommunityTabs(),
                   ],
@@ -151,12 +153,55 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
             ],
           ),
         ),
-        bottomNavigationBar: _tabController.index == 0
+        // 2025-01-16: _tabController.index가 1 (getEstimateService 탭)일 때만 buildBottomNavigationBar가 표시되도록 수정
+        bottomNavigationBar: _tabController.index == 1
             ? buildBottomNavigationBar()
             : null,
       ),
     );
   }
+
+
+
+  Widget getCategoryDetailInfo() {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: categoryInfo != null && categoryInfo?.imagePath != null
+          ? Column(
+        children: [
+          Text(
+            categoryInfo!.categoryNm ?? '카테고리 이름',
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 16.0),
+          Image(
+           /// image: NetworkImage(apiUrl + (categoryInfo!.imagePath ?? '')),
+            image: NetworkImage(apiUrl + '/WIT/lineEye.jpg'),
+            fit: BoxFit.cover,
+          ),
+          SizedBox(height: 16.0),
+          Text(
+            categoryInfo!.detail ?? '상세 설명이 없습니다.',
+            style: TextStyle(
+              fontSize: 16.0,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      )
+          : Center(
+        child: Text(
+          '카테고리 정보를 불러오는 중입니다.',
+          style: TextStyle(fontSize: 16.0, color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
 
 
   Widget buildBottomNavigationBar() {
@@ -223,36 +268,6 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     );
   }
 
-  Widget getCommunityTabs() {
-    return Column(
-      children: [
-        TabBar(
-          controller: _communityTabController,
-          tabs: communityTabNames.map((name) => Tab(text: name)).toList(),
-          indicatorColor: Colors.blue,
-          labelColor: Colors.blue,
-          unselectedLabelColor: Colors.grey,
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: _communityTabController,
-            children: [
-              Board(1, 'B1'),
-              Board(1, 'H1'),
-              Board(1, 'C1'),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget getAppBarUI() {
-    return AppBar(
-      backgroundColor: WitHomeTheme.nearlyWhite,
-      title: Text(widget.title),
-    );
-  }
 
   Widget getEstimateService() {
     return Padding(
@@ -377,6 +392,39 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
       ),
     );
   }
+
+
+  Widget getCommunityTabs() {
+    return Column(
+      children: [
+        TabBar(
+          controller: _communityTabController,
+          tabs: communityTabNames.map((name) => Tab(text: name)).toList(),
+          indicatorColor: Colors.blue,
+          labelColor: Colors.blue,
+          unselectedLabelColor: Colors.grey,
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _communityTabController,
+            children: [
+              Board(1, 'B1'),
+              Board(1, 'H1'),
+              Board(1, 'C1'),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget getAppBarUI() {
+    return AppBar(
+      backgroundColor: WitHomeTheme.nearlyWhite,
+      title: Text(widget.title),
+    );
+  }
+
 
   Future<void> sendRequestInfo() async {
     String restId = "saveRequestInfo";
