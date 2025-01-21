@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/checkList/widget/wit_checkList_main_widget.dart';
 import 'package:witibju/screens/checkList/wit_checkList_allList_sc.dart';
 import 'package:witibju/util/wit_api_ut.dart';
@@ -25,6 +26,8 @@ class CheckListMain extends StatefulWidget {
  * 사전 체크리스트 UI
  */
 class CheckListMainState extends State<CheckListMain> {
+
+  final secureStorage = FlutterSecureStorage();
 
   bool isEditing = false; // 수정 모드 상태 변수
   List<dynamic> checkList = []; // 사전 체크리스트 목록 리스트
@@ -59,10 +62,13 @@ class CheckListMainState extends State<CheckListMain> {
               icon: Icon(Icons.refresh),
               color: Colors.black,
               onPressed: () {
-                setState(() {
-                  // 체크리스트 설정 초기화
-                  initSwitchStates();
-                });
+                ConfimDialog.show(context,
+                    "초기화",
+                    "체크리스트 초기화를 진행하시겠습니까?",
+                    () async {
+                      await initSwitchStates();
+                    }
+                );
               },
             ),
           IconButton(
@@ -137,8 +143,15 @@ class CheckListMainState extends State<CheckListMain> {
     // REST ID
     String restId = "getPreinspactionListByLv1";
 
+    String? clerkNo = await secureStorage.read(key: 'clerkNo');
+
+    // PARAM
+    final param = jsonEncode({
+      "clerkNo": clerkNo,
+    });
+
     // API 호출 (사전 체크리스트 목록 조회)
-    final _checkList = await sendPostRequest(restId, null);
+    final _checkList = await sendPostRequest(restId, param);
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? jsonString = prefs.getString("WIT_PRE_SWITCH_STATES");

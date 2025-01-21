@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/checkList/wit_checkList_detail_sc.dart';
-import '../../common/wit_common_widget.dart';
+import 'package:witibju/screens/common/wit_common_widget.dart';
 
 /**
  * 사전 체크리스트 리스트 뷰
@@ -11,7 +11,6 @@ class CheckListView extends StatelessWidget {
   final List<dynamic> listData;
   final Future<void> Function() callback;
   final bool edited;
-
 
   const CheckListView({
     required this.listData,
@@ -93,7 +92,7 @@ class _CheckListCardState extends State<CheckListCard> {
                   width: 35,
                   height: 35,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5), // 모서리 둥글게
+                    borderRadius: BorderRadius.circular(5),
                     child: Image.network(
                       apiUrl + widget.item["inspImg"],
                       width: 35,

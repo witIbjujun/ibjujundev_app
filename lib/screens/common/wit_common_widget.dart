@@ -148,3 +148,40 @@ class alertDialog {
     );
   }
 }
+
+/*******************************
+ * [이벤트] 컨펌 팝업 호출
+ ******************************/
+class ConfimDialog {
+  static void show(BuildContext context, String title, String message, Future<void> Function() onConfirm) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+          ),
+          content: Text(message,
+            style: TextStyle(fontSize: 12),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("취소"),
+            ),
+            TextButton(
+              onPressed: () {
+                onConfirm().then((_) {
+                  Navigator.of(context).pop();
+                });
+              },
+              child: Text("확인"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
