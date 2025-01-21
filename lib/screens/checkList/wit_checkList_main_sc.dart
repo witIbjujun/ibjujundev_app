@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/checkList/widget/wit_checkList_main_widget.dart';
+import 'package:witibju/screens/checkList/wit_checkList_allList_sc.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:witibju/screens/common/wit_common_widget.dart';
 
 /**
  * 사전 체크리스트 메인
@@ -26,6 +28,7 @@ class CheckListMainState extends State<CheckListMain> {
 
   bool isEditing = false; // 수정 모드 상태 변수
   List<dynamic> checkList = []; // 사전 체크리스트 목록 리스트
+  int checkAllCnt = 0;          // 하자 전체 건수
 
   /**
    * 화면 초기화
@@ -52,19 +55,19 @@ class CheckListMainState extends State<CheckListMain> {
         ),
         actions: [
           if (isEditing)
-          IconButton(
-            icon: Icon(Icons.refresh),
-            color: Colors.black,
-            onPressed: () {
-              setState(() {
-                // 체크리스트 설정 초기화
-                initSwitchStates();
-              });
-            },
-          ),
+            IconButton(
+              icon: Icon(Icons.refresh),
+              color: Colors.black,
+              onPressed: () {
+                setState(() {
+                  // 체크리스트 설정 초기화
+                  initSwitchStates();
+                });
+              },
+            ),
           IconButton(
             icon: Icon(isEditing ? Icons.check : Icons.settings),
-            color: Colors.black,
+            color: isEditing ? Colors.green : Colors.black,
             onPressed: () {
               setState(() {
                 if (isEditing) {
@@ -80,7 +83,8 @@ class CheckListMainState extends State<CheckListMain> {
       body: SafeArea(
         child: checkList.isEmpty
             ? Center(
-          child: Text("조회된 데이터가 없습니다.",
+          child: Text(
+            "조회된 데이터가 없습니다.",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
         )
@@ -88,6 +92,37 @@ class CheckListMainState extends State<CheckListMain> {
           listData: isEditing ? checkList : checkList.where((item) => item["isSelected"]).toList(),
           callback: getCheckListByLv1,
           edited: isEditing,
+        ),
+      ),
+      floatingActionButton: isEditing ? null :
+      Container(
+        width: 80, // 원하는 너비
+        height: 70, // 원하는 높이
+        child: FloatingActionButton(
+          onPressed: () async {
+            await Navigator.push(
+              context,
+              SlideRoute(page: CheckAllList()),
+            );
+            await getCheckListByLv1();
+          },
+          backgroundColor: Colors.red[200],
+          shape: CircleBorder(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.warning, // 경고 아이콘
+                size: 30, // 아이콘 크기 조정
+                color: Colors.white,
+              ),
+              Text(
+                "하자 ${checkAllCnt}건",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -126,6 +161,13 @@ class CheckListMainState extends State<CheckListMain> {
         }
       }
       checkList = _checkList;
+
+      // 하자 전체 건수 조회
+      checkAllCnt = 0;
+      for (dynamic item in _checkList) {
+        int test = int.tryParse(item["inspDetlChoiceCnt"].toString()) ?? 0;
+        checkAllCnt += test;
+      }
     });
   }
 
@@ -150,6 +192,9 @@ class CheckListMainState extends State<CheckListMain> {
 
   // [유틸] 전체 스위치 상태를 SharedPreferences값 초기화
   Future<void> initSwitchStates() async {
+
+
+
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("WIT_PRE_SWITCH_STATES", "");

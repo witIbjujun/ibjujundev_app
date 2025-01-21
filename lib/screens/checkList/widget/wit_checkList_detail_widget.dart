@@ -44,7 +44,6 @@ class _CheckListDetailViewState extends State<CheckListDetailView> {
         body: Column(
           children: [
             TabBarWidget(
-              checkInfoLv1 : widget.checkInfoLv1,
               checkListByLv2: widget.checkListByLv2,
               tabController: widget.tabController,
               onTabChanged: (inspId) {
@@ -61,7 +60,6 @@ class _CheckListDetailViewState extends State<CheckListDetailView> {
                 itemBuilder: (context, index) {
                   bool isExpanded = expandedIndex == index;
                   return ExpandableItem(
-                    checkInfoLv1 : widget.checkInfoLv1,
                     checkInfoLv3: widget.checkListByLv3[index],
                     isExpanded: isExpanded,
                     onSwitchChanged: (value) {
@@ -99,14 +97,12 @@ class _CheckListDetailViewState extends State<CheckListDetailView> {
  * 체크리스트 상세 TabBar Widget
  */
 class TabBarWidget extends StatelessWidget {
-  final dynamic checkInfoLv1;
   final List<dynamic> checkListByLv2;
   final TabController tabController;
   final Function(String) onTabChanged;
 
   const TabBarWidget({
     Key? key,
-    required this.checkInfoLv1,
     required this.checkListByLv2,
     required this.tabController,
     required this.onTabChanged,
@@ -146,7 +142,6 @@ class TabBarWidget extends StatelessWidget {
  * 체크리스트 상세 TabBar 상세 Widget
  */
 class ExpandableItem extends StatelessWidget {
-  final dynamic checkInfoLv1;
   final dynamic checkInfoLv3;
   final bool isExpanded;
   final Function(bool) onSwitchChanged;
@@ -154,7 +149,6 @@ class ExpandableItem extends StatelessWidget {
 
   const ExpandableItem({
     Key? key,
-    required this.checkInfoLv1,
     required this.checkInfoLv3,
     required this.isExpanded,
     required this.onSwitchChanged,
