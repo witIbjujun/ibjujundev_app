@@ -95,7 +95,9 @@ class CheckListMainState extends State<CheckListMain> {
           ),
         )
             : CheckListView(
-          listData: isEditing ? checkList : checkList.where((item) => item["isSelected"]).toList(),
+          listData: isEditing
+              ? checkList
+              : checkList.where((item) => item["isSelected"] == true).toList(),
           callback: getCheckListByLv1,
           edited: isEditing,
         ),
@@ -137,17 +139,18 @@ class CheckListMainState extends State<CheckListMain> {
   // [서비스] 사전 체크리스트 목록 조회
   Future<void> getCheckListByLv1() async {
 
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+
     // 데이터 초기화
     checkList = [];
 
     // REST ID
     String restId = "getPreinspactionListByLv1";
 
-    String? clerkNo = await secureStorage.read(key: 'clerkNo');
-
     // PARAM
     final param = jsonEncode({
-      "clerkNo": clerkNo,
+      "loginClerkNo": loginClerkNo,
     });
 
     // API 호출 (사전 체크리스트 목록 조회)
@@ -205,9 +208,6 @@ class CheckListMainState extends State<CheckListMain> {
 
   // [유틸] 전체 스위치 상태를 SharedPreferences값 초기화
   Future<void> initSwitchStates() async {
-
-
-
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("WIT_PRE_SWITCH_STATES", "");

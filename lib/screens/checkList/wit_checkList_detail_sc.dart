@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/checkList/widget/wit_checkList_detail_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
@@ -24,6 +25,8 @@ class CheckListDetail extends StatefulWidget {
  * 사전 체크리스트 상세 State
  */
 class CheckListDetailState extends State<CheckListDetail> with TickerProviderStateMixin {
+
+  final secureStorage = FlutterSecureStorage();
 
   List<dynamic> checkListByLv2 = [];      // 사전 점검 항목 리스트 (레벨2)
   List<dynamic> checkListByLv3 = [];      // 사전 점검 항목 리스트 (레벨3)
@@ -74,12 +77,16 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
   // [서비스] 사전 점검 상세 조회 (Lv2)
   Future<void> getCheckListByLv2() async {
 
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+
     // REST ID
     String restId = "getPreinspactionListByLv2";
 
     // PARAM
     final param = jsonEncode({
       "inspId": widget.checkInfoLv1["inspId"],
+      "loginClerkNo": loginClerkNo,
     });
 
     final _preinspactionListByLv2 = await sendPostRequest(restId, param);
@@ -97,6 +104,9 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
   // [서비스] 사전 점검 상세 조회 (Lv3)
   Future<void> getCheckListByLv3(String inspId) async {
 
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+
     // REST ID
     String restId = "getPreinspactionListByLv3";
 
@@ -104,6 +114,7 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
     final param = jsonEncode({
       "parentsInspId": widget.checkInfoLv1["inspId"],
       "inspId": inspId,
+      "loginClerkNo": loginClerkNo,
     });
 
     // API 호출 (사전 점검 상세 조회 (Lv3))
@@ -118,6 +129,9 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
   // [서비스] 사전 점검 상세 저장
   Future<void> saveCheckInfo(dynamic item, String newCheckYn) async {
 
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+
     // REST ID
     String restId = "savePreinspactionInfo";
 
@@ -131,6 +145,7 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
       "checkComt": item["checkComt"],
       "checkImg1": item["checkImg1"],
       "checkImg2": item["checkImg2"],
+      "loginClerkNo": loginClerkNo,
     });
 
     // API 호출 (사전점검 상세 항목 저장)

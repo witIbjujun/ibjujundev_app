@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/checkList/widget/wit_checkList_detail_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
@@ -20,6 +21,8 @@ class CheckAllList extends StatefulWidget {
  * 하자 전체 리스트 State
  */
 class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixin {
+
+  final secureStorage = FlutterSecureStorage();
 
   List<dynamic> checkAllList = [];      // 하자 전체 리스트
 
@@ -45,8 +48,7 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
-          "하자 전체 리스트",
+        title: Text("하자 전체 리스트",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
@@ -54,7 +56,14 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
+              child: checkAllList.isEmpty
+                  ? Center(
+                  child: Text(
+                    "조회된 데이터가 없습니다.",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                )
+                  : ListView.builder(
                 controller: _scrollController,
                 itemCount: checkAllList.length,
                 itemBuilder: (context, index) {
@@ -96,11 +105,19 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
   // [서비스] 하자 전체 조회
   Future<void> getCheckAllList() async {
 
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+
     // REST ID
     String restId = "getPreinspactionNoList";
 
+    // PARAM
+    final param = jsonEncode({
+      "loginClerkNo": loginClerkNo,
+    });
+
     // API 호출 (하자 전체 조회)
-    final _checkAllList = await sendPostRequest(restId, null);
+    final _checkAllList = await sendPostRequest(restId, param);
 
     // 데이터 셋팅
     setState(() {
@@ -110,6 +127,9 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
 
   // [서비스] 사전 점검 상세 저장
   Future<void> saveCheckInfo(dynamic item, String newCheckYn) async {
+
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "savePreinspactionInfo";
@@ -124,6 +144,7 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
       "checkComt": item["checkComt"],
       "checkImg1": item["checkImg1"],
       "checkImg2": item["checkImg2"],
+      "loginClerkNo": loginClerkNo,
     });
 
     // API 호출 (사전점검 상세 항목 저장)

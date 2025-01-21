@@ -5,9 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_util.dart';
 import 'package:witibju/util/wit_code_ut.dart';
-
-import '../common/wit_ImageViewer_sc.dart';
-import '../common/wit_common_widget.dart';
+import 'package:witibju/screens/common/wit_ImageViewer_sc.dart';
+import 'package:witibju/screens/common/wit_common_widget.dart';
 
 // 하자등록 팝업
 class ExamplePhotoPopup extends StatefulWidget {
