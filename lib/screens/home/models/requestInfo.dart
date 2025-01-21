@@ -16,6 +16,7 @@ class RequestInfo {
     this.estimateAmount = '',
     this.estimateContents = '',
     this.companyCnt = '',
+    this.imageFilePath = '',
     this.seq = ''
   });
 
@@ -34,6 +35,7 @@ class RequestInfo {
   String timeAgo;
   String estimateAmount;
   String estimateContents;
+  String imageFilePath;
   String seq;
   String companyCnt;
 
@@ -54,9 +56,10 @@ class RequestInfo {
         rate: requestInfo['rate'] ?? '',
         seq: requestInfo['seq'] ?? '',
         timeAgo: requestInfo['timeAgo'] ?? '',
-          companyCnt: requestInfo['companyCnt'] ?? '',
+        imageFilePath: requestInfo['imageFilePath'] ?? '',
+        companyCnt: requestInfo['companyCnt'] ?? '',
         estimateAmount: requestInfo['estimateAmount'] ?? '',
-          estimateContents: requestInfo['estimateContents'] ?? '',
+        estimateContents: requestInfo['estimateContents'] ?? '',
         reqContents: requestInfo['reqContents'] ?? ''
           );
     }).toList();
