@@ -322,11 +322,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                         SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
                                         EstimateRequestList(stat: '', sllrNo: sllrNo.toString(),), // 리스트를 추가
                                         SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
-                                        TextButton(
+                                        ElevatedButton(
                                           onPressed: () {
                                             Navigator.of(context).pop(); // 팝업 닫기
                                           },
-                                          child: Text("닫기"),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.grey, // 버튼 배경색 파란색
+                                            foregroundColor: Colors.white, // 글씨색 흰색
+                                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                                          ),
+                                          child: const Text('닫기', style: TextStyle(fontSize: 15)),
                                         ),
                                       ],
                                     ),
@@ -379,11 +384,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                         SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
                                         EstimateRequestList(stat: '01', sllrNo: sllrNo.toString(),), // 리스트를 추가
                                         SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
-                                        TextButton(
+                                        ElevatedButton(
                                           onPressed: () {
                                             Navigator.of(context).pop(); // 팝업 닫기
                                           },
-                                          child: Text("닫기"),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.grey, // 버튼 배경색 파란색
+                                            foregroundColor: Colors.white, // 글씨색 흰색
+                                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                                          ),
+                                          child: const Text('닫기', style: TextStyle(fontSize: 15)),
                                         ),
                                       ],
                                     ),

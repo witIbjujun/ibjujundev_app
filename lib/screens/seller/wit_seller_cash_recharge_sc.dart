@@ -1,13 +1,14 @@
 import 'dart:convert';
 
+import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_auto_sc.dart';
-// import 'package:app/screens/seller/wit_seller_tossIf_sc.dart';
 import 'package:flutter/material.dart';
 // import 'package:tosspayments_widget_sdk_flutter/widgets/payment_method.dart';
 
-// import '../../main_toss.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:intl/intl.dart';
+
+import '../tosspayments/home.dart';
 
 class CashRecharge extends StatefulWidget {
   final dynamic sllrNo;
@@ -25,6 +26,7 @@ class CashRechargeState extends State<CashRecharge> {
   Map cashInfo = {};
   List<dynamic> cashRechargeList = [];
   String? selectedCash; // 선택된 캐시 금액을 저장할 변수
+  String?  selectedAmount;
 
   @override
   void initState() {
@@ -196,6 +198,7 @@ class CashRechargeState extends State<CashRecharge> {
                 onSelect: () {
                   setState(() {
                     selectedCash = rechargeOption['totalCash'].toString(); // 선택된 캐시 금액 설정
+                    selectedAmount = rechargeOption['cash'].toString(); // 결재할 금액
                   });
                 },
               );
@@ -212,20 +215,21 @@ class CashRechargeState extends State<CashRecharge> {
                   //onPressed: createTossPayment,
                   onPressed: () {
                     // 토스 API 호출
-                   /* Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MyAppToss()),
-                    );*/
+                          builder: (context) => Home(selectedAmount, storeName, sellerInfo['email'])),
+                          //builder: (context) => tossPaymentsWebview("https://example.com/payment?orderId=12345&amount=50000")),
+                    );
 
                     // 토스 API 호출값 받아서 이상없으면 아래 update 로직 타도록 수정 필요함
-                    if (selectedCash != null) {
+                    /*if (selectedCash != null) {
                       updateCashInfo(selectedCash!); // 선택된 캐시 금액 전달
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("캐시를 선택해 주세요.")),
                       );
-                    }
+                    }*/
                   },
                   child: Text('결제하기'),
                 ),
@@ -236,6 +240,12 @@ class CashRechargeState extends State<CashRecharge> {
                   ),
                   onPressed: () {
                     // 취소 버튼 로직
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SellerCashHistory(sllrNo: sellerInfo["sllrNo"])),
+                      //builder: (context) => tossPaymentsWebview("https://example.com/payment?orderId=12345&amount=50000")),
+                    );
                   },
                   child: Text('취소'),
                 ),
@@ -291,7 +301,7 @@ class CashRechargeState extends State<CashRecharge> {
     );
   }
 
-  Future<void> updateCashInfo(String totalCash) async {
+  Future<void> updateCashInfo(String totalCash, BuildContext context) async {
     // REST ID
     String restId = "updateCashInfo";
 
@@ -314,14 +324,13 @@ class CashRechargeState extends State<CashRecharge> {
       );
 
       // 상세 화면으로 이동
-      /*
-      Navigator.push(
+
+      // 화면 전환: CashRecharge 화면으로 이동
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => SellerProfileDetail(sllrNo: sllrNo),
-        ),
+        MaterialPageRoute(builder: (context) => CashRecharge(sllrNo: widget.sllrNo)),
       );
-      */
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("캐시 충전에 실패했습니다.")),
