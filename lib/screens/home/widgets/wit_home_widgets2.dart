@@ -175,7 +175,7 @@ class APTStatusWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "오늘의 내APT의 체크 현황",
+                "오늘의 사전점검 상태",
                 textAlign: TextAlign.center,
                 style: WitHomeTheme.headline, // subtitle 스타일 적용
               ),

@@ -11,6 +11,7 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 
 import '../../util/wit_api_ut.dart';
 import '../board/wit_board_main_sc.dart';
+import '../checkList/wit_checkList_main_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
 
 class MyProfile extends StatefulWidget  {
@@ -251,7 +252,7 @@ class _MyProfileState extends State<MyProfile> {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => PreInspaction(), // MyProfile 페이지로 이동
+                      builder: (context) => CheckListMain(), // MyProfile 페이지로 이동
                     ),
                   );
                 },

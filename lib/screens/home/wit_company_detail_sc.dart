@@ -38,7 +38,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _communityTabController = TabController(length: 3, vsync: this);
 
     // 카테고리 정보 조회
@@ -271,40 +271,9 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
 
   Widget getEstimateService() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(6.0),
       child: Column(
         children: [
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                if (isAllSelected) {
-                  selectedItems.clear();
-                } else {
-                  selectedItems = companyList.map((company) => company.companyId).toList();
-                }
-                isAllSelected = !isAllSelected;
-              });
-            },
-            child: Container(
-              width: double.infinity,
-              height: 50.0,
-              decoration: BoxDecoration(
-                color: isAllSelected ? Colors.grey : Colors.blue,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Center(
-                child: Text(
-                  isAllSelected ? '전체 해제' : '전체 선택',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 16.0),
           Expanded(
             child: ListView.builder(
               itemCount: companyList.length,
@@ -348,9 +317,33 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                           : null,
                     ),
                   ),
-                  title: Text(
-                    company.companyNm,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            company.companyNm,
+
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          if (index == 0) // 첫 번째 항목에만 왕관 추가
+                            Image.asset(
+                              'assets/images/award.jpg', // 왕관 이미지 경로
+                              width: 16,
+                              height: 16,
+                            ),
+                        ],
+                      ),
+                      if (index == 0) // 첫 번째 항목에만 추가 설명
+                        const SizedBox(height: 4),
+                      if (index == 0)
+                        Text(
+                          '고객 만족도: 95%', // 추가 설명
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                    ],
                   ),
                   trailing: GestureDetector(
                     onTap: () {
@@ -369,7 +362,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                           width: 20,
                           height: 20,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         SizedBox(
                           width: 30,
                           child: Text(
