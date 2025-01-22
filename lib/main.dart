@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/models/main_view_model.dart';
@@ -8,6 +10,8 @@ import 'package:witibju/screens/home/models/main_view_model.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/login/wit_kakaoLogin.dart';
 import 'package:witibju/screens/home/login/wit_kakaoLogin_home_sc.dart';
+import 'package:witibju/screens/result.dart';
+import 'package:witibju/screens/tosspayments_widget/widget_home.dart';
 // import 'package:witibju/util/wit_apppush.dart';
 
 /// 백그라운드 메시지 처리 함수
@@ -71,17 +75,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
 
       home: HomeScreen(), //현재 메인
+
+      // 토스 결재 후 처리
+      getPages: [
+        GetPage(name: '/result', page: () => ResultPage()), // 결과 화면 등록
+      ],
+
+
       // home: FCMSender(), //현재 메인
-       ///home: kakoLoingHome(),
+      ///home: kakoLoingHome(),
 
       ///home: Directionality(
       ///   textDirection: TextDirection.ltr,
       /// child: ChatPage(),
       ///),   채팅
+      ///
+      ///
     );
   }
 }
