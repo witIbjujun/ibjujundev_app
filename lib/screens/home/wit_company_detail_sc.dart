@@ -334,8 +334,8 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                               padding: const EdgeInsets.only(left: 4.0),
                               child: Image.asset(
                                 'assets/images/award.jpg', // 왕관 이미지 경로
-                                width: 20,
-                                height: 20,
+                                width: 30,
+                                height: 30,
                               ),
                             ),
                         ],
