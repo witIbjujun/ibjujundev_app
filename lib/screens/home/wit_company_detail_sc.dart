@@ -270,21 +270,30 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
 
 
   Widget getEstimateService() {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(6.0),
-          child: Column(
-            children: [
-              ListView.builder(
-                physics: NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
-                shrinkWrap: true, // 높이를 자식에 맞게 조정
-                itemCount: companyList.length,
-                itemBuilder: (context, index) {
-                  final company = companyList[index];
-                  bool isSelected = selectedItems.contains(company.companyId);
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Column(
+          children: [
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
+              shrinkWrap: true, // 높이를 자식에 맞게 조정
+              itemCount: companyList.length,
+              itemBuilder: (context, index) {
+                final company = companyList[index];
+                bool isSelected = selectedItems.contains(company.companyId);
 
-                  return ListTile(
+                return ListTile(
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        selectedItems.remove(company.companyId);
+                      } else {
+                        selectedItems.add(company.companyId);
+                      }
+                    });
+                  },
+                  leading: GestureDetector(
                     onTap: () {
                       setState(() {
                         if (isSelected) {
@@ -294,103 +303,93 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                         }
                       });
                     },
-                    leading: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (isSelected) {
-                            selectedItems.remove(company.companyId);
-                          } else {
-                            selectedItems.add(company.companyId);
-                          }
-                        });
-                      },
-                      child: Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isSelected ? Colors.blue : Colors.transparent,
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 2.0,
-                          ),
+                    child: Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isSelected ? Colors.blue : Colors.transparent,
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 2.0,
                         ),
-                        child: isSelected
-                            ? Icon(Icons.check, color: Colors.white, size: 18)
-                            : null,
                       ),
+                      child: isSelected
+                          ? Icon(Icons.check, color: Colors.white, size: 18)
+                          : null,
                     ),
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center, // 텍스트와 이미지를 세로 정렬
-                          children: [
-                            Text(
-                              company.companyNm,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            if (index == 0) // 첫 번째 항목에만 왕관 추가
-                              Padding(
-                                padding: const EdgeInsets.only(left: 4.0), // 텍스트와 이미지 간격
-                                child: Image.asset(
-                                  'assets/images/award.jpg', // 왕관 이미지 경로
-                                  width: 30,
-                                  height: 30,
-                                ),
-                              ),
-                          ],
-                        ),
-                        if (index == 0) // 첫 번째 항목에만 추가 설명
-                          const SizedBox(height: 4),
-                        if (index == 0)
-                          Text(
-                            '고객 만족도: 95%', // 추가 설명
-                            style: TextStyle(fontSize: 12, color: Colors.grey),
-                          ),
-                      ],
-                    ),
-                    trailing: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Board(1, 'C1'),
-                          ),
-                        );
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                  ),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/images/star.png',
-                            width: 20,
-                            height: 20,
+                          Text(
+                            company.companyNm,
+                            style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(width: 4),
-                          SizedBox(
-                            width: 30,
-                            child: Text(
-                              company.rateNum,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: WitHomeTheme.nearlyBlue,
+                          if (index == 0) // 첫 번째 항목에만 왕관 추가
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4.0),
+                              child: Image.asset(
+                                'assets/images/award.jpg', // 왕관 이미지 경로
+                                width: 20,
+                                height: 20,
                               ),
                             ),
-                          ),
                         ],
                       ),
+                      if (index == 0) // 첫 번째 항목에만 추가 설명
+                        const SizedBox(height: 4),
+                      if (index == 0)
+                        Text(
+                          '고객 만족도: 95%', // 추가 설명
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                    ],
+                  ),
+                  trailing: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Board(1, 'C1'),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'assets/images/star.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                        const SizedBox(width: 4),
+                        SizedBox(
+                          width: 30,
+                          child: Text(
+                            company.rateNum,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: WitHomeTheme.nearlyBlue,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
   }
+
 
   Widget getCommunityTabs() {
     return Column(
