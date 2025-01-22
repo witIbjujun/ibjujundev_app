@@ -152,24 +152,27 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   ),
                   SizedBox(height: 5),
                   // 고객 요구사항 카드
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "고객님 요구사항",
-                            style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            reqContents,
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                        ],
+                  Container(
+                    width: double.infinity, // 가로로 꽉 차게 설정
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "고객님 요구사항",
+                              style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              reqContents,
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -183,7 +186,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("견적금액", style: TextStyle(fontSize: 16)),
+                          Text("견적금액",style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
+                          ),
                           SizedBox(height: 8), // 제목과 입력란 사이의 간격
                           Row(
                             children: [
@@ -203,7 +207,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                 ),
                               ),
                               SizedBox(width: 8),
-                              Text("원", style: TextStyle(fontSize: 16)),
+                              Text("원",style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                              ),
+
                             ],
                           ),
                         ],
@@ -223,7 +229,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         children: [
                           Text(
                             "견적 추가 설명",
-                            style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 10),
                           Container(
