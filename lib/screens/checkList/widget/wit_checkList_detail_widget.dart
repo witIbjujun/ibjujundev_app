@@ -28,7 +28,7 @@ class CheckListDetailView extends StatefulWidget {
 }
 
 class _CheckListDetailViewState extends State<CheckListDetailView> {
-  int? expandedIndex = 0; // 클릭된 항목의 인덱스를 저장
+  int? expandedIndex = -1; // 클릭된 항목의 인덱스를 저장
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -48,7 +48,7 @@ class _CheckListDetailViewState extends State<CheckListDetailView> {
               tabController: widget.tabController,
               onTabChanged: (inspId) {
                 setState(() {
-                  expandedIndex = 0;
+                  expandedIndex = -1;
                 });
                 widget.onTabChanged(inspId);
               },
@@ -229,7 +229,7 @@ class ExpandableItem extends StatelessWidget {
             ),
           ),
           AnimatedContainer(
-            duration: Duration(milliseconds: 700),
+            duration: Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             height: isExpanded ? 500 : 0,
             child: SingleChildScrollView(
@@ -238,7 +238,7 @@ class ExpandableItem extends StatelessWidget {
                   Container(height: 0),
                   Container(
                     height: 320,
-                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: PageView.builder(
                       itemCount: 3,
                       itemBuilder: (context, imageIndex) {
@@ -281,7 +281,7 @@ class ExpandableItem extends StatelessWidget {
                     color: Colors.white,
                     padding: EdgeInsets.all(20),
                     child: Text(checkInfoLv3["inspComt"] ?? "",
-                      style: TextStyle(fontSize: 14, color: Colors.grey),
+                      style: TextStyle(fontSize: 14),
                     ),
                   ),
                   Container(height: 10),

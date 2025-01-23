@@ -102,7 +102,7 @@ class CheckListMainState extends State<CheckListMain> {
           edited: isEditing,
         ),
       ),
-      floatingActionButton: isEditing ? null :
+      floatingActionButton: isEditing || checkAllCnt == 0 ? null :
       Container(
         width: 80, // 원하는 너비
         height: 70, // 원하는 높이

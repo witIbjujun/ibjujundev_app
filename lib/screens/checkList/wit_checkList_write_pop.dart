@@ -89,17 +89,47 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Container(
-        height: 50,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.blue[200],
-          borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-        ),
-        alignment: Alignment.center,
-        child: Text("하자 등록 [" + widget.checkInfoLv3["inspNm"] + "]",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
+      title: Stack(
+        children: [
+          Container(
+            height: 50,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.blue[200],
+              borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+            ),
+            alignment: Alignment.center,
+            child: Text("하자 등록 [" + widget.checkInfoLv3["inspNm"] + "]",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Container(
+              width: 50, // 원의 너비
+              height: 50, // 원의 높이
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey, // 배경색 강조
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 3), // 그림자의 위치
+                  ),
+                ],
+              ),
+              child: IconButton(
+                icon: Icon(Icons.close, color: Colors.white, size: 24), // 아이콘 크기 조정
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       content: Stack(
         children: [
@@ -404,7 +434,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
           child: Row(
             children: [
               // 취소 버튼
-              Expanded(
+              /*Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.grey[500],
@@ -420,36 +450,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                   ),
                 ),
               ),
-              SizedBox(width: 10),
-
-              // 하자등록 버튼
-              Expanded(
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.red[200],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () async {
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    // 하자등록
-                    await save(false);
-
-                    setState(() {
-                      _isLoading = false;
-                    });
-
-                    Navigator.of(context).pop();
-                  },
-                  child: Text("하자등록",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
+              SizedBox(width: 10),*/
 
               // 하자완료 버튼
               Expanded(
@@ -474,6 +475,34 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                     Navigator.of(context).pop();
                   },
                   child: Text("하자완료",
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              // 하자등록 버튼
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.red[200],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                    // 하자등록
+                    await save(false);
+
+                    setState(() {
+                      _isLoading = false;
+                    });
+
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("하자등록",
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                 ),
