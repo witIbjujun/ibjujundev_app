@@ -295,7 +295,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  Container(
+                  boardDetailImageList.isNotEmpty
+                      ? Container(
                     height: 120, // 높이 설정
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -329,7 +330,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         );
                       },
                     ),
-                  ),
+                  ):
                   SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
