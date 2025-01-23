@@ -154,9 +154,9 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
           ),
         ),
         // 2025-01-16: _tabController.index가 1 (getEstimateService 탭)일 때만 buildBottomNavigationBar가 표시되도록 수정
-        bottomNavigationBar: _tabController.index == 1
-            ? buildBottomNavigationBar()
-            : null,
+       /// bottomNavigationBar: _tabController.index == 1
+       ///     ? buildBottomNavigationBar()
+        ///    : null,
       ),
     );
   }
@@ -166,45 +166,41 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   Widget getCategoryDetailInfo() {
     return Container(
       padding: const EdgeInsets.all(16.0),
-      child: categoryInfo != null && categoryInfo?.imagePath != null
-          ? Column(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            categoryInfo!.categoryNm ?? '카테고리 이름',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
+          if (categoryInfo != null && categoryInfo?.imagePath != null) ...[
+            Text(
+              categoryInfo!.categoryNm ?? '카테고리 이름',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          SizedBox(height: 16.0),
-          Image(
-           /// image: NetworkImage(apiUrl + (categoryInfo!.imagePath ?? '')),
-            image: NetworkImage(apiUrl + '/WIT/lineEye.jpg'),
-            fit: BoxFit.cover,
-          ),
-          SizedBox(height: 16.0),
-          Text(
-            categoryInfo!.detail ?? '상세 설명이 없습니다.',
-            style: TextStyle(
-              fontSize: 16.0,
-              color: Colors.grey[600],
+            SizedBox(height: 16.0),
+            Image(
+              image: NetworkImage(apiUrl + '/WIT/lineEye.jpg'), // 이미지 URL
+              fit: BoxFit.cover,
             ),
-            textAlign: TextAlign.center,
-          ),
+            SizedBox(height: 16.0),
+            Text(
+              categoryInfo!.detail ?? '상세 설명이 없습니다.',
+              style: TextStyle(
+                fontSize: 16.0,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 16.0),
+          ],
+          // "추가조건/요구사항" 및 버튼 제거 (2025-01-23)
         ],
-      )
-          : Center(
-        child: Text(
-          '카테고리 정보를 불러오는 중입니다.',
-          style: TextStyle(fontSize: 16.0, color: Colors.grey),
-        ),
       ),
     );
   }
 
 
-
-  Widget buildBottomNavigationBar() {
+  Widget buildBottomNavigationBar1() {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.all(16.0),
@@ -340,13 +336,11 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                             ),
                         ],
                       ),
-                      if (index == 0) // 첫 번째 항목에만 추가 설명
-                        const SizedBox(height: 4),
-                      if (index == 0)
-                        Text(
-                          '고객 만족도: 95%', // 추가 설명
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
-                        ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '고객 만족도: 95%', // 추가 설명
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                      ),
                     ],
                   ),
                   trailing: GestureDetector(
@@ -383,6 +377,60 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                   ),
                 );
               },
+            ),
+            // "추가조건/요구사항" 및 버튼 추가 (2025-01-23)
+            SizedBox(height: 16.0),
+            Text(
+              "추가조건/요구사항",
+              style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8.0),
+            TextField(
+              controller: _additionalRequirementsController,
+              maxLines: 3,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
+                contentPadding:
+                EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+              ),
+            ),
+            SizedBox(height: 14.0),
+            GestureDetector(
+              onTap: () async {
+                bool isConfirmed = await DialogUtils.showConfirmationDialog(
+                  context: context,
+                  title: '견적 요청 확인',
+                  content: '견적 요청을 진행하시겠습니까?',
+                  confirmButtonText: '진행',
+                  cancelButtonText: '취소',
+                );
+
+                if (isConfirmed) {
+                  sendRequestInfo();
+                }
+              },
+              child: Container(
+                width: double.infinity,
+                height: 50.0,
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Center(
+                  child: Text(
+                    '견적 요청하기',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

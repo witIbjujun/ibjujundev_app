@@ -35,7 +35,7 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: 0),
       child: FutureBuilder<bool>(
         future: getData(),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -47,7 +47,8 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: GridView.builder(
                   shrinkWrap: true, // 스크롤 가능하도록 설정
-                  padding: const EdgeInsets.all(8),
+                 /// padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.only(left: 8, right: 8),
                   physics: const NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
                   itemCount: categoryList.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

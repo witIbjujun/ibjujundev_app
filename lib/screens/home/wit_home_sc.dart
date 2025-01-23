@@ -340,6 +340,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           );
                         },
                         child: Container(
+                          ///color: Colors.blue.withOpacity(0.2), // 시각적 확인용 배경색 추가
                           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
                           margin: const EdgeInsets.symmetric(horizontal: 16.0),
                           decoration: BoxDecoration(
@@ -379,30 +380,51 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 30.0),
                       // 추가된 문구
                       Align(
                         alignment: Alignment.centerLeft, // 좌측 정렬
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16.0), // 좌우 여백 추가
-                          child: Text(
-                            "견적서비스",
-                            style: WitHomeTheme.title.copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.9, // 컨테이너 너비 설정
+                            padding: const EdgeInsets.all(12.0), // 내부 여백 추가
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // "견적서비스"에 밑줄 및 간격 추가
+                                Column(
+
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "견적서비스",
+                                      style: WitHomeTheme.title.copyWith(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0), // 텍스트와 밑줄 사이 간격 추가
+                                    Container(
+                                      width: double.infinity, // 밑줄 길이를 컨테이너 너비에 맞춤
+                                      height: 2.0, // 밑줄 두께 설정
+                                      color: Colors.grey, // 밑줄 색상
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8.0), // 텍스트와 설명 사이 간격
+                                // "각 시공품목별 견적서비스를 받아보세요."에는 밑줄 효과 없음
+                                Text(
+                                  "각 시공품목별 견적서비스를 받아보세요.",
+                                  style: WitHomeTheme.title.copyWith(fontSize: 14.0),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 8.0),
-                      Align(
-                        alignment: Alignment.centerLeft, // 좌측 정렬
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0), // 좌우 여백 추가
-                          child: Text(
-                            "각 시공품목별 견적서비스를 받아보세요.",
-                            style: WitHomeTheme.title.copyWith(fontSize: 14.0),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
+
+                      ///const SizedBox(height: 2.0),
                       getPopularCourseUI(), // Popular Course 추가
                     ],
                   ),
@@ -493,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
     return Container(
-      padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0), // 좌우만 여백
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -512,7 +534,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               },
             ),
           ),
-          const SizedBox(height: 4),
+         /// const SizedBox(height: 4),
         ],
       ),
     );

@@ -60,6 +60,15 @@ class WitHomeTheme {
     color: darkerText,
   );
 
+  static const TextStyle headline1 = TextStyle(
+    // h5 -> headline
+    fontFamily: 'WorkSans',
+   /// fontWeight: FontWeight.bold,
+    fontSize: 24,
+    letterSpacing: 0.27,
+    color: darkerText,
+  );
+
   static const TextStyle title = TextStyle(
     // h6 -> title
     fontFamily: 'WorkSans',

@@ -168,16 +168,28 @@ class APTStatusWidget extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: SizedBox(
+        child: Container(
           width: width,
           height: height,
+          decoration: BoxDecoration(
+            color: Colors.white, // 배경색 설정
+            borderRadius: BorderRadius.circular(12.0), // 모서리 둥글게
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4), // 회색 음영 (더 진하게)
+                spreadRadius: 3, // 그림자 확산 반경 (조금 넓게)
+                blurRadius: 7, // 그림자 흐림 정도 (조금 더 뚜렷하게)
+                offset: Offset(0, 4), // 그림자의 위치 (약간 아래쪽으로)
+              ),
+            ],
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                "오늘의 사전점검 상태",
+                "우리집 사전점검 꼭췍!",
                 textAlign: TextAlign.center,
-                style: WitHomeTheme.headline, // subtitle 스타일 적용
+                style: WitHomeTheme.headline1, // subtitle 스타일 적용
               ),
               const SizedBox(height: 8.0),
               Row(
@@ -226,6 +238,8 @@ class APTStatusWidget extends StatelessWidget {
     );
   }
 }
+
+
 
 /**
  *  이미지 팝업
