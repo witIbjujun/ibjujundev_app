@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
        _loadOptions();
 
       setState(() {});
@@ -431,13 +432,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               case 1:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()), // Home 화면
+                  MaterialPageRoute(builder: (context) => EstimateScreen()), // Home 화면
                 );
                 break;
               case 2:
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => EstimateScreen()), // 견적정보 화면
+                  MaterialPageRoute(builder: (context) => HomeScreen()), // 견적정보 화면
                 );
                 break;
               case 3:

@@ -270,12 +270,14 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
 
 
   Widget getEstimateService() {
-    return Padding(
-      padding: const EdgeInsets.all(6.0),
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Column(
+          children: [
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
+              shrinkWrap: true, // 높이를 자식에 맞게 조정
               itemCount: companyList.length,
               itemBuilder: (context, index) {
                 final company = companyList[index];
@@ -321,18 +323,20 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             company.companyNm,
-
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           if (index == 0) // 첫 번째 항목에만 왕관 추가
-                            Image.asset(
-                              'assets/images/award.jpg', // 왕관 이미지 경로
-                              width: 16,
-                              height: 16,
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4.0),
+                              child: Image.asset(
+                                'assets/images/award.jpg', // 왕관 이미지 경로
+                                width: 30,
+                                height: 30,
+                              ),
                             ),
                         ],
                       ),
@@ -380,8 +384,8 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
