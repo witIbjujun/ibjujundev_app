@@ -26,7 +26,7 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
 
   List<dynamic> checkAllList = [];      // 하자 전체 리스트
 
-  int? expandedIndex = 0; // 클릭된 항목의 인덱스를 저장
+  int? expandedIndex = -1; // 클릭된 항목의 인덱스를 저장
   final ScrollController _scrollController = ScrollController();
 
   /**
