@@ -100,6 +100,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
 
     for (var request in requestList) {
       String reqNo = request.reqNo;
+      String formatReqNo = request.formatReqNo;
       if (!reqNoGroupedRequests.containsKey(reqNo)) {
         reqNoGroupedRequests[reqNo] = [];
       }
@@ -127,7 +128,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '요청 번호: $reqNo',
+                    '요청 번호: ${requests.first.formatReqNo}',
                     style: WitHomeTheme.body2,
                   ),
                   Text(
@@ -141,7 +142,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                 SectionWidget(
                   title: entry.value.first.companyCnt == '-'
                       ? '${entry.value.first.categoryNm} '
-                      : '${entry.value.first.categoryNm} (${entry.value.first.companyCnt}건)',
+                     : '${entry.value.first.categoryNm}',  /// (${entry.value.first.companyCnt}건)',
                   items: entry.value.map((request) {
                     print("무엇인가???==== ${request.reqState}");
                     // reqState가 '02'가 아닌 경우, estimateAmount만 표시하는 ListItem 구성

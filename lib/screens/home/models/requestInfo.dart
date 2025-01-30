@@ -17,10 +17,13 @@ class RequestInfo {
     this.estimateContents = '',
     this.companyCnt = '',
     this.imageFilePath = '',
-    this.seq = ''
+    this.seq = '',
+    this.formatReqNo = ''
+
   });
 
   String reqNo;
+  String formatReqNo;
   String reqGubun;
   String reqDate;
   String reqDateInfo;
@@ -44,6 +47,7 @@ class RequestInfo {
     return rquestInfoList.map((requestInfo) {
       return RequestInfo(
         reqNo: requestInfo['reqNo'] ?? '',
+        formatReqNo: requestInfo['formatReqNo'] ?? '',
         reqGubun: requestInfo['reqGubun'] ?? '',
         reqDate: requestInfo['reqDate'] ?? '',
         reqDateInfo: requestInfo['reqDateInfo'] ?? '',
