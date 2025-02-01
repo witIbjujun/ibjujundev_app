@@ -11,7 +11,6 @@ import 'package:witibju/screens/common/wit_common_widget.dart';
  * 사전 체크리스트 메인
  */
 class CheckListMain extends StatefulWidget {
-
   // 생성자
   const CheckListMain({super.key});
 
@@ -27,6 +26,7 @@ class CheckListMain extends StatefulWidget {
  */
 class CheckListMainState extends State<CheckListMain> {
 
+  int _selectedIndex = 0; // ✅ "내정보" 탭이 기본 선택
   final secureStorage = FlutterSecureStorage();
 
   bool isEditing = false; // 수정 모드 상태 변수

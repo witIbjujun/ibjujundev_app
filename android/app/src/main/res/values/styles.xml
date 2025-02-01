@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">입주전</string>
+
+    <!-- 네이버 로그인 설정 -->
+    <string name="client_id">Jxw7sv0nj2TugLTjPUC6</string> <!--  네이버 Client ID -->
+    <string name="client_secret">g1bhY7Hiyu</string> <!--  네이버 Client Secret -->
+    <string name="client_name">입주전</string> <!-- 🔥 앱 이름 -->
+
     <!-- Theme applied to the Android Window while the process is starting when the OS's Dark Mode setting is off -->
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <!-- Show a splash screen on the activity. Automatically removed when

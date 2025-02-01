@@ -52,7 +52,11 @@ dependencies:
   #카카오
   kakao_flutter_sdk: ^1.9.5 # 전체 추가
 
-  flutter_secure_storage: ^8.0.0 # Session
+  #네이버 로그인
+  flutter_naver_login: ^1.8.0
+
+  # Session
+  flutter_secure_storage: ^8.0.0
   #채팅
   uuid: ^3.0.7 #고유한 식별자를 생성 채팅의 키생성등
   stomp_dart_client: ^2.0.0 # 채팅 WebSocket 클라이언트 라이브러리

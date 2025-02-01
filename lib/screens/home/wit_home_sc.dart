@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
+import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/login/wit_user_login.dart';
@@ -35,7 +36,7 @@ class HomeScreen extends StatefulWidget  {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   ///로그인 상태를 true로 설정해서 테스트 (실제로는 로그인 여부를 판단하는 로직이 필요)
 
-  int _selectedIndex = 1; // 기본으로 Home (1번 인덱스) 선택
+  int _selectedIndex = 2; // 기본으로 Home (1번 인덱스) 선택
 
 
   // SelectBox에 표시할 옵션 리스트
@@ -46,16 +47,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
   String  isLogined = "false";
 
+
   @override
   void initState() {
     super.initState();
-
        _loadOptions();
-
       setState(() {});
-
-
   }
+
+
+
 
   // 데이터를 조회하는 비동기 함수
   Future<void> getUserInfo1(String kakaoId,String Idnum) async {
@@ -434,79 +435,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
 
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed, // 고정된 레이아웃
-          backgroundColor: Colors.white, // 배경색 흰색
-          currentIndex: _selectedIndex, // 현재 선택된 탭
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index; // 선택된 탭 업데이트
-            });
-
-            // 각 탭에 따라 새로운 화면으로 이동
-            switch (index) {
-              case 0:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CheckListMain()), // Check List 화면
-                );
-                break;
-              case 1:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EstimateScreen()), // Home 화면
-                );
-                break;
-              case 2:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()), // 견적정보 화면
-                );
-                break;
-              case 3:
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyProfile()), // 내정보 화면
-                );
-                break;
-              case 4: // 커뮤니티 탭
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Board(1, 'C1')), // Board 화면으로 이동
-                );
-                break;
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.checklist_outlined),
-              label: 'Check List',
-            ),
-
-            BottomNavigationBarItem(
-              icon: Icon(Icons.info_outline),
-              label: '견적정보',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              label: '내정보',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.forum_outlined), // 새롭게 추가된 커뮤니티 아이콘
-              label: '커뮤니티',
-            ),
-          ],
-          selectedItemColor: Colors.blue, // 선택된 아이콘 및 텍스트 색상
-          unselectedItemColor: Colors.blue, // 선택되지 않은 아이콘 및 텍스트 색상
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          elevation: 5.0, // 그림자 높이
-
-        ),
+        bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
 
       ),
     );
@@ -580,46 +509,55 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     if (!isLoggedIn) {
       showDialog(
         context: parentContext,
-        barrierDismissible: false, // 팝업 외부 클릭 방지
+        barrierDismissible: true, // 팝업 외부 클릭 방지
         builder: (BuildContext dialogContext) {
           return Dialog(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
-            child: Container(
-              width: MediaQuery.of(parentContext).size.width * 0.8,
-              height: 300,
-              padding: const EdgeInsets.all(20.0),
-              child: loingPopHome(
-                onLoginSuccess: (String result) async {
-                  print("뭐가 넘어온거지111111??$result");
-                  print("뭐가 넘어온거지111111??$result");
-                  print("뭐가 넘어온거지111111??$result");
-                  print("뭐가 넘어온거지111111??$result");
-                  if (result == '0') {
-                    Navigator.of(dialogContext).pop();
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.of(parentContext).push(
-                        MaterialPageRoute(
-                          builder: (context) => WitUserLoginStep1(),
-                        ),
-                      );
-                    });
-                  } else {
-                    print("뭐가 넘어온거지??$result");
-                    final viewModel = Provider.of<MainViewModel>(parentContext, listen: false);
-                    await getUserInfo(context, viewModel, result);
-                    Navigator.of(dialogContext).pop();
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.of(parentContext).push(
-                        MaterialPageRoute(
-                          builder: (context) => HomeScreen(),
-                        ),
-                      );
-                    });
-                  }
-                },
-              ),
+            child: Consumer<MainViewModel>(
+              builder: (context, viewModel, child) {
+                return Container(
+                  width: MediaQuery.of(parentContext).size.width * 0.8,
+                  height: 300,
+                  padding: const EdgeInsets.all(20.0),
+                  child: loingPopHome(
+                    onLoginSuccess: (MainViewModel updatedViewModel) async {
+                      print("🔹 로그인 후 업데이트할 userInfo.id: ${updatedViewModel.userInfo?.id}");
+                      print("🔹 로그인 후 업데이트할 userInfo.tempClerkNo: ${updatedViewModel.userInfo?.tempClerkNo}");
+                      if (updatedViewModel.userInfo?.id == null && updatedViewModel.userInfo?.tempClerkNo == null) {
+                        print("🚨 userInfo.id가 null! 로그인 데이터가 없음");
+                        if (mounted) {
+                          Navigator.of(dialogContext).pop();
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            Navigator.of(parentContext).push(
+                              MaterialPageRoute(
+                                builder: (context) => WitUserLoginStep1(),
+                              ),
+                            );
+                          });
+                        }
+                      }
+                      else {
+                        print("✅ 정보가 있음 ! userInfo.id: ${updatedViewModel.userInfo?.id}");
+                        print("✅ 정보가 있음 ! userInfo.tempClerkNo: ${updatedViewModel.userInfo?.tempClerkNo}");
+                        String tempClerkNo = updatedViewModel.userInfo?.tempClerkNo ?? '';
+                        await getUserInfo(context, viewModel, tempClerkNo);
+                        if (mounted) {
+                          Navigator.of(dialogContext).pop();
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            Navigator.of(parentContext).push(
+                              MaterialPageRoute(
+                                builder: (context) => HomeScreen(),
+                              ),
+                            );
+                          });
+                        }
+                      }
+                    },
+                  ),
+                );
+              },
             ),
           );
         },

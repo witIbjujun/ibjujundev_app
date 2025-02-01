@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
@@ -23,6 +24,8 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
   List<RequestInfo> requestList = [];
   List<RequestInfo> requestDetailList = [];
   RequestInfo? _selectedRequest; // 선택된 요청 정보를 저장할 변수 추가
+
+  int _selectedIndex = 1; // ✅ "내정보" 탭이 기본 선택
 
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
 
@@ -92,6 +95,8 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
           ),
         ],
       ),
+
+      bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
     );
   }
 

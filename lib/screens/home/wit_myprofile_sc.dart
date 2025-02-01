@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/login/wit_user_login.dart';
@@ -24,7 +25,7 @@ class MyProfile extends StatefulWidget  {
 class _MyProfileState extends State<MyProfile> {
   String selectedOption = ''; // 기본 선택 값
   List<String> options = [];
-
+  int _selectedIndex = 3; // ✅ "내정보" 탭이 기본 선택
   // 컨설리더 설정
   final _storage = const FlutterSecureStorage();
   TextEditingController _controller = TextEditingController();
@@ -281,6 +282,7 @@ class _MyProfileState extends State<MyProfile> {
           ),
         ),
       ),
+      bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),  // ✅ 공통 네비게이션 적용
     );
   }
 

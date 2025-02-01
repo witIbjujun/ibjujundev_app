@@ -5,6 +5,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
+import 'package:witibju/screens/home/login/wit_naverLogin.dart';
 import 'package:witibju/screens/home/models/main_view_model.dart';
 // import 'package:witibju/screens/home/wit_home2.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       home: HomeScreen(), //현재 메인
-
+      ///home: NaverLoginScreen() , //네이버 로그인
       // 토스 결재 후 처리
       getPages: [
         GetPage(name: '/result', page: () => ResultPage()), // 결과 화면 등록

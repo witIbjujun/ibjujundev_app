@@ -9,7 +9,7 @@ import '../models/main_view_model.dart';
 import '../models/userInfo.dart';
 import '../wit_home_sc.dart';
 
-Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String clerkNo) async {
+Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String tempClerkNo) async {
 
   String? kakaoId = viewModel.userInfo?.id; // Kakao ID
   String? nickName = viewModel.userInfo?.nickName; // Kakao ID
@@ -21,7 +21,7 @@ Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String cle
   // 토큰 가져오기
   String? token = await FirebaseMessaging.instance.getToken();
   print("나의 kakaoId은???====$kakaoId");
-  print("나의 clerkNo???====$clerkNo");
+  print("나의 clerkNo???====$tempClerkNo");
   print("나의 토큰은???====$token");
   print("나의 토큰은???====$token");
   print("나의 nickName은???====$nickName");
@@ -36,7 +36,7 @@ Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String cle
     "email": email,
     "aptNo": mainAptNo,
     "pyoung": mainAptPyoung,
-    "clerkNo":clerkNo,
+    "clerkNo":tempClerkNo,
      "token":token});
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
@@ -156,14 +156,15 @@ Future<String> getChckUser(MainViewModel viewModel,String clerkNo) async {
     , });
   try {
     final response = await sendPostRequest(restId, param);
-    if (response != null) {
 
+
+    if (response != null) {
       print('사용자 있음 ==$response');
 
      if(response > 0){
-       return clerkNo; // response 값 반환
+       return response.toString();
      }else{
-       return response; // response 값 반환
+       return response.toString();
      }
 
 

@@ -8,9 +8,10 @@ class UserInfo {
   final String? birthday;
   final String? birthyear;
   final String? role;
-   String? mainAptNo;
-   String? mainAptNm;
-   String? mainAptPyoung;
+  String? tempClerkNo;
+  String? mainAptNo;
+  String? mainAptNm;
+  String? mainAptPyoung;
   final List<String>? aptNo;
   final List<String>? aptName;
 
@@ -20,6 +21,7 @@ class UserInfo {
     this.profileImageUrl,
     this.email,
     this.clerkNo,
+    this.tempClerkNo,
     this.kakaoId,
     this.birthday,
     this.birthyear,
@@ -43,6 +45,7 @@ class UserInfo {
       profileImageUrl: json['profileImageUrl'],
       email: json['email'],
       clerkNo: json['clerkNo'],
+      tempClerkNo: json['tempClerkNo'],
       kakaoId: json['kakaoId'],
       birthday: json['birthday'],
       birthyear: json['birthyear'],
@@ -62,6 +65,7 @@ class UserInfo {
       'profileImageUrl': profileImageUrl,
       'email': email,
       'clerkNo': clerkNo,
+      'tempClerkNo': tempClerkNo,
       'kakaoId': kakaoId,
       'birthday': birthday,
       'birthyear': birthyear,
