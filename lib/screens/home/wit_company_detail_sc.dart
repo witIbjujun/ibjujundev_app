@@ -410,6 +410,9 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 );
 
                 if (isConfirmed) {
+                  /**
+                   * 견적요청하기
+                   */
                   sendRequestInfo();
                 }
               },
@@ -470,7 +473,9 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     );
   }
 
-
+  /**
+   * 견적 요청하기
+   */
   Future<void> sendRequestInfo() async {
     String restId = "saveRequestInfo";
     String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
