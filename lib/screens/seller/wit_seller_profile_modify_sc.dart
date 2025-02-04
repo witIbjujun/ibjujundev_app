@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
@@ -478,21 +479,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 90,
-        leading: Container(height: double.infinity,
-            child: Center(child: Text(
-                storeName, style: TextStyle(fontSize: 15, color: Colors.black),
-                textAlign: TextAlign.center))),
-        //IconButton(onPressed: () {}, icon: Icon(Icons.menu)), // 왼쪽 메뉴버튼
-        title: Text("가입정보 변경"),
-        centerTitle: true,
-        backgroundColor: Colors.lightBlue,
-        actions: [
-          // 우측의 액션 버튼들
-          IconButton(onPressed: () {}, icon: Icon(Icons.perm_identity)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.mail))
-        ],
+      appBar: SellerAppBar(
+        sllrNo: widget.sllrNo,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

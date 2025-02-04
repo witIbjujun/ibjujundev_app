@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_auto_sc.dart';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 // import 'package:tosspayments_widget_sdk_flutter/widgets/payment_method.dart';
 
 import '../../util/wit_api_ut.dart';
@@ -103,21 +104,8 @@ class CashRechargeState extends State<CashRecharge> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 90,
-        leading: Container(height: double.infinity,
-            child: Center(child: Text(
-                storeName, style: TextStyle(fontSize: 15, color: Colors.black),
-                textAlign: TextAlign.center))),
-        //IconButton(onPressed: () {}, icon: Icon(Icons.menu)), // 왼쪽 메뉴버튼
-        title: Text("Profile"),
-        centerTitle: true,
-        backgroundColor: Colors.lightBlue,
-        actions: [
-          // 우측의 액션 버튼들
-          IconButton(onPressed: () {}, icon: Icon(Icons.perm_identity)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.mail))
-        ],
+      appBar: SellerAppBar(
+        sllrNo: widget.sllrNo,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

@@ -3,6 +3,7 @@ import 'package:witibju/screens/seller/wit_seller_card_info_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetList_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
@@ -57,15 +58,10 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
 
     String restId = "getSellerInfo";
 
-    print("aaaaa:" + sllrNo.toString());
-    //int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0; // 기본값은 0
-
     // PARAM
     final param = jsonEncode({
       "sllrNo": sllrNo,
     });
-
-
 
     // API 호출
     final response = await sendPostRequest(restId, param);
@@ -123,7 +119,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
+
+        appBar: SellerAppBar(
+          sllrNo: widget.sllrNo,
+        ),
+
+        /*appBar: AppBar(
           leadingWidth: 90,
           leading: Container(height: double.infinity,
               child: Center(child: Text(
@@ -184,7 +185,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               icon: Icon(Icons.logout),
             ),
           ],
-        ),
+        ),*/
         body:
         SingleChildScrollView(
             child: SafeArea(

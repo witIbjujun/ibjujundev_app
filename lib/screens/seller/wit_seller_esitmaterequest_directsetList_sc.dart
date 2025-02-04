@@ -3,6 +3,7 @@ import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetModify_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.dart';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import '../../util/wit_api_ut.dart';
 
 class EstimateRequestDirectList extends StatefulWidget {
@@ -63,25 +64,8 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 90,
-        leading: Container(
-          height: double.infinity,
-          child: Center(
-            child: Text(
-              storeName,
-              style: TextStyle(fontSize: 15, color: Colors.black),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        title: Text("Profile"),
-        centerTitle: true,
-        backgroundColor: Colors.lightBlue,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.perm_identity)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.mail)),
-        ],
+      appBar: SellerAppBar(
+        sllrNo: widget.sllrNo,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
