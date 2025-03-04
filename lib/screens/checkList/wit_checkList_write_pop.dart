@@ -95,7 +95,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
             height: 50,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.blue[200],
+              color: Color(0xFF91C58C),
               borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
             ),
             alignment: Alignment.center,
@@ -456,7 +456,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
               Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.blue[200],
+                    backgroundColor: Color(0xFF7BB5C9),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -484,7 +484,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
               Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.red[200],
+                    backgroundColor: Color(0xFFE5767B),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

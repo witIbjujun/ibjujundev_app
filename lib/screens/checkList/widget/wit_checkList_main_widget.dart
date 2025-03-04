@@ -57,12 +57,10 @@ class CheckListCard extends StatefulWidget {
 }
 
 class _CheckListCardState extends State<CheckListCard> {
-
   Color _backgroundColor = Colors.white; // 초기 배경 색상
 
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTapDown: (_) {
         setState(() {
@@ -81,7 +79,19 @@ class _CheckListCardState extends State<CheckListCard> {
       },
       onTap: widget.onTap,
       child: Container(
-        color: _backgroundColor,
+        margin: EdgeInsets.fromLTRB(10, 6, 10, 6), // 위아래, 좌우 공간 추가
+        decoration: BoxDecoration(
+          color: _backgroundColor,
+          borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.7), // 그림자 색상
+              spreadRadius: 2, // 그림자 퍼짐 정도
+              blurRadius: 3, // 그림자 흐림 정도
+              offset: Offset(1, 2), // 그림자 위치
+            ),
+          ],
+        ),
         child: Column(
           children: [
             SizedBox(height: 20),
@@ -160,14 +170,9 @@ class _CheckListCardState extends State<CheckListCard> {
                       ),
                     ),
                   ),
-
               ],
             ),
             SizedBox(height: 20),
-            Container(
-              height: 1,
-              color: Colors.grey[200],
-            ),
           ],
         ),
       ),

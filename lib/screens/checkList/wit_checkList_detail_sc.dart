@@ -155,9 +155,9 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
     if (result > 0) {
 
       if (newCheckYn == "N") {
-        alertDialog.show(context, "하자완료 되었습니다.");
+        //alertDialog.show(context, "하자완료 되었습니다.");
       } else {
-        alertDialog.show(context, "하자등록 되었습니다.");
+        //alertDialog.show(context, "하자등록 되었습니다.");
       }
       updateCheckCountInLv2();
     }

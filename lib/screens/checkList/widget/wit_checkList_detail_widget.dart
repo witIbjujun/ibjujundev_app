@@ -162,10 +162,14 @@ class ExpandableItem extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white, // 배경색 설정
         borderRadius: BorderRadius.circular(10), // 라운드 처리
-        border: Border.all(
-          color: isExpanded == false ? Colors.grey[200]! : Colors.grey[400]!, // 찐한 회색 테두리 색상
-          width: 2, // 테두리 두께
-        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.7), // 그림자 색상
+            spreadRadius: 2, // 그림자 퍼짐 정도
+            blurRadius: 3, // 그림자 흐림 정도
+            offset: Offset(1, 2), // 그림자 위치
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,10 +199,10 @@ class ExpandableItem extends StatelessWidget {
                       checkInfoLv3["inspNm"],
                       style: isExpanded ?
                       TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)
-                      : TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      : TextStyle(fontSize: 16 /*, fontWeight: FontWeight.bold*/),
                     ),
                   ),
-                  Container(
+                  /*Container(
                     child: IconButton(
                       icon: Text(
                         checkInfoLv3["checkYn"] == "Y" ? "🔴"  // 축하 이모티콘
@@ -211,19 +215,19 @@ class ExpandableItem extends StatelessWidget {
                       ),
                       // 사용할지 확인 필요
                       onPressed: () {
-                        //onSwitchChanged(checkInfoLv3["checkYn"] == "Y"); // Y일 경우 false, 나머지 경우 true
+                        onSwitchChanged(checkInfoLv3["checkYn"] == "Y"); // Y일 경우 false, 나머지 경우 true
                       },
                     ),
-                  ),
-                  /*Transform.scale(
-                    scale: 0.5,
+                  ),*/
+                  Transform.scale(
+                    scale: 0.6,
                     child: Switch(
-                      value: checkYn == "N" || checkYn == "D",
+                      value: checkInfoLv3["checkYn"] == "N" || checkInfoLv3["checkYn"] == "D",
                       onChanged: onSwitchChanged,
-                      activeTrackColor: checkYn == "D" ? Colors.grey[400] : Colors.blue[200],
+                      activeTrackColor: checkInfoLv3["checkYn"] == "D" ? Colors.grey[400] : Colors.blue[200],
                       inactiveTrackColor: Colors.red[200],
                     ),
-                  ),*/
+                  ),
                 ],
               ),
             ),
@@ -301,7 +305,7 @@ class ExpandableItem extends StatelessWidget {
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Colors.blue[200],
+                        color: Color(0xFF91C58C),
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(6),
                           bottomRight: Radius.circular(6),
