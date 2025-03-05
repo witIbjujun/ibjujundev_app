@@ -42,7 +42,7 @@ class SellerAppBarState extends State<SellerAppBar> {
   Map cashInfo = {};
   dynamic sllrNo; // 새로운 sllrNo 변수 추가
   final TextEditingController _sllrNoController =
-      TextEditingController(); // 입력 필드 컨트롤러
+  TextEditingController(); // 입력 필드 컨트롤러
 
   @override
   void initState() {
@@ -117,15 +117,24 @@ class SellerAppBarState extends State<SellerAppBar> {
     return AppBar(
       leadingWidth: 90,
       leading: Container(
-          height: double.infinity,
-          child: Center(
-              child: Text(storeName,
-                  style: TextStyle(fontSize: 15, color: Colors.black),
-                  textAlign: TextAlign.center))),
-      //IconButton(onPressed: () {}, icon: Icon(Icons.menu)), // 왼쪽 메뉴버튼
-      title: Text("Profile"),
+        height: double.infinity,
+        child: Center(
+          child: Text(
+            storeName,
+            style: TextStyle(
+                fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
+            // 글씨 굵게 및 하얀색 설정
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+      title: Text(
+        "Profile",
+        style: TextStyle(color: Colors.white,
+            fontWeight: FontWeight.bold), // 제목 글씨 굵게 및 하얀색 설정
+      ),
       centerTitle: true,
-      backgroundColor: Colors.lightBlue,
+      backgroundColor: Color(0xFFAFCB54),
       actions: [
         // 입력 필드 추가
         Padding(
@@ -137,7 +146,9 @@ class SellerAppBarState extends State<SellerAppBar> {
               decoration: InputDecoration(
                 hintText: 'sllrNo 입력',
                 border: OutlineInputBorder(),
+                hintStyle: TextStyle(color: Colors.white), // 힌트 텍스트 색상 설정
               ),
+              style: TextStyle(color: Colors.white), // 입력 필드 글자색 하얀색으로 설정
               keyboardType: TextInputType.number, // 숫자 키패드로 설정
             ),
           ),
@@ -155,7 +166,7 @@ class SellerAppBarState extends State<SellerAppBar> {
               });
             }
           },
-          icon: Icon(Icons.search),
+          icon: Icon(Icons.search, color: Colors.white), // 아이콘 색상 하얀색으로 설정
         ),
         IconButton(
           onPressed: () {
@@ -165,18 +176,21 @@ class SellerAppBarState extends State<SellerAppBar> {
                   builder: (context) => HomeScreen()), // HomeScreen으로 이동
             );
           },
-          icon: Icon(Icons.perm_identity),
+          icon: Icon(
+              Icons.perm_identity, color: Colors.white), // 아이콘 색상 하얀색으로 설정
         ),
-        IconButton(onPressed: () {}, icon: Icon(Icons.mail)),
+        IconButton(
+            onPressed: () {}, icon: Icon(Icons.mail, color: Colors.white)),
+        // 아이콘 색상 하얀색으로 설정
         IconButton(
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SellerProfile()), // HomeScreen으로 이동
+                  builder: (context) => SellerProfile()), // SellerProfile로 이동
             );
           },
-          icon: Icon(Icons.logout),
+          icon: Icon(Icons.logout, color: Colors.white), // 아이콘 색상 하얀색으로 설정
         ),
       ],
     );

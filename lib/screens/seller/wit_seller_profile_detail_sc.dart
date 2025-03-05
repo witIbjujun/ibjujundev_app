@@ -192,11 +192,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                 child: Column(
                   children: <Widget>[
                     // 광고 이미지 영역
+                    SizedBox(height: 10),
                     Container(
                       width: double.infinity,
                       height: 200,
                       child: Image.asset(
-                        'assets/seller/aaa.jpg', // 광고 이미지 URL
+                        'assets/images/배너 1.png', // 광고 이미지 URL
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -300,6 +301,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Color(0xFFA68150),
                         ),
                         onPressed: () {
                           // 견적 요청 리스트 팝업 띄우기
@@ -314,7 +316,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                 child: Container(
                                   width: double.infinity, // 가로 꽉 차게
                                   height: MediaQuery.of(context).size.height * 0.8, // 세로 꽉 차게
-                                  padding: EdgeInsets.all(16.0), // 내부 여백 추가
+                                  padding: EdgeInsets.all(16.0),
                                   child: SingleChildScrollView( // 스크롤 가능하게 설정
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -345,12 +347,20 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("거래내역"),
+                            Text(
+                              "거래내역",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16, // 폰트 사이즈
+                              ),
+                            ),
                             SizedBox(width: 5),
                             Text(
-                              ('(${sellerInfo != null && sellerInfo['ingCnt'] != null ? sellerInfo['ingCnt'].toString() : '0'})'),
+                              '(${sellerInfo != null && sellerInfo['ingCnt'] != null ? sellerInfo['ingCnt'].toString() : '0'})',
                               style: TextStyle(
-                                  color: Colors.blue, fontSize: 12),
+                                color: Colors.white,
+                                fontSize: 16, // 폰트 사이즈
+                              ),
                             ),
                           ],
                         ),
@@ -362,6 +372,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Color(0xFFC19AC6),
                         ),
                         onPressed: () {
                           // 견적 요청 리스트 팝업 띄우기
@@ -407,15 +418,24 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("견적요청내역"),
+                            Text(
+                              "견적요청내역",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16, // 폰트 크기를 16으로 설정
+                              ),
+                            ),
                             SizedBox(width: 5),
                             Text(
-                              ('(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})'),
+                              '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
                               style: TextStyle(
-                                  color: Colors.blue, fontSize: 12),
+                                color: Colors.white,
+                                fontSize: 16, // 폰트 크기를 16으로 설정
+                              ),
                             ),
                           ],
                         ),
+
                       ),
                     ),
                     // 거래내역 버튼

@@ -433,7 +433,7 @@ class SellerProfileState extends State<SellerProfile> {
                   },
                   child: Text('프로필등록'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 3, 199, 90),
+                    backgroundColor: Color(0xFF63A566),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -558,6 +558,7 @@ class SellerProfileState extends State<SellerProfile> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
+              backgroundColor: Color(0xFF7BB5C9),
             ),
             child: const Padding(
               padding: EdgeInsets.symmetric(vertical: 22.0),

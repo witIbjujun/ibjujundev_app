@@ -327,8 +327,8 @@ class SellerProfileViewState extends State<SellerProfileView> {
                       children: [
                         // 사업자 이미지
                         Container(
-                          width: 100,
-                          height: 100, // 이미지 높이 설정
+                          width: 70,
+                          height: 70, // 이미지 높이 설정
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8), // 모서리 둥글게
                           ),
@@ -353,8 +353,8 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                   );
                                 },
                                 child: Container(
-                                  width: 110,
-                                  height: 100,
+                                  width: 70,
+                                  height: 70,
                                   margin: EdgeInsets.only(right: 8), // 이미지 간격
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12), // 둥글게 처리
@@ -384,50 +384,16 @@ class SellerProfileViewState extends State<SellerProfileView> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      color: Colors.green, // 초록색 배경
-                                      borderRadius: BorderRadius.circular(8), // 둥근 모서리
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          sellerInfo?['bizCertificationNm'] ?? '인증 정보 없음', // null 체크 및 기본값 설정
-                                          style: TextStyle(color: Colors.white), // 글자색
-                                        ),
-                                        SizedBox(width: 5), // 텍스트와 아이콘 간격
-                                        Icon(
-                                          Icons.check_circle, // 추천 아이콘
-                                          color: Colors.yellow, // 아이콘 색상
-                                          size: 20, // 아이콘 크기
-                                        ),
-                                      ],
-                                    ),
+
+                                  if (sellerInfo?['bizCertification'] == '02')
+                                    Image.asset(
+                                    'assets/images/인증완료.png', // 이미지 경로
                                   ),
                                   SizedBox(width: 5), // 두 컨테이너 간격
                                   // rateFlag가 'Y'일 때만 'BEST 추천' 표시
                                   if (sellerInfo?['rateFlag'] == 'Y')
-                                    Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue, // 초록색 배경
-                                        borderRadius: BorderRadius.circular(8), // 둥근 모서리
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'BEST 추천',
-                                            style: TextStyle(color: Colors.white), // 글자색
-                                          ),
-                                          SizedBox(width: 5), // 텍스트와 아이콘 간격
-                                          Icon(
-                                            Icons.emoji_events, // 추천 아이콘
-                                            color: Colors.yellow, // 아이콘 색상
-                                            size: 20, // 아이콘 크기
-                                          ),
-                                        ],
-                                      ),
+                                    Image.asset(
+                                      'assets/images/베스트 추천.png', // 이미지 경로
                                     ),
                                 ],
                               ),
@@ -468,8 +434,9 @@ class SellerProfileViewState extends State<SellerProfileView> {
                         ),
                         SizedBox(width: 5), // 텍스트와 아이콘 간격
                         if (asGbn.isNotEmpty)
-                          Icon(Icons.workspace_premium,
-                              color: Colors.green, size: 24), // 스마일 뱃지 아이콘
+                          Image.asset(
+                            'assets/images/인증 아이콘.png', // 이미지 경로
+                          ),
                       ],
                     ),
                   ],

@@ -486,59 +486,134 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
             children: [
-              TextField(
-                controller: storeNameController,
-                /*decoration: InputDecoration(
-                  labelText: '*사업 활동명',
-                  hintText: 'Ex) 친절한사장',
-                ),*/
+              // 회원정보 수정 제목
+              Container(
+                padding: const EdgeInsets.all(8.0), // 내부 여백
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.green, width: 2), // 녹색 테두리
+                  borderRadius: BorderRadius.circular(5), // 모서리 둥글게
+                ),
+                child: Center( // 텍스트를 가운데 정렬
+                  child: Text(
+                    '회원정보 수정',
+                    style: TextStyle(
+                      color: Colors.black, // 텍스트 색상
+                      fontSize: 18, // 텍스트 크기
+                      fontWeight: FontWeight.bold, // 볼드체
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(height: 10),
-              TextField(
-                controller: sllrContentController,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  labelText: '업체 설명',
-                  hintText: '업체 홍보문구를 입력하세요~',
-                  border: OutlineInputBorder(),
+              SizedBox(height: 16), // 제목과 아래 요소 간격
+              // 대표자명 레이블
+              Text(
+                '대표자명 (필수)',
+                style: TextStyle(
+                  color: Colors.black, // 레이블 색상
+                  fontSize: 16, // 레이블 크기
+                  fontWeight: FontWeight.bold, // 볼드체
+                ),
+              ),
+              SizedBox(height: 8), // 레이블과 카드 사이의 간격
+              // 대표자명 입력 필드
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  controller: storeNameController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '대표자명을 입력하세요', // 힌트 텍스트
+                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                  ),
                 ),
               ),
               SizedBox(height: 10),
+              Text(
+                '업체 설명',
+                style: TextStyle(
+                  color: Colors.black, // 레이블 색상
+                  fontSize: 16, // 레이블 크기
+                  fontWeight: FontWeight.bold, // 볼드체
+                ),
+              ),
+              SizedBox(height: 8), // 레이블과 카드 사이의 간격
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  controller: sllrContentController,
+                  maxLines: 10,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '업체 홍보문구를 입력하세요~', // 힌트 텍스트
+                    contentPadding: EdgeInsets.all(10), // 왼쪽 패딩만 설정
+                  ),
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '서비스지역 선택',
+                style: TextStyle(
+                  color: Colors.black, // 레이블 색상
+                  fontSize: 16, // 레이블 크기
+                  fontWeight: FontWeight.bold, // 볼드체
+                ),
+              ),
+              SizedBox(height: 8),
               // 서비스 지역 선택 위젯
               Row(
                 children: [
                   Expanded(
-                    child: DropdownButton<String>(
-                      hint: Text('서비스 지역 선택'),
-                      value: selectedLocation,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedLocation = newValue;
-                        });
-                      },
-                      items: areaList.map<DropdownMenuItem<String>>((item) {
-                        return DropdownMenuItem<String>(
-                          value: item['cd'],
-                          child: Text(item['cdNm']),
-                        );
-                      }).toList(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                        borderRadius: BorderRadius.circular(5), // 모서리 둥글게
+                        color: Colors.white, // 배경색 하얗게
+                      ),
+                      child: DropdownButton<String>(
+                        hint: Text('서비스 지역 선택'),
+                        value: selectedLocation,
+                        isExpanded: true, // Dropdown이 가득 차게 설정
+                        underline: SizedBox(), // 기본 언더라인 제거
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedLocation = newValue;
+                          });
+                        },
+                        items: areaList.map<DropdownMenuItem<String>>((item) {
+                          return DropdownMenuItem<String>(
+                            value: item['cd'],
+                            child: Text(item['cdNm']),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
+                  SizedBox(width: 8), // 버튼과의 간격
                   ElevatedButton(
                     onPressed: _addLocation,
                     child: Text('선택'),
                   ),
                 ],
               ),
-
               // 선택된 지역 표시
               Wrap(
                 spacing: 8.0,
                 children: selectedLocations.map((location) => Chip(
-                  //label: Text(location['cdNm']), // cdNm 값을 가져옴
                   label: Text(location['cdNm']), // cdNm 값을 가져옴
                   deleteIcon: Icon(Icons.close),
+                  backgroundColor: Colors.white, // 배경색을 하얀색으로 설정
                   onDeleted: () {
                     setState(() {
                       selectedLocations.remove(location);
@@ -547,6 +622,15 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 )).toList(),
               ),
               SizedBox(height: 10),
+              Text(
+                '서비스품목 선택',
+                style: TextStyle(
+                  color: Colors.black, // 레이블 색상
+                  fontSize: 16, // 레이블 크기
+                  fontWeight: FontWeight.bold, // 볼드체
+                ),
+              ),
+              SizedBox(height: 8),
               Row(
                 children: [
                   // 서비스 품목 선택 드롭다운
@@ -619,6 +703,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 children: selectedServiceWithAsPeriod.map((service) => Chip(
                   label: Text(service),
                   deleteIcon: Icon(Icons.close),
+                  backgroundColor: Colors.white, // 배경색을 하얀색으로 설정
                   onDeleted: () {
                     setState(() {
                       selectedServiceWithAsPeriod.remove(service);
@@ -626,27 +711,43 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   },
                 )).toList(),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 3),
               Text(
                 '* AS 무상 보증 기간을 등록하면 AS 보증 뱃지가 표시됩니다.',
                 style: TextStyle(
-                  color: Colors.grey, // 원하는 색상
+                  color: Colors.red, // 원하는 색상
                   fontSize: 14, // 원하는 폰트 크기
                   fontWeight: FontWeight.w500, // 원하는 폰트 굵기
                 ),
               ),
               SizedBox(height: 10),
-              TextField(
-                controller: categoryContentController,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  labelText: '품목 설명',
-                  hintText: '판매 품목 설명을 입력하세요.~',
-                  border: OutlineInputBorder(),
+              Text(
+                '품목 설명',
+                style: TextStyle(
+                  color: Colors.black, // 레이블 색상
+                  fontSize: 16, // 레이블 크기
+                  fontWeight: FontWeight.bold, // 볼드체
+                ),
+              ),
+              SizedBox(height: 8), // 레이블과 카드 사이의 간격
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  controller: categoryContentController,
+                  maxLines: 10,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '판매 품목 설명을 입력하세요~', // 힌트 텍스트
+                    contentPadding: EdgeInsets.all(10), // 왼쪽 패딩만 설정
+                  ),
                 ),
               ),
               SizedBox(height: 10),
-
               // 이미지 리스트
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
@@ -812,7 +913,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     },
                     child: Text('첨부'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green, // 회색 배경
+                      backgroundColor: Color(0xFFA68150),
+                      foregroundColor: Colors.white, // 글자색을 하얀색으로 설정
                     ),
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
@@ -822,7 +924,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     },
                     child: Text(buttonText),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.yellow, // 노란색 배경
+                      backgroundColor: Color(0xFFA68150),
+                      foregroundColor: Colors.white, // 글자색을 하얀색으로 설정
                     ),
                   ),
                 ],
@@ -927,107 +1030,53 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ),
                 ],
               ),
-              // 담당자 연락처 입력란
-              /*Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: hp1Controller,
-                      decoration: InputDecoration(
-                        labelText: '담당자 연락처 (필수)',
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: () {
-                      verifyPhoneNumber(); // 인증 API 호출
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 16), // 간격 조정
-              ElevatedButton(
-                onPressed: () {
-                  // 인증 코드 확인 로직 추가
-                  String verificationCode = verificationCodeController.text;
-                  // 예시: await ApiService.verifyCode(verificationCode);
-                },
-                child: Text('인증 확인'),
-              ),
-              SizedBox(height: 16), // 간격 조정
-              // 인증 문자 입력란
-              TextField(
-                controller: verificationCodeController,
-                decoration: InputDecoration(
-                  labelText: '인증 코드 입력',
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                ),
-              ),
-              SizedBox(height: 16),*/
+
               receiverZipTextField(),
               receiverAddress1TextField(),
               receiverAddress2TextField(),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  // 사업자 프로필 변경 로직
-                  String storeName = storeNameController.text;
-                  String itemPrice1 = itemPrice1Controller.text;
-                  String itemPrice2 = itemPrice2Controller.text;
-                  String itemPrice3 = itemPrice3Controller.text;
-                  String sllrContent = sllrContentController.text;
-                  String sllrImage = sllrImageController.text;
-                  String name = nameController.text;
-                  String ceoName = ceoNameController.text;
-                  String email = emailController.text;
-                  String openDate = openDateController.text;
-                  String storeCode = storeCodeController.text;
-                  String storeImage = storeImageController.text;
-                  String hp1 = hp1Controller.text;
-                  //String hp2 = hp2Controller.text;
-                  //String hp3 = hp13Controller.text;
-                  String zipCode = receiverZipController.text;
-                  String address1 = receiverAddress1Controller.text;
-                  String address2 = receiverAddress2Controller.text;
-                  String categoryContent = categoryContentController.text;
-                  //String serviceArea = selectedLocations.join(', '); // 리스트를 문자열로 변환
-                  //String serviceItem = selectedServiceTypes.join(', '); // 리스트를 문자열로 변환
+              Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
+                child: ElevatedButton(
+                      onPressed: () async {
+                        // 사업자 프로필 변경 로직
+                        String storeName = storeNameController.text;
+                        String itemPrice1 = itemPrice1Controller.text;
+                        String itemPrice2 = itemPrice2Controller.text;
+                        String itemPrice3 = itemPrice3Controller.text;
+                        String sllrContent = sllrContentController.text;
+                        String sllrImage = sllrImageController.text;
+                        String name = nameController.text;
+                        String ceoName = ceoNameController.text;
+                        String email = emailController.text;
+                        String openDate = openDateController.text;
+                        String storeCode = storeCodeController.text;
+                        String storeImage = storeImageController.text;
+                        String hp1 = hp1Controller.text;
+                        //String hp2 = hp2Controller.text;
+                        //String hp3 = hp13Controller.text;
+                        String zipCode = receiverZipController.text;
+                        String address1 = receiverAddress1Controller.text;
+                        String address2 = receiverAddress2Controller.text;
+                        String categoryContent = categoryContentController.text;
+                        //String serviceArea = selectedLocations.join(', '); // 리스트를 문자열로 변환
+                        //String serviceItem = selectedServiceTypes.join(', '); // 리스트를 문자열로 변환
 
 
-                  // 이미지 저장 후 프로필 업데이트
-                  await saveImages(storeName, itemPrice1, itemPrice2, itemPrice3, sllrContent, sllrImage, name,
-                      ceoName, email, storeCode, storeImage, hp1, zipCode, address1, address2, openDate, categoryContent);
-                  /*updateSellerProfile(
-                      storeName,
-                      itemPrice1,
-                      itemPrice2,
-                      itemPrice3,
-                      sllrContent,
-                      sllrImage,
-                      name,
-                      ceoName,
-                      email,
-                      storeCode,
-                      storeImage,
-                      hp1,
-                      zipCode,
-                      address1,
-                      address2,
-                      openDate
-                  );*/
-                },
-                child: Text('프로필변경'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 3, 199, 90),
-                  surfaceTintColor: Color.fromARGB(255, 3, 199, 90),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                        // 이미지 저장 후 프로필 업데이트
+                        await saveImages(storeName, itemPrice1, itemPrice2, itemPrice3, sllrContent, sllrImage, name,
+                            ceoName, email, storeCode, storeImage, hp1, zipCode, address1, address2, openDate, categoryContent);
+                      },
+                      child: Text('프로필변경'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF63A566),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                 ),
               ),
+
             ],
           ),
         ),
@@ -1364,6 +1413,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
+              backgroundColor: Color(0xFF7BB5C9),
             ),
             child: const Padding(
               padding: EdgeInsets.symmetric(vertical: 22.0),
