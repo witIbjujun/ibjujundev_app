@@ -135,7 +135,7 @@ class SellerProfileState extends State<SellerProfile> {
       appBar: AppBar(
         title: Text('회원가입', style: TextStyle(fontSize: 24)),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 3, 199, 90),
+        backgroundColor: Color(0xFFAFCB54),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
