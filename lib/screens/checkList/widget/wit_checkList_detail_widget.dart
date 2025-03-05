@@ -74,7 +74,7 @@ class _CheckListDetailViewState extends State<CheckListDetailView> {
                         if (!isExpanded) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             _scrollController.animateTo(
-                              (index - 1) * 82.5,
+                              (index - 1) * 73,
                               duration: Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                             );
@@ -158,13 +158,13 @@ class ExpandableItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(10, 6, 10, 6),
+      margin: EdgeInsets.fromLTRB(14, 7, 14, 7),
       decoration: BoxDecoration(
         color: Colors.white, // 배경색 설정
-        borderRadius: BorderRadius.circular(10), // 라운드 처리
+        borderRadius: BorderRadius.circular(5), // 라운드 처리
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.7), // 그림자 색상
+            color: Colors.grey.withOpacity(0.2), // 그림자 색상
             spreadRadius: 2, // 그림자 퍼짐 정도
             blurRadius: 3, // 그림자 흐림 정도
             offset: Offset(1, 2), // 그림자 위치
@@ -177,14 +177,14 @@ class ExpandableItem extends StatelessWidget {
           GestureDetector(
             onTap: onTap, // 클릭 이벤트 처리
             child: Container(
-              height: 70,
+              height: 60,
               width: double.infinity,
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
               decoration: BoxDecoration(
                 color: isExpanded ? Colors.white : Colors.white,
                 borderRadius: isExpanded ?
-                  BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10),)
-                    : BorderRadius.all(Radius.circular(10)),
+                  BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5),)
+                    : BorderRadius.all(Radius.circular(5)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -193,7 +193,7 @@ class ExpandableItem extends StatelessWidget {
                     isExpanded ? Icons.expand_less : Icons.expand_more,
                     color: isExpanded ? Colors.blue : Colors.black,
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 15),
                   Expanded(
                     child: Text(
                       checkInfoLv3["inspNm"],
@@ -220,7 +220,7 @@ class ExpandableItem extends StatelessWidget {
                     ),
                   ),*/
                   Transform.scale(
-                    scale: 0.6,
+                    scale: 0.7,
                     child: Switch(
                       value: checkInfoLv3["checkYn"] == "N" || checkInfoLv3["checkYn"] == "D",
                       onChanged: onSwitchChanged,
@@ -279,25 +279,48 @@ class ExpandableItem extends StatelessWidget {
                       },
                     ),
                   ),
-                  Container(
-                    height: 120,
-                    alignment: Alignment.topLeft,
-                    color: Colors.white,
-                    padding: EdgeInsets.all(20),
-                    child: Text(checkInfoLv3["inspComt"] ?? "",
-                      style: TextStyle(fontSize: 14),
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      /*Padding(
+                        padding: EdgeInsets.fromLTRB(20, 15, 0, 0),
+                        child: Row(
+                          children: [
+                            Icon(Icons.favorite_border_outlined, size: 30), // 하트 아이콘
+                            SizedBox(width: 30), // 아이콘 간격
+                            Icon(Icons.comment_outlined, size: 30), // 말풍선 아이콘
+                            SizedBox(width: 30), // 아이콘 간격
+                            Icon(Icons.link_outlined, size: 30), // 링크 아이콘
+                          ],
+                        ),
+                      ),*/
+                      Container(
+                        height: 120,
+                        alignment: Alignment.topLeft,
+                        color: Colors.white,
+                        padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                        child: Text(
+                          checkInfoLv3["inspComt"] ?? "",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                      Container(height: 10),
+                    ],
                   ),
-                  Container(height: 10),
+
                   GestureDetector(
                     onTap: () {
-                      showDialog(
+                      showModalBottomSheet(
                         context: context,
-                        barrierDismissible: false,
+                        isDismissible: false, // 바깥을 클릭해도 닫히지 않도록 설정
+                        isScrollControlled: true, // 스크롤 가능하게 설정
                         builder: (context) {
-                          return ExamplePhotoPopup(
-                              checkInfoLv3 : checkInfoLv3,
-                              onSwitchChanged : onSwitchChanged
+                          return Container(
+                            height: MediaQuery.of(context).size.height * 0.85,
+                            child: ExamplePhotoPopup(
+                              checkInfoLv3: checkInfoLv3,
+                              onSwitchChanged: onSwitchChanged,
+                            ),
                           );
                         },
                       );
@@ -307,8 +330,8 @@ class ExpandableItem extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Color(0xFF91C58C),
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(6),
-                          bottomRight: Radius.circular(6),
+                          bottomLeft: Radius.circular(5),
+                          bottomRight: Radius.circular(5),
                         ),
                       ),
                       child: Center(

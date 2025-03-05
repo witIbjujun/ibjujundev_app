@@ -79,25 +79,25 @@ class _CheckListCardState extends State<CheckListCard> {
       },
       onTap: widget.onTap,
       child: Container(
-        margin: EdgeInsets.fromLTRB(10, 6, 10, 6), // 위아래, 좌우 공간 추가
-        decoration: BoxDecoration(
-          color: _backgroundColor,
-          borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.7), // 그림자 색상
-              spreadRadius: 2, // 그림자 퍼짐 정도
-              blurRadius: 3, // 그림자 흐림 정도
-              offset: Offset(1, 2), // 그림자 위치
-            ),
-          ],
-        ),
+        margin: EdgeInsets.fromLTRB(14, 7, 14, 7), // 위아래, 좌우 공간 추가
+          decoration: BoxDecoration(
+            color: _backgroundColor,
+            borderRadius: BorderRadius.circular(5), // 모서리 둥글게
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2), // 그림자 색상
+                spreadRadius: 2, // 그림자 퍼짐 정도
+                blurRadius: 3, // 그림자 흐림 정도
+                offset: Offset(1, 2), // 그림자 위치
+              ),
+            ],
+          ),
         child: Column(
           children: [
-            SizedBox(height: 20),
+            SizedBox(height: 15),
             Row(
               children: [
-                SizedBox(width: 30),
+                SizedBox(width: 20),
                 Container(
                   width: 35,
                   height: 35,
@@ -172,7 +172,7 @@ class _CheckListCardState extends State<CheckListCard> {
                   ),
               ],
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 15),
           ],
         ),
       ),

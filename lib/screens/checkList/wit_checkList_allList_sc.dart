@@ -83,7 +83,7 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
                         if (!isExpanded) {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             _scrollController.animateTo(
-                              (index - 1) * 82.5,
+                              (index - 1) * 73,
                               duration: Duration(milliseconds: 300),
                               curve: Curves.easeInOut,
                             );
