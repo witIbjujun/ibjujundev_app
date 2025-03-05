@@ -84,65 +84,28 @@ class _EstimateItemState extends State<EstimateItem> {
     // 내용이 3줄 이상인지 확인
     bool hasMoreThanThreeLines = (reqContents.split('\n').length > 3);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            widget.request['estDt'],
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ), // 날짜
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8), // 카드 간의 간격 설정
+      decoration: BoxDecoration(
+        color: Colors.grey[200], // 회색 배경
+        borderRadius: BorderRadius.circular(8), // 모서리 둥글게
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3), // 그림자 위치
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16), // 내부 여백 추가
+        child: Column(
           children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Text(
-                    widget.request['aptName'], // 아파트명
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(width: 8), // 아파트명과 이름 사이의 간격
-                  Text(
-                    widget.request['prsnName'] ?? '요청자명 없음', // null 체크 추가
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-                  ),
-                ],
-              ),
-            ),
-            InkWell(
-              onTap: () {
-                // 견적 요청 관련 작업 추가
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EstimateRequestDetail(
-                      estNo: widget.request['estNo'],
-                      seq: widget.request['seq'],
-                      sllrNo: widget.sllrNo,
-                    ),
-                  ),
-                );
-              },
-              child: Icon(
-                Icons.edit_note, // 원하는 아이콘으로 변경 가능
-                size: 24, // 아이콘 크기 설정 (필요에 따라 조정)
-                color: widget.request['reqState'] == '01' ? Colors.black : Colors.black, // 글자색
-              ),
-              splashColor: Colors.grey.withOpacity(0.2), // 클릭 시 스플래시 효과
-              highlightColor: Colors.transparent, // 클릭 시 하이라이트 색상
-            ),
-          ],
-        ),
-        SizedBox(height: 1),
-        Row(
-          children: [
-            // 사진과 방충망 텍스트
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양 끝 정렬
               children: [
+                // 왼쪽에 사진
                 Container(
                   width: 50,
                   height: 50, // 이미지 높이 설정
@@ -161,53 +124,98 @@ class _EstimateItemState extends State<EstimateItem> {
                     ),
                   ),
                 ),
-                SizedBox(height: 4), // 이미지와 텍스트 사이의 간격
-                Text(
-                  widget.request['categoryNm'], // 품목명
-                  style: TextStyle(fontSize: 12, color: Colors.black), // 텍스트 스타일 설정
+                SizedBox(width: 8), // 사진과 텍스트 사이의 간격
+                // 오른쪽 텍스트
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양 끝 정렬
+                        children: [
+                          Text(
+                            widget.request['estDt'], // 날짜
+                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EstimateRequestDetail(
+                                    estNo: widget.request['estNo'],
+                                    seq: widget.request['seq'],
+                                    sllrNo: widget.sllrNo,
+                                  ),
+                                ),
+                              );
+
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero, // 패딩 제거
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 버튼 크기 조정
+                            ),
+                            child: Text(
+                              widget.request['stat'],
+                              style: TextStyle(fontSize: 12, color: Colors.blue, fontWeight: FontWeight.bold), // 버튼 글씨 스타일
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        widget.request['prsnName'] ?? '요청자명 없음', // 요청자명
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        widget.request['aptName'], // 아파트명
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                children: [
-                  Container(
-                    color: Colors.green[100], // 연한 회색 배경색 설정
-                    padding: EdgeInsets.all(8), // 내부 여백 추가
-                    constraints: BoxConstraints(
-                      minHeight: 60, // 최소 높이 설정 (3줄 정도의 높이)
-                    ),
-                    child: Center(
-                      child: Text(
-                        reqContents, // 내용
-                        style: TextStyle(fontSize: 14),
-                        textAlign: TextAlign.start, // 텍스트 중앙 정렬
-                        maxLines: _isExpanded ? null : 3, // 기본 3줄 표시
-                        overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
-                      ),
-                    ),
-                  ),
-                  // 내용이 비어있지 않고 3줄 이상일 경우에만 버튼 표시
-                  if (hasMoreThanThreeLines)
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _isExpanded = !_isExpanded; // 상세보기 상태 토글
-                        });
-                      },
-                      child: Text(
-                        _isExpanded ? '접기' : '상세보기', // 버튼 텍스트 변경
-                        style: TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                ],
+            SizedBox(height: 8), // 텍스트와 내용 사이의 간격
+            Align(
+              alignment: Alignment.centerLeft, // 왼쪽 정렬
+              child: Text(
+                reqContents, // 내용
+                style: TextStyle(fontSize: 16, color: Colors.blueAccent), // 파란색 글씨
+                textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
+                maxLines: _isExpanded ? null : 3, // 기본 3줄 표시
+                overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
               ),
             ),
+            // 내용이 비어있지 않고 3줄 이상일 경우에만 버튼 표시
+            if (hasMoreThanThreeLines)
+              Container(
+                width: double.infinity, // 버튼을 가로로 꽉 차게 설정
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _isExpanded = !_isExpanded; // 상세보기 상태 토글
+                    });
+                  },
+                  style: TextButton.styleFrom(
+                    backgroundColor: Color(0xFFAFCB54), // 연두색 배경
+                    foregroundColor: Colors.white, // 글자색을 하얀색으로 설정
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16), // 패딩 추가
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8), // 둥근 모서리
+                    ),
+                  ),
+                  child: Text(
+                    _isExpanded ? '접기' : '상세보기', // 버튼 텍스트 변경
+                  ),
+                ),
+              ),
+            SizedBox(height: 16), // 항목 간의 간격 추가
           ],
         ),
-        SizedBox(height: 16), // 항목 간의 간격 추가
-      ],
+      ),
     );
   }
 }
+
+

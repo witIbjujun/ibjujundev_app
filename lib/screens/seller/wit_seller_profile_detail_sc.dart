@@ -444,6 +444,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Color(0xFF8D8D8D),
                         ),
                         onPressed: () {
                           // 커뮤니티 페이지로 이동
@@ -456,7 +457,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("업체후기"),
+                            Text("업체후기",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16, // 폰트 크기를 16으로 설정
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -476,11 +482,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     CardInfo()),
                           );
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("결재정보등록"),
-                          ],
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              "결재정보등록",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16, // 폰트 크기를 16으로 설정
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -503,11 +514,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             ),
                           );
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("가입정보 변경"),
-                          ],
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              "가입정보 변경",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16, // 폰트 크기를 16으로 설정
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -525,11 +541,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                               builder: (context) => EstimateRequestDirectList(sllrNo: sellerInfo["sllrNo"])),
                           );
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("바로견적 서비스"),
-                          ],
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              "바로견적 서비스",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16, // 폰트 크기를 16으로 설정
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -547,11 +568,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                 builder: (context) => SellerProfileView(sllrNo: sellerInfo["sllrNo"])),
                           );
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("파트너 프로필"),
-                          ],
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              "파트너 프로필",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16, // 폰트 크기를 16으로 설정
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -570,11 +596,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                 builder: (context) => Board(widget.sllrNo,"C1")),
                           );
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("공지사항"),
-                          ],
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              "공지사항",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16, // 폰트 크기를 16으로 설정
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
