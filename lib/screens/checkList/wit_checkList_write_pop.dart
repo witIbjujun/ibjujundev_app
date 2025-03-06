@@ -483,7 +483,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
         widget.onSwitchChanged(checkflag);
       });
 
-    // 이미지 있으면
+      // 이미지 있으면
     } else {
 
       List<File> images = [];
@@ -500,7 +500,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
       if (fileInfo == "FAIL") {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
 
-      // 이미지 등록 성공
+        // 이미지 등록 성공
       } else {
         setState(() {
           widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(checkDate);
@@ -578,11 +578,11 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
       img.Image? image = img.decodeImage(bytes);
 
       // 이미지 오른쪽으로 90도 회전
-      img.Image rotatedImage = img.copyRotate(image!, angle:90);
+      //img.Image rotatedImage = img.copyRotate(image!, angle:90);
 
       // 회전된 이미지를 파일로 저장
       final rotatedFile = File(pickedFile.path);
-      await rotatedFile.writeAsBytes(img.encodeJpg(rotatedImage));
+      //await rotatedFile.writeAsBytes(img.encodeJpg(rotatedImage));
 
       setState(() {
         if (index == 1) {

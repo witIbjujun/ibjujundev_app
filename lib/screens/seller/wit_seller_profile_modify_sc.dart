@@ -604,6 +604,13 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ElevatedButton(
                     onPressed: _addLocation,
                     child: Text('선택'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF7294CC),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -694,6 +701,13 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ElevatedButton(
                     onPressed: _addServiceWithAsPeriod,
                     child: Text('선택'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF7294CC),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -786,12 +800,6 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     );
                   }).toList(),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // 사진 추가 기능 구현
-                },
-                child: Text('사진 추가'),
               ),
               SizedBox(height: 16),
               Container(
@@ -1015,6 +1023,13 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ElevatedButton(
                     onPressed: _verifyPhone,
                     child: Text('인증 코드 요청'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFE5767B),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                   TextField(
                     controller: _smsController,
@@ -1027,6 +1042,13 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ElevatedButton(
                     onPressed: _signInWithPhoneNumber,
                     child: Text('인증 코드 확인'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFFE5767B),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                 ],
               ),

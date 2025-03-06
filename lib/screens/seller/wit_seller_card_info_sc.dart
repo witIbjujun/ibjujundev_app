@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 
 class CardInfo extends StatefulWidget {
+  final dynamic sllrNo;
+  const CardInfo({Key? key, required this.sllrNo}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return CardInfoState();
@@ -17,16 +21,8 @@ class CardInfoState extends State<CardInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('친절한사장님'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              // 액션 추가
-            },
-          ),
-        ],
+      appBar: SellerAppBar(
+        sllrNo: widget.sllrNo,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -106,8 +102,11 @@ class CardInfoState extends State<CardInfo> {
               Center( // 버튼을 Center로 감싸서 가운데 정렬
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // 초록색 배경
-                    foregroundColor: Colors.white, // 하얀색 글씨
+                    backgroundColor: Color(0xFF63A566),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {

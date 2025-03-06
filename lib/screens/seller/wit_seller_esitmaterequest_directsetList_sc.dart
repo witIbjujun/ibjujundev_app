@@ -89,16 +89,13 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightBlue,
-                surfaceTintColor: Color.fromARGB(
-                    255, 3, 199, 90),
+                backgroundColor: Color(0xFF63A566),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-
               ),
-              child: Text('+바로 견적 등록하기'),
+              child: Text('+ 바로 견적 등록하기'),
             ),
             Divider(height: 20),
             Expanded(
@@ -185,15 +182,11 @@ class InfoCard extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(
-                    255, 3, 199, 90),
-                surfaceTintColor: Color.fromARGB(
-                    255, 3, 199, 90),
+                backgroundColor: Color(0xFF7294CC),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-
               ),
               child: Text('캐시 충전하기'),
             ),

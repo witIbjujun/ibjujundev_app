@@ -824,8 +824,11 @@ class PointNotOKDialog extends StatelessWidget {
       actions: [
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green, // 초록색 배경
-            foregroundColor: Colors.white, // 하얀색 글씨
+            backgroundColor: Color(0xFF63A566),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           onPressed: () {
             // 충전 로직 추가
@@ -845,8 +848,11 @@ class PointNotOKDialog extends StatelessWidget {
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.grey, // 회색 배경
-            foregroundColor: Colors.white, // 하얀색 글씨
+            backgroundColor: Color(0xFF8D8D8D),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           onPressed: () {
             Navigator.of(context).pop(); // 다이얼로그 닫기

@@ -27,7 +27,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SingleChildScrollView( // 스크롤 가능하게 설정
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: estimateRequestList.map((request) {
@@ -38,14 +38,22 @@ class EstimateRequestListState extends State<EstimateRequestList> {
   }
 
   Widget buildEstimateItem(dynamic request, BuildContext context) {
-    return EstimateItem(request: request, sllrNo: widget.sllrNo); // EstimateItem 위젯 사용
+    return EstimateItem(
+      request: request,
+      sllrNo: widget.sllrNo,
+      onExpandToggle: (bool isExpanded) {
+        setState(() {
+          request['isExpanded'] = isExpanded; // 상태를 업데이트
+        });
+      },
+    );
   }
 
   // [서비스] 견적리스트 조회
   Future<void> getEstimateRequestList() async {
     // REST ID
     String restId = "getEstimateRequestList";
-    print('sllrNo123123123: ' + widget.sllrNo);
+    print('sllrNo: ' + widget.sllrNo);
     print('stat: ' + widget.stat);
 
     // PARAM
@@ -64,22 +72,18 @@ class EstimateRequestListState extends State<EstimateRequestList> {
   }
 }
 
-class EstimateItem extends StatefulWidget {
-  final dynamic request;
+class EstimateItem extends StatelessWidget {
+  final Map<String, dynamic> request;
   final String sllrNo;
+  final ValueChanged<bool> onExpandToggle;
 
-  EstimateItem({required this.request, required this.sllrNo});
-
-  @override
-  _EstimateItemState createState() => _EstimateItemState();
-}
-
-class _EstimateItemState extends State<EstimateItem> {
-  bool _isExpanded = false; // 상세보기 상태 관리
+  EstimateItem({required this.request, required this.sllrNo, required this.onExpandToggle});
 
   @override
   Widget build(BuildContext context) {
-    String reqContents = widget.request['reqContents'] ?? '내용 없음'; // 내용
+    bool isExpanded = request['isExpanded'] ?? false; // 상세보기 상태 관리
+
+    String reqContents = request['reqContents'] ?? '내용 없음'; // 내용
 
     // 내용이 3줄 이상인지 확인
     bool hasMoreThanThreeLines = (reqContents.split('\n').length > 3);
@@ -101,6 +105,7 @@ class _EstimateItemState extends State<EstimateItem> {
       child: Padding(
         padding: EdgeInsets.all(16), // 내부 여백 추가
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양 끝 정렬
@@ -115,7 +120,7 @@ class _EstimateItemState extends State<EstimateItem> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8), // 모서리 둥글게
                     child: Image.asset(
-                      widget.request['itemImage'], // 광고 이미지 URL
+                      request['itemImage'], // 광고 이미지 URL
                       fit: BoxFit.cover, // 이미지가 Container를 채우도록 설정
                       errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
                         // 이미지 로드 실패 시 대체 텍스트 표시
@@ -134,7 +139,7 @@ class _EstimateItemState extends State<EstimateItem> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양 끝 정렬
                         children: [
                           Text(
-                            widget.request['estDt'], // 날짜
+                            request['estDt'], // 날짜
                             style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                           ),
                           TextButton(
@@ -143,32 +148,31 @@ class _EstimateItemState extends State<EstimateItem> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EstimateRequestDetail(
-                                    estNo: widget.request['estNo'],
-                                    seq: widget.request['seq'],
-                                    sllrNo: widget.sllrNo,
+                                    estNo: request['estNo'],
+                                    seq: request['seq'],
+                                    sllrNo: sllrNo,
                                   ),
                                 ),
                               );
-
                             },
                             style: TextButton.styleFrom(
                               padding: EdgeInsets.zero, // 패딩 제거
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 버튼 크기 조정
                             ),
                             child: Text(
-                              widget.request['stat'],
+                              request['stat'],
                               style: TextStyle(fontSize: 12, color: Colors.blue, fontWeight: FontWeight.bold), // 버튼 글씨 스타일
                             ),
                           ),
                         ],
                       ),
                       Text(
-                        widget.request['prsnName'] ?? '요청자명 없음', // 요청자명
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        request['prsnName'] ?? '요청자명 없음', // 요청자명
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        widget.request['aptName'], // 아파트명
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        request['aptName'], // 아파트명
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -183,8 +187,8 @@ class _EstimateItemState extends State<EstimateItem> {
                 reqContents, // 내용
                 style: TextStyle(fontSize: 16, color: Colors.blueAccent), // 파란색 글씨
                 textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
-                maxLines: _isExpanded ? null : 3, // 기본 3줄 표시
-                overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
+                maxLines: isExpanded ? null : 3, // 기본 3줄 표시
+                overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
               ),
             ),
             // 내용이 비어있지 않고 3줄 이상일 경우에만 버튼 표시
@@ -193,9 +197,7 @@ class _EstimateItemState extends State<EstimateItem> {
                 width: double.infinity, // 버튼을 가로로 꽉 차게 설정
                 child: TextButton(
                   onPressed: () {
-                    setState(() {
-                      _isExpanded = !_isExpanded; // 상세보기 상태 토글
-                    });
+                    onExpandToggle(!isExpanded); // 상세보기 상태 토글
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: Color(0xFFAFCB54), // 연두색 배경
@@ -206,7 +208,7 @@ class _EstimateItemState extends State<EstimateItem> {
                     ),
                   ),
                   child: Text(
-                    _isExpanded ? '접기' : '상세보기', // 버튼 텍스트 변경
+                    isExpanded ? '접기' : '상세보기', // 버튼 텍스트 변경
                   ),
                 ),
               ),
@@ -217,5 +219,3 @@ class _EstimateItemState extends State<EstimateItem> {
     );
   }
 }
-
-

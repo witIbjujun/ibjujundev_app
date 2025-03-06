@@ -231,17 +231,17 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                 );
                               },
 
-                                child: Text('캐시충전'),
+                                child: Text('캐시충전',
+                                  style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color.fromARGB(
-                                      255, 3, 199, 90),
-                                  surfaceTintColor: Color.fromARGB(
-                                      255, 3, 199, 90),
+                                  backgroundColor: Color(0xFF63A566),
                                   foregroundColor: Colors.white,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
-
                                 ),
 
                               ),
@@ -304,44 +304,21 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           backgroundColor: Color(0xFFA68150),
                         ),
                         onPressed: () {
-                          // 견적 요청 리스트 팝업 띄우기
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                insetPadding: EdgeInsets.zero, // 여백을 제거하여 가로를 꽉 차게
-                                shape: RoundedRectangleBorder( // 모서리를 둥글게 설정
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: Container(
-                                  width: double.infinity, // 가로 꽉 차게
-                                  height: MediaQuery.of(context).size.height * 0.8, // 세로 꽉 차게
-                                  padding: EdgeInsets.all(16.0),
-                                  child: SingleChildScrollView( // 스크롤 가능하게 설정
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text("거래내역목록", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                        SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
-                                        EstimateRequestList(stat: '', sllrNo: sllrNo.toString(),), // 리스트를 추가
-                                        SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(); // 팝업 닫기
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.grey, // 버튼 배경색 파란색
-                                            foregroundColor: Colors.white, // 글씨색 흰색
-                                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                                          ),
-                                          child: const Text('닫기', style: TextStyle(fontSize: 15)),
-                                        ),
-                                      ],
-                                    ),
+                          // EstimateRequestList 화면으로 이동
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return Scaffold(
+                                  appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
                                   ),
-                                ),
-                              );
-                            },
+                                  body: Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: EstimateRequestList(stat: '', sllrNo: sllrNo.toString()), // 리스트를 추가
+                                  ),
+                                );
+                              },
+                            ),
                           );
                         },
                         child: Row(
@@ -366,7 +343,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         ),
                       ),
                     ),
-                    // 거래내역 버튼
+
+                    // 견적요청목록버튼
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.0),
                       child: ElevatedButton(
@@ -376,43 +354,20 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         ),
                         onPressed: () {
                           // 견적 요청 리스트 팝업 띄우기
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                insetPadding: EdgeInsets.zero, // 여백을 제거하여 가로를 꽉 차게
-                                shape: RoundedRectangleBorder( // 모서리를 둥글게 설정
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: Container(
-                                  width: double.infinity, // 가로 꽉 차게
-                                  height: MediaQuery.of(context).size.height * 0.8, // 세로 꽉 차게
-                                  padding: EdgeInsets.all(16.0), // 내부 여백 추가
-                                  child: SingleChildScrollView( // 스크롤 가능하게 설정
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text("견적요청목록", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                        SizedBox(height: 10), // 제목과 리스트 사이에 간격 추가
-                                        EstimateRequestList(stat: '01', sllrNo: sllrNo.toString(),), // 리스트를 추가
-                                        SizedBox(height: 10), // 리스트와 버튼 사이에 간격 추가
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(); // 팝업 닫기
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.grey, // 버튼 배경색 파란색
-                                            foregroundColor: Colors.white, // 글씨색 흰색
-                                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
-                                          ),
-                                          child: const Text('닫기', style: TextStyle(fontSize: 15)),
-                                        ),
-                                      ],
-                                    ),
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return Scaffold(
+                                  appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
                                   ),
-                                ),
-                              );
-                            },
+                                  body: Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: EstimateRequestList(stat: '01', sllrNo: sllrNo.toString()), // 리스트를 추가
+                                  ),
+                                );
+                              },
+                            ),
                           );
                         },
                         child: Row(
@@ -473,13 +428,15 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Color(0xFFF5A855),
+
                         ),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    CardInfo()),
+                                    CardInfo(sllrNo: sllrNo.toString())),
                           );
                         },
                         child: Container(
@@ -487,7 +444,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             child: Text(
                               "결재정보등록",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: 16, // 폰트 크기를 16으로 설정
                               ),
                             ),
@@ -501,6 +458,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Color(0xFF7294CC),
+
                         ),
                         onPressed: () {
                           // 버튼 클릭 시 수행할 작업 추가
@@ -519,7 +478,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             child: Text(
                               "가입정보 변경",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: 16, // 폰트 크기를 16으로 설정
                               ),
                             ),
@@ -532,6 +491,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Color(0xFF91C58C),
+
                         ),
                         onPressed: () {
                           // 버튼 클릭 시 수행할 작업 추가
@@ -546,7 +507,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             child: Text(
                               "바로견적 서비스",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: 16, // 폰트 크기를 16으로 설정
                               ),
                             ),
@@ -559,6 +520,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Color(0xFF7BB5C9),
+
                         ),
                         onPressed: () {
                           // 버튼 클릭 시 수행할 작업 추가
@@ -573,7 +536,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             child: Text(
                               "파트너 프로필",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: 16, // 폰트 크기를 16으로 설정
                               ),
                             ),
@@ -587,6 +550,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
+                          backgroundColor: Color(0xFFE5767B),
+
                         ),
                         onPressed: () {
                           // 커뮤니티 페이지로 이동
@@ -601,7 +566,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             child: Text(
                               "공지사항",
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: 16, // 폰트 크기를 16으로 설정
                               ),
                             ),
