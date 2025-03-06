@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert'; // JSON 인코딩을 위해 추가
 import 'package:intl/intl.dart'; // 날짜 처리를 위한 패키지 추가
+import 'package:witibju/screens/home/wit_request_detail.dart';
 import '../../util/wit_api_ut.dart';
 import 'models/requestInfo.dart';
 
@@ -85,30 +86,42 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
                 itemCount: todayEstimates.length,
                 itemBuilder: (context, index) {
                   final estimate = todayEstimates[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 첫 번째 줄: 카테고리, 업체명, 시간
-                       Text(
-                          '${estimate.categoryNm} - ${estimate.companyNm} - ${estimate.timeAgo}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RequestDetailScreen(
+                            requests: todayEstimates,
+                            selectedRequest: estimate,
+                            categoryName: estimate.categoryNm,
                           ),
                         ),
-                        SizedBox(height: 4.0),
-                        // 두 번째 줄: 견적 내용
-                        Text(
-                          '${estimate.estimateContents}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${estimate.categoryNm} - ${estimate.companyNm} - ${estimate.timeAgo}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Divider(thickness: 1.0),
-                      ],
+                          SizedBox(height: 4.0),
+                          Text(
+                            '${estimate.estimateContents}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Divider(thickness: 1.0),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -132,30 +145,42 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
                 itemCount: previousEstimates.length,
                 itemBuilder: (context, index) {
                   final estimate = previousEstimates[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 첫 번째 줄: 카테고리, 업체명, 시간
-                        Text(
-                          '${estimate.categoryNm} - ${estimate.companyNm} - ${estimate.timeAgo}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RequestDetailScreen(
+                            requests: previousEstimates,
+                            selectedRequest: estimate,
+                            categoryName: estimate.categoryNm,
                           ),
                         ),
-                        SizedBox(height: 4.0),
-                        // 두 번째 줄: 견적 내용
-                        Text(
-                          '${estimate.estimateContents}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${estimate.categoryNm} - ${estimate.companyNm} - ${estimate.timeAgo}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Divider(thickness: 1.0),
-                      ],
+                          SizedBox(height: 4.0),
+                          Text(
+                            '${estimate.estimateContents}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Divider(thickness: 1.0),
+                        ],
+                      ),
                     ),
                   );
                 },

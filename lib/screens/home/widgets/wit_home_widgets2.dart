@@ -174,62 +174,15 @@ class APTStatusWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white, // 배경색 설정
             borderRadius: BorderRadius.circular(12.0), // 모서리 둥글게
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.4), // 회색 음영 (더 진하게)
-                spreadRadius: 3, // 그림자 확산 반경 (조금 넓게)
-                blurRadius: 7, // 그림자 흐림 정도 (조금 더 뚜렷하게)
-                offset: Offset(0, 4), // 그림자의 위치 (약간 아래쪽으로)
-              ),
-            ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "우리집 사전점검 꼭췍!",
-                textAlign: TextAlign.center,
-                style: WitHomeTheme.headline1, // subtitle 스타일 적용
-              ),
-              const SizedBox(height: 8.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: const [
-                      Icon(
-                        Icons.wb_sunny,
-                        color: Colors.orange,
-                        size: 26.0,
-                      ),
-                      SizedBox(width: 4.0),
-                      Text(
-                        "120",
-                        style: TextStyle(
-                          fontSize: 26.0,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: const [
-                      Icon(
-                        Icons.cloud,
-                        color: Colors.grey,
-                        size: 26.0,
-                      ),
-                      SizedBox(width: 4.0),
-                      Text(
-                        "21",
-                        style: TextStyle(
-                          fontSize: 26.0,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              Image.asset(
+                'assets/home/bannerCheck.png', // 여기에 이미지 경로를 지정하세요.
+                width: 900.0, // 원하는 너비
+                height: 174.0, // 원하는 높이
+                fit: BoxFit.fill, // 이미지 크기 조절 옵션
               ),
             ],
           ),

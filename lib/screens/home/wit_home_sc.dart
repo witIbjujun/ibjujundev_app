@@ -140,8 +140,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               );
             },
-            icon: const Icon(
-              Icons.manage_accounts,
+            icon: Image.asset(
+              'assets/home/logo.png', // 이미지 경로
+              width: 30, // 아이콘 크기 조절
+              height: 30,
             ),
           ),
 
@@ -204,8 +206,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       _showLoginDialog(context); // 로그인 다이얼로그 표시
                     }
                   },
-                  icon: const Icon(
-                    Icons.email,
+                  icon: Image.asset(
+                    'assets/home/message.png', // 이미지 경로
+                    width: 30, // 아이콘 크기 조절
+                    height: 30,
                   ),
                 ),
               ],
@@ -305,83 +309,77 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       // 상태 위젯
                       APTStatusWidget(
                         width: MediaQuery.of(context).size.width * 0.9,
-                        height: MediaQuery.of(context).size.height * 0.12,
+                        height: MediaQuery.of(context).size.height * 0.20,
                       ),
                       const SizedBox(height: 16.0),
-                      GestureDetector(
-                        onTap: () {
-                          showGuirdDialog(
-                            context: context,
-                            description: "예산별 시공 품목을 가이드 해드려요~\n\n각 품목별 비교견적을 받아세요~",
-                            options: [
-                              {'text': '100만원대  Simple 인테리어', 'color': Colors.green},
-                              {'text': '300만원대  Standard 인테리어', 'color': Colors.blue},
-                              {'text': '1000만원대  Premium 인테리어', 'color': Colors.indigo},
-                              {'text': 'My Choice 인테리어', 'color': Colors.brown},
-                            ],
-                            onOptionSelected: (selectedOption) {
-                              if (selectedOption == '100만원대  Simple 인테리어') {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => getEstimate('S')),
-                                );
-                              } else if (selectedOption == '300만원대  Standard 인테리어') {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => getEstimate('T')),
-                                );
-                              } else if (selectedOption == '1000만원대  Premium 인테리어') {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => getEstimate('P')),
-                                );
-                              } else if (selectedOption == 'My Choice 인테리어') {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => getEstimate('A')),
-                                );
-                              }
-                            },
-                          );
-                        },
-                        child: Container(
-                          ///color: Colors.blue.withOpacity(0.2), // 시각적 확인용 배경색 추가
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                          margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius: BorderRadius.circular(8.0),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 4.0,
-                                offset: const Offset(0, 2),
+                      Container(
+                        height: 80, // 높이 지정
+                        //padding: const EdgeInsets.symmetric(vertical: 3.0), // 내부 여백 추가
+                        decoration: BoxDecoration(
+                          color: Colors.white, // 배경색 지정
+                          borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 적용 (선택 사항)
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround, // 균등한 간격으로 정렬
+                          children: [
+                            Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: const DecorationImage(
+                                  image: AssetImage('assets/home/apt.png'),
+                                  fit: BoxFit.contain,
+                                ),
                               ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.lightbulb_outline,
-                                    color: Colors.blue,
-                                    size: 24.0,
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Text(
-                                    "내예산에 맞춰 부분시공 입주가이드",
-                                    style: WitHomeTheme.title,
-                                  ),
-                                ],
+                            ),
+                            Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: const DecorationImage(
+                                  image: AssetImage('assets/home/best.png'),
+                                  fit: BoxFit.contain,
+                                ),
                               ),
-                              const Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.black,
+                            ),
+                            Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: const DecorationImage(
+                                  image: AssetImage('assets/home/FloorPlan.png'),
+                                  fit: BoxFit.contain,
+                                ),
                               ),
-                            ],
-                          ),
+                            ),
+                            Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: const DecorationImage(
+                                  image: AssetImage('assets/home/guide.png'),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                image: const DecorationImage(
+                                  image: AssetImage('assets/home/GroupPurchase.png'),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 30.0),
                       // 추가된 문구
                       Align(
                         alignment: Alignment.centerLeft, // 좌측 정렬
@@ -406,18 +404,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     const SizedBox(height: 8.0), // 텍스트와 밑줄 사이 간격 추가
-                                    Container(
-                                      width: double.infinity, // 밑줄 길이를 컨테이너 너비에 맞춤
-                                      height: 2.0, // 밑줄 두께 설정
-                                      color: Colors.grey, // 밑줄 색상
-                                    ),
                                   ],
-                                ),
-                                const SizedBox(height: 8.0), // 텍스트와 설명 사이 간격
-                                // "각 시공품목별 견적서비스를 받아보세요."에는 밑줄 효과 없음
-                                Text(
-                                  "각 시공품목별 견적서비스를 받아보세요.",
-                                  style: WitHomeTheme.title.copyWith(fontSize: 14.0),
                                 ),
                               ],
                             ),
@@ -425,8 +412,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ),
                       ),
 
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: GridView.count(
+                          crossAxisCount: 2, // 한 행에 2개씩 배치
+                          shrinkWrap: true,  // 스크롤 가능 여부 조정
+                          physics: NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
+                          crossAxisSpacing: 8.0, // 열 간격
+                          mainAxisSpacing: 8.0, // 행 간격
+                          children: [
+                            _buildGridItem('assets/home/widget1.png', 'assets/home/InteriorMain.png', "인테리어"),
+                            _buildGridItem('assets/home/widget2.png', 'assets/home/gaguMain.png', "커튼/블라인드"),
+                            _buildGridItem('assets/home/widget3.png', 'assets/home/gaguMain.png', "탄성코트"),
+                            _buildGridItem('assets/home/widget4.png', 'assets/home/gaguMain.png', "줄눈"),
+                            _buildGridItem('assets/home/widget5.png', 'assets/home/gaguMain.png', "입주청소"),
+                            _buildGridItem('assets/home/widget6.png', 'assets/home/gaguMain.png', "포장이사"),
+                          ],
+                        ),
+                      ),
+
                       ///const SizedBox(height: 2.0),
-                      getPopularCourseUI(), // Popular Course 추가
+                     // getPopularCourseUI(), // Popular Course 추가
                     ],
                   ),
                 ),
@@ -437,6 +443,55 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
         bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
 
+      ),
+    );
+  }
+
+  /// 개별 항목을 생성하는 함수
+  Widget _buildGridItem(String bgImage, String iconImage, String title) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(bgImage), // 배경 이미지 적용
+          fit: BoxFit.cover, // 전체 크기에 맞게 조정
+        ),
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4.0,
+            spreadRadius: 1.0,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(12.0),
+      child: Stack(
+        children: [
+          /// 우측 상단 아이콘
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Image.asset(
+              iconImage,
+              width: 24, // 아이콘 크기 조절
+              height: 24,
+            ),
+          ),
+
+          /// 좌측 하단 텍스트
+          Positioned(
+            bottom: 8,
+            left: 8,
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // 흰색 글씨 적용
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

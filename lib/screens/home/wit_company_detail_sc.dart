@@ -161,41 +161,89 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     );
   }
 
-
-
   Widget getCategoryDetailInfo() {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (categoryInfo != null && categoryInfo?.imagePath != null) ...[
-            Text(
-              categoryInfo!.categoryNm ?? '카테고리 이름',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
+    bool _isExpanded = false; // 이미지 확장 여부
+    double initialHeight = 200.0; // 초기 상단 20%의 높이
+    double fullHeight = 800.0; // 전체 이미지 높이를 유한 값으로 설정
+
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (categoryInfo != null && categoryInfo?.imagePath != null) ...[
+                  Text(
+                    categoryInfo!.categoryNm ?? '카테고리 이름',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 16.0),
+
+                  // 이미지 영역
+                  ClipRect(
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 300),
+                      width: MediaQuery.of(context).size.width, // 화면 너비에 맞춤
+                      height: _isExpanded ? fullHeight : initialHeight, // 높이를 유한 값으로 설정
+                      child: Image(
+                        image: NetworkImage(apiUrl + '/WIT/lineEye.jpg'),
+                        fit: BoxFit.cover,
+                        alignment: Alignment.topCenter, // 상단 중심을 표시
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 8.0),
+
+                  // "상품정보 펼쳐보기 ▽" / "상품정보 접기 △" 버튼
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _isExpanded = !_isExpanded; // 상태 변경
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue, // 버튼 배경색 (파란색)
+                        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0), // 버튼 둥근 모서리
+                        ),
+                      ),
+                      child: Text(
+                        _isExpanded ? "상품정보 접기 △" : "상품정보 펼쳐보기 ▽",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white, // 버튼 글씨 색 (흰색)
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 16.0),
+
+                  // 설명 텍스트
+                  Text(
+                    categoryInfo!.detail ?? '상세 설명이 없습니다.',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.grey[600],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 16.0),
+                ],
+              ],
             ),
-            SizedBox(height: 16.0),
-            Image(
-              image: NetworkImage(apiUrl + '/WIT/lineEye.jpg'), // 이미지 URL
-              fit: BoxFit.cover,
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              categoryInfo!.detail ?? '상세 설명이 없습니다.',
-              style: TextStyle(
-                fontSize: 16.0,
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 16.0),
-          ],
-          // "추가조건/요구사항" 및 버튼 제거 (2025-01-23)
-        ],
-      ),
+          ),
+        );
+      },
     );
   }
 
