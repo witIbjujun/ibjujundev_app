@@ -209,7 +209,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue, // 버튼 배경색 (파란색)
+                        backgroundColor: Color(0xFFAFCB54), // 버튼 배경색 (파란색)
                         padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0), // 버튼 둥근 모서리
@@ -233,7 +233,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                     categoryInfo!.detail ?? '상세 설명이 없습니다.',
                     style: TextStyle(
                       fontSize: 16.0,
-                      color: Colors.grey[600],
+                      color: Colors.black ,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -299,7 +299,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 child: Text(
                   '견적 요청하기',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Color(0xFFAFCB54),
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -468,7 +468,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 width: double.infinity,
                 height: 50.0,
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Color(0xFFAFCB54),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Center(

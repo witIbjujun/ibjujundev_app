@@ -58,13 +58,22 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
                     childAspectRatio: 1.2,
                   ),
                   itemBuilder: (BuildContext context, int index) {
-                    return CategoryView(
-                      callback: () {
+                    final category = categoryList[index];
+
+                    print("📌 Category 로드됨: ${category.categoryId}, ${category.categoryNm}, ${category.imagePath}");
+
+                    return GestureDetector(
+                      onTap: () {
+                        print("✅ 클릭됨: ${category.categoryNm}, 이동 시작...");
                         if (widget.callBack != null) {
-                          widget.callBack!(categoryList[index]);
+                          widget.callBack!(category); // 클릭 시 이동
                         }
                       },
-                      category: categoryList[index],
+                      child: _buildGridItem(
+                        'assets/home/${category.categoryId}.png', // 요청한 경로 적용
+                        category.imagePath,
+                        category.categoryNm,
+                      ),
                     );
                   },
                 ),
@@ -72,6 +81,54 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
             );
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildGridItem(String bgImage, String iconImage, String title) {
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage(bgImage), // 배경 이미지 적용
+          fit: BoxFit.cover, // 전체 크기에 맞게 조정
+        ),
+        borderRadius: BorderRadius.circular(10.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 4.0,
+            spreadRadius: 1.0,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(12.0),
+      child: Stack(
+        children: [
+          /// 우측 상단 아이콘
+          Positioned(
+            top: 8,
+            right: 8,
+            child: Image.asset(
+              iconImage,
+              width: 24, // 아이콘 크기 조절
+              height: 24,
+            ),
+          ),
+
+          /// 좌측 하단 텍스트
+          Positioned(
+            bottom: 8,
+            left: 8,
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // 흰색 글씨 적용
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

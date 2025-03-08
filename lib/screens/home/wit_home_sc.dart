@@ -51,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-       _loadOptions();
+      // _loadOptions();
       setState(() {});
   }
 
@@ -94,31 +94,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
 
-  Future<void> _loadOptions() async {
-    String? aptNameString  = await secureStorage.read(key: 'mainAptNm'); //아파트 명칭
-    String? aptNoString  = await secureStorage.read(key: 'mainAptNo'); //아파트 번호
-    String? storedNickname = await secureStorage.read(key: 'nickName');
-    print('_loadOptions 아파트 이름: $aptNameString');
-    print('_loadOptions 아파트 번호: $aptNoString');
-
-    if (aptNameString != null && aptNoString != null) {
-
-      List<String> aptNames = aptNameString.split(',');
-      List<String> aptNos = aptNoString.split(',');
-
-      setState(() {
-        nickname = storedNickname; // 상태에 저장
-        print('저장된 닉네임: $nickname');
-        for (int i = 0; i < aptNames.length; i++) {
-          options[aptNames[i]] = aptNos[i];
-        }
-        if (options.isNotEmpty) {
-          selectedOption = options.keys.first;
-        }
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final mainViewModel = Provider.of<MainViewModel>(context);
@@ -150,14 +125,45 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           actions: [
             Row(
               children: [
-                if (nickname  != null) // nickName이 null이 아닐 때만 표시
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0), // 닉네임과 아이콘 간 간격 조정
-                    child: Text(
-                      nickname!, // nickName 값 출력
-                      style: TextStyle(fontSize: 16, color: Colors.black), // 텍스트 스타일 설정
-                    ),
+                IconButton(
+                  iconSize: 35.0,
+                  onPressed: () async {
+                    bool isLoggedIn = await checkLoginStatus();
+                    if (isLoggedIn) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => EstimateScreen(), // 결제함 페이지로 이동
+                        ),
+                      );
+                    } else {
+                      _showLoginDialog(context); // 로그인 다이얼로그 표시
+                    }
+                  },
+                  icon: FutureBuilder<String?>(
+                    future: secureStorage.read(key: 'mainAptNm'),
+                    builder: (context, snapshot) {
+                      String aptName = snapshot.data ?? ''; // 기본값 설정
+                      return Row(
+                        children: [
+                          Image.asset(
+                            'assets/home/locationMain.png', // 이미지 경로
+                            width: 30, // 아이콘 크기 조절
+                            height: 30,
+                          ),
+                          if (aptName.isNotEmpty) // 값이 있을 때만 표시
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5.0),
+                              child: Text(
+                                aptName,
+                                style: const TextStyle(fontSize: 14, color: Colors.black),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
                   ),
+                ),
+                //Future.microtask(() => _loadOptions()),
                 // account_circle 아이콘 클릭 시 MyProfile 페이지로 이동
                 IconButton(
                   iconSize: 25.0,
@@ -169,27 +175,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   ),
                 ),
 
-                IconButton(
-                  iconSize: 35.0,
-                  onPressed: () async {
-                    bool isLoggedIn = await checkLoginStatus(); // 비동기 함수 호출로 로그인 상태 확인
-                    if (isLoggedIn) {
-                      print("로그인 성공??");
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const MyProfile(), // MyProfile 페이지로 이동
-                          ),
-                        );
-
-                    } else {
-                      print("로그인 안함!!");
-                      _showLoginDialog(context); // 로그인 다이얼로그 표시
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.account_circle, // account_circle 아이콘
+                if (nickname  != null) // nickName이 null이 아닐 때만 표시
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0), // 닉네임과 아이콘 간 간격 조정
+                    child: Text(
+                      nickname!, // nickName 값 출력
+                      style: TextStyle(fontSize: 16, color: Colors.black), // 텍스트 스타일 설정
+                    ),
                   ),
-                ),
+
                 /// 결제함 아이콘
                 IconButton(
                   iconSize: 35.0,
@@ -233,9 +227,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
+                              /*Expanded(
                                 flex: 6, // SelectBox를 5/8 크기로 조정
-                                child: GestureDetector(
+                                *//*child: GestureDetector(
                                   onTap: () async {
                                     bool isLoggedIn = await checkLoginStatus();
                                     if (isLoggedIn) {
@@ -276,10 +270,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                       ],
                                     ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(width: 8), // SelectBox와 평면도 간격을 넓게 설정
-                              Expanded(
+                                ),*//*
+                              ),*/
+                             // const SizedBox(width: 8), // SelectBox와 평면도 간격을 넓게 설정
+                              /*Expanded(
                                 flex: 2, // 평면도를 3/8 크기로 조정
                                 child: GestureDetector(
                                   onTap: () {
@@ -301,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ],
                                   ),
                                 ),
-                              ),
+                              ),*/
                             ],
                           ),
                         ),
@@ -313,73 +307,73 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                       const SizedBox(height: 16.0),
                       Container(
-                        height: 80, // 높이 지정
-                        //padding: const EdgeInsets.symmetric(vertical: 3.0), // 내부 여백 추가
+                        height: 75, // 높이를 조정하여 텍스트 공간 확보
                         decoration: BoxDecoration(
                           color: Colors.white, // 배경색 지정
-                          borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 적용 (선택 사항)
+                          borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 적용
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround, // 균등한 간격으로 정렬
                           children: [
-                            Container(
-                              width: 70,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: const DecorationImage(
-                                  image: AssetImage('assets/home/apt.png'),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
+                            _buildIconWithLabel(
+                              imagePath: 'assets/home/FloorPlan.png',
+                              label: '평면도',
+                              onTap: () {
+                                showImagePopup(
+                                  context: context,
+                                  imageUrl: '/WIT/12345.png',
+                                );
+                              },
                             ),
-                            Container(
-                              width: 70,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: const DecorationImage(
-                                  image: AssetImage('assets/home/best.png'),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
+                            _buildIconWithLabel(
+                              imagePath: 'assets/home/guide.png',
+                              label: '가이드',
                             ),
-                            Container(
-                              width: 70,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: const DecorationImage(
-                                  image: AssetImage('assets/home/FloorPlan.png'),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
+                            _buildIconWithLabel(
+                              imagePath: 'assets/home/apt.png',
+                              label: '아파트',
                             ),
-                            Container(
-                              width: 70,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: const DecorationImage(
-                                  image: AssetImage('assets/home/guide.png'),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
+                            _buildIconWithLabel(
+                              imagePath: 'assets/home/best.png',
+                              label: '베스트',
+                              onTap: () {
+                                showGuirdDialog(
+                                  context: context,
+                                  description: "예산별 시공 품목을 가이드 해드려요~\n각 품목별 비교견적을 받아세요~",
+                                  descriptionStyle: const TextStyle(
+                                    fontSize: 14.0, // 글씨 크기 조절
+                                    fontWeight: FontWeight.bold, // 글씨 굵기 조절
+                                    color: Colors.black, // 글씨 색상 조절
+                                    height: 1.5, // 줄 간격 조절
+                                  ),
+                                  options: [
+                                    {'text': 'Simple 인테리어', 'color': Color(0xFF7294CC)},
+                                    {'text': 'Standard 인테리어', 'color': Color(0xFFC19AC6)},
+                                    {'text': 'Premium 인테리어', 'color': Color(0xFFA68150)},
+                                    {'text': 'My Choice 인테리어', 'color': Color(0xFF91C58C)},
+                                  ],
+                                  onOptionSelected: (selectedOption) {
+                                    if (selectedOption == 'Simple 인테리어') {
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('S')));
+                                    } else if (selectedOption == 'Standard 인테리어') {
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('T')));
+                                    } else if (selectedOption == 'Premium 인테리어') {
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('P')));
+                                    } else if (selectedOption == 'My Choice 인테리어') {
+                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('A')));
+                                    }
+                                  },
+                                );
+                              },
                             ),
-                            Container(
-                              width: 70,
-                              height: 70,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                image: const DecorationImage(
-                                  image: AssetImage('assets/home/GroupPurchase.png'),
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
+                            _buildIconWithLabel(
+                              imagePath: 'assets/home/GroupPurchase.png',
+                              label: '공동구매',
                             ),
                           ],
                         ),
                       ),
+
                       // 추가된 문구
                       Align(
                         alignment: Alignment.centerLeft, // 좌측 정렬
@@ -411,28 +405,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: GridView.count(
-                          crossAxisCount: 2, // 한 행에 2개씩 배치
-                          shrinkWrap: true,  // 스크롤 가능 여부 조정
-                          physics: NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
-                          crossAxisSpacing: 8.0, // 열 간격
-                          mainAxisSpacing: 8.0, // 행 간격
-                          children: [
-                            _buildGridItem('assets/home/widget1.png', 'assets/home/InteriorMain.png', "인테리어"),
-                            _buildGridItem('assets/home/widget2.png', 'assets/home/gaguMain.png', "커튼/블라인드"),
-                            _buildGridItem('assets/home/widget3.png', 'assets/home/gaguMain.png', "탄성코트"),
-                            _buildGridItem('assets/home/widget4.png', 'assets/home/gaguMain.png', "줄눈"),
-                            _buildGridItem('assets/home/widget5.png', 'assets/home/gaguMain.png', "입주청소"),
-                            _buildGridItem('assets/home/widget6.png', 'assets/home/gaguMain.png', "포장이사"),
-                          ],
-                        ),
-                      ),
-
                       ///const SizedBox(height: 2.0),
-                     // getPopularCourseUI(), // Popular Course 추가
+                      getPopularCourseUI(), // Popular Course 추가
                     ],
                   ),
                 ),
@@ -444,6 +418,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
 
       ),
+    );
+  }
+
+
+  Widget _buildIconWithLabel({required String imagePath, required String label, VoidCallback? onTap}) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              image: DecorationImage(
+                image: AssetImage(imagePath),
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 4.0), // 이미지와 텍스트 간격 조정
+        Text(
+          label,
+          style: WitHomeTheme.title.copyWith(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.black),
+    ),
+      ],
     );
   }
 
@@ -498,8 +499,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
+    print("들어오나??");
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0), // 좌우만 여백
+
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -511,6 +514,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               callBack: (Category category) async {
                 bool isLoggedIn = await checkLoginStatus();
                 if (isLoggedIn) {
+                  print("✅ 클릭됨: ${category.categoryNm} 이동 중...");
                   moveTo(category); // 로그인 상태일 때만 이동
                 } else {
                   _showLoginDialog(context); // 로그인 다이얼로그 표시

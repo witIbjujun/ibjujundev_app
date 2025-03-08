@@ -71,7 +71,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.0),
                       border: Border.all(
-                        color: isSelected ? Colors.blue : Colors.grey,
+                        color: isSelected ? Color(0xFFAFCB54) : Colors.grey,
                         width: isSelected ? 2.0 : 1.0,
                       ),
                       color: Colors.white,
@@ -205,7 +205,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
               }
                   : null, // 다른 상태에서는 비활성화
               style: ElevatedButton.styleFrom(
-                backgroundColor: request.reqState == '02' ? Colors.blue : Colors.grey,
+                backgroundColor: request.reqState == '02' ? Color(0xFFAFCB54) : Colors.grey,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -231,14 +231,14 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                side: BorderSide(color: Colors.blue),
+                side: BorderSide(color: Color(0xFFAFCB54)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
               child: Text(
                 "뒤로가기",
-                style: TextStyle(color: Colors.blue, fontSize: 16), // 버튼 글자 크기 키움
+                style: TextStyle(color: Color(0xFFAFCB54), fontSize: 16), // 버튼 글자 크기 키움
               ),
             ),
           ),

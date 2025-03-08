@@ -154,8 +154,8 @@ class WitHomeWidgets {
     return TabBar(
       controller: tabController,
       tabs: tabNames.map((name) => Tab(text: name)).toList(),
-      indicatorColor: Colors.blue,
-      labelColor: Colors.blue,
+      indicatorColor: Color(0xFFAFCB54),
+      labelColor: Color(0xFFAFCB54),
       unselectedLabelColor: Colors.grey,
     );
   }

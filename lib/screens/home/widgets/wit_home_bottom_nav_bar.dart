@@ -55,15 +55,16 @@ class BottomNavBar extends StatelessWidget {
             width: 24, // 아이콘 크기 조절
             height: 24,
           ),
-          label: '',
+          label: '체크리스트',
         ),
+
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/home/info_Bottom.png', // 이미지 경로
             width: 24, // 아이콘 크기 조절
             height: 24,
           ),
-          label: '',
+          label: '견적정보',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
@@ -83,9 +84,9 @@ class BottomNavBar extends StatelessWidget {
         ),
       ],
       selectedItemColor: Color(0xFFAFCB54),
-      unselectedItemColor: Color(0xFFAFCB54),
+      unselectedItemColor: Color(0xFF8D8D8D),
       selectedLabelStyle: TextStyle(color: Color(0xFFAFCB54)), // 선택된 라벨 색상
-      unselectedLabelStyle: TextStyle(color: Color(0xFFAFCB54)), // 선택되지 않은 라벨 색상
+      unselectedLabelStyle: TextStyle(color: Color(0xFF8D8D8D)), // 선택되지 않은 라벨 색상
 
       showSelectedLabels: true,  // 선택된 아이템의 라벨 숨기기
       showUnselectedLabels: true,  // 선택되지 않은 아이템의 라벨 숨기기

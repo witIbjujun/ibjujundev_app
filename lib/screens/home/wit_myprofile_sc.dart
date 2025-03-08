@@ -153,7 +153,7 @@ class _MyProfileState extends State<MyProfile> {
                     decoration: InputDecoration(
                       labelText: 'MY 닉네임',
                       labelStyle: const TextStyle(
-                        color: Colors.blue,
+                        color: Color(0xFFAFCB54),
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -226,7 +226,7 @@ class _MyProfileState extends State<MyProfile> {
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(200, 50), // 버튼 크기 조정
-                    backgroundColor: WitHomeTheme.nearlyBlue,
+                    backgroundColor: Color(0xFFAFCB54),
                   ),
                   child: Text(
                     '변경',

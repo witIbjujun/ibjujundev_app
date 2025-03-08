@@ -253,33 +253,46 @@ void showImagePopup({
 void showGuirdDialog({
   required BuildContext context,
   required String description, // 설명 텍스트
+  TextStyle? descriptionStyle, // 폰트 스타일을 조절할 수 있도록 추가
   required List<Map<String, dynamic>> options, // 옵션 리스트 (텍스트, 색상)
   required Function(String) onOptionSelected, // 선택 시 호출될 함수
 }) {
   showDialog(
     context: context,
-    barrierDismissible: true, // 팝업 외부를 클릭해도 닫히지 않도록 설정
+    barrierDismissible: true, // 팝업 외부 클릭 가능
     builder: (BuildContext dialogContext) {
       return Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
         ),
+        backgroundColor: Colors.transparent, // 배경을 투명하게 설정 (이미지 적용을 위해)
         child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/home/showGuirdDialogBack.png'), // 배경 이미지 설정
+              fit: BoxFit.cover, // 전체 크기에 맞게 조정
+            ),
+            borderRadius: BorderRadius.circular(20.0),
+          ),
           padding: const EdgeInsets.all(20.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const SizedBox(height: 10.0),
               // 설명 문구
               Text(
                 description,
-                style: const TextStyle(
-                  fontSize: 16.0,
+                style: descriptionStyle ?? const TextStyle(
+                  fontSize: 16.0, // 기본 폰트 크기
                   fontWeight: FontWeight.normal,
+                  color: Colors.black, // 기본 글씨 색상
+                  height: 1.5, // 줄 간격 조정
                 ),
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 50.0),
+
               // 옵션 버튼 표시
               ...options.map((option) {
                 final text = option['text'] as String;
@@ -309,7 +322,6 @@ void showGuirdDialog({
                 );
               }).toList(),
               const SizedBox(height: 8.0),
-
             ],
           ),
         ),
@@ -317,6 +329,7 @@ void showGuirdDialog({
     },
   );
 }
+
 
 /*금액표시 UTil*/
 class FormatUtils {
