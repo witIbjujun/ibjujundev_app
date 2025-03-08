@@ -12,6 +12,8 @@ import '../../util/wit_code_ut.dart';
 import '../common/wit_ImageViewer_sc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 
 class SellerProfileView extends StatefulWidget {
   final dynamic sllrNo;
@@ -309,8 +311,8 @@ class SellerProfileViewState extends State<SellerProfileView> {
     return MaterialApp(
       title: '파트너 프로필',
       home: Scaffold(
-        appBar: AppBar(
-          title: Text(storeName),
+        appBar: SellerAppBar(
+          sllrNo: widget.sllrNo,
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -318,6 +320,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
             children: [
               // 첫 번째 영역: 사업자 이미지 및 이름, 인증 정보
               _buildCard(
+                title: '업체명',
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -378,7 +381,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                               // 판매자명
                               Text(
                                 sellerInfo?['storeName'] ?? '판매자명 없음', // null 체크 및 기본값 설정
-                                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                               ),
                               SizedBox(height: 8), // 사업자명과 인증 정보 간격
                               Row(
@@ -417,21 +420,19 @@ class SellerProfileViewState extends State<SellerProfileView> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: Colors.white, // 초록색 배경
+                        color: WitHomeTheme.wit_lightBlue, // 초록색 배경
                         borderRadius: BorderRadius.circular(8), // 둥근 모서리
                       ),
                       child: Text(
                         sellerInfo?['categoryNm'] ?? '카테고리 없음',
-                        style: TextStyle(color: Colors.black), // 글자색
-                      ),
+                        style: WitHomeTheme.title.copyWith(fontSize: 16),                      ),
                     ),
                     SizedBox(width: 10), // 버튼 간격
                     Row(
                       children: [
                         Text(
                           sellerInfo?['asGbnNm'] ?? '', // 서비스 기간 텍스트
-                          style: TextStyle(fontSize: 16),
-                        ),
+                          style: WitHomeTheme.subtitle.copyWith(fontSize: 16),                        ),
                         SizedBox(width: 5), // 텍스트와 아이콘 간격
                         if (asGbn.isNotEmpty)
                           Image.asset(
@@ -447,6 +448,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
               _buildCard(
                 title: '업체 주소',
                 content: Text(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                   (sellerInfo?['address1'] ?? '주소 없음') + " / " + (sellerInfo?['serviceAreaNm'] ?? '서비스 지역 없음'),
                 ),
               ),
@@ -454,7 +456,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
               // 네 번째 영역: 업체 설명
               _buildCard(
                 title: '업체 설명',
-                content: Text(sellerInfo?['sllrContent'] ?? ''),
+                content: Text(sellerInfo?['sllrContent'] ?? '', style: WitHomeTheme.subtitle.copyWith(fontSize: 16),),
               ),
               // 다섯 번째 영역: 시공 사진/동영상
               _buildCard(
@@ -517,8 +519,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                             "가격은 다른 업체들과 비교했을 때 적당한 편이었고, 가성비가 좋다고 느꼈습니다.\n\n"
                             "전체적으로 매우 만족하며, 방충망을 설치한 이후로 벌레 걱정이 없어져서 기쁩니다. "
                             "다음에도 필요할 경우 다시 이용할 생각입니다.",
-                        style: TextStyle(fontSize: 14),
-                        maxLines: null, // 줄 수에 제한이 없도록 설정
+                        style: WitHomeTheme.subtitle.copyWith(fontSize: 16),                        maxLines: null, // 줄 수에 제한이 없도록 설정
                         overflow: TextOverflow.visible, // 넘치는 부분도 보이도록 설정
                       ),
 
@@ -544,7 +545,8 @@ class SellerProfileViewState extends State<SellerProfileView> {
           children: [
             if (title != null)
               Text(title,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                style: WitHomeTheme.title.copyWith(fontSize: 24),
+              ),
             SizedBox(height: 10),
             content,
           ],

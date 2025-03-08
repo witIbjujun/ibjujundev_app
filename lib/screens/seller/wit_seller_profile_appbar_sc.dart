@@ -22,6 +22,8 @@ import 'package:witibju/screens/seller/wit_seller_profile_modify_sc.dart';
 // import '../../main_toss.dart';
 import '../board/wit_board_main_sc.dart';
 import '../home/wit_home_sc.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
+
 
 //import '../intro.dart';
 class SellerAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -121,8 +123,7 @@ class SellerAppBarState extends State<SellerAppBar> {
         child: Center(
           child: Text(
             storeName,
-            style: TextStyle(
-                fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
+            style: WitHomeTheme.title,
             // 글씨 굵게 및 하얀색 설정
             textAlign: TextAlign.center,
           ),
@@ -146,9 +147,9 @@ class SellerAppBarState extends State<SellerAppBar> {
               decoration: InputDecoration(
                 hintText: 'sllrNo 입력',
                 border: OutlineInputBorder(),
-                hintStyle: TextStyle(color: Colors.white), // 힌트 텍스트 색상 설정
+                hintStyle: WitHomeTheme.title,// 힌트 텍스트 색상 설정
               ),
-              style: TextStyle(color: Colors.white), // 입력 필드 글자색 하얀색으로 설정
+              style: WitHomeTheme.title, // 입력 필드 글자색 하얀색으로 설정
               keyboardType: TextInputType.number, // 숫자 키패드로 설정
             ),
           ),
@@ -166,7 +167,7 @@ class SellerAppBarState extends State<SellerAppBar> {
               });
             }
           },
-          icon: Icon(Icons.search, color: Colors.white), // 아이콘 색상 하얀색으로 설정
+          icon: Icon(Icons.search, color: Colors.black), // 아이콘 색상 하얀색으로 설정
         ),
         IconButton(
           onPressed: () {
@@ -177,10 +178,10 @@ class SellerAppBarState extends State<SellerAppBar> {
             );
           },
           icon: Icon(
-              Icons.perm_identity, color: Colors.white), // 아이콘 색상 하얀색으로 설정
+              Icons.perm_identity, color: Colors.black), // 아이콘 색상 하얀색으로 설정
         ),
         IconButton(
-            onPressed: () {}, icon: Icon(Icons.mail, color: Colors.white)),
+            onPressed: () {}, icon: Icon(Icons.mail, color: Colors.black)),
         // 아이콘 색상 하얀색으로 설정
         IconButton(
           onPressed: () {
@@ -190,7 +191,7 @@ class SellerAppBarState extends State<SellerAppBar> {
                   builder: (context) => SellerProfile()), // SellerProfile로 이동
             );
           },
-          icon: Icon(Icons.logout, color: Colors.white), // 아이콘 색상 하얀색으로 설정
+          icon: Icon(Icons.logout, color: Colors.black), // 아이콘 색상 하얀색으로 설정
         ),
       ],
     );

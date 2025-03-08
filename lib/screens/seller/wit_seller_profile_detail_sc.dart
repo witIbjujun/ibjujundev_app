@@ -24,6 +24,8 @@ import 'package:witibju/screens/seller/wit_seller_profile_modify_sc.dart';
 // import '../../main_toss.dart';
 import '../board/wit_board_main_sc.dart';
 import '../home/wit_home_sc.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
+
 //import '../intro.dart';
 class SellerProfileDetail extends StatefulWidget {
   //final dynamic sllrNo;
@@ -123,69 +125,6 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
         appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
         ),
-
-        /*appBar: AppBar(
-          leadingWidth: 90,
-          leading: Container(height: double.infinity,
-              child: Center(child: Text(
-                  storeName, style: TextStyle(fontSize: 15, color: Colors.black),
-                  textAlign: TextAlign.center))),
-          //IconButton(onPressed: () {}, icon: Icon(Icons.menu)), // 왼쪽 메뉴버튼
-          title: Text("Profile"),
-          centerTitle: true,
-          backgroundColor: Colors.lightBlue,
-          actions: [
-            // 입력 필드 추가
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: SizedBox(
-                width: 100, // 입력 필드의 너비 설정
-                child: TextField(
-                  controller: _sllrNoController,
-                  decoration: InputDecoration(
-                    hintText: 'sllrNo 입력',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number, // 숫자 키패드로 설정
-                ),
-              ),
-            ),
-            // 버튼 추가
-            IconButton(
-              onPressed: () {
-                // 입력된 값을 sllrNo로 변경
-                dynamic newSllrNo = _sllrNoController.text;
-                if (newSllrNo.isNotEmpty) {
-                  setState(() {
-                    sllrNo = int.tryParse(newSllrNo); // sllrNo 업데이트
-                    getSellerInfo(sllrNo); // 화면 재조회
-                    getCashInfo(sllrNo); // 화면 재조회
-                  });
-                }
-              },
-              icon: Icon(Icons.search),
-            ),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()), // HomeScreen으로 이동
-                );
-              },
-              icon: Icon(Icons.perm_identity),
-            ),
-            IconButton(onPressed: () {}, icon: Icon(Icons.mail)),
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SellerProfile()), // HomeScreen으로 이동
-                );
-              },
-              icon: Icon(Icons.logout),
-            ),
-          ],
-        ),*/
         body:
         SingleChildScrollView(
             child: SafeArea(
@@ -232,10 +171,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                               },
 
                                 child: Text('캐시충전',
-                                  style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),),
+                                  style: WitHomeTheme.title.copyWith(color: Colors.white),
+                                ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Color(0xFF63A566),
                                   foregroundColor: Colors.white,
@@ -264,10 +201,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       vertical: 5, horizontal: 10),
                                   child: Text(
                                     "IBJU",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                    ),
+                                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: Colors.white),
                                   ),
 
                                 ),
@@ -282,10 +216,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       (cashInfo['cash'] != null && cashInfo['cash'] != '')
                                           ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
                                           : '0 C',
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black,
-                                      ),
+                                      style: WitHomeTheme.title.copyWith(fontSize: 20),
+
                                     ),
                                   ),
                                 )
@@ -326,18 +258,13 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           children: [
                             Text(
                               "거래내역",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 사이즈
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
                             ),
                             SizedBox(width: 5),
                             Text(
                               '(${sellerInfo != null && sellerInfo['ingCnt'] != null ? sellerInfo['ingCnt'].toString() : '0'})',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 사이즈
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             ),
                           ],
                         ),
@@ -375,18 +302,14 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           children: [
                             Text(
                               "견적요청내역",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 크기를 16으로 설정
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             ),
                             SizedBox(width: 5),
                             Text(
                               '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 크기를 16으로 설정
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             ),
                           ],
                         ),
@@ -413,10 +336,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text("업체후기",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 크기를 16으로 설정
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             )
                           ],
                         ),
@@ -443,10 +364,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "결재정보등록",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 크기를 16으로 설정
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             ),
                           ),
                         ),
@@ -477,10 +396,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "가입정보 변경",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 크기를 16으로 설정
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             ),
                           ),
                         ),
@@ -506,10 +423,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "바로견적 서비스",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 크기를 16으로 설정
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             ),
                           ),
                         ),
@@ -535,10 +450,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "파트너 프로필",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 크기를 16으로 설정
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             ),
                           ),
                         ),
@@ -565,10 +478,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "공지사항",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16, // 폰트 크기를 16으로 설정
-                              ),
+                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+
                             ),
                           ),
                         ),

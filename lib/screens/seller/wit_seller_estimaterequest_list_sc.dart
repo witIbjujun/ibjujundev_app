@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_estimaterequest_detail_sc.dart';
 import '../../util/wit_api_ut.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
+
 
 class EstimateRequestList extends StatefulWidget {
   final String stat; // stat을 멤버 변수로 추가
@@ -27,12 +29,15 @@ class EstimateRequestListState extends State<EstimateRequestList> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView( // 스크롤 가능하게 설정
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: estimateRequestList.map((request) {
-          return buildEstimateItem(request, context);
-        }).toList(),
+    return Scaffold(
+      backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+      body: SingleChildScrollView( // 스크롤 가능하게 설정
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: estimateRequestList.map((request) {
+            return buildEstimateItem(request, context);
+          }).toList(),
+        ),
       ),
     );
   }
@@ -82,7 +87,6 @@ class EstimateItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isExpanded = request['isExpanded'] ?? false; // 상세보기 상태 관리
-
     String reqContents = request['reqContents'] ?? '내용 없음'; // 내용
 
     // 내용이 3줄 이상인지 확인
@@ -91,7 +95,7 @@ class EstimateItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8), // 카드 간의 간격 설정
       decoration: BoxDecoration(
-        color: Colors.grey[200], // 회색 배경
+        color: Colors.grey[200], // 진한 회색 배경으로 설정
         borderRadius: BorderRadius.circular(8), // 모서리 둥글게
         boxShadow: [
           BoxShadow(
@@ -140,7 +144,7 @@ class EstimateItem extends StatelessWidget {
                         children: [
                           Text(
                             request['estDt'], // 날짜
-                            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                            style: WitHomeTheme.title.copyWith(fontSize: 12),
                           ),
                           TextButton(
                             onPressed: () {
@@ -155,24 +159,20 @@ class EstimateItem extends StatelessWidget {
                                 ),
                               );
                             },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero, // 패딩 제거
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 버튼 크기 조정
-                            ),
                             child: Text(
                               request['stat'],
-                              style: TextStyle(fontSize: 12, color: Colors.blue, fontWeight: FontWeight.bold), // 버튼 글씨 스타일
+                              style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_lightBlue),
                             ),
                           ),
                         ],
                       ),
                       Text(
                         request['prsnName'] ?? '요청자명 없음', // 요청자명
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        style: WitHomeTheme.title.copyWith(fontSize: 12),
                       ),
                       Text(
                         request['aptName'], // 아파트명
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                        style: WitHomeTheme.title.copyWith(fontSize: 12),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -185,14 +185,14 @@ class EstimateItem extends StatelessWidget {
               alignment: Alignment.centerLeft, // 왼쪽 정렬
               child: Text(
                 reqContents, // 내용
-                style: TextStyle(fontSize: 16, color: Colors.blueAccent), // 파란색 글씨
+                style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightBlue),
                 textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
                 maxLines: isExpanded ? null : 3, // 기본 3줄 표시
                 overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
               ),
             ),
             // 내용이 비어있지 않고 3줄 이상일 경우에만 버튼 표시
-            if (hasMoreThanThreeLines)
+            if (hasMoreThanThreeLines) ...[
               Container(
                 width: double.infinity, // 버튼을 가로로 꽉 차게 설정
                 child: TextButton(
@@ -200,8 +200,8 @@ class EstimateItem extends StatelessWidget {
                     onExpandToggle(!isExpanded); // 상세보기 상태 토글
                   },
                   style: TextButton.styleFrom(
-                    backgroundColor: Color(0xFFAFCB54), // 연두색 배경
-                    foregroundColor: Colors.white, // 글자색을 하얀색으로 설정
+                    backgroundColor: WitHomeTheme.wit_lightGreen, // 연두색 배경
+                    foregroundColor: WitHomeTheme.wit_white, // 글자색을 하얀색으로 설정
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16), // 패딩 추가
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8), // 둥근 모서리
@@ -212,6 +212,7 @@ class EstimateItem extends StatelessWidget {
                   ),
                 ),
               ),
+            ],
             SizedBox(height: 16), // 항목 간의 간격 추가
           ],
         ),
