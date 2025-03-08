@@ -24,6 +24,22 @@ class WitHomeTheme {
 
   static const Color kBackgroundColor = Color(0xFFD4DEF7);
   static const Color kTextColor = Color(0xFF4879C5);
+
+  // APP 전용 색상
+  static const Color wit_lightGoldenrodYellow = Color(0xFFF5A855);
+  static const Color wit_lightSteelBlue = Color(0xFF7294CC);
+  static const Color wit_lightGreen = Color(0xFF91C58C);
+  static const Color wit_lightOrchid = Color(0xFFC19AC6);
+  static const Color wit_lightSalmon = Color(0xFFED9C79);
+  static const Color wit_lightYellow = Color(0xFFFFF294);
+  static const Color wit_lightCoral = Color(0xFFE5767B);
+  static const Color wit_tan = Color(0xFFA68150);
+  static const Color wit_lightBlue = Color(0xFF7BB5C9);
+  static const Color wit_mediumSeaGreen = Color(0xFF63A566);
+  static const Color wit_black = Color(0xFF000000);
+  static const Color wit_gray = Color(0xFF8D8D8D);
+  static const Color wit_white = Color(0xFFFFFFFF);
+
   static const InputDecoration kTextInputDecoration = InputDecoration(
     border: InputBorder.none,
     hintText: '',
