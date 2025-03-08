@@ -56,43 +56,46 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
         child: Column(
           children: [
             Expanded(
-              child: checkAllList.isEmpty
-                  ? Center(
+              child: Container(
+                color: Colors.white, // 배경색을 흰색으로 설정
+                child: checkAllList.isEmpty
+                    ? Center(
                   child: Text(
                     "조회된 데이터가 없습니다.",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 )
-                  : ListView.builder(
-                controller: _scrollController,
-                itemCount: checkAllList.length,
-                itemBuilder: (context, index) {
-                  bool isExpanded = expandedIndex == index;
-                  return ExpandableItem(
-                    checkInfoLv3: checkAllList[index],
-                    isExpanded: isExpanded,
-                    onSwitchChanged: (value) {
-                      setState(() {
-                        checkAllList[index]["checkYn"] = value ? "N" : "Y";
-                        saveCheckInfo(checkAllList[index], value ? "N" : "Y");
-                      });
-                    },
-                    onTap: () {
-                      setState(() {
-                        expandedIndex = isExpanded ? null : index;
-                        if (!isExpanded) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            _scrollController.animateTo(
-                              (index - 1) * 73,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          });
-                        }
-                      });
-                    },
-                  );
-                },
+                    : ListView.builder(
+                  controller: _scrollController,
+                  itemCount: checkAllList.length,
+                  itemBuilder: (context, index) {
+                    bool isExpanded = expandedIndex == index;
+                    return ExpandableItem(
+                      checkInfoLv3: checkAllList[index],
+                      isExpanded: isExpanded,
+                      onSwitchChanged: (value) {
+                        setState(() {
+                          checkAllList[index]["checkYn"] = value ? "N" : "Y";
+                          saveCheckInfo(checkAllList[index], value ? "N" : "Y");
+                        });
+                      },
+                      onTap: () {
+                        setState(() {
+                          expandedIndex = isExpanded ? null : index;
+                          if (!isExpanded) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _scrollController.animateTo(
+                                (index - 1) * 73,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            });
+                          }
+                        });
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/checkList/wit_checkList_detail_sc.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 
 /**
  * 사전 체크리스트 리스트 뷰
@@ -20,23 +21,27 @@ class CheckListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: listData.length,
-      itemBuilder: (context, index) {
-        final item = listData[index];
-        return CheckListCard(
-          item: item,
-          edited : edited,
-          onTap: () async {
-            if (edited == false)
-            await Navigator.push(
-              context,
-              SlideRoute(page: CheckListDetail(checkInfoLv1: item)),
-            );
-            await callback();
-          },
-        );
-      },
+    return Container(
+      color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
+      child: ListView.builder(
+        itemCount: listData.length,
+        itemBuilder: (context, index) {
+          final item = listData[index];
+          return CheckListCard(
+            item: item,
+            edited: edited,
+            onTap: () async {
+              if (edited == false) {
+                await Navigator.push(
+                  context,
+                  SlideRoute(page: CheckListDetail(checkInfoLv1: item)),
+                );
+              }
+              await callback();
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -57,24 +62,24 @@ class CheckListCard extends StatefulWidget {
 }
 
 class _CheckListCardState extends State<CheckListCard> {
-  Color _backgroundColor = Colors.white; // 초기 배경 색상
+  Color _backgroundColor = WitHomeTheme.wit_white; // 초기 배경 색상
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (_) {
         setState(() {
-          _backgroundColor = Colors.grey[200]!;
+          _backgroundColor = WitHomeTheme.wit_lightgray;
         });
       },
       onTapUp: (_) {
         setState(() {
-          _backgroundColor = Colors.white;
+          _backgroundColor = WitHomeTheme.wit_white;
         });
       },
       onTapCancel: () {
         setState(() {
-          _backgroundColor = Colors.white;
+          _backgroundColor = WitHomeTheme.wit_white;
         });
       },
       onTap: widget.onTap,
@@ -85,7 +90,7 @@ class _CheckListCardState extends State<CheckListCard> {
             borderRadius: BorderRadius.circular(5), // 모서리 둥글게
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.2), // 그림자 색상
+                color: WitHomeTheme.wit_lightgray.withOpacity(0.2), // 그림자 색상
                 spreadRadius: 2, // 그림자 퍼짐 정도
                 blurRadius: 3, // 그림자 흐림 정도
                 offset: Offset(1, 2), // 그림자 위치
@@ -126,7 +131,7 @@ class _CheckListCardState extends State<CheckListCard> {
                     children: [
                       Text(
                         widget.item["inspNm"],
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: WitHomeTheme.subtitle,
                       ),
                     ],
                   ),
@@ -143,7 +148,7 @@ class _CheckListCardState extends State<CheckListCard> {
                             widget.item["isSelected"] = value;
                           });
                         },
-                        activeColor: Colors.blue, // 활성화 색상
+                        activeColor: WitHomeTheme.wit_lightBlue, // 활성화 색상
                       ),
                     ),
                   ),
@@ -158,12 +163,12 @@ class _CheckListCardState extends State<CheckListCard> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: "${widget.item["inspDetlChoiceCnt"]} ", // 숫자
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.red),
+                              text: "${widget.item["inspDetlChoiceCnt"]} ",
+                              style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightCoral),
                             ),
                             TextSpan(
                               text: "건", // "건" 텍스트
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black), // 검정색
+                              style: WitHomeTheme.subtitle,
                             ),
                           ],
                         ),

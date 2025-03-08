@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/checkList/widget/wit_checkList_detail_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
-import 'package:witibju/screens/common/wit_common_widget.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
+import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 
 /**
  * 사전 체크리스트 상세
@@ -50,10 +51,10 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: WitHomeTheme.wit_white,
         title: Text(
           widget.checkInfoLv1["inspNm"],
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: WitHomeTheme.title,
         ),
       ),
       body: CheckListDetailView(
@@ -70,6 +71,9 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
             saveCheckInfo(item, newCheckYn);
           });
         },
+      ),
+      bottomNavigationBar: BottomNavBar(
+          selectedIndex: 0
       ),
     );
   }

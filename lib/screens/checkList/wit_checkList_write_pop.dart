@@ -91,7 +91,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
           Align(
             alignment: Alignment.topCenter,
             child: SizedBox(
-              height: 60,
+              height: 50,
               width: double.infinity,
               child: Container(
                 decoration: BoxDecoration(
@@ -109,11 +109,11 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
           // 여기 아래에 추가할 위젯을 넣으세요
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(35.0),
+              padding: const EdgeInsets.fromLTRB(35, 20, 35, 0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(height: 10),
+                  /*Container(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -173,43 +173,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                       ),
                     ),
                   ),
-                  Container(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "하자 내용",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Container(height: 10),
-                  Container(
-                    height: 150,
-                    child: TextField(
-                      controller: _checkComtController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          checkComt = value;
-                        });
-                      },
-                      maxLines: 5,
-                      style: TextStyle(height: 1.5),
-                    ),
-                  ),
-                  SizedBox(height: 10),
+                  Container(height: 20),*/
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -389,12 +353,48 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "하자 내용",
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  Container(height: 10),
+                  Container(
+                    height: 100,
+                    child: TextField(
+                      controller: _checkComtController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          checkComt = value;
+                        });
+                      },
+                      maxLines: 5,
+                      style: TextStyle(height: 1.5),
+                    ),
+                  ),
+                  SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 버튼 간격을 일정하게
                     children: [
                       // 하자완료 버튼
-                      Expanded(
+                      /*Expanded(
                         child: TextButton(
                           style: TextButton.styleFrom(
                             backgroundColor: Color(0xFF7BB5C9),
@@ -420,7 +420,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 40),
+                      SizedBox(width: 20),*/
                       // 하자등록 버튼
                       Expanded(
                         child: TextButton(
@@ -454,13 +454,13 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
               ),
             ),
           ),
-          if (_isLoading) // 로딩 상태일 때만 표시
+          /*if (_isLoading) // 로딩 상태일 때만 표시
             Container(
               width: double.infinity, // 전체 너비를 차지하도록 설정
               child: Center(
                 child: CircularProgressIndicator(), // 로딩 인디케이터
               ),
-            ),
+            ),*/
         ],
       ),
     );
@@ -483,7 +483,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
         widget.onSwitchChanged(checkflag);
       });
 
-      // 이미지 있으면
+    // 이미지 있으면
     } else {
 
       List<File> images = [];
@@ -500,7 +500,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
       if (fileInfo == "FAIL") {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
 
-        // 이미지 등록 성공
+      // 이미지 등록 성공
       } else {
         setState(() {
           widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(checkDate);
@@ -578,11 +578,11 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
       img.Image? image = img.decodeImage(bytes);
 
       // 이미지 오른쪽으로 90도 회전
-      //img.Image rotatedImage = img.copyRotate(image!, angle:90);
+      img.Image rotatedImage = img.copyRotate(image!, 360);
 
       // 회전된 이미지를 파일로 저장
       final rotatedFile = File(pickedFile.path);
-      //await rotatedFile.writeAsBytes(img.encodeJpg(rotatedImage));
+      await rotatedFile.writeAsBytes(img.encodeJpg(rotatedImage));
 
       setState(() {
         if (index == 1) {

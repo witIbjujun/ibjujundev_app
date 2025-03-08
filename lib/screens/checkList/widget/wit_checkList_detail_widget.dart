@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/checkList/wit_checkList_write_pop.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 
 /**
  * 체크리스트 상세 화면 UI
@@ -54,36 +55,39 @@ class _CheckListDetailViewState extends State<CheckListDetailView> {
               },
             ),
             Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: widget.checkListByLv3.length,
-                itemBuilder: (context, index) {
-                  bool isExpanded = expandedIndex == index;
-                  return ExpandableItem(
-                    checkInfoLv3: widget.checkListByLv3[index],
-                    isExpanded: isExpanded,
-                    onSwitchChanged: (value) {
-                      setState(() {
-                        widget.checkListByLv3[index]["checkYn"] = value ? "N" : "Y";
-                      });
-                      widget.onSwitchChanged(widget.checkListByLv3[index], value ? "N" : "Y");
-                    },
-                    onTap: () {
-                      setState(() {
-                        expandedIndex = isExpanded ? null : index;
-                        if (!isExpanded) {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            _scrollController.animateTo(
-                              (index - 1) * 73,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          });
-                        }
-                      });
-                    },
-                  );
-                },
+              child: Container(
+                color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: widget.checkListByLv3.length,
+                  itemBuilder: (context, index) {
+                    bool isExpanded = expandedIndex == index;
+                    return ExpandableItem(
+                      checkInfoLv3: widget.checkListByLv3[index],
+                      isExpanded: isExpanded,
+                      onSwitchChanged: (value) {
+                        setState(() {
+                          widget.checkListByLv3[index]["checkYn"] = value ? "N" : "Y";
+                        });
+                        widget.onSwitchChanged(widget.checkListByLv3[index], value ? "N" : "Y");
+                      },
+                      onTap: () {
+                        setState(() {
+                          expandedIndex = isExpanded ? null : index;
+                          if (!isExpanded) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _scrollController.animateTo(
+                                (index - 1) * 73,
+                                duration: Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            });
+                          }
+                        });
+                      },
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -112,7 +116,7 @@ class TabBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (checkListByLv2.isNotEmpty) {
       return Container(
-        color: Colors.white,
+        color: WitHomeTheme.wit_white,
         child: TabBar(
           controller: tabController,
           isScrollable: false,
@@ -126,6 +130,7 @@ class TabBarWidget extends StatelessWidget {
                 width: double.infinity,
                 child: Text(
                   item["inspNm"] + " (" + (item["checkCnt"] ?? 0).toString() + ")",
+                  style: WitHomeTheme.subtitle,
                 ),
               ),
             );
@@ -160,11 +165,11 @@ class ExpandableItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.fromLTRB(14, 7, 14, 7),
       decoration: BoxDecoration(
-        color: Colors.white, // 배경색 설정
+        color: WitHomeTheme.wit_white, // 배경색 설정
         borderRadius: BorderRadius.circular(5), // 라운드 처리
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2), // 그림자 색상
+            color: WitHomeTheme.wit_gray.withOpacity(0.2), // 그림자 색상
             spreadRadius: 2, // 그림자 퍼짐 정도
             blurRadius: 3, // 그림자 흐림 정도
             offset: Offset(1, 2), // 그림자 위치
@@ -181,7 +186,7 @@ class ExpandableItem extends StatelessWidget {
               width: double.infinity,
               padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
               decoration: BoxDecoration(
-                color: isExpanded ? Colors.white : Colors.white,
+                color: WitHomeTheme.wit_white,
                 borderRadius: isExpanded ?
                   BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5),)
                     : BorderRadius.all(Radius.circular(5)),
@@ -191,43 +196,79 @@ class ExpandableItem extends StatelessWidget {
                 children: [
                   Icon(
                     isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: isExpanded ? Colors.blue : Colors.black,
+                    color: isExpanded ? WitHomeTheme.wit_lightBlue : WitHomeTheme.wit_black,
                   ),
                   SizedBox(width: 15),
                   Expanded(
                     child: Text(
                       checkInfoLv3["inspNm"],
                       style: isExpanded ?
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black)
-                      : TextStyle(fontSize: 16 /*, fontWeight: FontWeight.bold*/),
+                      WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold) : WitHomeTheme.subtitle,
                     ),
                   ),
-                  /*Container(
+                  if (checkInfoLv3["checkYn"] == 'Y') // 'Y'일 때 연필 아이콘 추가
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isDismissible: true, // 바깥을 클릭해도 닫히지 않도록 설정
+                          isScrollControlled: true, // 스크롤 가능하게 설정
+                          builder: (context) {
+                            return Container(
+                              height: MediaQuery.of(context).size.height * 0.51,
+                              child: ExamplePhotoPopup(
+                                checkInfoLv3: checkInfoLv3,
+                                onSwitchChanged: onSwitchChanged,
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: Icon(
+                        Icons.edit,
+                      ),
+                    ),
+                  Container(
                     child: IconButton(
                       icon: Text(
                         checkInfoLv3["checkYn"] == "Y" ? "🔴"  // 축하 이모티콘
                             : checkInfoLv3["checkYn"] == "D" ? "⚪️"  // 손握기 이모티콘
                             : "🔵",  // 빨간 따봉 뒤집힌 것
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white, // 텍스트 색상
-                        ),
+                        style: TextStyle(fontSize: 18),
                       ),
                       // 사용할지 확인 필요
                       onPressed: () {
                         onSwitchChanged(checkInfoLv3["checkYn"] == "Y"); // Y일 경우 false, 나머지 경우 true
                       },
                     ),
-                  ),*/
-                  Transform.scale(
+                  ),
+                  /*Transform.scale(
                     scale: 0.7,
                     child: Switch(
                       value: checkInfoLv3["checkYn"] == "N" || checkInfoLv3["checkYn"] == "D",
-                      onChanged: onSwitchChanged,
+                      onChanged: (value) {
+                        onSwitchChanged(value);
+                        if (!value) {
+                          showModalBottomSheet(
+                            context: context,
+                            isDismissible: true, // 바깥을 클릭해도 닫히지 않도록 설정
+                            isScrollControlled: true, // 스크롤 가능하게 설정
+                            builder: (context) {
+                              return Container(
+                                height: MediaQuery.of(context).size.height * 0.38,
+                                child: ExamplePhotoPopup(
+                                  checkInfoLv3: checkInfoLv3,
+                                  onSwitchChanged: onSwitchChanged,
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
                       activeTrackColor: checkInfoLv3["checkYn"] == "D" ? Colors.grey[400] : Colors.blue[200],
-                      inactiveTrackColor: Colors.red[200],
+                      inactiveTrackColor: Color(0xFFE5767B),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),
@@ -265,11 +306,11 @@ class ExpandableItem extends StatelessWidget {
                             errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
                               // 이미지 로드 실패 시 빈 이미지 또는 대체 이미지를 표시
                               return Container(
-                                color: Colors.grey[200], // 빈 이미지의 배경색
+                                color: WitHomeTheme.wit_lightgray,
                                 child: Center(
                                   child: Text(
                                     '이미지 없음',
-                                    style: TextStyle(color: Colors.black54),
+                                    style: WitHomeTheme.subtitle,
                                   ),
                                 ),
                               );
@@ -297,26 +338,26 @@ class ExpandableItem extends StatelessWidget {
                       Container(
                         height: 120,
                         alignment: Alignment.topLeft,
-                        color: Colors.white,
+                        color: WitHomeTheme.wit_white,
                         padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
                         child: Text(
                           checkInfoLv3["inspComt"] ?? "",
-                          style: TextStyle(fontSize: 14),
+                          style: WitHomeTheme.subtitle,
                         ),
                       ),
                       Container(height: 10),
                     ],
                   ),
 
-                  GestureDetector(
+                  /*GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
-                        isDismissible: false, // 바깥을 클릭해도 닫히지 않도록 설정
+                        isDismissible: true, // 바깥을 클릭해도 닫히지 않도록 설정
                         isScrollControlled: true, // 스크롤 가능하게 설정
                         builder: (context) {
                           return Container(
-                            height: MediaQuery.of(context).size.height * 0.85,
+                            height: MediaQuery.of(context).size.height * 0.38,
                             child: ExamplePhotoPopup(
                               checkInfoLv3: checkInfoLv3,
                               onSwitchChanged: onSwitchChanged,
@@ -328,12 +369,13 @@ class ExpandableItem extends StatelessWidget {
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Color(0xFF91C58C),
+                        color: checkInfoLv3["checkYn"] == "Y" ? Color(0xFF91C58C) : Colors.grey,
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(5),
                           bottomRight: Radius.circular(5),
                         ),
                       ),
+
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -347,7 +389,7 @@ class ExpandableItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
             ),

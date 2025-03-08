@@ -6,6 +6,8 @@ import 'package:witibju/screens/checkList/wit_checkList_allList_sc.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
+import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 
 /**
  * 사전 체크리스트 메인
@@ -51,16 +53,15 @@ class CheckListMainState extends State<CheckListMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: WitHomeTheme.white,
         title: Text(
           isEditing == false ? "입주전 체크리스트" : "입주전 체크리스트 설정",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: WitHomeTheme.title,
         ),
         actions: [
           if (isEditing)
             IconButton(
               icon: Icon(Icons.refresh),
-              color: Colors.black,
               onPressed: () {
                 ConfimDialog.show(context,
                     "초기화",
@@ -73,7 +74,7 @@ class CheckListMainState extends State<CheckListMain> {
             ),
           IconButton(
             icon: Icon(isEditing ? Icons.check : Icons.settings),
-            color: isEditing ? Colors.green : Colors.black,
+            color: isEditing ? WitHomeTheme.wit_lightGreen : WitHomeTheme.wit_black,
             onPressed: () {
               setState(() {
                 if (isEditing) {
@@ -91,7 +92,7 @@ class CheckListMainState extends State<CheckListMain> {
             ? Center(
           child: Text(
             "조회된 데이터가 없습니다.",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: WitHomeTheme.headline,
           ),
         )
             : CheckListView(
@@ -101,6 +102,9 @@ class CheckListMainState extends State<CheckListMain> {
           callback: getCheckListByLv1,
           edited: isEditing,
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+          selectedIndex: 0
       ),
       floatingActionButton: isEditing || checkAllCnt == 0 ? null :
       Container(
@@ -114,7 +118,7 @@ class CheckListMainState extends State<CheckListMain> {
             );
             await getCheckListByLv1();
           },
-          backgroundColor: Colors.red[200],
+          backgroundColor: WitHomeTheme.wit_lightCoral,
           shape: CircleBorder(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -122,12 +126,12 @@ class CheckListMainState extends State<CheckListMain> {
               Icon(
                 Icons.warning, // 경고 아이콘
                 size: 30, // 아이콘 크기 조정
-                color: Colors.white,
+                color: WitHomeTheme.wit_white,
               ),
               Text(
                 "하자 ${checkAllCnt}건",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_white),
               ),
             ],
           ),
