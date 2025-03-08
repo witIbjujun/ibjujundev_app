@@ -38,6 +38,7 @@ class WitHomeTheme {
   static const Color wit_mediumSeaGreen = Color(0xFF63A566);
   static const Color wit_black = Color(0xFF000000);
   static const Color wit_gray = Color(0xFF8D8D8D);
+  static const Color wit_lightgray = Color(0xFFD3D3D3);
   static const Color wit_white = Color(0xFFFFFFFF);
 
   static const InputDecoration kTextInputDecoration = InputDecoration(
