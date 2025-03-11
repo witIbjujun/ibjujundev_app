@@ -28,7 +28,7 @@ class WitHomeTheme {
   // APP 전용 색상
   static const Color wit_lightGoldenrodYellow = Color(0xFFF5A855);
   static const Color wit_lightSteelBlue = Color(0xFF7294CC);
-  static const Color wit_lightGreen = Color(0xFF91C58C);
+  static const Color wit_lightGreen = Color(0xFFAFCB54);
   static const Color wit_lightOrchid = Color(0xFFC19AC6);
   static const Color wit_lightSalmon = Color(0xFFED9C79);
   static const Color wit_lightYellow = Color(0xFFFFF294);

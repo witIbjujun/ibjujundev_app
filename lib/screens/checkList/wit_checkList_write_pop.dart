@@ -578,7 +578,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
       img.Image? image = img.decodeImage(bytes);
 
       // 이미지 오른쪽으로 90도 회전
-      img.Image rotatedImage = img.copyRotate(image!, 360);
+      img.Image rotatedImage = img.copyRotate(image!, angle: 360);
 
       // 회전된 이미지를 파일로 저장
       final rotatedFile = File(pickedFile.path);

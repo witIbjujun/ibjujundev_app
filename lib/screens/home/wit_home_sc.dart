@@ -220,92 +220,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // SelectBox UI
-                      if (options.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0), // Row 전체 좌우 여백 추가
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              /*Expanded(
-                                flex: 6, // SelectBox를 5/8 크기로 조정
-                                *//*child: GestureDetector(
-                                  onTap: () async {
-                                    bool isLoggedIn = await checkLoginStatus();
-                                    if (isLoggedIn) {
-                                      _loadOptions();
-                                    }
-
-                                    WitHomeWidgets.showSelectBox(
-                                      context,
-                                      selectedOption,
-                                      options.keys.toList(),
-                                          (option) {
-                                        setState(() {
-                                          selectedOption = option;
-                                          secureStorage.write(key: 'aptName', value: option);
-                                        });
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 50.0,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 16.0), // 텍스트 앞에 패딩 추가
-                                          child: Text(
-                                            options.isEmpty
-                                                ? "입주 할 APT 선택하세요"
-                                                : selectedOption,
-                                            style: WitHomeTheme.title, // 폰트 스타일 적용
-                                          ),
-                                        ),
-                                        const Icon(Icons.arrow_drop_down),
-                                      ],
-                                    ),
-                                  ),
-                                ),*//*
-                              ),*/
-                             // const SizedBox(width: 8), // SelectBox와 평면도 간격을 넓게 설정
-                              /*Expanded(
-                                flex: 2, // 평면도를 3/8 크기로 조정
-                                child: GestureDetector(
-                                  onTap: () {
-                                    // 평면도 관련 동작 추가
-                                    showImagePopup(
-                                      context: context,
-                                      imageUrl: '/WIT/12345.png',
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '평면도',
-                                        style: WitHomeTheme.title,
-                                      ),
-                                      const SizedBox(width: 8), // 텍스트와 아이콘 사이 간격 조정
-                                      const Icon(Icons.map_outlined, size: 24.0),
-                                    ],
-                                  ),
-                                ),
-                              ),*/
-                            ],
-                          ),
-                        ),
-                      const SizedBox(height: 16.0),
                       // 상태 위젯
                       APTStatusWidget(
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.20,
                       ),
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 30.0),
                       Container(
                         height: 75, // 높이를 조정하여 텍스트 공간 확보
                         decoration: BoxDecoration(
@@ -328,6 +248,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             _buildIconWithLabel(
                               imagePath: 'assets/home/guide.png',
                               label: '가이드',
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (context) => Question(qustCd: 'Q10001')), // 이동할 화면 설정
+                                );
+                              },
                             ),
                             _buildIconWithLabel(
                               imagePath: 'assets/home/apt.png',
@@ -339,13 +264,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               onTap: () {
                                 showGuirdDialog(
                                   context: context,
-                                  description: "예산별 시공 품목을 가이드 해드려요~\n각 품목별 비교견적을 받아세요~",
-                                  descriptionStyle: const TextStyle(
-                                    fontSize: 14.0, // 글씨 크기 조절
-                                    fontWeight: FontWeight.bold, // 글씨 굵기 조절
-                                    color: Colors.black, // 글씨 색상 조절
-                                    height: 1.5, // 줄 간격 조절
-                                  ),
+                                  description: "예산별 시공 품목 가이드입니다!\n\n각 품목별 비교견적을 받아세요",
+                                  descriptionStyle: WitHomeTheme.subtitle,
                                   options: [
                                     {'text': 'Simple 인테리어', 'color': Color(0xFF7294CC)},
                                     {'text': 'Standard 인테리어', 'color': Color(0xFFC19AC6)},

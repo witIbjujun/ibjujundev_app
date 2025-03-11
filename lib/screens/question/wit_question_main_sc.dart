@@ -77,12 +77,12 @@ class _QuestionState extends State<QuestionList> {
             controller: _scrollController,
             itemCount: currentIndex + 1,
             itemBuilder: (context, index) {
-              
+
               // 질문 LIST 없으면 return 진행
               if (qustList.length <= 0) {
                 return null;
               }
-              
+
               // 질문 메인 BOX 영역
               return Container(
                 padding: const EdgeInsets.all(16.0),    // 엣지 둥글게
@@ -231,7 +231,7 @@ class _QuestionState extends State<QuestionList> {
                       EtcOptionColumn(
                         data: qustList[index],
                       ),
-                    
+
                     // 선택된 옵션 우측 버블 보여주기
                     if (selectedValues[index] != null && isBoxEnabled[index] == false && qustList[index]['qustType'] != "T")
                       Column(
@@ -256,7 +256,7 @@ class _QuestionState extends State<QuestionList> {
                                             deleteQuestionInfo(qustList[delIdx]['qustType']!, delIdx);
                                           }
                                         }
-                                        
+
                                         // 재선택 버튼 클릭 시 해당 항목 이후의 리스트를 숨김
                                         // 현재 인덱스 이후로 표시하지 않도록 설정
                                         currentIndex = index;
@@ -291,8 +291,11 @@ class _QuestionState extends State<QuestionList> {
               );
             },
           ),
+
         ),
+
       ],
+
     );
   }
 
