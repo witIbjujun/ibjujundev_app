@@ -95,7 +95,7 @@ class EstimateItem extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8), // 카드 간의 간격 설정
       decoration: BoxDecoration(
-        color: Colors.grey[200], // 진한 회색 배경으로 설정
+        color: Colors.grey[100], // 카드 배경색
         borderRadius: BorderRadius.circular(8), // 모서리 둥글게
         boxShadow: [
           BoxShadow(
@@ -112,111 +112,122 @@ class EstimateItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양 끝 정렬
               children: [
                 // 왼쪽에 사진
                 Container(
                   width: 50,
                   height: 50, // 이미지 높이 설정
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8), // 모서리 둥글게
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8), // 모서리 둥글게
-                    child: Image.asset(
-                      request['itemImage'], // 광고 이미지 URL
-                      fit: BoxFit.cover, // 이미지가 Container를 채우도록 설정
-                      errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                        // 이미지 로드 실패 시 대체 텍스트 표시
-                        return Center(child: Text('사진 로드 실패'));
-                      },
+                    borderRadius: BorderRadius.circular(25), // 둥근 프로필 사진
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/profile1.png'),
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
-                SizedBox(width: 8), // 사진과 텍스트 사이의 간격
-                // 오른쪽 텍스트
+                SizedBox(width: 10), // 이미지와 텍스트 사이의 간격 추가
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양 끝 정렬
-                        children: [
-                          Text(
-                            request['estDt'], // 날짜
-                            style: WitHomeTheme.title.copyWith(fontSize: 12),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EstimateRequestDetail(
-                                    estNo: request['estNo'],
-                                    seq: request['seq'],
-                                    sllrNo: sllrNo,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              request['stat'],
-                              style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_lightBlue),
-                            ),
-                          ),
-                        ],
+                      // 날짜를 이름 위로 배치
+                      Text(
+                        request['estDt'], // 날짜
+                        style: WitHomeTheme.title.copyWith(fontSize: 12, color: Colors.grey),
                       ),
+                      SizedBox(height: 4), // 날짜와 이름 사이의 간격
                       Text(
                         request['prsnName'] ?? '요청자명 없음', // 요청자명
-                        style: WitHomeTheme.title.copyWith(fontSize: 12),
+                        style: WitHomeTheme.title.copyWith(fontSize: 18),
                       ),
+                      SizedBox(height: 4), // 이름과 아파트명 사이의 간격
                       Text(
                         request['aptName'], // 아파트명
-                        style: WitHomeTheme.title.copyWith(fontSize: 12),
+                        style: WitHomeTheme.title.copyWith(fontSize: 12, color: Colors.grey),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
+                SizedBox(width: 10), // 상태 텍스트와의 간격
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EstimateRequestDetail(
+                          estNo: request['estNo'],
+                          seq: request['seq'],
+                          sllrNo: sllrNo,
+                        ),
+                      ),
+                    );
+                  },
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0), // 테두리 없애기
+                    ),
+                  ),
+                  child: Text(
+                    request['stat'], // 상태
+                    style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
+                  ),
+                ),
               ],
             ),
-            SizedBox(height: 8), // 텍스트와 내용 사이의 간격
-            Align(
-              alignment: Alignment.centerLeft, // 왼쪽 정렬
-              child: Text(
-                reqContents, // 내용
-                style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightBlue),
-                textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
-                maxLines: isExpanded ? null : 3, // 기본 3줄 표시
-                overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
+            SizedBox(height: 10), // 텍스트와 내용 사이의 간격
+            Container(
+              padding: EdgeInsets.all(12), // 내용의 내부 여백
+              decoration: BoxDecoration(
+                color: Colors.grey[300], // 회색 배경
+                borderRadius: BorderRadius.circular(8), // 둥근 모서리
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft, // 왼쪽 정렬
+                child: Text(
+                  reqContents, // 내용
+                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
+                  maxLines: isExpanded ? null : 3, // 기본 3줄 표시
+                  overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
+                ),
               ),
             ),
             // 내용이 비어있지 않고 3줄 이상일 경우에만 버튼 표시
             if (hasMoreThanThreeLines) ...[
-              Container(
-                width: double.infinity, // 버튼을 가로로 꽉 차게 설정
-                child: TextButton(
-                  onPressed: () {
-                    onExpandToggle(!isExpanded); // 상세보기 상태 토글
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: WitHomeTheme.wit_lightGreen, // 연두색 배경
-                    foregroundColor: WitHomeTheme.wit_white, // 글자색을 하얀색으로 설정
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16), // 패딩 추가
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8), // 둥근 모서리
+              SizedBox(height: 10), // 버튼과 내용 사이의 간격
+              Center( // 버튼을 가운데 정렬
+                child: Container(
+                  width: 150, // 버튼 너비 설정 (조정 가능)
+                  child: TextButton(
+                    onPressed: () {
+                      onExpandToggle(!isExpanded); // 상세보기 상태 토글
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: WitHomeTheme.wit_lightGreen, // 연두색 배경
+                      foregroundColor: WitHomeTheme.wit_white, // 글자색을 하얀색으로 설정
+                      padding: EdgeInsets.symmetric(vertical: 8), // 패딩 추가
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20), // 둥근 모서리
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    isExpanded ? '접기' : '상세보기', // 버튼 텍스트 변경
+                    child: Text(
+                      isExpanded ? '접기' : '상세보기', // 버튼 텍스트 변경
+                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    ),
                   ),
                 ),
               ),
             ],
-            SizedBox(height: 16), // 항목 간의 간격 추가
           ],
         ),
       ),
     );
   }
+
+
+
+
+
 }

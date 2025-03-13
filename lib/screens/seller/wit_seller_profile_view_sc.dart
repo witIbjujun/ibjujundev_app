@@ -428,18 +428,24 @@ class SellerProfileViewState extends State<SellerProfileView> {
                         style: WitHomeTheme.title.copyWith(fontSize: 16),                      ),
                     ),
                     SizedBox(width: 10), // 버튼 간격
-                    Row(
-                      children: [
-                        Text(
-                          sellerInfo?['asGbnNm'] ?? '', // 서비스 기간 텍스트
-                          style: WitHomeTheme.subtitle.copyWith(fontSize: 16),                        ),
-                        SizedBox(width: 5), // 텍스트와 아이콘 간격
-                        if (asGbn.isNotEmpty)
-                          Image.asset(
-                            'assets/images/인증 아이콘.png', // 이미지 경로
+                    Container(
+                      child: Row(
+                        children: [
+                          Text(
+                            sellerInfo?['asGbnNm'] ?? '', // 서비스 기간 텍스트
+                            style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                           ),
-                      ],
+                          SizedBox(width: 5), // 텍스트와 아이콘 간격
+                          if (asGbn.isNotEmpty)
+                            Image.asset(
+                              'assets/images/인증 아이콘.png', // 이미지 경로
+                              height: 16, // 아이콘 높이를 설정 (필요에 따라 조정)
+                              width: 16, // 아이콘 너비를 설정 (필요에 따라 조정)
+                            ),
+                        ],
+                      ),
                     ),
+
                   ],
                 ),
               ),

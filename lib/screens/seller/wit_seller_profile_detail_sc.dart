@@ -134,9 +134,9 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                     SizedBox(height: 10),
                     Container(
                       width: double.infinity,
-                      height: 200,
+                      height: 170,
                       child: Image.asset(
-                        'assets/images/배너 1.png', // 광고 이미지 URL
+                        'assets/images/배너4.png', // 광고 이미지 URL
                         fit: BoxFit.contain,
                       ),
                     ),

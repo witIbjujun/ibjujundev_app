@@ -13,6 +13,10 @@ import '../../util/wit_code_ut.dart';
 import '../common/wit_ImageViewer_sc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
+
+import '../home/wit_home_theme.dart';
+
 
 class SellerProfileModify extends StatefulWidget {
 
@@ -492,40 +496,35 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               Container(
                 padding: const EdgeInsets.all(8.0), // 내부 여백
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green, width: 2), // 녹색 테두리
+                  color: Colors.grey[400], // 회색 배경
                   borderRadius: BorderRadius.circular(5), // 모서리 둥글게
                 ),
                 child: Center( // 텍스트를 가운데 정렬
                   child: Text(
-                    '회원정보 수정',
-                    style: TextStyle(
-                      color: Colors.black, // 텍스트 색상
-                      fontSize: 18, // 텍스트 크기
-                      fontWeight: FontWeight.bold, // 볼드체
-                    ),
+                    '파트너 프로필 수정',
+                    style: WitHomeTheme.title.copyWith(fontSize: 24, color: Colors.black), // 글자 색상을 검은색으로 설정
                   ),
                 ),
               ),
+
               SizedBox(height: 16), // 제목과 아래 요소 간격
               // 대표자명 레이블
               Text(
                 '대표자명 (필수)',
-                style: TextStyle(
-                  color: Colors.black, // 레이블 색상
-                  fontSize: 16, // 레이블 크기
-                  fontWeight: FontWeight.bold, // 볼드체
-                ),
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+
               ),
               SizedBox(height: 8), // 레이블과 카드 사이의 간격
               // 대표자명 입력 필드
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // 배경색을 하얀색으로
+                  color: WitHomeTheme.white, // 배경색을 하얀색으로
                   border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 padding: const EdgeInsets.all(0), // 내부 여백
                 child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                   controller: storeNameController,
                   decoration: InputDecoration(
                     border: InputBorder.none, // 기본 테두리 제거
@@ -537,21 +536,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               SizedBox(height: 10),
               Text(
                 '업체 설명',
-                style: TextStyle(
-                  color: Colors.black, // 레이블 색상
-                  fontSize: 16, // 레이블 크기
-                  fontWeight: FontWeight.bold, // 볼드체
-                ),
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
               SizedBox(height: 8), // 레이블과 카드 사이의 간격
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // 배경색을 하얀색으로
+                  color: WitHomeTheme.white,// 배경색을 하얀색으로
                   border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 padding: const EdgeInsets.all(0), // 내부 여백
                 child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                   controller: sllrContentController,
                   maxLines: 10,
                   decoration: InputDecoration(
@@ -564,25 +560,25 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               SizedBox(height: 10),
               Text(
                 '서비스지역 선택',
-                style: TextStyle(
-                  color: Colors.black, // 레이블 색상
-                  fontSize: 16, // 레이블 크기
-                  fontWeight: FontWeight.bold, // 볼드체
-                ),
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
               SizedBox(height: 8),
-              // 서비스 지역 선택 위젯
+// 서비스 지역 선택 위젯
               Row(
                 children: [
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                        borderRadius: BorderRadius.circular(5), // 모서리 둥글게
-                        color: Colors.white, // 배경색 하얗게
+                        borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                        color: WitHomeTheme.white, // 배경색 하얗게
                       ),
+                      padding: EdgeInsets.only(left: 10), // 왼쪽 패딩 설정
                       child: DropdownButton<String>(
-                        hint: Text('서비스 지역 선택'),
+                        hint: Text(
+                          '서비스 지역 선택',
+                          style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                        ),
                         value: selectedLocation,
                         isExpanded: true, // Dropdown이 가득 차게 설정
                         underline: SizedBox(), // 기본 언더라인 제거
@@ -601,157 +597,196 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     ),
                   ),
                   SizedBox(width: 8), // 버튼과의 간격
-                  ElevatedButton(
-                    onPressed: _addLocation,
-                    child: Text('선택'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF7294CC),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  Container(
+                    height: 48, // 드롭다운과 높이를 맞추기 위해 설정
+                    child: ElevatedButton(
+                      onPressed: _addLocation,
+                      child: Text(
+                        '선택',
+                        style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: WitHomeTheme.wit_lightBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              // 선택된 지역 표시
+// 선택된 지역 표시
               Wrap(
                 spacing: 8.0,
-                children: selectedLocations.map((location) => Chip(
-                  label: Text(location['cdNm']), // cdNm 값을 가져옴
-                  deleteIcon: Icon(Icons.close),
-                  backgroundColor: Colors.white, // 배경색을 하얀색으로 설정
-                  onDeleted: () {
-                    setState(() {
-                      selectedLocations.remove(location);
-                    });
-                  },
+                children: selectedLocations.map((location) => Container(
+                  height: 48, // 선택된 지역의 높이를 선택 버튼과 맞춤
+                  child: Chip(
+                    label: Text(
+                      location['cdNm'],
+                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_black),
+                    ), // cdNm 값을 가져옴
+                    deleteIcon: Icon(Icons.close),
+                    backgroundColor: WitHomeTheme.wit_white, // 배경색을 하얀색으로 설정
+                    onDeleted: () {
+                      setState(() {
+                        selectedLocations.remove(location);
+                      });
+                    },
+                  ),
                 )).toList(),
               ),
+
               SizedBox(height: 10),
               Text(
                 '서비스품목 선택',
-                style: TextStyle(
-                  color: Colors.black, // 레이블 색상
-                  fontSize: 16, // 레이블 크기
-                  fontWeight: FontWeight.bold, // 볼드체
-                ),
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
               SizedBox(height: 8),
               Row(
                 children: [
                   // 서비스 품목 선택 드롭다운
                   Expanded(
-                    child: DropdownButton<String>(
-                      hint: Text('서비스 품목 선택'),
-                      value: selectedServiceType,
-                      onChanged: (String? newValue) {
-                        if (newValue != null) {
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                        borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                        color: WitHomeTheme.white, // 배경색 하얗게
+                      ),
+                      padding: EdgeInsets.only(left: 10), // 왼쪽 패딩 설정
+                      child: DropdownButton<String>(
+                        hint: Text(
+                          '서비스 품목 선택',
+                          style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                        ),
+                        value: selectedServiceType,
+                        isExpanded: true, // Dropdown이 가득 차게 설정
+                        underline: SizedBox(), // 기본 언더라인 제거
+                        onChanged: (String? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              selectedServiceType = newValue;
+                              final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == newValue);
+                              selectedServiceTypes.add(selectedItem2['categoryNm']);
+                              // AS 기간과 함께 선택된 경우 추가
+                              if (selectedAsPeriod != null) {
+                                selectedServiceWithAsPeriod.add('${selectedItem2['categoryNm']} / ${asList.firstWhere((item) => item['cd'] == selectedAsPeriod)['cdNm']}');
+                              }
+                            });
+                          }
+                        },
+                        items: categoryList.map<DropdownMenuItem<String>>((item) {
+                          return DropdownMenuItem<String>(
+                            value: item['categoryId'],
+                            child: Text(item['categoryNm'],
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8), // 드롭다운과 선택 버튼 사이의 간격
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                        borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                        color: WitHomeTheme.white, // 배경색 하얗게
+                      ),
+                      padding: EdgeInsets.only(left: 10), // 왼쪽 패딩 설정
+                      child: DropdownButton<String>(
+                        hint: Text(
+                          'AS 기간 선택',
+                          style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                        ),
+                        value: selectedAsPeriod,
+                        isExpanded: true, // Dropdown이 가득 차게 설정
+                        underline: SizedBox(), // 기본 언더라인 제거
+                        onChanged: (String? newValue) {
                           setState(() {
-                            selectedServiceType = newValue;
-                            final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == newValue);
-                            selectedServiceTypes.add(selectedItem2['categoryNm']);
-                            // AS 기간과 함께 선택된 경우 추가
-                            if (selectedAsPeriod != null) {
-                              selectedServiceWithAsPeriod.add('${selectedItem2['categoryNm']} / ${asList.firstWhere((item) => item['cd'] == selectedAsPeriod)['cdNm']}');
+                            selectedAsPeriod = newValue;
+                            // AS 기간과 서비스 품목이 함께 선택된 경우 추가
+                            if (selectedServiceType != null) {
+                              final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == selectedServiceType);
+                              selectedServiceWithAsPeriodCd = '${selectedItem2['categoryId']}/${asList.firstWhere((item) => item['cd'] == newValue)['cd']}';
+                              selectedServiceWithAsPeriod.add(
+                                  '${selectedItem2['categoryNm']} ( ${asList.firstWhere((item) => item['cd'] == newValue)['cdNm']} )'
+                              );
                             }
                           });
-                        }
-                      },
-                      items: categoryList.map<DropdownMenuItem<String>>((item) {
-                        return DropdownMenuItem<String>(
-                          value: item['categoryId'],
-                          child: Text(item['categoryNm']),
-                        );
-                      }).toList(),
+                        },
+                        items: asList.map<DropdownMenuItem<String>>((item) {
+                          return DropdownMenuItem<String>(
+                            value: item['cd'],
+                            child: Text(item['cdNm'],
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
-                  SizedBox(width: 8), // 간격 추가
-                  Expanded(
-                    child: DropdownButton<String>(
-                      hint: Text('AS 기간 선택'),
-                      value: selectedAsPeriod,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedAsPeriod = newValue;
-                          // AS 기간과 서비스 품목이 함께 선택된 경우 추가
-                          if (selectedServiceType != null) {
-                            final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == selectedServiceType);
-                            // selectedServiceWithAsPeriod.add('${selectedItem2['categoryNm']} ( ${asList.firstWhere((item) => item['cd'] == newValue)['cdNm']})');
-
-
-                            selectedServiceWithAsPeriodCd = '${selectedItem2['categoryId']}/${asList.firstWhere((item) => item['cd'] == newValue)['cd']}';
-
-                            selectedServiceWithAsPeriod.add(
-                                '${selectedItem2['categoryNm']} ( ${asList.firstWhere((item) => item['cd'] == newValue)['cdNm']} )'
-                            );
-
-                          }
-
-                        });
-                      },
-                      items: asList.map<DropdownMenuItem<String>>((item) {
-                        return DropdownMenuItem<String>(
-                          value: item['cd'],
-                          child: Text(item['cdNm']),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _addServiceWithAsPeriod,
-                    child: Text('선택'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF7294CC),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                  SizedBox(width: 8), // 드롭다운과 선택 버튼 사이의 간격
+                  Container(
+                    height: 48, // 드롭다운과 높이를 맞추기 위해 설정
+                    child: ElevatedButton(
+                      onPressed: _addServiceWithAsPeriod,
+                      child: Text(
+                        '선택',
+                        style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: WitHomeTheme.wit_lightBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-              // 선택된 서비스와 AS 기간 표시
+
+// 선택된 서비스와 AS 기간 표시
               Wrap(
                 spacing: 8.0,
-                children: selectedServiceWithAsPeriod.map((service) => Chip(
-                  label: Text(service),
-                  deleteIcon: Icon(Icons.close),
-                  backgroundColor: Colors.white, // 배경색을 하얀색으로 설정
-                  onDeleted: () {
-                    setState(() {
-                      selectedServiceWithAsPeriod.remove(service);
-                    });
-                  },
+                children: selectedServiceWithAsPeriod.map((service) => Container(
+                  height: 48, // 선택된 서비스의 높이를 선택 버튼과 맞춤
+                  child: Chip(
+                    label: Text(
+                      service,
+                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_black),
+                    ),
+                    deleteIcon: Icon(Icons.close),
+                    backgroundColor: WitHomeTheme.wit_white, // 배경색을 하얀색으로 설정
+                    onDeleted: () {
+                      setState(() {
+                        selectedServiceWithAsPeriod.remove(service);
+                      });
+                    },
+                  ),
                 )).toList(),
               ),
+
               SizedBox(height: 3),
               Text(
                 '* AS 무상 보증 기간을 등록하면 AS 보증 뱃지가 표시됩니다.',
-                style: TextStyle(
-                  color: Colors.red, // 원하는 색상
-                  fontSize: 14, // 원하는 폰트 크기
-                  fontWeight: FontWeight.w500, // 원하는 폰트 굵기
-                ),
+                style: WitHomeTheme.title.copyWith(fontSize: 14,color: WitHomeTheme.nearlysYellow),
               ),
               SizedBox(height: 10),
               Text(
                 '품목 설명',
-                style: TextStyle(
-                  color: Colors.black, // 레이블 색상
-                  fontSize: 16, // 레이블 크기
-                  fontWeight: FontWeight.bold, // 볼드체
-                ),
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
               SizedBox(height: 8), // 레이블과 카드 사이의 간격
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white, // 배경색을 하얀색으로
+                  color: WitHomeTheme.wit_white,
                   border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 padding: const EdgeInsets.all(0), // 내부 여백
                 child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                   controller: categoryContentController,
                   maxLines: 10,
                   decoration: InputDecoration(
@@ -787,7 +822,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                             right: 0,
                             top: 0,
                             child: IconButton(
-                              icon: Icon(Icons.close, color: Colors.red), // X 아이콘
+                              icon: Icon(Icons.close, color: WitHomeTheme.nearlysYellow,), // X 아이콘
                               onPressed: () {
                                 setState(() {
                                   _images.removeAt(index); // 이미지 삭제
@@ -862,26 +897,44 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               ),
 
               SizedBox(height: 10),
+              Text(
+                '사업자명 (필수)',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+
+              ),
+              SizedBox(height: 8),
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(
-                  labelText: '사업자명 (필수)',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
+              ),
+              Text(
+                '대표자명 (필수)',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+
               ),
               TextField(
                 controller: ceoNameController,
                 decoration: InputDecoration(
-                  labelText: '대표자명 (필수)',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '대표 이메일 (필수)',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
-                  labelText: '대표 이메일 (필수)',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                '개업일자 (필수)',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
               TextField(
                 controller: openDateController,
@@ -890,6 +943,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
+              SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -919,10 +973,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                         print('이미지 선택 취소됨');
                       }
                     },
-                    child: Text('첨부'),
+                    child: Text('첨부',
+                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFA68150),
-                      foregroundColor: Colors.white, // 글자색을 하얀색으로 설정
+                      backgroundColor: WitHomeTheme.wit_gray,
                     ),
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
@@ -930,10 +985,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     onPressed: () {
                       updateBizCertification(); // 인증 요청 버튼 클릭 시 로직 추가
                     },
-                    child: Text(buttonText),
+                    child: Text(buttonText,
+                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFA68150),
-                      foregroundColor: Colors.white, // 글자색을 하얀색으로 설정
+                      backgroundColor: WitHomeTheme.wit_gray,
                     ),
                   ),
                 ],
@@ -1022,10 +1078,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ),
                   ElevatedButton(
                     onPressed: _verifyPhone,
-                    child: Text('인증 코드 요청'),
+                    child: Text('인증 코드 요청',
+                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE5767B),
-                      foregroundColor: Colors.white,
+                      backgroundColor: WitHomeTheme.wit_lightCoral,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -1041,10 +1098,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ),
                   ElevatedButton(
                     onPressed: _signInWithPhoneNumber,
-                    child: Text('인증 코드 확인'),
+                    child: Text('인증 코드 확인',
+                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE5767B),
-                      foregroundColor: Colors.white,
+                      backgroundColor: WitHomeTheme.wit_lightCoral,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -1088,10 +1146,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                         await saveImages(storeName, itemPrice1, itemPrice2, itemPrice3, sllrContent, sllrImage, name,
                             ceoName, email, storeCode, storeImage, hp1, zipCode, address1, address2, openDate, categoryContent);
                       },
-                      child: Text('프로필변경'),
+                      child: Text('프로필변경',
+                        style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                      ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF63A566),
-                        foregroundColor: Colors.white,
+                        backgroundColor: WitHomeTheme.wit_lightGreen,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -1435,12 +1494,16 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5),
               ),
-              backgroundColor: Color(0xFF7BB5C9),
+              backgroundColor: WitHomeTheme.wit_lightBlue,
             ),
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.symmetric(vertical: 22.0),
-              child: Text("우편 번호 찾기"),
+              child: Text(
+                "우편 번호 찾기",
+                style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+              ),
             ),
+
           ),
         ],
       ),
