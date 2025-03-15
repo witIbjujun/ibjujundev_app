@@ -62,10 +62,12 @@ class BoardState extends State<Board> {
         searchController: _searchController,
         refreshBoardList: refreshBoardList,
       ),
-      body: BoardListView(
-        boardList: boardList,
-        refreshBoardList: refreshBoardList,
-        scrollController: _scrollController,
+      body: Scrollbar(
+        child: BoardListView(
+          boardList: boardList,
+          refreshBoardList: refreshBoardList,
+          scrollController: _scrollController,  // ScrollController 연결
+        ),
       ),
       floatingActionButton: Container(
         width: 70, // 원하는 너비

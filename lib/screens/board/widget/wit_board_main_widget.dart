@@ -116,6 +116,7 @@ class BoardListView extends StatelessWidget {
     return SafeArea(
       child: Scrollbar(
         thumbVisibility: true,
+        controller: scrollController,
         child: RefreshIndicator(
           onRefresh: () async {
             await refreshBoardList();

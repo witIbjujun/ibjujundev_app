@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/board/wit_board_main_sc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,6 +21,8 @@ class BoardWrite extends StatefulWidget {
 }
 
 class _BoardWriteState extends State<BoardWrite> {
+
+  final secureStorage = FlutterSecureStorage();
 
   List<File> _images = [];
   List<String> _imageUrl = [];
@@ -104,13 +108,13 @@ class _BoardWriteState extends State<BoardWrite> {
                   GestureDetector(
                     onTap: () => _showImagePickerOptions(),
                     child: Container(
-                      width: 120,
-                      height: 120,
+                      width: 100,
+                      height: 100,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
+                          color: Colors.grey[200],
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(Icons.camera_alt, size: 40), // 사진기 아이콘
+                      child: Icon(Icons.add_a_photo, size: 40), // 사진기 아이콘
                       alignment: Alignment.center,
                     ),
                   ),
@@ -130,8 +134,8 @@ class _BoardWriteState extends State<BoardWrite> {
                                   borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
                                   child: Image.file(
                                     image,
-                                    width: 120,
-                                    height: 120,
+                                    width: 100,
+                                    height: 100,
                                     fit: BoxFit.cover, // 이미지 비율 유지
                                   ),
                                 ),
@@ -167,12 +171,14 @@ class _BoardWriteState extends State<BoardWrite> {
             await saveImages();
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green[200], // 옅은 녹색 배경
+            backgroundColor: Colors.blue[200], // 옅은 녹색 배경
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(0),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: Text("작성"),
+          child: Text("작성",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+          ),
         ),
       ),
     );
@@ -183,17 +189,13 @@ class _BoardWriteState extends State<BoardWrite> {
 
     // 제목 입력 체크
     if (_titleController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("제목을 입력해 주세요.")),
-      );
+      alertDialog.show(context, "제목을 입력해주세요.");
       return;
     }
 
     // 내용 입력 체크
     if (_contentController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("내용을 입력해주세요.")),
-      );
+      alertDialog.show(context, "내용을 입력해주세요.");
       return;
     }
     
@@ -213,18 +215,19 @@ class _BoardWriteState extends State<BoardWrite> {
   // [서비스] 게시판 저장
   Future<void> saveBoardInfo(dynamic fileInfo) async {
 
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+
     String restId = "";
     var param = null;
 
     if (widget.boardInfo == null) {
-
       restId = "saveBoardInfo";
       param = jsonEncode({
         "bordTitle": _titleController.text,
         "bordContent": _contentController.text,
-        "bordNo": widget.bordNo,
         "bordType": widget.bordType,
-        "creUser": "user1",
+        "creUser": loginClerkNo,
         "fileInfo": fileInfo
       });
 
@@ -236,8 +239,7 @@ class _BoardWriteState extends State<BoardWrite> {
         "bordContent": _contentController.text,
         "bordNo" : widget.boardInfo["bordNo"],
         "bordType": widget.boardInfo["bordType"],
-        "bordSeq" : widget.boardInfo["bordSeq"],
-        "updUser": "user1",
+        "updUser": loginClerkNo,
         "fileInfo": fileInfo
       });
     }
@@ -246,11 +248,8 @@ class _BoardWriteState extends State<BoardWrite> {
 
     if (result != null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 성공!")));
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Board(widget.bordNo, widget.bordType),
-        ),
+      Navigator.pop(context,
+        SlideRoute(page: Board(widget.bordNo, widget.bordType)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패!")));
@@ -287,15 +286,6 @@ class _BoardWriteState extends State<BoardWrite> {
         );
       },
     );
-  }
-
-  Future<void> _pickImages(ImageSource source) async {
-    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
-    if (pickedFiles != null) {
-      setState(() {
-        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
-      });
-    }
   }
 
   Future<void> _pickImage(ImageSource source) async {
