@@ -37,6 +37,7 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: WitHomeTheme.wit_white,
       title: _isSearching
           ? TextField(
         controller: widget.searchController,
@@ -129,6 +130,7 @@ class BoardListView extends StatelessWidget {
               if (boardList.isEmpty)
                 SliverToBoxAdapter(
                   child: Container(
+                    color: WitHomeTheme.wit_white,
                     height: MediaQuery.of(context).size.height * 0.5,
                     child: Center(
                       child: Column(
@@ -159,61 +161,95 @@ class BoardListView extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                         (context, index) {
                       final boardInfo = boardList[index];
-                      return Column(
-                        children: [
-                          ListTile(
-                            contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            title: Row(
-                              children: [
-                                if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
-                                  Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: Image.network(
-                                          apiUrl + boardInfo["imagePath"],
-                                          width: 60,
-                                          height: 60,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
-                                          },
+                      return Container(
+                          color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
+                          child: Column(
+                          children: [
+                            ListTile(
+                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              title: Row(
+                                children: [
+                                  if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
+                                    Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(5),
+                                          child: Image.network(
+                                            apiUrl + boardInfo["imagePath"],
+                                            width: 60,
+                                            height: 60,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
+                                            },
+                                          ),
                                         ),
+                                        SizedBox(width: 20), // 이미지 영역 뒤에 추가된 SizedBox
+                                      ],
+                                    ),
+                                  ],
+                                  Expanded(
+                                    child: Container(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        boardInfo["bordTitle"],
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  "${boardInfo["creUser"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
+                                                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                      SizedBox(width: 20), // 이미지 영역 뒤에 추가된 SizedBox
-                                    ],
+                                    ),
                                   ),
-                                ],
-                                Expanded(
-                                  child: Container(
+                                  Container(
                                     child: Column(
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
-                                            Expanded(
-                                              child: Row(
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: WitHomeTheme.wit_lightgray,
+                                                borderRadius: BorderRadius.circular(5),
+                                              ),
+                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                              child: Column(
                                                 children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      boardInfo["bordTitle"],
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow.ellipsis,
+                                                  Center(
+                                                    child: Text("${boardInfo["commentCnt"]}",
                                                       style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                                                     ),
                                                   ),
+                                                  SizedBox(height: 4),
+                                                  Text("댓글",
+                                                    style: WitHomeTheme.caption,
+                                                  ),
                                                 ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                "${boardInfo["creUser"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
-                                                style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                                               ),
                                             ),
                                           ],
@@ -221,53 +257,22 @@ class BoardListView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              color: WitHomeTheme.wit_lightgray,
-                                              borderRadius: BorderRadius.circular(5),
-                                            ),
-                                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                            child: Column(
-                                              children: [
-                                                Center(
-                                                  child: Text("${boardInfo["commentCnt"]}",
-                                                    style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 4),
-                                                Text("댓글",
-                                                  style: WitHomeTheme.caption,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
+                              onTap: () async {
+                                await Navigator.push(
+                                  context,
+                                  SlideRoute(page: BoardDetail(param: boardInfo)),
+                                );
+                                await refreshBoardList();
+                              },
                             ),
-                            onTap: () async {
-                              await Navigator.push(
-                                context,
-                                SlideRoute(page: BoardDetail(param: boardInfo)),
-                              );
-                              await refreshBoardList();
-                            },
-                          ),
-                          Container(
-                            height: 1,
-                            color: WitHomeTheme.wit_lightgray,
-                          ),
-                        ],
+                            Container(
+                              height: 1,
+                              color: WitHomeTheme.wit_lightgray,
+                            ),
+                          ],
+                        ),
                       );
                     },
                     childCount: boardList.length,

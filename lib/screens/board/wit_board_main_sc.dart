@@ -11,8 +11,9 @@ class Board extends StatefulWidget {
 
   final int? bordNo;
   final String? bordType;
+  final bool appBarFlag;
 
-  const Board(this.bordNo, this.bordType, {super.key});
+  const Board(this.bordNo, this.bordType, {this.appBarFlag = false, super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -59,10 +60,10 @@ class BoardState extends State<Board> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomSearchAppBar(
+      appBar: widget.appBarFlag ? CustomSearchAppBar(
         searchController: _searchController,
         refreshBoardList: refreshBoardList,
-      ),
+      ) : null,
       body: Scrollbar(
         child: BoardListView(
           boardList: boardList,
