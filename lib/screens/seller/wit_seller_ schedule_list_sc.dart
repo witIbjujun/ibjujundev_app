@@ -27,6 +27,7 @@ class SellerScheduleListState extends State<SellerScheduleList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // 배경색을 흰색으로 설정
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -74,6 +75,7 @@ class SellerScheduleListState extends State<SellerScheduleList> {
 
   Widget buildScheduleItem(dynamic schedule) {
     return Card(
+      color: Colors.grey[100], // 회색 배경 추가
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
