@@ -100,113 +100,118 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     // FirebaseMessageService 초기화
     FirebaseMessageService.initialize(context);
     return Container(
-      color: WitHomeTheme.nearlyWhite,
+      color: WitHomeTheme.white,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: WitHomeTheme.nearlyWhite,
+          backgroundColor: WitHomeTheme.white,
           iconTheme: const IconThemeData(color: Colors.black),
-          leading: IconButton(
-            iconSize: 35.0,
-            onPressed: () {
-              // Icons.manage_accounts 선택 시 SellerProfileDetail 화면으로 이동
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => SellerProfileDetail(sllrNo: 17),
-                ),
-              );
-            },
-            icon: Image.asset(
-              'assets/home/logo.png', // 이미지 경로
-              width: 30, // 아이콘 크기 조절
-              height: 30,
+          titleSpacing: 20.0, // 기본값은 16.0, 간격을 더 넓히려면 증가
+          leading: Padding(
+            padding: const EdgeInsets.only(left: 16.0), // 왼쪽 여백 추가
+            child: IconButton(
+              iconSize: 35.0,
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SellerProfileDetail(sllrNo: 17),
+                  ),
+                );
+              },
+              icon: Image.asset(
+                'assets/home/logo.png',
+                width: 30,
+                height: 30,
+              ),
             ),
           ),
-
           actions: [
-            Row(
-              children: [
-                IconButton(
-                  iconSize: 35.0,
-                  onPressed: () async {
-                    bool isLoggedIn = await checkLoginStatus();
-                    if (isLoggedIn) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => EstimateScreen(), // 결제함 페이지로 이동
-                        ),
-                      );
-                    } else {
-                      _showLoginDialog(context); // 로그인 다이얼로그 표시
-                    }
-                  },
-                  icon: FutureBuilder<String?>(
-                    future: secureStorage.read(key: 'mainAptNm'),
-                    builder: (context, snapshot) {
-                      String aptName = snapshot.data ?? ''; // 기본값 설정
-                      return Row(
-                        children: [
-                          Image.asset(
-                            'assets/home/locationMain.png', // 이미지 경로
-                            width: 30, // 아이콘 크기 조절
-                            height: 30,
-                          ),
-                          if (aptName.isNotEmpty) // 값이 있을 때만 표시
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5.0),
-                              child: Text(
-                                aptName,
-                                style: const TextStyle(fontSize: 14, color: Colors.black),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                //Future.microtask(() => _loadOptions()),
-                // account_circle 아이콘 클릭 시 MyProfile 페이지로 이동
-                IconButton(
-                  iconSize: 25.0,
-                  onPressed: () {
-                    logOut(context);
-                  },
-                  icon: const Icon(
-                      Icons.logout, // account_circle 아이콘
-                  ),
-                ),
-
-                if (nickname  != null) // nickName이 null이 아닐 때만 표시
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0), // 닉네임과 아이콘 간 간격 조정
-                    child: Text(
-                      nickname!, // nickName 값 출력
-                      style: TextStyle(fontSize: 16, color: Colors.black), // 텍스트 스타일 설정
-                    ),
-                  ),
-
-                /// 결제함 아이콘
-                IconButton(
-                  iconSize: 35.0,
-                  onPressed: () async{
-                    bool isLoggedIn = await checkLoginStatus();
-                    if (isLoggedIn) {
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0), // 오른쪽 여백 추가
+              child: Row(
+                children: [
+                  // 위치 정보 버튼
+                  IconButton(
+                    iconSize: 35.0,
+                    onPressed: () async {
+                      bool isLoggedIn = await checkLoginStatus();
+                      if (isLoggedIn) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => EstimateScreen(), // 결제함 페이지로 이동
+                            builder: (context) => EstimateScreen(),
                           ),
                         );
-
-                    } else {
-                      _showLoginDialog(context); // 로그인 다이얼로그 표시
-                    }
-                  },
-                  icon: Image.asset(
-                    'assets/home/message.png', // 이미지 경로
-                    width: 30, // 아이콘 크기 조절
-                    height: 30,
+                      } else {
+                        _showLoginDialog(context);
+                      }
+                    },
+                    icon: FutureBuilder<String?>(
+                      future: secureStorage.read(key: 'mainAptNm'),
+                      builder: (context, snapshot) {
+                        String aptName = snapshot.data ?? ''; // 기본값 설정
+                        return Row(
+                          children: [
+                            Image.asset(
+                              'assets/home/locationMain.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                            if (aptName.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5.0),
+                                child: Text(
+                                  aptName,
+                                  style: WitHomeTheme.body1.copyWith(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                  // 로그아웃 버튼
+                  IconButton(
+                    iconSize: 25.0,
+                    onPressed: () {
+                      logOut(context);
+                    },
+                    icon: const Icon(Icons.logout),
+                  ),
+                  // 닉네임 표시
+                  if (nickname != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        nickname!,
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    ),
+                  // 메시지 아이콘
+                  IconButton(
+                    iconSize: 35.0,
+                    onPressed: () async {
+                      bool isLoggedIn = await checkLoginStatus();
+                      if (isLoggedIn) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EstimateScreen(),
+                          ),
+                        );
+                      } else {
+                        _showLoginDialog(context);
+                      }
+                    },
+                    icon: Image.asset(
+                      'assets/home/message.png',
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -225,74 +230,83 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: MediaQuery.of(context).size.height * 0.20,
                       ),
-                      const SizedBox(height: 30.0),
+                      const SizedBox(height: 6.0),
                       Container(
-                        height: 75, // 높이를 조정하여 텍스트 공간 확보
+                        height: 80, // 기존 75에서 높이를 늘려 공간 확보
                         decoration: BoxDecoration(
-                          color: Colors.white, // 배경색 지정
-                          borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 적용
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround, // 균등한 간격으로 정렬
-                          children: [
-                            _buildIconWithLabel(
-                              imagePath: 'assets/home/FloorPlan.png',
-                              label: '평면도',
-                              onTap: () {
-                                showImagePopup(
-                                  context: context,
-                                  imageUrl: '/WIT/12345.png',
-                                );
-                              },
-                            ),
-                            _buildIconWithLabel(
-                              imagePath: 'assets/home/guide.png',
-                              label: '가이드',
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (context) => Question(qustCd: 'Q10001')), // 이동할 화면 설정
-                                );
-                              },
-                            ),
-                            _buildIconWithLabel(
-                              imagePath: 'assets/home/apt.png',
-                              label: '아파트',
-                            ),
-                            _buildIconWithLabel(
-                              imagePath: 'assets/home/best.png',
-                              label: '베스트',
-                              onTap: () {
-                                showGuirdDialog(
-                                  context: context,
-                                  description: "예산별 시공 품목 가이드입니다!\n\n각 품목별 비교견적을 받아세요",
-                                  descriptionStyle: WitHomeTheme.subtitle,
-                                  options: [
-                                    {'text': 'Simple 인테리어', 'color': Color(0xFF7294CC)},
-                                    {'text': 'Standard 인테리어', 'color': Color(0xFFC19AC6)},
-                                    {'text': 'Premium 인테리어', 'color': Color(0xFFA68150)},
-                                    {'text': 'My Choice 인테리어', 'color': Color(0xFF91C58C)},
-                                  ],
-                                  onOptionSelected: (selectedOption) {
-                                    if (selectedOption == 'Simple 인테리어') {
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('S')));
-                                    } else if (selectedOption == 'Standard 인테리어') {
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('T')));
-                                    } else if (selectedOption == 'Premium 인테리어') {
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('P')));
-                                    } else if (selectedOption == 'My Choice 인테리어') {
-                                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('A')));
-                                    }
-                                  },
-                                );
-                              },
-                            ),
-                            _buildIconWithLabel(
-                              imagePath: 'assets/home/GroupPurchase.png',
-                              label: '공동구매',
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0), // 위아래 간격 추가
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 간격 균등 배치
+                            children: [
+                              _buildIconWithLabel(
+                                imagePath: 'assets/home/FloorPlan.png',
+                                label: '평면도',
+                                onTap: () {
+                                  showImagePopup(
+                                    context: context,
+                                    imageUrl: '/WIT/12345.png',
+                                  );
+                                },
+                              ),
+                              _buildIconWithLabel(
+                                imagePath: 'assets/home/guide.png',
+                                label: '가이드',
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => Question(qustCd: 'Q10001')),
+                                  );
+                                },
+                              ),
+                              _buildIconWithLabel(
+                                imagePath: 'assets/home/apt.png',
+                                label: '아파트',
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => Board(1,'B1')),
+                                  );
+                                },
+                              ),
+                              _buildIconWithLabel(
+                                imagePath: 'assets/home/best.png',
+                                label: '베스트',
+                                onTap: () {
+                                  showGuirdDialog(
+                                    context: context,
+                                    description: "예산별 시공 품목 가이드입니다!\n\n각 품목별 비교견적을 받아세요",
+                                    descriptionStyle: WitHomeTheme.subtitle,
+                                    options: [
+                                      {'text': 'Simple 인테리어', 'color': Color(0xFF7294CC)},
+                                      {'text': 'Standard 인테리어', 'color': Color(0xFFC19AC6)},
+                                      {'text': 'Premium 인테리어', 'color': Color(0xFFA68150)},
+                                      {'text': 'My Choice 인테리어', 'color': Color(0xFF91C58C)},
+                                    ],
+                                    onOptionSelected: (selectedOption) {
+                                      if (selectedOption == 'Simple 인테리어') {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('S')));
+                                      } else if (selectedOption == 'Standard 인테리어') {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('T')));
+                                      } else if (selectedOption == 'Premium 인테리어') {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('P')));
+                                      } else if (selectedOption == 'My Choice 인테리어') {
+                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('A')));
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+                              _buildIconWithLabel(
+                                imagePath: 'assets/home/GroupPurchase.png',
+                                label: '공동구매',
+                              ),
+                            ],
+                          ),
                         ),
                       ),
+
 
                       // 추가된 문구
                       Align(
@@ -317,7 +331,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(height: 8.0), // 텍스트와 밑줄 사이 간격 추가
                                   ],
                                 ),
                               ],
@@ -348,8 +361,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         GestureDetector(
           onTap: onTap,
           child: Container(
-            width: 40,
-            height: 40,
+            width: 35,
+            height: 35,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               image: DecorationImage(

@@ -106,8 +106,8 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
         children: [
           /// 우측 상단 아이콘
           Positioned(
-            top: 8,
-            right: 8,
+            top: 2,
+            right: 2,
             child: Image.asset(
               iconImage,
               width: 24, // 아이콘 크기 조절
@@ -117,8 +117,8 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
 
           /// 좌측 하단 텍스트
           Positioned(
-            bottom: 8,
-            left: 8,
+            bottom: 2,
+            left: 2,
             child: Text(
               title,
               style: const TextStyle(

@@ -27,7 +27,7 @@ class DetailCompany extends StatefulWidget {
 class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateMixin {
   List<Company> companyList = [];
   Category? categoryInfo; // 한 건의 카테고리 정보를 저장
-  final List<String> tabNames = ['상품설명','견적서비스', '아파트 커뮤니티'];
+  final List<String> tabNames = ['상품설명','견적서비스', '업체후기'];
   final List<String> communityTabNames = ['내 APT', 'HOT 정보', '업체후기'];
   List<String> selectedItems = [];
   late TabController _tabController;
@@ -39,7 +39,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _communityTabController = TabController(length: 3, vsync: this);
+    //_communityTabController = TabController(length: 3, vsync: this);
 
     // 카테고리 정보 조회
     getCategoryInfo(widget.categoryId);
@@ -47,16 +47,11 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     // 회사 목록 조회
     getCompanyList(widget.categoryId);
 
-    // 탭 변경 시 상태 업데이트
-    _tabController.addListener(() {
-      setState(() {});
-    });
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    _communityTabController.dispose();
     super.dispose();
   }
 
@@ -108,29 +103,71 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    SizedBox(height: MediaQuery.of(context).padding.top),
+                  ///  SizedBox(height: MediaQuery.of(context).padding.top),
                     getAppBarUI(),
                     if (categoryInfo != null)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: Row(
+                        child: Stack(
+                          alignment: Alignment.center, // 중앙 정렬
                           children: [
-                            Image.asset(
-                              categoryInfo?.imagePath ?? '',
-                              width: 100,
-                              height: 100,
-                              fit: BoxFit.cover,
+                            // 배경 이미지
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0), // 둥근 모서리 적용
+                              child: Image.asset(
+                                'assets/home/companyDetail.png',
+                                width: 500, // 원하는 너비
+                                height: 174, // 고정 높이
+                                fit: BoxFit.fill, // 비율 유지하며 크기 조정
+                              ),
                             ),
-                            SizedBox(width: 16.0),
-                            Expanded(
-                              child: Text(
-                                categoryInfo?.detail ?? '',
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey[700],
+
+                            // 왼쪽 상단 카테고리 이름 버튼 스타일
+                            Positioned(
+                              top: 10, // 상단 여백 조정
+                              left: 16, // 왼쪽 여백 조정
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      categoryInfo?.categoryNm ?? '카테고리', // categoryNm 표시
+                                      style: WitHomeTheme.body1.copyWith(
+                                        fontSize: 14.0, // 원하는 글자 크기
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white, // 글씨 색상
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                textAlign: TextAlign.left,
+                              ),
+                            ),
+
+                            // 중앙 텍스트
+                            Positioned(
+                              top: 60, // 이미지 중앙으로 이동
+                              left: 16, // 왼쪽 정렬
+                              right: 16, // 오른쪽 정렬
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+                                children: [
+                                  Text(
+                                    "30명 이상이면 5% 추가 할인",
+                                    style: WitHomeTheme.body1.copyWith(
+                                      fontSize: 20.0, // 크기 조정
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black, // 글씨 색상
+                                    ),
+                                  ),
+                                  SizedBox(height: 8), // 간격 추가
+                                  Text(
+                                    "~2025.02.25까지 접수",
+                                    style: WitHomeTheme.body1.copyWith(
+                                      fontSize: 16.0,
+                                      color: Colors.black87, // 글씨 색상
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -146,7 +183,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                   children: [
                     getCategoryDetailInfo(),
                     getEstimateService(),
-                    getCommunityTabs(),
+                    getReviewBoard(),
                   ],
                 ),
               ),
@@ -161,92 +198,100 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     );
   }
 
-  Widget getCategoryDetailInfo() {
-    bool _isExpanded = false; // 이미지 확장 여부
-    double initialHeight = 200.0; // 초기 상단 20%의 높이
-    double fullHeight = 800.0; // 전체 이미지 높이를 유한 값으로 설정
-
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter setState) {
-        return SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (categoryInfo != null && categoryInfo?.imagePath != null) ...[
-                  Text(
-                    categoryInfo!.categoryNm ?? '카테고리 이름',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-
-                  // 이미지 영역
-                  ClipRect(
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
-                      width: MediaQuery.of(context).size.width, // 화면 너비에 맞춤
-                      height: _isExpanded ? fullHeight : initialHeight, // 높이를 유한 값으로 설정
-                      child: Image(
-                        image: NetworkImage(apiUrl + '/WIT/lineEye.jpg'),
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter, // 상단 중심을 표시
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 8.0),
-
-                  // "상품정보 펼쳐보기 ▽" / "상품정보 접기 △" 버튼
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _isExpanded = !_isExpanded; // 상태 변경
-                        });
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFAFCB54), // 버튼 배경색 (파란색)
-                        padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0), // 버튼 둥근 모서리
-                        ),
-                      ),
-                      child: Text(
-                        _isExpanded ? "상품정보 접기 △" : "상품정보 펼쳐보기 ▽",
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white, // 버튼 글씨 색 (흰색)
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 16.0),
-
-                  // 설명 텍스트
-                  Text(
-                    categoryInfo!.detail ?? '상세 설명이 없습니다.',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black ,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16.0),
-                ],
-              ],
-            ),
-          ),
-        );
-      },
-    );
+  Widget getReviewBoard() {
+    return Board(1, 'C1'); // 탭 안에서 '업체후기' 화면을 표시
   }
 
+
+  Widget getCategoryDetailInfo() {
+    double initialHeight = 200.0; // 초기 이미지 높이
+    double fullHeight = 800.0; // 전체 이미지 높이
+    bool _isExpanded = false;
+
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (scrollInfo.metrics.pixels > 300 && _tabController.index == 0) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _tabController.animateTo(1); // 300px 이상 스크롤 시 자동 이동
+          });
+        }
+        return false;
+      },
+      child: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return ListView(
+            primary: true, // 🔥 스크롤 이벤트가 제대로 전달되도록 설정
+            shrinkWrap: true,
+            physics: AlwaysScrollableScrollPhysics(), // 항상 스크롤 가능하도록 설정
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              if (categoryInfo != null)
+                Text(
+                  categoryInfo!.categoryNm,
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                ),
+              SizedBox(height: 16.0),
+
+              // 이미지 영역
+              ClipRect(
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  width: MediaQuery.of(context).size.width,
+                  height: _isExpanded ? fullHeight : initialHeight,
+                  child: Image.network(
+                    apiUrl + '/WIT/lineEye.jpg',
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 8.0),
+
+              // "상품정보 펼쳐보기 ▽" / "상품정보 접기 △" 버튼
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _isExpanded = !_isExpanded;
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFAFCB54),
+                    padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: Text(
+                    _isExpanded ? "상품정보 접기 △" : "상품정보 펼쳐보기 ▽",
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 16.0),
+
+              // 설명 텍스트
+              Text(
+                categoryInfo?.detail ?? '상세 설명이 없습니다.',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 400), // 스크롤을 테스트할 수 있도록 더미 공간 추가
+            ],
+          );
+        },
+      ),
+    );
+  }
 
   Widget buildBottomNavigationBar1() {
     return Container(
@@ -314,183 +359,90 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
 
 
   Widget getEstimateService() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: Column(
-          children: [
-            ListView.builder(
-              physics: NeverScrollableScrollPhysics(), // 내부 스크롤 비활성화
-              shrinkWrap: true, // 높이를 자식에 맞게 조정
-              itemCount: companyList.length,
-              itemBuilder: (context, index) {
-                final company = companyList[index];
-                bool isSelected = selectedItems.contains(company.companyId);
+    return StatefulBuilder(
+      builder: (BuildContext context, StateSetter setState) {
+        return NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification scrollInfo) {
+            if (scrollInfo.metrics.pixels < 50 && _tabController.index == 1) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _tabController.animateTo(0);
+                setState(() {}); // 🔥 UI를 강제 업데이트하여 새로운 탭의 내용 반영
+              });
+            }
+            return false;
+          },
+          child: ListView(
+            primary: true, // 🔥 스크롤 이벤트 감지를 확실히 하기 위해 설정
+            shrinkWrap: true,
+            physics: AlwaysScrollableScrollPhysics(), // 항상 스크롤 가능하게 설정
+            padding: const EdgeInsets.all(6.0),
+            children: [
 
-                return ListTile(
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedItems.remove(company.companyId);
-                      } else {
-                        selectedItems.add(company.companyId);
-                      }
-                    });
-                  },
-                  leading: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          selectedItems.remove(company.companyId);
-                        } else {
-                          selectedItems.add(company.companyId);
-                        }
-                      });
-                    },
-                    child: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSelected ? Colors.blue : Colors.transparent,
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 2.0,
-                        ),
-                      ),
-                      child: isSelected
-                          ? Icon(Icons.check, color: Colors.white, size: 18)
-                          : null,
-                    ),
-                  ),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            company.companyNm,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          if (index == 0) // 첫 번째 항목에만 왕관 추가
-                            Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Image.asset(
-                                'assets/images/award.jpg', // 왕관 이미지 경로
-                                width: 30,
-                                height: 30,
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '고객 만족도: 95%', // 추가 설명
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                  trailing: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Board(1, 'C1'),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          'assets/images/star.png',
-                          width: 20,
-                          height: 20,
-                        ),
-                        const SizedBox(width: 4),
-                        SizedBox(
-                          width: 30,
-                          child: Text(
-                            company.rateNum,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: WitHomeTheme.nearlyBlue,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            // "추가조건/요구사항" 및 버튼 추가 (2025-01-23)
-            SizedBox(height: 16.0),
-            Text(
-              "추가조건/요구사항",
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            TextField(
-              controller: _additionalRequirementsController,
-              maxLines: 3,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
-                contentPadding:
-                EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-              ),
-            ),
-            SizedBox(height: 14.0),
-            GestureDetector(
-              onTap: () async {
-                bool isConfirmed = await DialogUtils.showConfirmationDialog(
-                  context: context,
-                  title: '견적 요청 확인',
-                  content: '견적 요청을 진행하시겠습니까?',
-                  confirmButtonText: '진행',
-                  cancelButtonText: '취소',
-                );
-
-                if (isConfirmed) {
-                  /**
-                   * 견적요청하기
-                   */
-                  sendRequestInfo();
-                }
-              },
-              child: Container(
-                width: double.infinity,
-                height: 50.0,
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_lightGreen,
-                  borderRadius: BorderRadius.circular(10.0),
+              SizedBox(height: 16.0),
+              Text("추가조건/요구사항",
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8.0),
+              TextField(
+                controller: _additionalRequirementsController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
+                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 ),
-                child: Center(
-                  child: Text(
-                    '견적 요청하기',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+              ),
+              SizedBox(height: 14.0),
+              GestureDetector(
+                onTap: () async {
+                  bool isConfirmed = await DialogUtils.showConfirmationDialog(
+                    context: context,
+                    title: '견적 요청 확인',
+                    content: '견적 요청을 진행하시겠습니까?',
+                    confirmButtonText: '진행',
+                    cancelButtonText: '취소',
+                  );
+
+                  if (isConfirmed) {
+                    sendRequestInfo();
+                  }
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                    color: WitHomeTheme.wit_lightGreen,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Center(
+                    child: Text('견적 요청하기',
+                        style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(height: 400), // 🔥 스크롤 테스트용 여백 추가
+            ],
+          ),
+        );
+      },
     );
   }
 
 
+
   Widget getCommunityTabs() {
+    // '업체후기' 탭을 선택하면 즉시 Board(1, 'C1')로 이동
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Board(1, 'C1')),
+      );
+    });
+
+    return Container(); // 화면 이동 후 기존 위젯은 필요 없으므로 빈 컨테이너 반환
+  }
+
+
+  Widget getCommunityTabs1() {
     return Column(
       children: [
         TabBar(
@@ -517,9 +469,17 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   Widget getAppBarUI() {
     return AppBar(
       backgroundColor: WitHomeTheme.nearlyWhite,
-      title: Text(widget.title),
+      title: Text(
+        "견적서비스",
+        style: WitHomeTheme.body1.copyWith(
+          fontSize: 20.0, // 원하는 폰트 크기로 조절
+          fontWeight: FontWeight.bold, // 폰트 굵기 설정 (선택)
+          color: Colors.black, // 글자 색상 설정 (선택)
+        ),
+      ),
     );
   }
+
 
   /**
    * 견적 요청하기

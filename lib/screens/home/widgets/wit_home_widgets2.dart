@@ -145,6 +145,50 @@ class _ImageSliderState extends State<ImageSlider> {
 }
 
 
+/**
+ * 이미지 배너
+ */
+class CommonImageBanner extends StatelessWidget {
+  final String imagePath;
+  final double heightRatio; // 화면 높이의 비율
+  final double widthRatio;  // 화면 너비의 비율
+
+  const CommonImageBanner({
+    Key? key,
+    required this.imagePath,
+    this.heightRatio = 0.10, // 기본값: 10%
+    this.widthRatio = 0.90,  // 기본값: 90%
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width * widthRatio,  // 화면 너비의 % 적용
+        height: MediaQuery.of(context).size.height * heightRatio, // 화면 높이의 % 적용
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1), // 그림자 효과
+              blurRadius: 5.0,
+              spreadRadius: 2.0,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게 적용
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.fill, // 이미지 비율 유지하면서 꽉 차게
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // 공통 위젯: 오늘의 내APT 체크현황 및 날씨 정보
 class APTStatusWidget extends StatelessWidget {
   final double width;
@@ -284,8 +328,8 @@ void showGuirdDialog({
               Text(
                 description,
                 style: descriptionStyle ?? const TextStyle(
-                  fontSize: 16.0, // 기본 폰트 크기
-                  fontWeight: FontWeight.normal,
+                  fontSize: 20.0, // 기본 폰트 크기
+                  fontWeight: FontWeight.bold,
                   color: Colors.black, // 기본 글씨 색상
                   height: 1.5, // 줄 간격 조정
                 ),

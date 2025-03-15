@@ -130,10 +130,17 @@ class _MyProfileState extends State<MyProfile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ImageBox() 호출
-              ImageSlider(
+
+              CommonImageBanner(
+                imagePath: 'assets/home/gongguBanner.png', // 원하는 이미지 파일명
+                heightRatio: 0.18,  // 화면 높이의 15% (기본값 10%)
+                widthRatio: 0.85,   // 화면 너비의 85% (기본값 90%)
+              ),
+
+             /* ImageSlider(
                 heightRatio: 0.10, // 화면 높이의 18%
                 widthRatio: 0.9,  // 화면 너비의 90%
-              ), // 여기에 이미지 위젯 추가
+              ), */// 여기에 이미지 위젯 추가
 
               const SizedBox(height: 16),
 
