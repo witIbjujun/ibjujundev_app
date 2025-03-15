@@ -308,11 +308,17 @@ class SellerProfileViewState extends State<SellerProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '파트너 프로필',
-      home: Scaffold(
-        appBar: SellerAppBar(
+    return Scaffold(
+        /*appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
+        ),*/
+        appBar: AppBar(
+          backgroundColor: WitHomeTheme.nearlyWhite,
+          iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+          title: Text(
+            '파트너 프로필',
+            style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -577,14 +583,9 @@ class SellerProfileViewState extends State<SellerProfileView> {
                   ],
                 ),
               ),
-
-
-
-
             ],
           ),
         ),
-      ),
     );
   }
 

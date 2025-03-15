@@ -266,8 +266,16 @@ class EstimateRequestDirectSetModyfyState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SellerAppBar(
+      /*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
+      ),*/
+      appBar: AppBar(
+        backgroundColor: WitHomeTheme.nearlyWhite,
+        iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+        title: Text(
+          '바로 견적 수정',
+          style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+        ),
       ),
       body: SingleChildScrollView(
         // 추가된 부분
@@ -318,7 +326,9 @@ class EstimateRequestDirectSetModyfyState
                       builder: (context) => CashRecharge(sllrNo: 17)),
                 );
               },
-              child: Text('충전하러가기 >>'),
+              child: Text('충전하러가기 >>',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              ),
             ),
             Divider(),
             Card(

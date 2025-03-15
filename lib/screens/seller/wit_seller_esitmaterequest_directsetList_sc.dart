@@ -5,6 +5,7 @@ import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.d
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import '../../util/wit_api_ut.dart';
+import '../home/wit_home_theme.dart';
 
 class EstimateRequestDirectList extends StatefulWidget {
   final dynamic sllrNo;
@@ -64,8 +65,16 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SellerAppBar(
+      /*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
+      ),*/
+      appBar: AppBar(
+        backgroundColor: WitHomeTheme.nearlyWhite,
+        iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+        title: Text(
+          '바로견적',
+          style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

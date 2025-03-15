@@ -81,8 +81,16 @@ class SellerCashHistoryState extends State<SellerCashHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SellerAppBar(
+      /*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
+      ),*/
+      appBar: AppBar(
+        backgroundColor: WitHomeTheme.nearlyWhite,
+        iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+        title: Text(
+          '캐시사용 이력',
+          style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -133,12 +141,14 @@ class SellerCashHistoryState extends State<SellerCashHistory> {
                   MaterialPageRoute(builder: (context) => CashRecharge(sllrNo: 17)),
                 );
               },
-              child: Text('충전하러가기 >>'),
+              child: Text('충전하러가기 >>',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              ),
             ),
             SizedBox(height: 20),
             Text(
               '* 캐시 사용이력',
-              style: TextStyle(fontSize: 18),
+              style: WitHomeTheme.title.copyWith(fontSize: 16),
             ),
             Expanded(
               child: ListView.builder(
@@ -174,11 +184,17 @@ class SellerCashHistoryState extends State<SellerCashHistory> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(itemName, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text('$cash $cashGbn', style: TextStyle(fontSize: 16)),
+              Text(itemName,
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              ),
+              Text('$cash $cashGbn',
+                style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+              ),
             ],
           ),
-          Text(creDt, style: TextStyle(color: Colors.grey)),
+          Text(creDt,
+            style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+          ),
         ],
       ),
     );

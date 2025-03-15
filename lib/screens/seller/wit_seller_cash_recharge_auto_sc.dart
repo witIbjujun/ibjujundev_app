@@ -98,8 +98,16 @@ class CashRechargeAutoState extends State<CashRechargeAuto> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SellerAppBar(
+      /*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
+      ),*/
+      appBar: AppBar(
+        backgroundColor: WitHomeTheme.nearlyWhite,
+        iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+        title: Text(
+          '자동캐시충전',
+          style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

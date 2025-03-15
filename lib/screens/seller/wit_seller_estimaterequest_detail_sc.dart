@@ -15,6 +15,7 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import '../../util/wit_code_ut.dart';
 import '../board/wit_board_detail_sc.dart';
 import '../common/wit_ImageViewer_sc.dart';
+import '../home/wit_home_theme.dart';
 
 
 /* 이미지추가 S */
@@ -119,12 +120,12 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                           children: [
                             Text(
                               "고객 APT",
-                              style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
+                              style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
                             ),
                             SizedBox(height: 10),
                             Text(
                               aptName,
-                              style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
@@ -146,12 +147,13 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                           children: [
                             Text(
                               "고객님 요구사항",
-                              style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
+                              style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
+
                             ),
                             SizedBox(height: 10),
                             Text(
                               reqContents,
-                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                             ),
                           ],
                         ),
@@ -168,17 +170,19 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("견적금액",style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
+                          Text("견적금액",
+                            style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
                           ),
                           SizedBox(height: 8), // 제목과 입력란 사이의 간격
                           Row(
                             children: [
                               Expanded(
                                 child: TextField(
-                                  style: TextStyle(fontSize: 16, color: Colors.black),
+                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                                   controller: itemPrice1Controller,
                                   decoration: InputDecoration(
                                     hintText: "금액을 입력하세요",
+                                    hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                                     border: OutlineInputBorder(),
                                   ),
                                   keyboardType: TextInputType.number,
@@ -189,7 +193,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                 ),
                               ),
                               SizedBox(width: 8),
-                              Text("원",style: TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+                              Text("원",
+                                style: WitHomeTheme.title.copyWith(fontSize: 16),
                               ),
 
                             ],
@@ -211,7 +216,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         children: [
                           Text(
                             "견적 추가 설명",
-                            style: TextStyle(fontSize: 16, color: Colors.blue, fontWeight: FontWeight.bold),
+                            style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
                           ),
                           SizedBox(height: 10),
                           Container(
@@ -220,13 +225,14 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: TextField(
-                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                               controller: estimateContentController,
                               minLines: 3, // 최소 3줄
                               maxLines: null, // 내용에 따라 자동으로 늘어남
                               decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: '여기에 추가 설명을 입력하세요',
+                                hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                                 contentPadding: EdgeInsets.all(8),
                                 enabled: reqState == "01", // reqState가 01일 때만 활성화
                               ),
@@ -399,10 +405,10 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         reqState == "02" ? '작업진행' :
                         reqState == "03" || reqState == "04" ? '진행완료' :
                         '견적취소',
+                        style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFAFCB54),
-                        foregroundColor: Colors.white,
+                        backgroundColor: WitHomeTheme.wit_lightGreen,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
