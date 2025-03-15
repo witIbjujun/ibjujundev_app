@@ -93,7 +93,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
           Align(
             alignment: Alignment.topCenter,
             child: SizedBox(
-              height: 50,
+              height: 60,
               width: double.infinity,
               child: Container(
                 decoration: BoxDecoration(
@@ -101,12 +101,24 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                 ),
                 alignment: Alignment.center,
-                child: Text(
-                  "하자 등록 [" + widget.checkInfoLv3["inspNm"] + "]",
-                  style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 3, // 막대의 두께
+                      width: 50, // 막대의 길이
+                      color: WitHomeTheme.wit_white, // 막대 색상
+                    ),
+                    SizedBox(height: 15), // 아이콘과 텍스트 사이의 간격
+                    Text(
+                      "하자 등록 [" + widget.checkInfoLv3["inspNm"] + "]",
+                      style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                    ),
+                  ],
                 ),
               ),
             ),
+
           ),
           // 여기 아래에 추가할 위젯을 넣으세요
           Expanded(

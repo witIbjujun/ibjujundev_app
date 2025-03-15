@@ -215,7 +215,7 @@ class ExpandableItem extends StatelessWidget {
                           isScrollControlled: true, // 스크롤 가능하게 설정
                           builder: (context) {
                             return Container(
-                              height: 500,
+                              height: 510,
                               child: ExamplePhotoPopup(
                                 checkInfoLv3: checkInfoLv3,
                                 onSwitchChanged: onSwitchChanged,
@@ -226,14 +226,14 @@ class ExpandableItem extends StatelessWidget {
                       },
                       child: Image.network(
                         apiUrl + "/WIT/checkList/글쓰기.png",
-                        width: 35,
-                        height: 35,
+                        width: 30,
+                        height: 30,
                         fit: BoxFit.cover,
                         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
                           return Image.network(
                             apiUrl + "/WIT/checkList/없음.png",
-                            width: 35,
-                            height: 35,
+                            width: 30,
+                            height: 30,
                             fit: BoxFit.cover,
                           );
                         },
@@ -244,7 +244,7 @@ class ExpandableItem extends StatelessWidget {
                       icon: Text(
                         checkInfoLv3["checkYn"] == "Y" ? "🔴"  // 축하 이모티콘
                             : checkInfoLv3["checkYn"] == "D" ? "⚪️"  // 손握기 이모티콘
-                            : "🔵",  // 빨간 따봉 뒤집힌 것
+                            : "️⚪️",  // 빨간 따봉 뒤집힌 것
                         style: TextStyle(fontSize: 18),
                       ),
                       // 사용할지 확인 필요
@@ -287,14 +287,16 @@ class ExpandableItem extends StatelessWidget {
           AnimatedContainer(
             duration: Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            height: isExpanded ? 500 : 0,
+            height: isExpanded ? 450 : 0,
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(height: 0),
                   Container(
                     height: 320,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: PageView.builder(
                       itemCount: 3,
                       itemBuilder: (context, imageIndex) {
