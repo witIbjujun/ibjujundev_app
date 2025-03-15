@@ -133,13 +133,14 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                     // 광고 이미지 영역
                     SizedBox(height: 10),
                     Container(
-                      width: double.infinity,
-                      height: 170,
+                      height: MediaQuery.of(context).size.height * 0.18,  // 화면 높이의 18%
+                      width: MediaQuery.of(context).size.width * 0.85,    // 화면 너비의 85%
                       child: Image.asset(
                         'assets/images/배너4.png', // 광고 이미지 URL
-                        fit: BoxFit.contain,
+                        fit: BoxFit.contain, // 이미지 비율 유지
                       ),
                     ),
+
                     // 입주포인트 영역
                     Container(
                       width: double.infinity,
@@ -153,10 +154,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             children: [
                               Text(
                                 "입주포인트",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                ),
+                                style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_white)
                               ),
                               ElevatedButton(onPressed: () {
 
@@ -171,11 +169,10 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                               },
 
                                 child: Text('캐시충전',
-                                  style: WitHomeTheme.title.copyWith(color: Colors.white),
+                                  style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF63A566),
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: WitHomeTheme.wit_mediumSeaGreen,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),
@@ -186,30 +183,30 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           ),
                           SizedBox(height: 8),
                           Container(
-                            decoration: BoxDecoration(
+                            /*decoration: BoxDecoration(
                               border: Border.all(
                                 color: Colors.black,
                                 width: 2.0,
                               ),
                               color: Colors.white,
-                            ),
+                            ),*/
                             child: Row(
                               children: [
                                 Container(
-                                  color: Colors.grey,
+                                  color: WitHomeTheme.wit_gray,
                                   padding: EdgeInsets.symmetric(
                                       vertical: 5, horizontal: 10),
                                   child: Text(
                                     "IBJU",
-                                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: Colors.white),
+                                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_white),
                                   ),
 
                                 ),
-                                SizedBox(width: 10),
+
                                 Expanded(
                                   child: Container(
                                     alignment: Alignment.centerRight,
-                                    color: Colors.white,
+                                    color: Colors.grey[300],
                                     padding: EdgeInsets.symmetric(
                                         vertical: 5, horizontal: 10),
                                     child: Text(
@@ -233,7 +230,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Color(0xFFA68150),
+                          backgroundColor: WitHomeTheme.wit_tan
                         ),
                         onPressed: () {
                           // EstimateRequestList 화면으로 이동
@@ -258,12 +255,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           children: [
                             Text(
                               "거래내역",
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                             ),
                             SizedBox(width: 5),
                             Text(
                               '(${sellerInfo != null && sellerInfo['ingCnt'] != null ? sellerInfo['ingCnt'].toString() : '0'})',
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
                           ],
@@ -277,7 +274,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Color(0xFFC19AC6),
+                          backgroundColor: WitHomeTheme.wit_lightOrchid
                         ),
                         onPressed: () {
                           // 견적 요청 리스트 팝업 띄우기
@@ -302,13 +299,13 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           children: [
                             Text(
                               "견적요청내역",
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
                             SizedBox(width: 5),
                             Text(
                               '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
                           ],
@@ -322,7 +319,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Color(0xFF8D8D8D),
+                          backgroundColor: WitHomeTheme.grey
                         ),
                         onPressed: () {
                           // 커뮤니티 페이지로 이동
@@ -336,7 +333,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text("업체후기",
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             )
                           ],
@@ -349,7 +346,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Color(0xFFF5A855),
+                          backgroundColor: WitHomeTheme.wit_lightGoldenrodYellow,
 
                         ),
                         onPressed: () {
@@ -364,7 +361,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "결재정보등록",
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
                           ),
@@ -377,7 +374,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Color(0xFF7294CC),
+                          backgroundColor: WitHomeTheme.wit_lightSteelBlue,
 
                         ),
                         onPressed: () {
@@ -396,7 +393,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "가입정보 변경",
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
                           ),
@@ -408,7 +405,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Color(0xFF91C58C),
+                          backgroundColor: WitHomeTheme.wit_lightGreen,
 
                         ),
                         onPressed: () {
@@ -423,7 +420,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "바로견적 서비스",
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
                           ),
@@ -435,7 +432,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Color(0xFF7BB5C9),
+                          backgroundColor: WitHomeTheme.wit_lightBlue,
 
                         ),
                         onPressed: () {
@@ -450,7 +447,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "파트너 프로필",
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
                           ),
@@ -463,7 +460,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: Color(0xFFE5767B),
+                          backgroundColor: WitHomeTheme.wit_lightCoral,
 
                         ),
                         onPressed: () {
@@ -478,7 +475,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "공지사항",
-                              style: WitHomeTheme.title.copyWith(color: Colors.white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
                           ),
