@@ -224,7 +224,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         ],
                       ),
                     ),
-                    // 거래내역 버튼
+
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.0),
                       child: ElevatedButton(
@@ -238,8 +238,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return Scaffold(
-                                  appBar: SellerAppBar(
+                                  /*appBar: SellerAppBar(
                                     sllrNo: widget.sllrNo,
+                                  ),*/
+                                  appBar: AppBar(
+                                    backgroundColor: WitHomeTheme.nearlyWhite,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+                                    title: Text(
+                                      '거래내역',
+                                      style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+                                    ),
                                   ),
                                   body: Container(
                                     padding: EdgeInsets.all(16.0),
@@ -282,8 +290,16 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             MaterialPageRoute(
                               builder: (BuildContext context) {
                                 return Scaffold(
-                                  appBar: SellerAppBar(
+                                  /*appBar: SellerAppBar(
                                     sllrNo: widget.sllrNo,
+                                  ),*/
+                                  appBar: AppBar(
+                                    backgroundColor: WitHomeTheme.nearlyWhite,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+                                    title: Text(
+                                      '견적요청내역',
+                                      style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+                                    ),
                                   ),
                                   body: Container(
                                     padding: EdgeInsets.all(16.0),
@@ -313,7 +329,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
 
                       ),
                     ),
-                    // 거래내역 버튼
+
+                    // 커뮤니티 버튼
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.0),
                       child: ElevatedButton(
@@ -332,7 +349,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("업체후기",
+                            Text("커뮤니티",
                               style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             )
@@ -340,7 +357,63 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         ),
                       ),
                     ),
-                    // 거래내역 버튼
+
+                    // 공동구매 관리
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: WitHomeTheme.wit_mediumSeaGreen
+                        ),
+                        onPressed: () {
+                          // 공동구매 관리 화면으로 이동
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return Scaffold(
+                                  /*appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
+                                  ),*/
+                                  appBar: AppBar(
+                                    backgroundColor: WitHomeTheme.nearlyWhite,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+                                    title: Text(
+                                      '공동구매 관리',
+                                      style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+                                    ),
+                                  ),
+                                  body: Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: EstimateRequestList(stat: '01', sllrNo: sllrNo.toString()), // 리스트를 추가
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "공동구매 관리",
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+
+                            ),
+                          ],
+                        ),
+
+                      ),
+                    ),
+
+
+                    // 결재정보 등록 버튼
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.0),
                       child: ElevatedButton(
@@ -360,7 +433,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         child: Container(
                           child: Center(
                             child: Text(
-                              "결재정보등록",
+                              "결제정보 등록",
                               style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
                             ),
@@ -381,7 +454,6 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           // 버튼 클릭 시 수행할 작업 추가
                           // 가입정보 변경 페이지로 이동
                           String aaa = sellerInfo["sllrNo"].toString();
-                          print("aaaaa123123:" + aaa);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -454,7 +526,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                         ),
                       ),
                     ),
-                    // 거래내역 버튼
+
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 10.0),
                       child: ElevatedButton(

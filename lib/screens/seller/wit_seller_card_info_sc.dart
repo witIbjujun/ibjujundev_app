@@ -23,8 +23,16 @@ class CardInfoState extends State<CardInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SellerAppBar(
+      /*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
+      ),*/
+      appBar: AppBar(
+        backgroundColor: WitHomeTheme.nearlyWhite,
+        iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+        title: Text(
+          '결제정보 등록',
+          style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -33,10 +41,10 @@ class CardInfoState extends State<CardInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '결재카드 등록',
+              /*Text(
+                '결재정보등록',
                 style: WitHomeTheme.title.copyWith(fontSize: 24),
-              ),
+              ),*/
               SizedBox(height: 20),
               Row(
                 children: [
