@@ -53,7 +53,7 @@ class CheckListMainState extends State<CheckListMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.wit_white,
+        backgroundColor: WitHomeTheme.wit_lightGreen,
         title: Text(
           isEditing == false ? "입주전 체크리스트" : "입주전 체크리스트 설정",
           style: WitHomeTheme.title,

@@ -26,18 +26,18 @@ class CheckListView extends StatelessWidget {
         slivers: [
           SliverAppBar(
             expandedHeight: 120, // 최대 높이 설정
-            backgroundColor: WitHomeTheme.wit_lightYellow,
+            backgroundColor: WitHomeTheme.wit_lightGreen,
             flexibleSpace: FlexibleSpaceBar(
               background: Row(
                 mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
                 children: [
                   // 회색 박스 왼쪽에 배치
                   Padding(
-                    padding: const EdgeInsets.all(16.0), // 여백 조정
+                    padding: const EdgeInsets.fromLTRB(60, 0, 40, 0), // 여백 조정
                     child: Container(
-                      height: 60, // 높이 조절
-                      width: 60, // 너비 조절
-                      color: Colors.grey, // 회색 배경
+                      height: 70, // 높이 조절
+                      width: 70, // 너비 조절
+                      color: Colors.white, // 회색 배경
                     ),
                   ),
                   // 오른쪽 텍스트 컨테이너
@@ -52,13 +52,14 @@ class CheckListView extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
+                            color: Colors.white
                           ),
                         ),
                         Text(
                           '하자 13건',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.grey,
+                            color: Colors.white,
                           ),
                         ),
                       ],
@@ -70,11 +71,11 @@ class CheckListView extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Container(
-              color: WitHomeTheme.wit_lightYellow,
+              color: WitHomeTheme.wit_lightGreen,
               child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
                 child: Container(
-                  height: 15,
+                  height: 30,
                   color: WitHomeTheme.wit_white,
                 ),
               ),
