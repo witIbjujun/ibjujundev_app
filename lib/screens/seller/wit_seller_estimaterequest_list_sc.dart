@@ -133,7 +133,7 @@ class EstimateItem extends StatelessWidget {
                       // 날짜를 이름 위로 배치
                       Text(
                         request['estDt'], // 날짜
-                        style: WitHomeTheme.title.copyWith(fontSize: 12, color: Colors.grey),
+                        style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                       ),
                       SizedBox(height: 4), // 날짜와 이름 사이의 간격
                       Text(
@@ -143,7 +143,7 @@ class EstimateItem extends StatelessWidget {
                       SizedBox(height: 4), // 이름과 아파트명 사이의 간격
                       Text(
                         request['aptName'], // 아파트명
-                        style: WitHomeTheme.title.copyWith(fontSize: 12, color: Colors.grey),
+                        style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -206,7 +206,6 @@ class EstimateItem extends StatelessWidget {
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: WitHomeTheme.wit_lightGreen, // 연두색 배경
-                      foregroundColor: WitHomeTheme.wit_white, // 글자색을 하얀색으로 설정
                       padding: EdgeInsets.symmetric(vertical: 8), // 패딩 추가
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20), // 둥근 모서리

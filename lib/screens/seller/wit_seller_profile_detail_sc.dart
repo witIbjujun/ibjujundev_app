@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:witibju/screens/seller/wit_seller_%20grouppurchase_list_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_%20schedule_list_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_card_info_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetList_sc.dart';
@@ -385,7 +387,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                   ),
                                   body: Container(
                                     padding: EdgeInsets.all(16.0),
-                                    child: EstimateRequestList(stat: '01', sllrNo: sllrNo.toString()), // 리스트를 추가
+                                    child: SellerGroupPurchaseList(sllrNo: sllrNo.toString()), // 리스트를 추가
                                   ),
                                 );
                               },
@@ -401,10 +403,14 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
 
                             ),
                             SizedBox(width: 5),
-                            Text(
+                            // 나중에 DB 에서 가져오는 거로 수정필요
+                            /*Text(
                               '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
                               style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
-
+                            ),*/
+                            Text(
+                             '(5/10)',
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                             ),
                           ],
                         ),
@@ -412,6 +418,52 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       ),
                     ),
 
+                    // 스케쥴 관리
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 10.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: WitHomeTheme.wit_lightCoral
+                        ),
+                        onPressed: () {
+                          // 스케쥴 관리 화면으로 이동
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) {
+                                return Scaffold(
+                                  /*appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
+                                  ),*/
+                                  appBar: AppBar(
+                                    backgroundColor: WitHomeTheme.nearlyWhite,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+                                    title: Text(
+                                      '스케쥴 관리',
+                                      style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+                                    ),
+                                  ),
+                                  body: Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: SellerScheduleList(sllrNo: sllrNo.toString()), // 리스트를 추가
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "스케쥴 관리",
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                            ),
+                          ],
+                        ),
+
+                      ),
+                    ),
 
                     // 결재정보 등록 버튼
                     Container(
