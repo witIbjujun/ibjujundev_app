@@ -318,7 +318,9 @@ class EstimateRequestDirectSetModyfyState
                       builder: (context) => CashRecharge(sllrNo: 17)),
                 );
               },
-              child: Text('충전하러가기 >>'),
+              child: Text('충전하러가기 >>',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              ),
             ),
             Divider(),
             Card(

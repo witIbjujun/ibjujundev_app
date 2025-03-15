@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 
+import '../home/wit_home_theme.dart';
+
 class CardInfo extends StatefulWidget {
   final dynamic sllrNo;
   const CardInfo({Key? key, required this.sllrNo}) : super(key: key);
@@ -33,13 +35,15 @@ class CardInfoState extends State<CardInfo> {
             children: [
               Text(
                 '결재카드 등록',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: WitHomeTheme.title.copyWith(fontSize: 24),
               ),
               SizedBox(height: 20),
               Row(
                 children: [
                   Radio(value: 1, groupValue: 0, onChanged: (value) {}),
-                  Text('법인카드'),
+                  Text('법인카드',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
                 ],
               ),
               TextFormField(
@@ -47,6 +51,7 @@ class CardInfoState extends State<CardInfo> {
                 decoration: InputDecoration(
                   labelText: '카드 번호',
                   hintText: '0000 0000 0000 0000',
+                  labelStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
@@ -61,6 +66,7 @@ class CardInfoState extends State<CardInfo> {
                 decoration: InputDecoration(
                   labelText: '유효기간',
                   hintText: 'MM / YY',
+                  labelStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                 ),
                 keyboardType: TextInputType.datetime,
                 validator: (value) {
@@ -75,6 +81,7 @@ class CardInfoState extends State<CardInfo> {
                 decoration: InputDecoration(
                   labelText: '카드비밀번호',
                   hintText: '비밀번호 앞 2자리 숫자',
+                  labelStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
@@ -88,6 +95,7 @@ class CardInfoState extends State<CardInfo> {
                 controller: _birthDateController,
                 decoration: InputDecoration(
                   labelText: '생년월일',
+                  labelStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                   hintText: 'YYMMDD',
                 ),
                 keyboardType: TextInputType.datetime,
@@ -102,8 +110,7 @@ class CardInfoState extends State<CardInfo> {
               Center( // 버튼을 Center로 감싸서 가운데 정렬
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF63A566),
-                    foregroundColor: Colors.white,
+                    backgroundColor: WitHomeTheme.wit_mediumSeaGreen,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -116,7 +123,9 @@ class CardInfoState extends State<CardInfo> {
                       );
                     }
                   },
-                  child: Text('등록하기'),
+                  child: Text('등록하기',
+                      style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+                  ),
                 ),
               ),
             ],
