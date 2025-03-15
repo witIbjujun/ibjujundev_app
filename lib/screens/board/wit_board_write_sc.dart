@@ -6,6 +6,7 @@ import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/board/wit_board_main_sc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 
 class BoardWrite extends StatefulWidget {
 
@@ -57,7 +58,7 @@ class _BoardWriteState extends State<BoardWrite> {
     return Scaffold(
       appBar: AppBar(
         title: Text("글 작성",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            style: WitHomeTheme.title),
       ),
       body: SafeArea(
         child: Padding(
@@ -67,32 +68,29 @@ class _BoardWriteState extends State<BoardWrite> {
             children: [
               Text(
                 "제목",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: WitHomeTheme.title,
               ),
               TextField(
                 controller: _titleController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: "제목을 입력하세요",
-                  hintStyle: TextStyle(color: Colors.grey),
+                  hintStyle: TextStyle(color: WitHomeTheme.wit_gray),
                 ),
-                style: TextStyle(fontSize: 14),
+                style: WitHomeTheme.subtitle,
                 maxLines: 1,
               ),
               SizedBox(height: 10),
               Divider(),
               SizedBox(height: 10),
-              Text(
-                "내용",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+              Text("내용", style: WitHomeTheme.title),
               Expanded( // Expanded 추가
                 child: TextField(
                   controller: _contentController,
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "내용을 입력하세요",
-                    hintStyle: TextStyle(color: Colors.grey),
+                    hintStyle: TextStyle(color: WitHomeTheme.wit_gray),
                   ),
                   style: TextStyle(fontSize: 14),
                   maxLines: null, // 자동 조절
@@ -111,10 +109,11 @@ class _BoardWriteState extends State<BoardWrite> {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                          color: Colors.grey[200],
+                        color: WitHomeTheme.wit_white,
+                        border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(Icons.add_a_photo, size: 40), // 사진기 아이콘
+                      child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
                       alignment: Alignment.center,
                     ),
                   ),
@@ -143,7 +142,7 @@ class _BoardWriteState extends State<BoardWrite> {
                                   right: 0,
                                   top: 0,
                                   child: IconButton(
-                                    icon: Icon(Icons.close, color: Colors.red), // X 아이콘
+                                    icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
                                     onPressed: () {
                                       setState(() {
                                         _images.removeAt(index); // 이미지 삭제
@@ -171,14 +170,12 @@ class _BoardWriteState extends State<BoardWrite> {
             await saveImages();
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue[200], // 옅은 녹색 배경
+            backgroundColor: WitHomeTheme.wit_lightBlue, // 옅은 녹색 배경
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: Text("작성",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-          ),
+          child: Text("작성", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
         ),
       ),
     );

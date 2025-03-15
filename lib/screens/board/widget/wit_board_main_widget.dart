@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/screens/board//wit_board_detail_sc.dart';
@@ -40,10 +41,10 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
           ? TextField(
         controller: widget.searchController,
         autofocus: true,
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: WitHomeTheme.wit_black),
         decoration: InputDecoration(
           hintText: "검색어를 입력해주세요",
-          hintStyle: TextStyle(color: Colors.grey),
+          hintStyle: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightgray),
           border: InputBorder.none,
         ),
         onSubmitted: (String value) {
@@ -52,7 +53,7 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
       )
           : Text(
         "자유게시판",
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        style: WitHomeTheme.title,
       ),
       actions: [
         IconButton(
@@ -64,8 +65,8 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('알림', style: TextStyle(fontSize: 18)),
-                      content: Text('검색어를 입력해 주세요.', style: TextStyle(fontSize: 14)),
+                      title: Text('알림', style: WitHomeTheme.title),
+                      content: Text('검색어를 입력해 주세요.', style: WitHomeTheme.subtitle),
                       actions: [
                         TextButton(
                           child: Text('확인'),
@@ -91,7 +92,7 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
           IconButton(
             icon: Icon(
               Icons.clear,
-              color: Colors.black,
+              color: WitHomeTheme.wit_black,
             ),
             onPressed: _toggleSearch, // 검색 취소
           ),
@@ -136,24 +137,17 @@ class BoardListView extends StatelessWidget {
                           Icon(
                             Icons.info_outline,
                             size: 48,
-                            color: Colors.grey[600],
+                            color: WitHomeTheme.wit_lightgray,
                           ),
                           SizedBox(height: 16),
                           Text(
                             "조회된 값이 없습니다",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800],
-                            ),
+                            style: WitHomeTheme.headline.copyWith(color: WitHomeTheme.wit_black),
                           ),
                           SizedBox(height: 8),
                           Text(
                             "다른 조건으로 다시 검색해 보세요.",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[500],
-                            ),
+                            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
                           ),
                         ],
                       ),
@@ -178,8 +172,8 @@ class BoardListView extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(5),
                                         child: Image.network(
                                           apiUrl + boardInfo["imagePath"],
-                                          width: 70,
-                                          height: 70,
+                                          width: 60,
+                                          height: 60,
                                           fit: BoxFit.cover,
                                           errorBuilder: (context, error, stackTrace) {
                                             return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
@@ -205,7 +199,7 @@ class BoardListView extends StatelessWidget {
                                                       boardInfo["bordTitle"],
                                                       maxLines: 2,
                                                       overflow: TextOverflow.ellipsis,
-                                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                                                      style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                                                     ),
                                                   ),
                                                 ],
@@ -219,7 +213,7 @@ class BoardListView extends StatelessWidget {
                                             Expanded(
                                               child: Text(
                                                 "${boardInfo["creUser"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
-                                                style: TextStyle(color: Colors.grey, fontSize: 12),
+                                                style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                                               ),
                                             ),
                                           ],
@@ -236,7 +230,7 @@ class BoardListView extends StatelessWidget {
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.grey[200],
+                                              color: WitHomeTheme.wit_lightgray,
                                               borderRadius: BorderRadius.circular(5),
                                             ),
                                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -244,12 +238,12 @@ class BoardListView extends StatelessWidget {
                                               children: [
                                                 Center(
                                                   child: Text("${boardInfo["commentCnt"]}",
-                                                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                    style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                                                   ),
                                                 ),
                                                 SizedBox(height: 4),
                                                 Text("댓글",
-                                                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                                                  style: WitHomeTheme.caption,
                                                 ),
                                               ],
                                             ),

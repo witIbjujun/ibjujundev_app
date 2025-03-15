@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/board/widget/wit_board_detail_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 
 dynamic boardDetailInfo = {};
 
@@ -47,7 +48,7 @@ class BoardDetailState extends State<BoardDetail> {
     return Scaffold(
       appBar: AppBar(
         title: Text("자유게시판",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            style: WitHomeTheme.title),
       ),
       body: SafeArea(
         child: Padding(

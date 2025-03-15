@@ -4,6 +4,7 @@ import 'package:witibju/screens/board/widget/wit_board_main_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/board/wit_board_write_sc.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 
 // 게시판 메인
 class Board extends StatefulWidget {
@@ -70,8 +71,8 @@ class BoardState extends State<Board> {
         ),
       ),
       floatingActionButton: Container(
-        width: 70, // 원하는 너비
-        height: 70, // 원하는 높이
+        width: 60, // 원하는 너비
+        height: 60, // 원하는 높이
         child: FloatingActionButton(
           onPressed: () async {
             await Navigator.push(
@@ -80,7 +81,7 @@ class BoardState extends State<Board> {
             );
             await refreshBoardList();
           },
-          backgroundColor: Colors.red[200],
+          backgroundColor: WitHomeTheme.wit_lightCoral,
           shape: CircleBorder(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

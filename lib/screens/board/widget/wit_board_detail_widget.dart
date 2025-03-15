@@ -3,6 +3,7 @@ import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/common/wit_ImageViewer_sc.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/screens/board/wit_board_write_sc.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 
 // 타이틀 및 수정/삭제 영역
 class TitleAndMenu extends StatelessWidget {
@@ -24,12 +25,12 @@ class TitleAndMenu extends StatelessWidget {
         Expanded(
           child: Text(
             boardDetailInfo["bordTitle"] ?? "",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: WitHomeTheme.title,
           ),
         ),
         PopupMenuButton<String>(
-          icon: Icon(Icons.more_vert, color: Colors.black),
-          color: Colors.white,
+          icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
+          color: WitHomeTheme.wit_white,
           onSelected: (value) {
             if (value == 'edit') {
               Navigator.push(
@@ -49,11 +50,15 @@ class TitleAndMenu extends StatelessWidget {
             return [
               PopupMenuItem<String>(
                 value: 'edit',
-                child: Text('수정하기'),
+                child: Text('수정하기',
+                  style: WitHomeTheme.subtitle,
+                ),
               ),
               PopupMenuItem<String>(
                 value: 'delete',
-                child: Text('삭제하기'),
+                child: Text('삭제하기',
+                  style: WitHomeTheme.subtitle,
+                ),
               ),
             ];
           },
@@ -67,21 +72,21 @@ class TitleAndMenu extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("확인"),
+          title: Text("확인", style: WitHomeTheme.subtitle),
           content: Text(message),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // 다이얼로그 닫기
               },
-              child: Text("취소"),
+              child: Text("취소", style: WitHomeTheme.subtitle),
             ),
             TextButton(
               onPressed: () {
                 // 삭제 로직 구현
                 Navigator.of(context).pop(); // 다이얼로그 닫기
               },
-              child: Text("확인"),
+              child: Text("확인", style: WitHomeTheme.subtitle),
             ),
           ],
         );
@@ -102,25 +107,25 @@ class UserInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(radius: 20),
+        CircleAvatar(radius: 20, backgroundColor: WitHomeTheme.wit_lightBlue),
         SizedBox(width: 15),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "${boardDetailInfo["creUser"] ?? "익명"}",
-              style: TextStyle(fontSize: 14),
+              style: WitHomeTheme.subtitle,
             ),
             Row(
               children: [
                 Text(
                   '${boardDetailInfo["creDateTxt"] ?? ""}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                 ),
                 SizedBox(width: 8),
                 Text(
                   '조회 ${boardDetailInfo["bordRdCnt"] ?? 0}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                 ),
               ],
             ),
@@ -146,7 +151,7 @@ class ContentDisplay extends StatelessWidget {
         minHeight: 300,
       ),
       child: Text(content,
-        style: TextStyle(fontSize: 16),
+        style: WitHomeTheme.subtitle,
       ),
     );
   }
@@ -211,11 +216,11 @@ class CommentCount extends StatelessWidget {
       children: [
         Text(
           "댓글 ",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: WitHomeTheme.subtitle,
         ),
         Text(
           count.toString(),
-          style: TextStyle(fontSize: 14),
+          style: WitHomeTheme.subtitle,
         ),
       ],
     );
@@ -243,8 +248,7 @@ class CommentList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CircleAvatar(
-                radius: 20,
-                // backgroundImage: NetworkImage(""), // 이미지 URL
+                radius: 20, backgroundColor: WitHomeTheme.wit_lightBlue
               ),
               SizedBox(width: 15),
               Expanded(
@@ -254,15 +258,12 @@ class CommentList extends StatelessWidget {
                     SizedBox(height: 4),
                     Text(
                       commentList[index]["cmmtContent"] ?? "",
-                      style: TextStyle(fontSize: 14),
+                      style: WitHomeTheme.subtitle,
                     ),
                     SizedBox(height: 4),
                     Text(
                       (commentList[index]["creUser"] ?? "") + " | " + (commentList[index]["creDateTxt"] ?? ""),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
+                      style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                     ),
                   ],
                 ),
@@ -298,17 +299,17 @@ class CommentInput extends StatelessWidget {
               hintText: isEmpty ? "첫 댓글을 남겨보세요" : "댓글을 남겨보세요",
               border: InputBorder.none,
               filled: true,
-              fillColor: Colors.white,
-              contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              fillColor: WitHomeTheme.wit_white,
+              contentPadding: EdgeInsets.symmetric(vertical: 13, horizontal: 16),
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: WitHomeTheme.wit_lightBlue,
           ),
           child: IconButton(
-            icon: Icon(Icons.send, size: 24, color: Colors.white),
+            icon: Icon(Icons.send, size: 25, color: WitHomeTheme.wit_white),
             onPressed: () => saveCommentInfo(),
             tooltip: '댓글 보내기',
           ),
