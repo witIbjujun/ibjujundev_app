@@ -220,8 +220,8 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           }
                         },
                         child: Container(
-                          width: 150,
-                          height: 150,
+                          width: 140,
+                          height: 140,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: WitHomeTheme.wit_gray),
@@ -234,15 +234,15 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                                     ? Image.file(
                                   imageFile1!,
                                   fit: BoxFit.cover,
-                                  width: 150,
-                                  height: 150,
+                                  width: 140,
+                                  height: 140,
                                 )
                                     : imageUrl1 != ""
                                     ? Image.network(
                                   apiUrl + imageUrl1!,
                                   fit: BoxFit.cover,
-                                  width: 150,
-                                  height: 150,
+                                  width: 140,
+                                  height: 140,
                                 )
                                     : Center(
                                   child: Icon(
@@ -303,8 +303,8 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           }
                         },
                         child: Container(
-                          width: 150,
-                          height: 150,
+                          width: 140,
+                          height: 140,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: WitHomeTheme.wit_gray),
@@ -317,15 +317,15 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                                     ? Image.file(
                                   imageFile2!,
                                   fit: BoxFit.cover,
-                                  width: 150,
-                                  height: 150,
+                                  width: 140,
+                                  height: 140,
                                 )
                                     : imageUrl2 != ""
                                     ? Image.network(
                                   apiUrl + imageUrl2!,
                                   fit: BoxFit.cover,
-                                  width: 150,
-                                  height: 150,
+                                  width: 140,
+                                  height: 140,
                                 )
                                     : Center(
                                   child: Icon(
