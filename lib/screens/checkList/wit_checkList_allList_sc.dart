@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/checkList/widget/wit_checkList_detail_widget.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 
@@ -47,9 +48,9 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: WitHomeTheme.wit_white,
         title: Text("하자 전체 리스트",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: WitHomeTheme.title,
         ),
       ),
       body: SafeArea(
@@ -57,12 +58,12 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
           children: [
             Expanded(
               child: Container(
-                color: Colors.white, // 배경색을 흰색으로 설정
+                color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
                 child: checkAllList.isEmpty
                     ? Center(
                   child: Text(
                     "조회된 데이터가 없습니다.",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: WitHomeTheme.title,
                   ),
                 )
                     : ListView.builder(

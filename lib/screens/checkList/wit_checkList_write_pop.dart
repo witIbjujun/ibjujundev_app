@@ -8,6 +8,8 @@ import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/common/wit_ImageViewer_sc.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 
+import '../home/wit_home_theme.dart';
+
 // 하자등록 팝업
 class ExamplePhotoPopup extends StatefulWidget {
 
@@ -95,13 +97,13 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
               width: double.infinity,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF91C58C),
+                  color: WitHomeTheme.wit_lightGreen,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   "하자 등록 [" + widget.checkInfoLv3["inspNm"] + "]",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                 ),
               ),
             ),
@@ -179,7 +181,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                     children: [
                       Text(
                         "하자 이미지",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -210,7 +212,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           height: 160,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: WitHomeTheme.wit_gray),
                           ),
                           child: Stack(
                             children: [
@@ -253,12 +255,12 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Colors.red,
+                                        color: WitHomeTheme.wit_red,
                                       ),
                                       padding: EdgeInsets.all(4),
                                       child: Icon(
                                         Icons.close,
-                                        color: Colors.white,
+                                        color: WitHomeTheme.wit_white,
                                         size: 16,
                                       ),
                                     ),
@@ -293,7 +295,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           height: 160,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: WitHomeTheme.wit_gray),
                           ),
                           child: Stack(
                             children: [
@@ -336,12 +338,12 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Colors.red,
+                                        color: WitHomeTheme.wit_red,
                                       ),
                                       padding: EdgeInsets.all(4),
                                       child: Icon(
                                         Icons.close,
-                                        color: Colors.white,
+                                        color: WitHomeTheme.wit_white,
                                         size: 16,
                                       ),
                                     ),
@@ -359,7 +361,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                     children: [
                       Text(
                         "하자 내용",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -370,13 +372,13 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                       controller: _checkComtController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                          borderSide: BorderSide(color: WitHomeTheme.wit_gray),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                          borderSide: BorderSide(color: WitHomeTheme.wit_gray),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                          borderSide: BorderSide(color: WitHomeTheme.wit_gray),
                         ),
                         contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                       ),
@@ -425,7 +427,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                       Expanded(
                         child: TextButton(
                           style: TextButton.styleFrom(
-                            backgroundColor: Color(0xFFE5767B),
+                            backgroundColor: WitHomeTheme.wit_lightCoral,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -444,7 +446,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                             Navigator.of(context).pop();
                           },
                           child: Text("하자 등록",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
                           ),
                         ),
                       ),

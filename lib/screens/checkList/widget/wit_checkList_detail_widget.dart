@@ -215,7 +215,7 @@ class ExpandableItem extends StatelessWidget {
                           isScrollControlled: true, // 스크롤 가능하게 설정
                           builder: (context) {
                             return Container(
-                              height: MediaQuery.of(context).size.height * 0.51,
+                              height: MediaQuery.of(context).size.height * 0.56,
                               child: ExamplePhotoPopup(
                                 checkInfoLv3: checkInfoLv3,
                                 onSwitchChanged: onSwitchChanged,
