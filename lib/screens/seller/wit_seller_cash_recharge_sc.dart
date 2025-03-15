@@ -9,6 +9,7 @@ import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:intl/intl.dart';
 
+import '../home/wit_home_theme.dart';
 import '../tosspayments/home.dart';
 
 class CashRecharge extends StatefulWidget {
@@ -113,38 +114,34 @@ class CashRechargeState extends State<CashRecharge> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                  width: 2.0,
-                ),
+              /*decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 2.0),
                 color: Colors.white,
-              ),
+              ),*/
               child: Row(
                 children: [
                   Container(
-                    color: Colors.grey,
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    color: WitHomeTheme.wit_gray,
+                    padding: EdgeInsets.symmetric(
+                        vertical: 5, horizontal: 10),
                     child: Text(
                       "IBJU",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                      ),
+                      style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_white),
                     ),
+
                   ),
-                  SizedBox(width: 10),
                   Expanded(
                     child: Container(
                       alignment: Alignment.centerRight,
-                      color: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      color: Colors.grey[300],
+                      padding: EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
                       child: Text(
-                        cashInfo['cash'] != null ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C' : '0 C',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
+                        (cashInfo['cash'] != null && cashInfo['cash'] != '')
+                            ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
+                            : '0 C',
+                        style: WitHomeTheme.title.copyWith(fontSize: 20),
+
                       ),
                     ),
                   )
@@ -152,8 +149,12 @@ class CashRechargeState extends State<CashRecharge> {
               ),
             ),
             SizedBox(height: 10),
-            Text('| 캐시충전', style: TextStyle(fontSize: 20)),
-            Text('- 캐시구매로 많은 견적서비스를 이용해보세요~'),
+            Text('| 캐시충전',
+              style: WitHomeTheme.title.copyWith(fontSize: 20),
+            ),
+            Text('- 캐시구매로 많은 견적서비스를 이용해보세요~',
+              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+            ),
             SizedBox(height: 20),
             ...cashRechargeList.map((rechargeOption) {
               double totalAmount = double.parse(rechargeOption['totalCash'] ?? '0');
@@ -197,8 +198,7 @@ class CashRechargeState extends State<CashRecharge> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF63A566),
-                    foregroundColor: Colors.white,
+                    backgroundColor: WitHomeTheme.wit_lightCoral,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -222,12 +222,13 @@ class CashRechargeState extends State<CashRecharge> {
                       );
                     }*/
                   },
-                  child: Text('결제하기'),
+                  child: Text('결제하기',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8D8D8D),
-                    foregroundColor: Colors.white,
+                    backgroundColor: WitHomeTheme.wit_gray,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -241,7 +242,9 @@ class CashRechargeState extends State<CashRecharge> {
                       //builder: (context) => tossPaymentsWebview("https://example.com/payment?orderId=12345&amount=50000")),
                     );
                   },
-                  child: Text('취소'),
+                  child: Text('취소',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+                  ),
                 ),
               ],
             ),
@@ -257,17 +260,17 @@ class CashRechargeState extends State<CashRecharge> {
               },
               child: Text(
                 '자동캐시충전으로 10% 추가 캐시를 받아보세요~ >>>',
-                style: TextStyle(color: Colors.green, decoration: TextDecoration.underline),
+                style: WitHomeTheme.subtitle.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightCoral, decoration: TextDecoration.underline),
               ),
             ),
             Text(
               'Web에서 수수료 없이 30% 저렴하게 충전하세요~',
-              style: TextStyle(color: Colors.green),
+              style: WitHomeTheme.subtitle.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightCoral),
             ),
             SizedBox(height: 20),
             Text(
               '입주전 캐시 이용안내',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: WitHomeTheme.title.copyWith(fontSize: 18),
             ),
             SizedBox(height: 10),
             Text(
@@ -287,7 +290,7 @@ class CashRechargeState extends State<CashRecharge> {
                   '• 캐시 구매 전 별도의 이용약관 동의가 필요합니다.\n'
                   '모든 상품은 부가세(VAT)가 포함된 가격입니다.\n'
                   '• 충전캐시의 유효기간은 마지막 접속일로부터 5년입니다.',
-              style: TextStyle(fontSize: 12),
+              style: WitHomeTheme.subtitle.copyWith(fontSize: 12),
             ),
           ],
         ),

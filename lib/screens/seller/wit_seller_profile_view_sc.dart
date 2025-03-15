@@ -516,6 +516,11 @@ class SellerProfileViewState extends State<SellerProfileView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      "후기", // 제목 추가
+                      style: WitHomeTheme.title.copyWith(fontSize: 24),
+                    ),
+                    SizedBox(height: 10), // 제목과 사용자 정보 영역 간격
                     Container(
                       padding: EdgeInsets.all(10), // 사용자 정보 영역의 패딩
                       decoration: BoxDecoration(
@@ -572,6 +577,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                   ],
                 ),
               ),
+
 
 
 

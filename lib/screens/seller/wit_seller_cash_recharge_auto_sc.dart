@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import '../../util/wit_api_ut.dart';
+import '../home/wit_home_theme.dart';
 
 class CashRechargeAuto extends StatefulWidget {
   final dynamic sllrNo;
@@ -105,8 +106,10 @@ class CashRechargeAutoState extends State<CashRechargeAuto> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('| 자동캐시충전', style: TextStyle(fontSize: 20)),
-            Text('- 충전될때마다 10% 추가 보너스캐시가 적립됩니다.'),
+            Text('| 자동캐시충전',
+              style: WitHomeTheme.title.copyWith(fontSize: 20),),
+            Text('- 충전될때마다 10% 추가 보너스캐시가 적립됩니다.',
+              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),),
             SizedBox(height: 20),
             ...cashRechargeList.map((rechargeOption) {
               double totalAmount = double.parse(rechargeOption['totalCash'] ?? '0');
@@ -149,8 +152,7 @@ class CashRechargeAutoState extends State<CashRechargeAuto> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF63A566),
-                    foregroundColor: Colors.white,
+                    backgroundColor: WitHomeTheme.wit_lightCoral,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -164,12 +166,13 @@ class CashRechargeAutoState extends State<CashRechargeAuto> {
                       );
                     }
                   },
-                  child: Text('결제하기'),
+                  child: Text('결제하기',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8D8D8D),
-                    foregroundColor: Colors.white,
+                    backgroundColor: WitHomeTheme.wit_gray,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -183,14 +186,16 @@ class CashRechargeAutoState extends State<CashRechargeAuto> {
                       //builder: (context) => tossPaymentsWebview("https://example.com/payment?orderId=12345&amount=50000")),
                     );
                   },
-                  child: Text('취소'),
+                  child: Text('취소',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 20),
             Text(
               '자동충전 이용안내',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: WitHomeTheme.title.copyWith(fontSize: 18),
             ),
             SizedBox(height: 10),
             Text(
@@ -200,7 +205,7 @@ class CashRechargeAutoState extends State<CashRechargeAuto> {
                   '・충전금액 또는 결제카드 변경 시에는 등록되어 있는 카드를 삭제 또는 서비스 해지 후, 다시 등록하여 변경하실 수 있습니다.\n'
                   '・자동충전 된 캐시는 입주전 서비스 이용약관 입주전 캐시 관련 내용에서 정한 바에 따릅니다.\n'
                   '・바로견적을 이용하는 경우 자동충전을 해지하면 바로견적 발송상태가 자동으로 정지되고, 이후 자동충전 설정 시 견적 발송상태로 변경됩니다.',
-              style: TextStyle(fontSize: 12),
+              style: WitHomeTheme.subtitle.copyWith(fontSize: 12),
             ),
           ],
         ),
@@ -242,7 +247,7 @@ class CashOption extends StatelessWidget {
   final String fee;
   final String total;
   final String bonus;
-  final bool isRecommended;
+  final bool isRecommended; // 추천 여부
   final bool isSelected; // 선택 상태를 나타내는 변수
   final VoidCallback onSelect; // 선택 시 호출할 콜백
 
@@ -262,9 +267,9 @@ class CashOption extends StatelessWidget {
       onTap: onSelect, // 선택 시 콜백 호출
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? Colors.yellow[100] : Colors.white, // 선택된 경우 배경색 변경
+          color: isRecommended ? Colors.grey[400] : WitHomeTheme.wit_white, // 항상 회색 배경
           border: Border.all(
-            color: isRecommended ? Colors.red : Colors.grey,
+            color: isSelected ? WitHomeTheme.wit_lightGreen : Colors.transparent, // 선택 시 빨간색 테두리
             width: 2,
           ),
           borderRadius: BorderRadius.circular(8),
@@ -287,11 +292,8 @@ class CashOption extends StatelessWidget {
                           Positioned(
                             child: Text(
                               '인기',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+
                             ),
                           ),
                         ],
@@ -301,14 +303,14 @@ class CashOption extends StatelessWidget {
                   ),
                 ],
                 SizedBox(height: 10),
-                Text(total, style: TextStyle(fontSize: 20)),
-                Text(' $fee', style: TextStyle(color: Colors.grey)),
-                Text(' + $bonus', style: TextStyle(color: Colors.grey)),
+                Text(total, style: WitHomeTheme.title.copyWith(fontSize: 20),),
+                Text(' $fee', style: WitHomeTheme.subtitle.copyWith(fontSize: 14)),
+                Text(' + $bonus', style: WitHomeTheme.subtitle.copyWith(fontSize: 14)),
               ],
             ),
             Text(
               amount,
-              style: TextStyle(fontSize: 20),
+                style: WitHomeTheme.subtitle.copyWith(fontSize: 16)
             ),
           ],
         ),
@@ -316,3 +318,7 @@ class CashOption extends StatelessWidget {
     );
   }
 }
+
+
+
+

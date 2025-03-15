@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 
 import '../../util/wit_api_ut.dart';
+import '../home/wit_home_theme.dart';
 
 class EstimateRequestDirectSetModify extends StatefulWidget {
   final dynamic sllrNo;
@@ -275,30 +276,34 @@ class EstimateRequestDirectSetModyfyState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              decoration: BoxDecoration(
+              /*decoration: BoxDecoration(
                 border: Border.all(color: Colors.black, width: 2.0),
                 color: Colors.white,
-              ),
+              ),*/
               child: Row(
                 children: [
                   Container(
-                    color: Colors.grey,
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    child: Text("IBJU",
-                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                    color: WitHomeTheme.wit_gray,
+                    padding: EdgeInsets.symmetric(
+                        vertical: 5, horizontal: 10),
+                    child: Text(
+                      "IBJU",
+                      style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_white),
+                    ),
+
                   ),
-                  SizedBox(width: 10),
                   Expanded(
                     child: Container(
                       alignment: Alignment.centerRight,
-                      color: Colors.white,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                      color: Colors.grey[300],
+                      padding: EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
                       child: Text(
-                        cashInfo['cash'] != null
+                        (cashInfo['cash'] != null && cashInfo['cash'] != '')
                             ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
                             : '0 C',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
+                        style: WitHomeTheme.title.copyWith(fontSize: 20),
+
                       ),
                     ),
                   )
