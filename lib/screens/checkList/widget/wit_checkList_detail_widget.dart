@@ -120,6 +120,8 @@ class TabBarWidget extends StatelessWidget {
         child: TabBar(
           controller: tabController,
           isScrollable: false,
+          indicatorColor: WitHomeTheme.wit_lightGreen,
+          indicatorWeight: 4.0, // 줄의 두께 조정
           onTap: (index) {
             onTabChanged(checkListByLv2[index]["inspId"]);
           },

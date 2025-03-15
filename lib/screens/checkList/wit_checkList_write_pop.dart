@@ -106,7 +106,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                   children: [
                     Container(
                       height: 3, // 막대의 두께
-                      width: 50, // 막대의 길이
+                      width: 60, // 막대의 길이
                       color: WitHomeTheme.wit_white, // 막대 색상
                     ),
                     SizedBox(height: 15), // 아이콘과 텍스트 사이의 간격
@@ -197,7 +197,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -220,8 +220,8 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           }
                         },
                         child: Container(
-                          width: 160,
-                          height: 160,
+                          width: 150,
+                          height: 150,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: WitHomeTheme.wit_gray),
@@ -234,21 +234,21 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                                     ? Image.file(
                                   imageFile1!,
                                   fit: BoxFit.cover,
-                                  width: 160,
-                                  height: 160,
+                                  width: 150,
+                                  height: 150,
                                 )
                                     : imageUrl1 != ""
                                     ? Image.network(
                                   apiUrl + imageUrl1!,
                                   fit: BoxFit.cover,
-                                  width: 160,
-                                  height: 160,
+                                  width: 150,
+                                  height: 150,
                                 )
                                     : Center(
                                   child: Icon(
                                     Icons.add_a_photo,
                                     size: 40,
-                                    color: Colors.grey[600],
+                                    color: WitHomeTheme.wit_lightgray,
                                   ),
                                 ),
                               ),
@@ -282,7 +282,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 20),
+                      SizedBox(width: 10),
 
                       // 두번째 이미지 영역
                       GestureDetector(
@@ -303,8 +303,8 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           }
                         },
                         child: Container(
-                          width: 160,
-                          height: 160,
+                          width: 150,
+                          height: 150,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: WitHomeTheme.wit_gray),
@@ -317,21 +317,21 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                                     ? Image.file(
                                   imageFile2!,
                                   fit: BoxFit.cover,
-                                  width: 160,
-                                  height: 160,
+                                  width: 150,
+                                  height: 150,
                                 )
                                     : imageUrl2 != ""
                                     ? Image.network(
                                   apiUrl + imageUrl2!,
                                   fit: BoxFit.cover,
-                                  width: 160,
-                                  height: 160,
+                                  width: 150,
+                                  height: 150,
                                 )
                                     : Center(
                                   child: Icon(
                                     Icons.add_a_photo,
                                     size: 40,
-                                    color: Colors.grey[600],
+                                    color: WitHomeTheme.wit_lightgray,
                                   ),
                                 ),
                               ),
@@ -458,7 +458,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                             Navigator.of(context).pop();
                           },
                           child: Text("하자 등록",
-                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
                           ),
                         ),
                       ),
