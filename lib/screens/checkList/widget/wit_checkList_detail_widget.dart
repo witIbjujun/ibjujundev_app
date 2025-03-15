@@ -224,8 +224,19 @@ class ExpandableItem extends StatelessWidget {
                           },
                         );
                       },
-                      child: Icon(
-                        Icons.edit,
+                      child: Image.network(
+                        apiUrl + "/WIT/checkList/글쓰기.png",
+                        width: 35,
+                        height: 35,
+                        fit: BoxFit.cover,
+                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                          return Image.network(
+                            apiUrl + "/WIT/checkList/없음.png",
+                            width: 35,
+                            height: 35,
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
                     ),
                   Container(
