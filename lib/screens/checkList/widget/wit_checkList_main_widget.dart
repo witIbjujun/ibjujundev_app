@@ -21,26 +21,49 @@ class CheckListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
-      child: ListView.builder(
-        itemCount: listData.length,
-        itemBuilder: (context, index) {
-          final item = listData[index];
-          return CheckListCard(
-            item: item,
-            edited: edited,
-            onTap: () async {
-              if (edited == false) {
-                await Navigator.push(
-                  context,
-                  SlideRoute(page: CheckListDetail(checkInfoLv1: item)),
-                );
-              }
-              await callback();
-            },
-          );
-        },
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          /*SliverAppBar(
+            expandedHeight: 120, // 최대 높이 설정
+            backgroundColor: WitHomeTheme.wit_lightGreen
+          ),*/
+          SliverToBoxAdapter(
+            child: Container(
+              color: WitHomeTheme.wit_white,
+              child: ClipRRect(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                child: Container(
+                  height: 0,
+                  color: WitHomeTheme.wit_white,
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              color: Colors.white, // SliverList 배경색 설정
+              child: Column(
+                children: List.generate(listData.length, (index) {
+                  final item = listData[index];
+                  return CheckListCard(
+                    item: item,
+                    edited: edited,
+                    onTap: () async {
+                      if (edited == false) {
+                        await Navigator.push(
+                          context,
+                          SlideRoute(page: CheckListDetail(checkInfoLv1: item)),
+                        );
+                      }
+                      await callback();
+                    },
+                  );
+                }),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -90,7 +113,7 @@ class _CheckListCardState extends State<CheckListCard> {
             borderRadius: BorderRadius.circular(5), // 모서리 둥글게
             boxShadow: [
               BoxShadow(
-                color: WitHomeTheme.wit_lightgray.withOpacity(0.2), // 그림자 색상
+                color: WitHomeTheme.wit_lightgray.withOpacity(0.4), // 그림자 색상
                 spreadRadius: 2, // 그림자 퍼짐 정도
                 blurRadius: 3, // 그림자 흐림 정도
                 offset: Offset(1, 2), // 그림자 위치
