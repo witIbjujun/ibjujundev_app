@@ -41,10 +41,10 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
           ? TextField(
         controller: widget.searchController,
         autofocus: true,
-        style: TextStyle(color: WitHomeTheme.wit_black),
+        style: WitHomeTheme.subtitle,
         decoration: InputDecoration(
           hintText: "검색어를 입력해주세요",
-          hintStyle: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightgray),
+          hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
           border: InputBorder.none,
         ),
         onSubmitted: (String value) {
@@ -265,7 +265,7 @@ class BoardListView extends StatelessWidget {
                           ),
                           Container(
                             height: 1,
-                            color: Colors.grey[200],
+                            color: WitHomeTheme.wit_lightgray,
                           ),
                         ],
                       );

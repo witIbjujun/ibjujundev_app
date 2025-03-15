@@ -75,7 +75,7 @@ class _BoardWriteState extends State<BoardWrite> {
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: "제목을 입력하세요",
-                  hintStyle: TextStyle(color: WitHomeTheme.wit_gray),
+                  hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
                 ),
                 style: WitHomeTheme.subtitle,
                 maxLines: 1,
@@ -90,9 +90,9 @@ class _BoardWriteState extends State<BoardWrite> {
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     hintText: "내용을 입력하세요",
-                    hintStyle: TextStyle(color: WitHomeTheme.wit_gray),
+                    hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
                   ),
-                  style: TextStyle(fontSize: 14),
+                  style: WitHomeTheme.subtitle,
                   maxLines: null, // 자동 조절
                   keyboardType: TextInputType.multiline,
                 ),
