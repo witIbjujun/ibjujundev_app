@@ -487,11 +487,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         sllrNo: widget.sllrNo,
       ),*/
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.nearlyWhite,
-        iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+        backgroundColor: WitHomeTheme.wit_gray,
+        iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
         title: Text(
           '가입정보 변경',
-          style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
         ),
       ),
       body: Padding(
@@ -510,7 +510,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 child: Center( // 텍스트를 가운데 정렬
                   child: Text(
                     '파트너 프로필 수정',
-                    style: WitHomeTheme.title.copyWith(fontSize: 24, color: Colors.black), // 글자 색상을 검은색으로 설정
+                    style: WitHomeTheme.title.copyWith(fontSize: 18, color: WitHomeTheme.wit_black), // 글자 색상을 검은색으로 설정
                   ),
                 ),
               ),

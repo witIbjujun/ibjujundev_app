@@ -47,7 +47,7 @@ class SellerScheduleListState extends State<SellerScheduleList> {
               child: Center( // 텍스트를 가운데 정렬
                 child: Text(
                   '범석방충망 님',
-                  style: WitHomeTheme.title.copyWith(fontSize: 24, color: Colors.black), // 글자 색상을 검은색으로 설정
+                  style: WitHomeTheme.title.copyWith(fontSize: 18, color: WitHomeTheme.wit_black), // 글자 색상을 검은색으로 설정
                 ),
               ),
             ),
@@ -117,7 +117,7 @@ class SellerScheduleListState extends State<SellerScheduleList> {
                         schedule['prsnName'] ?? '신청자명 없음', // 신청자 이름
                         style: WitHomeTheme.title.copyWith(fontSize: 18),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: 1),
                       Text(
                         schedule['aptName'] ?? '아파트명 없음', // 아파트명
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: Colors.grey),

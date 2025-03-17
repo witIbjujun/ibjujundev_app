@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../home/wit_home_theme.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -10,7 +12,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('포인트 구매 팝업'),
+          backgroundColor: WitHomeTheme.wit_gray,
+          title: Text('포인트 구매 팝업',
+              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+        ),
+
         ),
         body: Center(
           child: ElevatedButton(
@@ -41,7 +47,9 @@ class _PointPurchaseDialogState extends State<PointPurchaseDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('캐치충전으로 많은 견적서비스를 이용해보세요~'),
+      title: Text('캐치충전으로 많은 견적서비스를 이용해보세요~',
+        style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black), // 글자 색상을 검은색으로 설정
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

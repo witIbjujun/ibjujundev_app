@@ -232,7 +232,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: WitHomeTheme.wit_tan
+                          // backgroundColor: WitHomeTheme.wit_tan
                         ),
                         onPressed: () {
                           // EstimateRequestList 화면으로 이동
@@ -244,11 +244,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     sllrNo: widget.sllrNo,
                                   ),*/
                                   appBar: AppBar(
-                                    backgroundColor: WitHomeTheme.nearlyWhite,
-                                    iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+                                    backgroundColor: WitHomeTheme.wit_gray,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
                                     title: Text(
                                       '거래내역',
-                                      style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+                                      style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                                     ),
                                   ),
                                   body: Container(
@@ -265,12 +265,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           children: [
                             Text(
                               "거래내역",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
                             ),
                             SizedBox(width: 5),
                             Text(
                               '(${sellerInfo != null && sellerInfo['ingCnt'] != null ? sellerInfo['ingCnt'].toString() : '0'})',
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightBlue),
 
                             ),
                           ],
@@ -284,7 +284,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: WitHomeTheme.wit_lightOrchid
+                          // backgroundColor: WitHomeTheme.wit_lightOrchid
                         ),
                         onPressed: () {
                           // 견적 요청 리스트 팝업 띄우기
@@ -296,11 +296,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     sllrNo: widget.sllrNo,
                                   ),*/
                                   appBar: AppBar(
-                                    backgroundColor: WitHomeTheme.nearlyWhite,
-                                    iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+                                    backgroundColor: WitHomeTheme.wit_gray,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
                                     title: Text(
                                       '견적요청내역',
-                                      style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+                                      style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                                     ),
                                   ),
                                   body: Container(
@@ -317,13 +317,13 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           children: [
                             Text(
                               "견적요청내역",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
                             ),
                             SizedBox(width: 5),
                             Text(
                               '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightBlue),
 
                             ),
                           ],
@@ -338,21 +338,39 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: WitHomeTheme.grey
+                          // backgroundColor: WitHomeTheme.grey
                         ),
                         onPressed: () {
                           // 커뮤니티 페이지로 이동
-                          Navigator.push(
-                            context,
+                          Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => Board(sellerInfo["sllrNo"],"C1")),
+                              builder: (BuildContext context) {
+                                return Scaffold(
+                                  /*appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
+                                  ),*/
+                                  appBar: AppBar(
+                                    backgroundColor: WitHomeTheme.wit_gray,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
+                                    title: Text(
+                                      '커뮤니티',
+                                      style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                                    ),
+                                  ),
+                                  body: Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Board(widget.sllrNo,"C1"), // 리스트를 추가
+                                  ),
+                                );
+                              },
+                            ),
                           );
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text("커뮤니티",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
                             )
                           ],
@@ -366,7 +384,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(50),
-                            backgroundColor: WitHomeTheme.wit_mediumSeaGreen
+                            // backgroundColor: WitHomeTheme.wit_mediumSeaGreen
                         ),
                         onPressed: () {
                           // 공동구매 관리 화면으로 이동
@@ -378,11 +396,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     sllrNo: widget.sllrNo,
                                   ),*/
                                   appBar: AppBar(
-                                    backgroundColor: WitHomeTheme.nearlyWhite,
-                                    iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+                                    backgroundColor: WitHomeTheme.wit_gray,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
                                     title: Text(
                                       '공동구매 관리',
-                                      style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+                                      style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                                     ),
                                   ),
                                   body: Container(
@@ -399,7 +417,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           children: [
                             Text(
                               "공동구매 관리",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
                             ),
                             SizedBox(width: 5),
@@ -410,7 +428,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                             ),*/
                             Text(
                              '(5/10)',
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightBlue),
                             ),
                           ],
                         ),
@@ -424,7 +442,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(50),
-                            backgroundColor: WitHomeTheme.wit_lightCoral
+                            // backgroundColor: WitHomeTheme.wit_lightCoral
                         ),
                         onPressed: () {
                           // 스케쥴 관리 화면으로 이동
@@ -436,11 +454,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     sllrNo: widget.sllrNo,
                                   ),*/
                                   appBar: AppBar(
-                                    backgroundColor: WitHomeTheme.nearlyWhite,
-                                    iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+                                    backgroundColor: WitHomeTheme.wit_gray,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
                                     title: Text(
                                       '스케쥴 관리',
-                                      style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+                                      style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                                     ),
                                   ),
                                   body: Container(
@@ -457,7 +475,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           children: [
                             Text(
                               "스케쥴 관리",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
                             ),
                           ],
                         ),
@@ -471,7 +489,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: WitHomeTheme.wit_lightGoldenrodYellow,
+                          // backgroundColor: WitHomeTheme.wit_lightGoldenrodYellow,
 
                         ),
                         onPressed: () {
@@ -486,7 +504,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "결제정보 등록",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
                             ),
                           ),
@@ -499,7 +517,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: WitHomeTheme.wit_lightSteelBlue,
+                          // backgroundColor: WitHomeTheme.wit_lightSteelBlue,
 
                         ),
                         onPressed: () {
@@ -517,7 +535,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "가입정보 변경",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
                             ),
                           ),
@@ -529,7 +547,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: WitHomeTheme.wit_lightGreen,
+                          // backgroundColor: WitHomeTheme.wit_lightGreen,
 
                         ),
                         onPressed: () {
@@ -544,7 +562,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "바로견적 서비스",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
                             ),
                           ),
@@ -556,7 +574,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: WitHomeTheme.wit_lightBlue,
+                          // backgroundColor: WitHomeTheme.wit_lightBlue,
 
                         ),
                         onPressed: () {
@@ -571,7 +589,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           child: Center(
                             child: Text(
                               "파트너 프로필",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
                             ),
                           ),
@@ -584,22 +602,40 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromHeight(50),
-                          backgroundColor: WitHomeTheme.wit_lightCoral,
+                          // backgroundColor: WitHomeTheme.wit_lightCoral,
 
                         ),
                         onPressed: () {
-                          // 커뮤니티 페이지로 이동
-                          Navigator.push(
-                            context,
+                          Navigator.of(context).push(
                             MaterialPageRoute(
-                                builder: (context) => Board(widget.sllrNo,"C1")),
+                              builder: (BuildContext context) {
+                                return Scaffold(
+                                  /*appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
+                                  ),*/
+                                  appBar: AppBar(
+                                    backgroundColor: WitHomeTheme.wit_gray,
+                                    iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
+                                    title: Text(
+                                      '공지사항',
+                                      style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                                    ),
+                                  ),
+                                  body: Container(
+                                    padding: EdgeInsets.all(16.0),
+                                    child: Board(widget.sllrNo,"C1"), // 리스트를 추가
+                                  ),
+                                );
+                              },
+                            ),
                           );
+
                         },
                         child: Container(
                           child: Center(
                             child: Text(
                               "공지사항",
-                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
                             ),
                           ),

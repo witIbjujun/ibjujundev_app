@@ -313,11 +313,11 @@ class SellerProfileViewState extends State<SellerProfileView> {
           sllrNo: widget.sllrNo,
         ),*/
         appBar: AppBar(
-          backgroundColor: WitHomeTheme.nearlyWhite,
-          iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+          backgroundColor: WitHomeTheme.wit_gray,
+          iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
           title: Text(
             '파트너 프로필',
-            style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
           ),
         ),
         body: Padding(
@@ -426,7 +426,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: WitHomeTheme.wit_lightBlue, // 초록색 배경
+                        color: WitHomeTheme.wit_white, // 초록색 배경
                         borderRadius: BorderRadius.circular(8), // 둥근 모서리
                       ),
                       child: Text(
@@ -530,8 +530,8 @@ class SellerProfileViewState extends State<SellerProfileView> {
                     Container(
                       padding: EdgeInsets.all(10), // 사용자 정보 영역의 패딩
                       decoration: BoxDecoration(
-                        color: Colors.grey[600], // 사용자 닉네임 영역 배경색 (진한 회색)
-                        borderRadius: BorderRadius.circular(5), // 모서리 둥글게
+                        color: WitHomeTheme.wit_lightGrey, // 사용자 닉네임 영역 배경색 (진한 회색)
+                        borderRadius: BorderRadius.circular(50), // 모서리 둥글게
                       ),
                       child: Row(
                         children: [
@@ -550,10 +550,19 @@ class SellerProfileViewState extends State<SellerProfileView> {
                           SizedBox(width: 10), // 아이콘과 텍스트 간격
                           Text(
                             '이재명', // 사용자 이름
-                            style: WitHomeTheme.title.copyWith(fontSize: 16, color: Colors.white), // 텍스트 색상 흰색
+                            style: WitHomeTheme.title.copyWith(fontSize: 16), // 텍스트 색상 흰색
                           ),
                           Spacer(), // 남은 공간을 차지하여 별점 오른쪽 정렬
                           Row(
+                            children: List.generate(5, (index) {
+                              return Icon(
+                                index < 4 ? Icons.star : Icons.star_border, // 4개는 채워진 별, 1개는 빈 별
+                                color: Colors.amber, // 별 색상
+                                size: 20, // 별 크기
+                              );
+                            }),
+                          ),
+                          /*Row(
                             children: List.generate(5, (index) {
                               return Icon(
                                 index < (sellerInfo?['rating'] ?? 0) ? Icons.star : Icons.star_border,
@@ -561,7 +570,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                 size: 20, // 별 크기
                               );
                             }),
-                          ),
+                          ),*/
                         ],
                       ),
                     ),

@@ -143,11 +143,11 @@ class EstimateRequestDirectSetState extends State<EstimateRequestDirectSet> {
         sllrNo: widget.sllrNo,
       ),*/
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.nearlyWhite,
-        iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
+        backgroundColor: WitHomeTheme.wit_gray,
+        iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
         title: Text(
           '바로 견적 등록',
-          style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
         ),
       ),
       body: SingleChildScrollView(  // 추가된 부분

@@ -123,7 +123,7 @@ class SellerAppBarState extends State<SellerAppBar> {
         child: Center(
           child: Text(
             storeName,
-            style: WitHomeTheme.title.copyWith(color: Colors.white),
+            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
             // 글씨 굵게 및 하얀색 설정
             textAlign: TextAlign.center,
           ),
@@ -135,7 +135,7 @@ class SellerAppBarState extends State<SellerAppBar> {
 
       ),*/
       centerTitle: true,
-      backgroundColor: Color(0xFFAFCB54),
+      backgroundColor: WitHomeTheme.wit_gray,
       actions: [
         // 입력 필드 추가
         /*Padding(

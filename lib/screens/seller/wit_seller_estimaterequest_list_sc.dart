@@ -140,7 +140,7 @@ class EstimateItem extends StatelessWidget {
                         request['prsnName'] ?? '요청자명 없음', // 요청자명
                         style: WitHomeTheme.title.copyWith(fontSize: 18),
                       ),
-                      SizedBox(height: 4), // 이름과 아파트명 사이의 간격
+                      SizedBox(height: 1), // 이름과 아파트명 사이의 간격
                       Text(
                         request['aptName'], // 아파트명
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
@@ -187,7 +187,7 @@ class EstimateItem extends StatelessWidget {
                 alignment: Alignment.centerLeft, // 왼쪽 정렬
                 child: Text(
                   reqContents, // 내용
-                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                   textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
                   maxLines: isExpanded ? null : 3, // 기본 3줄 표시
                   overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리

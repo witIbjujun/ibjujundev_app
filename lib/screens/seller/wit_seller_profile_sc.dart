@@ -7,6 +7,8 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
+import '../home/wit_home_theme.dart';
+
 class SellerProfile extends StatefulWidget {
   const SellerProfile({super.key});
 
@@ -133,9 +135,11 @@ class SellerProfileState extends State<SellerProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('회원가입', style: TextStyle(fontSize: 24)),
+        title: Text('회원가입',
+          style: WitHomeTheme.title,
+        ),
         centerTitle: true,
-        backgroundColor: Color(0xFFAFCB54),
+        backgroundColor: WitHomeTheme.wit_gray,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
