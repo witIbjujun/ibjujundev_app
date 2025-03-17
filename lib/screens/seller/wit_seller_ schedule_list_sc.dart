@@ -74,29 +74,46 @@ class SellerScheduleListState extends State<SellerScheduleList> {
   }
 
   Widget buildScheduleItem(dynamic schedule) {
-    return Card(
-      color: Colors.grey[100], // 회색 배경 추가
+    // schedule이 null인 경우 빈 컨테이너 반환
+    if (schedule == null) {
+      return Container();
+    }
+
+    return Container(
       margin: EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[100], // 회색 배경 추가
+        borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3), // 그림자 위치
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 날짜와 상태를 추가하는 Row
+            // 날짜와 상태를 표시하는 Row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  schedule['estDt'] ?? '날짜 없음', // 추가된 날짜
+                  schedule['estDt'].substring(0, 10) ?? '날짜 없음', // 날짜
                   style: WitHomeTheme.title.copyWith(fontSize: 16),
                 ),
                 Text(
-                  schedule['stat'] ?? '상태 없음', // 추가된 상태
+                  schedule['stat'] ?? '상태 없음', // 상태
                   style: WitHomeTheme.title.copyWith(fontSize: 16),
                 ),
               ],
             ),
-            SizedBox(height: 8), // 카드 내 요소 간격
+            SizedBox(height: 8), // 요소 간 간격
+
             // 사용자 사진 및 이름, 아파트명
             Row(
               children: [
@@ -109,7 +126,7 @@ class SellerScheduleListState extends State<SellerScheduleList> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        schedule['estDt'], // 날짜
+                        schedule['estDt'] ?? '날짜 없음', // 날짜
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                       ),
                       SizedBox(height: 4),
@@ -131,9 +148,7 @@ class SellerScheduleListState extends State<SellerScheduleList> {
                     // 신청 버튼 클릭 시 로직 추가
                   },
                   child: Text(
-                    schedule['stat'] == '진행대기' ? '견적진행' :
-                    schedule['stat'] == '작업진행' ? '인테리어진행' :
-                    schedule['stat'] ?? '상태 없음', // 기본값
+                    _getButtonText(schedule['stat']), // 버튼 텍스트
                     style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
                   ),
                 ),
@@ -144,6 +159,21 @@ class SellerScheduleListState extends State<SellerScheduleList> {
       ),
     );
   }
+
+// 버튼 텍스트를 결정하는 헬퍼 메소드
+  String _getButtonText(String? status) {
+    switch (status) {
+      case '진행대기':
+        return '견적진행';
+      case '작업진행':
+        return '인테리어진행';
+      default:
+        return '상태 없음';
+    }
+  }
+
+
+
 
 
 

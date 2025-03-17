@@ -325,7 +325,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
           child: ListView(
             children: [
               // 첫 번째 영역: 사업자 이미지 및 이름, 인증 정보
-              _buildCard(
+              _buildContainer(
                 title: '업체명',
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -416,7 +416,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
               ),
 
               // 두 번째 영역: 서비스 품목 및 AS 기간
-              _buildCard(
+              _buildContainer(
                 title: '서비스 품목',
                 content: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -457,7 +457,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
               ),
 
               // 세 번째 영역: 업체 주소
-              _buildCard(
+              _buildContainer(
                 title: '업체 주소',
                 content: Text(
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
@@ -466,12 +466,12 @@ class SellerProfileViewState extends State<SellerProfileView> {
               ),
 
               // 네 번째 영역: 업체 설명
-              _buildCard(
+              _buildContainer(
                 title: '업체 설명',
                 content: Text(sellerInfo?['sllrContent'] ?? '', style: WitHomeTheme.subtitle.copyWith(fontSize: 16),),
               ),
               // 다섯 번째 영역: 시공 사진/동영상
-              _buildCard(
+              _buildContainer(
                 title: '시공 사진/동영상',
                 content: Container(
                   height: 120, // 높이 설정
@@ -517,14 +517,14 @@ class SellerProfileViewState extends State<SellerProfileView> {
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.grey[100], // 카드 배경색 (연한 회색)
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                  borderRadius: BorderRadius.circular(8), // 모서리 둥글게
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "후기", // 제목 추가
-                      style: WitHomeTheme.title.copyWith(fontSize: 24),
+                      style: WitHomeTheme.title.copyWith(fontSize: 20),
                     ),
                     SizedBox(height: 10), // 제목과 사용자 정보 영역 간격
                     Container(
@@ -598,10 +598,13 @@ class SellerProfileViewState extends State<SellerProfileView> {
     );
   }
 
-  Widget _buildCard({String? title, required Widget content}) {
-    return Card(
+  Widget _buildContainer({String? title, required Widget content}) {
+    return Container(
       margin: EdgeInsets.symmetric(vertical: 8.0),
-      color: Colors.grey[100], // 배경색 설정
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8.0),
+        color: Colors.grey[100], // 배경색 설정
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -610,15 +613,16 @@ class SellerProfileViewState extends State<SellerProfileView> {
             if (title != null)
               Text(
                 title,
-                style: WitHomeTheme.title.copyWith(fontSize: 24),
+                style: WitHomeTheme.title.copyWith(fontSize: 20),
               ),
-            SizedBox(height: 10),
+            SizedBox(height: 4),
             content,
           ],
         ),
       ),
     );
   }
+
 
 
 // [서비스] 판매자 상세 이미지 조회
