@@ -242,7 +242,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
       elevation: 0, // 기본 그림자 비활성화
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[200], // 회색 배경
+          color: Colors.grey[100], // 회색 배경
           borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
           boxShadow: [
             BoxShadow(
@@ -292,7 +292,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                         schedule['prsnName'] ?? '신청자명 없음', // 신청자 이름
                         style: WitHomeTheme.title.copyWith(fontSize: 18),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: 1),
                       Text(
                         schedule['aptName'] ?? '아파트명 없음', // 아파트명
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: Colors.grey),
