@@ -68,6 +68,24 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     getEstimateRequestInfoForSend(widget.estNo, widget.seq);
   }
 
+  bool _isChecked = false; // 체크박스 상태 관리
+
+  void _onCheckboxChanged(bool? value) {
+    setState(() {
+      _isChecked = value ?? false;
+    });
+
+    // 체크박스가 체크되었을 때 프로필 불러오는 로직 추가
+    if (_isChecked) {
+      _loadProfile();
+    }
+  }
+
+  void _loadProfile() {
+    // 여기에 프로필을 불러오는 로직 추가
+    print("프로필을 불러옵니다."); // 예시로 콘솔에 출력
+  }
+
   @override
   Widget build(BuildContext context) {
     String estNo = estimateRequestInfoForSend['estNo'] ?? "";
@@ -94,10 +112,19 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       estimateContentController.text = estimateContent; // 기존 설명 표시
     }
 
-    return MaterialApp(
-      home: Scaffold(
-        appBar: SellerAppBar(
+    return
+      Scaffold(
+        /*appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
+        ),*/
+        appBar: AppBar(
+          backgroundColor: WitHomeTheme.wit_gray,
+          iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
+          title: Text(
+            '견적 요청 상세',
+            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+          ),
+          automaticallyImplyLeading: true,  // <<--- 뒤로가기 버튼 자동 추가
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -107,122 +134,207 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 고객 APT 정보 카드
                   Container(
-                    width: double.infinity, // 가로 공간을 꽉 차게 설정
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100], // 배경색을 회색으로 설정
+                      borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
+                    ),
+                    padding: const EdgeInsets.all(12.0), // 여백 설정 (필요에 따라 조정)
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 첫 번째 Row: 프로필 사진과 요청 정보
+                        Row(
                           children: [
-                            Text(
-                              "고객 APT",
-                              style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
+                            // 왼쪽에 사진
+                            Container(
+                              width: 50,
+                              height: 50, // 이미지 높이 설정
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25), // 둥근 프로필 사진
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/profile1.png'),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                             ),
-                            SizedBox(height: 10),
-                            Text(
-                              aptName,
-                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                              overflow: TextOverflow.ellipsis,
+                            SizedBox(width: 10), // 이미지와 텍스트 사이의 간격 추가
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // 날짜를 이름 위로 배치
+                                  Text(
+                                    estimateRequestInfoForSend['estDt'] ?? '날짜 없음', // 날짜
+                                    style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+                                  ),
+                                  SizedBox(height: 4), // 날짜와 이름 사이의 간격
+                                  Text(
+                                    estimateRequestInfoForSend['prsnName'] ?? '요청자명 없음', // 요청자명
+                                    style: WitHomeTheme.title.copyWith(fontSize: 18),
+                                  ),
+                                  SizedBox(height: 1), // 이름과 아파트명 사이의 간격
+                                  Text(
+                                    estimateRequestInfoForSend['aptName'] ?? '아파트명 없음', // 아파트명
+                                    style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: 10), // 상태 텍스트와의 간격
+                            TextButton(
+                              onPressed: () {
+                                // 버튼 클릭 시 동작
+                              },
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0), // 테두리 없애기
+                                ),
+                              ),
+                              child: Text(
+                                estimateRequestInfoForSend['stat'] ?? '상태 없음', // 상태
+                                style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
+                              ),
                             ),
                           ],
                         ),
-                      ),
+                        SizedBox(height: 10), // 텍스트와 내용 사이의 간격
+                        // 두 번째 Container: 작업 요청 내용
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300], // 배경색을 회색으로 설정
+                            borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
+                          ),                          padding: EdgeInsets.all(12), // 내부 여백
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft, // 왼쪽 정렬
+                                child: Text(
+                                  reqContents, // 내용
+                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                  textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
+                                ),
+                              ),
+                              SizedBox(height: 15), // 내용과 작업 요청 예상일 사이의 간격
+                              Text(
+                                "작업요청예상일 : 2025/02/10", // 작업 요청 예상일
+                                style: WitHomeTheme.title.copyWith(fontSize: 16), // 스타일 적용
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 5),
-                  // 고객 요구사항 카드
-                  Container(
-                    width: double.infinity, // 가로로 꽉 차게 설정
-                    child: Card(
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "고객님 요구사항",
-                              style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
-
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              reqContents,
-                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                            ),
-                          ],
-                        ),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _isChecked,
+                        onChanged: _onCheckboxChanged,
+                        activeColor: Colors.blue, // 체크박스 체크 시 색상 설정
                       ),
-                    ),
+                      Text(
+                        "프로필 자동 붙이기",
+                        style: WitHomeTheme.title.copyWith(fontSize: 16),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 5),
                   // 금액 입력란 카드
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("견적금액",
-                            style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
-                          ),
-                          SizedBox(height: 8), // 제목과 입력란 사이의 간격
-                          Row(
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100], // 배경색
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4.0,
+                          offset: Offset(0, 2), // x, y 축 방향으로 그림자
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "견적금액",
+                          style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
+                        ),
+                        SizedBox(width: 5), // 텍스트와 입력란 사이의 간격
+                        Expanded( // Expanded 사용하여 공간을 차지하도록 설정
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                                  controller: itemPrice1Controller,
-                                  decoration: InputDecoration(
-                                    hintText: "금액을 입력하세요",
-                                    hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                                    border: OutlineInputBorder(),
+                              Expanded( // 금액 입력란을 꽉 채우도록 설정
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[300], // 배경색을 회색으로 설정
+                                    borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
                                   ),
-                                  keyboardType: TextInputType.number,
-                                  enabled: reqState == "01", // reqState가 01일 때만 활성화
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly, // 숫자만 입력 가능
-                                  ],
+                                  child: TextField(
+                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                                    textAlign: TextAlign.right, // 텍스트 오른쪽 정렬
+                                    controller: itemPrice1Controller,
+                                    decoration: InputDecoration(
+                                      hintText: "금액을 입력하세요",
+                                      hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                                      border: InputBorder.none, // 테두리 없애기
+                                      filled: true, // 배경색을 적용하기 위해 filled 속성 추가
+                                      fillColor: Colors.transparent, // 배경색을 투명으로 설정
+                                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), // 패딩 설정
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    enabled: reqState == "01", // reqState가 01일 때만 활성화
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly, // 숫자만 입력 가능
+                                    ],
+                                  ),
                                 ),
                               ),
                               SizedBox(width: 8),
-                              Text("원",
+                              Text(
+                                "원",
                                 style: WitHomeTheme.title.copyWith(fontSize: 16),
                               ),
-
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
+
                   ),
 
-                  SizedBox(height: 5),
+                  SizedBox(height: 10),
                   // 견적 내용 입력란 카드
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "견적 추가 설명",
-                            style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100], // 배경색
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4.0,
+                          offset: Offset(0, 2), // x, y 축 방향으로 그림자
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "견적 추가 설명",
+                          style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          child: Container(
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.grey[300], // 배경색을 회색으로 설정
+                              borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
                             ),
                             child: TextField(
                               style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
@@ -238,11 +350,15 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-
+                  SizedBox(height: 5),
+                  Text(
+                    "* 업체 전화번호나 위치 설명 금지",
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  ),
                   SizedBox(height: 5),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
@@ -342,6 +458,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 10),
+
                   SizedBox(height: 20),
                   Center(
                     child: reqState == "05" ? Container() : ElevatedButton(
@@ -422,8 +540,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 
   // [서비스] 견적발송 용 데이터 조회

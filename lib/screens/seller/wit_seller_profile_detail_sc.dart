@@ -135,7 +135,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                     // 광고 이미지 영역
                     SizedBox(height: 10),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.18,  // 화면 높이의 18%
+                      height: MediaQuery.of(context).size.height * 0.13,  // 화면 높이의 18%
                       width: MediaQuery.of(context).size.width * 0.85,    // 화면 너비의 85%
                       child: Image.asset(
                         'assets/images/배너4.png', // 광고 이미지 URL
@@ -143,91 +143,71 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       ),
                     ),
 
-                    // 입주포인트 영역
-                    Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.all(10.0),
-                      color: Colors.white, // 회색 바탕
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "입주포인트",
-                                style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_white)
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(10.0),
+                  color: Colors.white, // 회색 바탕
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양쪽 끝으로 배치
+                    children: [
+                      // 왼쪽에 IBJU와 금액 표기 부분
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              color: WitHomeTheme.wit_gray,
+                              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              child: Text(
+                                "IBJU",
+                                style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_white),
                               ),
-                              ElevatedButton(onPressed: () {
-
-                                print("sllrNo: " + widget.sllrNo.toString());
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SellerCashHistory(sllrNo: sellerInfo["sllrNo"])),
-                                );
-                              },
-
-                                child: Text('캐시충전',
-                                  style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: WitHomeTheme.wit_mediumSeaGreen,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 8),
-                          Container(
-                            /*decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 2.0,
-                              ),
-                              color: Colors.white,
-                            ),*/
-                            child: Row(
-                              children: [
-                                Container(
-                                  color: WitHomeTheme.wit_gray,
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 5, horizontal: 10),
-                                  child: Text(
-                                    "IBJU",
-                                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_white),
-                                  ),
-
-                                ),
-
-                                Expanded(
-                                  child: Container(
-                                    alignment: Alignment.centerRight,
-                                    color: Colors.grey[300],
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 5, horizontal: 10),
-                                    child: Text(
-                                      (cashInfo['cash'] != null && cashInfo['cash'] != '')
-                                          ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
-                                          : '0 C',
-                                      style: WitHomeTheme.title.copyWith(fontSize: 20),
-
-                                    ),
-                                  ),
-                                )
-                              ],
                             ),
-                          ),
-                        ],
+                            Expanded( // <<--- 여기 추가
+                              child: Container(
+                                alignment: Alignment.centerRight,
+                                color: Colors.grey[300],
+                                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                child: Text(
+                                  (cashInfo['cash'] != null && cashInfo['cash'] != '')
+                                      ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
+                                      : '0 C',
+                                  style: WitHomeTheme.title.copyWith(fontSize: 20),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      SizedBox(width: 5), // <<--- 여백 추가
+                      // 오른쪽에 캐시충전 버튼
+                      ElevatedButton(
+                        onPressed: () {
+                          print("sllrNo: " + widget.sllrNo.toString());
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SellerCashHistory(sllrNo: sellerInfo["sllrNo"]),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          '캐시충전',
+                          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: WitHomeTheme.wit_mediumSeaGreen,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                    Container(
+
+
+                Container(
                       margin: EdgeInsets.symmetric(vertical: 10.0),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
