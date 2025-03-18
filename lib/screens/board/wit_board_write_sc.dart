@@ -60,6 +60,7 @@ class _BoardWriteState extends State<BoardWrite> {
         title: Text("글 작성",
             style: WitHomeTheme.title),
       ),
+      backgroundColor: WitHomeTheme.wit_white,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(20.0),

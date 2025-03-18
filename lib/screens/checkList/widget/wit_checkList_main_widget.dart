@@ -24,7 +24,7 @@ class CheckListView extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
+          /*SliverAppBar(
             expandedHeight: 120, // 최대 높이 설정
             backgroundColor: WitHomeTheme.wit_lightGreen,
             flexibleSpace: FlexibleSpaceBar(
@@ -68,8 +68,8 @@ class CheckListView extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-          SliverToBoxAdapter(
+          ),*/
+          /*SliverToBoxAdapter(
             child: Container(
               color: WitHomeTheme.wit_lightGreen,
               child: ClipRRect(
@@ -80,7 +80,7 @@ class CheckListView extends StatelessWidget {
                 ),
               ),
             ),
-          ),
+          ),*/
           SliverToBoxAdapter(
             child: Container(
               color: Colors.white, // SliverList 배경색 설정

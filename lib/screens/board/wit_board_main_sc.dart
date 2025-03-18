@@ -65,10 +65,13 @@ class BoardState extends State<Board> {
         refreshBoardList: refreshBoardList,
       ) : null,
       body: Scrollbar(
-        child: BoardListView(
-          boardList: boardList,
-          refreshBoardList: refreshBoardList,
-          scrollController: _scrollController,  // ScrollController 연결
+        child: Container(
+          color: WitHomeTheme.wit_white,
+          child: BoardListView(
+            boardList: boardList,
+            refreshBoardList: refreshBoardList,
+            scrollController: _scrollController,  // ScrollController 연결
+          ),
         ),
       ),
       floatingActionButton: Container(

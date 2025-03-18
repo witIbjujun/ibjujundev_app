@@ -50,6 +50,7 @@ class BoardDetailState extends State<BoardDetail> {
         title: Text("자유게시판",
             style: WitHomeTheme.title),
       ),
+      backgroundColor: WitHomeTheme.wit_white,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(20.0),
