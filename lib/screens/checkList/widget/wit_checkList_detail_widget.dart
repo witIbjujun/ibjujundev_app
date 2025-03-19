@@ -293,6 +293,8 @@ class ExpandableItem extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // 선택했을떄만 이미지 출력 (데이터 사용량 이슈)
+                  if (isExpanded == true)
                   Container(
                     height: 320,
                     padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -303,7 +305,6 @@ class ExpandableItem extends StatelessWidget {
                       itemCount: 3,
                       itemBuilder: (context, imageIndex) {
                         final inspImg = checkInfoLv3["inspImg"] ?? ""; // null 체크 및 디폴트 값 설정
-
                         final imageUrlList = [
                           apiUrl + "/WIT/checkList/" + inspImg + "1.png", // 첫 번째 이미지
                           apiUrl + "/WIT/checkList/" + inspImg + "2.png", // 두 번째 이미지
