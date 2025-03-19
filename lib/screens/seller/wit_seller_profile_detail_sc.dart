@@ -135,7 +135,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                     // 광고 이미지 영역
                     SizedBox(height: 10),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.13,  // 화면 높이의 18%
+                      height: MediaQuery.of(context).size.height * 0.18,  // 화면 높이의 18%
                       width: MediaQuery.of(context).size.width * 0.85,    // 화면 너비의 85%
                       child: Image.asset(
                         'assets/images/배너4.png', // 광고 이미지 URL

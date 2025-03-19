@@ -247,15 +247,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100], // 배경색
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4.0,
-                          offset: Offset(0, 2), // x, y 축 방향으로 그림자
-                        ),
-                      ],
+                      color: Colors.grey[100], // 배경색을 회색으로 설정
+                      borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
                     ),
                     child: Row(
                       children: [
@@ -312,15 +305,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100], // 배경색
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4.0,
-                          offset: Offset(0, 2), // x, y 축 방향으로 그림자
-                        ),
-                      ],
+                      color: Colors.grey[100], // 배경색을 회색으로 설정
+                      borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -582,7 +568,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     if (reqState != "02") {
       // reqState가 02가 아닐 경우, 바로 updateEstimateInfo2 호출
       String cash = "1200"; // 필요한 경우 cash 값을 설정
-      await updateEstimateInfo3(
+      await updateEstimateInfo2(
         context,
         sllrNo,
         sllrClerkNo,
@@ -597,7 +583,10 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       return; // 더 이상 진행하지 않음
     }
 
-    String restId = "getCashInfo";
+    saveImages(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, null, reqState);
+
+
+/*    String restId = "getCashInfo";
     int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0;
 
     // 1. 견적 발송 전 캐시 정보 조회
@@ -615,7 +604,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
       int cashInt = int.tryParse(cash.toString()) ?? 0;
 
-      if (cashInt == 0) {
+      *//*if (cashInt == 0) {
         print("캐시가 부족합니다.");
         // 다이얼로그 표시
         WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -628,17 +617,18 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             );
           }
         });
-      } else {
-        print("캐시가 충분합니다: " + cashInt.toString());
+      }*//*
+      //else {
+      //print("캐시가 충분합니다: " + cashInt.toString());
         // 이미지 저장
         saveImages(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState);
-      }
+      //}
     } else {
       // 오류 처리
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("캐시 조회가 실패하였습니다.")),
       );
-    }
+    }*/
   }
 
 
@@ -660,7 +650,11 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
           String estimateContent = estimateContentController.text;
           String inputItemPrice1 = itemPrice1Controller.text;
 
-          showDialog(
+          updateEstimateInfo2(
+              context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, null
+          );
+
+          /*showDialog(
             context: context,
             builder: (BuildContext context) {
               return PointOKDialog(
@@ -681,7 +675,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                 },
               );
             },
-          );
+          );*/
         }
       });
     } else {
@@ -702,8 +696,12 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             String estimateContent = estimateContentController.text;
             String inputItemPrice1 = itemPrice1Controller.text;
 
+            updateEstimateInfo2(
+                context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, fileInfo
+            );
+
             // 다이얼로그 표시 후, 성공적인 이미지 저장 후 화면 이동
-            showDialog(
+            /*showDialog(
               context: context,
               builder: (BuildContext context) {
                 return PointOKDialog(
@@ -724,7 +722,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   },
                 );
               },
-            );
+            );*/
           }
         });
       }
@@ -806,7 +804,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 }
 
 // PointOKDialog 클래스에 onSuccess 콜백 추가
-class PointOKDialog extends StatelessWidget {
+/*class PointOKDialog extends StatelessWidget {
   final String sllrNo;
   final String sllrClerkNo;
   final String estNo;
@@ -853,7 +851,7 @@ class PointOKDialog extends StatelessWidget {
         ),
       ],
     );
-  }
+  }*/
 
 
   // [서비스]견적 정보 저장
@@ -865,8 +863,6 @@ class PointOKDialog extends StatelessWidget {
 
     print("sllrNo : " + sllrNo);
     print("inputItemPrice1 : " + inputItemPrice1);
-    print("estimateContent : " + estimateContent);
-
 
     // PARAM
     final param = jsonEncode({
@@ -905,7 +901,7 @@ class PointOKDialog extends StatelessWidget {
   }
 
   // 성공 다이얼로그를 표시하는 메서드
-  void _showSuccessDialog(BuildContext context) {
+  /*void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -930,11 +926,11 @@ class PointOKDialog extends StatelessWidget {
         );
       },
     );
-  }
-}
+  }*/
 
 
-class PointNotOKDialog extends StatelessWidget {
+
+/*class PointNotOKDialog extends StatelessWidget {
   final String sllrNo; // sllrNo 변수를 추가합니다.
 
   PointNotOKDialog({required this.sllrNo}); // 생성자에 추가합니다.
@@ -957,11 +953,11 @@ class PointNotOKDialog extends StatelessWidget {
             // 충전 로직 추가
             //Navigator.of(context).pop(); // 다이얼로그 닫기
             // 충전 다이얼로그 띄우기
-            /*showDialog(
+            *//*showDialog(
               context: context,
               builder: (BuildContext context) {
                 return PointPurchaseDialog();
-              },*/
+              },*//*
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CashRecharge(sllrNo: sllrNo)),
@@ -985,14 +981,14 @@ class PointNotOKDialog extends StatelessWidget {
       ],
     );
   }
-}
+}*/
 
-class PointPurchaseDialog extends StatefulWidget {
+/*class PointPurchaseDialog extends StatefulWidget {
   @override
   _PointPurchaseDialogState createState() => _PointPurchaseDialogState();
-}
+}*/
 
-class _PointPurchaseDialogState extends State<PointPurchaseDialog> {
+/*class _PointPurchaseDialogState extends State<PointPurchaseDialog> {
   int? _selectedPoint;
 
   @override
@@ -1045,10 +1041,10 @@ class _PointPurchaseDialogState extends State<PointPurchaseDialog> {
             // 결제하기 로직 추가 및 Intro로 이동
             if (_selectedPoint != null) {
               Navigator.of(context).pop(); // 다이얼로그 닫기
-              /*Navigator.push(
+              *//*Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const TosspaymentsSampleApp()),
-              );*/
+              );*//*
             } else {
               // 포인트가 선택되지 않은 경우 알림
               ScaffoldMessenger.of(context).showSnackBar(
@@ -1071,4 +1067,4 @@ class _PointPurchaseDialogState extends State<PointPurchaseDialog> {
       ],
     );
   }
-}
+}*/
