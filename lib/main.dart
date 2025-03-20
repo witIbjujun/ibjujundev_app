@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:intl/date_symbol_data_file.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/login/wit_naverLogin.dart';
@@ -25,7 +27,8 @@ Future<void> main() async {
 
   // Firebase 초기화 추가
   await Firebase.initializeApp(); // Firebase 서비스를 사용하기 전에 반드시 초기화해야 함
-
+  // 날짜 형식 초기화
+  await initializeDateFormatting();
   // Firebase Messaging 초기화
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -56,7 +59,9 @@ Future<void> main() async {
     nativeAppKey: '25cc33cc258862ad87987baa7b5f4477',
   );
 
-
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // 세로 모드 고정
+  ]).then((_) {
   runApp(
     MultiProvider(
       providers: [
@@ -67,6 +72,7 @@ Future<void> main() async {
       child: MyApp(), // MyApp에 토큰 전달
     ),
   );
+  });
 }
 
 class MyApp extends StatelessWidget {
