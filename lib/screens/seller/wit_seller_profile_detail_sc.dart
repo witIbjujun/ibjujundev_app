@@ -6,7 +6,6 @@ import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetList_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
-import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_view_sc.dart';
@@ -25,6 +24,8 @@ import 'package:witibju/screens/seller/wit_seller_profile_modify_sc.dart';
 
 // import '../../main_toss.dart';
 import '../board/wit_board_main_sc.dart';
+import '../common/wit_tableCalendar_sc.dart';
+import '../common/wit_tableCalendar_widget.dart';
 import '../home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
@@ -47,6 +48,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   Map cashInfo = {};
   dynamic sllrNo; // 새로운 sllrNo 변수 추가
   final TextEditingController _sllrNoController = TextEditingController(); // 입력 필드 컨트롤러
+  late final DateTime? _selectedDate; // 선택된 날짜를 여기에 설정
 
 
   @override
@@ -442,8 +444,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     ),
                                   ),
                                   body: Container(
+
                                     padding: EdgeInsets.all(16.0),
-                                    child: SellerScheduleList(sllrNo: sllrNo.toString()), // 리스트를 추가
+                                    //child: SellerScheduleList(sllrNo: sllrNo.toString()), // 리스트를 추가
+                                    child: TableCalenderMain(),
+
                                   ),
                                 );
                               },

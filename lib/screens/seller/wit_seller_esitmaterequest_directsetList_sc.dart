@@ -83,7 +83,7 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
           children: [
             Text(
               '바로견적을 활용하는 방법이 궁금하신가요?',
-              style: TextStyle(fontSize: 16),
+              style: WitHomeTheme.title.copyWith(fontSize: 16),
             ),
             SizedBox(height: 10),
             ElevatedButton(
@@ -104,7 +104,9 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: Text('+ 바로 견적 등록하기'),
+              child: Text('+ 바로 견적 등록하기',
+                style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+              ),
             ),
             Divider(height: 20),
             Expanded(
@@ -171,15 +173,19 @@ class InfoCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: WitHomeTheme.title.copyWith(fontSize: 20),
             ),
             SizedBox(height: 10),
             LinearProgressIndicator(
               value: progressValue,
             ),
             SizedBox(height: 10),
-            Text('오늘 견적 발송: $current/$total개'),
-            Text('오늘 사용 캐시: $todayCash 캐시'),
+            Text('오늘 견적 발송: $current/$total개',
+              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+            ),
+            Text('오늘 사용 캐시: $todayCash 캐시',
+              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+            ),
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
@@ -191,13 +197,14 @@ class InfoCard extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF7294CC),
-                foregroundColor: Colors.white,
+                backgroundColor: WitHomeTheme.wit_lightSteelBlue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: Text('캐시 충전하기'),
+              child: Text('캐시 충전하기',
+                style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+              ),
             ),
           ],
         ),

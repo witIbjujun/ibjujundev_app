@@ -34,13 +34,24 @@ class EstimateRequestListState extends State<EstimateRequestList> {
       body: SingleChildScrollView( // 스크롤 가능하게 설정
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: estimateRequestList.map((request) {
+          children: estimateRequestList.isEmpty
+              ? [
+                  Center( // Center 위젯으로 텍스트 중앙 정렬
+                    child: Text(
+                      "조회된 내용이 없습니다.",
+                      style: WitHomeTheme.title.copyWith(fontSize: 24, color: WitHomeTheme.wit_black),
+                    ),
+                  ),
+                ] // 리스트가 비어있을 경우 텍스트 표시
+              : estimateRequestList.map((request) {
             return buildEstimateItem(request, context);
           }).toList(),
         ),
       ),
     );
   }
+
+
 
   Widget buildEstimateItem(dynamic request, BuildContext context) {
     return EstimateItem(
