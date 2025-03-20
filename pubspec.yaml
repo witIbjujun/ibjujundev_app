@@ -45,6 +45,7 @@ dependencies:
   dio: ^5.7.0   # 이미지 파일 통신용
   intl: ^0.18.0 # 금액표시 , 자동처리
   flutter_launcher_icons: ^0.13.1  # 앱 아이콘
+  table_calendar: ^3.0.9    #테이블 캘린더
 
 
   #통신
