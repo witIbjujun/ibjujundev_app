@@ -62,10 +62,10 @@ class TableCalenderMainState extends State<TableCalenderMain> {
           const SizedBox(height: 10),
           Expanded(
             child: ListView(
-              children : buildEventList(_getEventsForDay(_selectedDate!)),
-              /*children: _selectedDate != null
+              /*children : buildEventList(_getEventsForDay(_selectedDate!)),*/
+              children: _selectedDate != null
                   ? buildEventList(_getEventsForDay(_selectedDate!))
-                  : buildEventList(_getEventsForMonth(_focusedDay)),*/
+                  : buildEventList(_getEventsForMonth(_focusedDay)),
             ),
           ),
         ],
