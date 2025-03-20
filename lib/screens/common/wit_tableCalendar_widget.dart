@@ -88,6 +88,7 @@ class CalendarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TableCalendar(
       locale: 'ko_KR',
+      daysOfWeekHeight: 30,
       focusedDay: focusedDay,
       firstDay: DateTime.utc(2023, 01, 01),
       lastDay: DateTime.utc(2030, 12, 31),
