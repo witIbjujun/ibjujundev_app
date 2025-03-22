@@ -172,7 +172,7 @@ class SellerAppBarState extends State<SellerAppBar> {
           icon: Icon(Icons.search, color: Colors.white), // 아이콘 색상 하얀색으로 설정
         ),
 
-        /*IconButton(
+        IconButton(
           onPressed: () {
             Navigator.push(
               context,
@@ -182,7 +182,7 @@ class SellerAppBarState extends State<SellerAppBar> {
           },
           icon: Icon(
               Icons.perm_identity, color: Colors.white), // 아이콘 색상 하얀색으로 설정
-        ),*/
+        ),
         IconButton(
             onPressed: () {}, icon: Icon(Icons.mail, color: Colors.white)),
         // 아이콘 색상 하얀색으로 설정
