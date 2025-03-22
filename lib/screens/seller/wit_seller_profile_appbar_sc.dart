@@ -27,9 +27,9 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 
 //import '../intro.dart';
 class SellerAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final dynamic sllrNo; // 초기 sllrNo를 받기 위한 변수
-
-  const SellerAppBar({super.key, required this.sllrNo});
+  final dynamic sllrNo;
+  final Function(dynamic) onSllrNoChanged; // 콜백 추가
+  const SellerAppBar({super.key, required this.sllrNo, required this.onSllrNoChanged});
 
   @override
   State<StatefulWidget> createState() => SellerAppBarState();
@@ -43,6 +43,7 @@ class SellerAppBarState extends State<SellerAppBar> {
   String storeName = "";
   Map cashInfo = {};
   dynamic sllrNo; // 새로운 sllrNo 변수 추가
+  late final Function(dynamic) onSllrNoChanged; // 콜백 추가
   final TextEditingController _sllrNoController =
   TextEditingController(); // 입력 필드 컨트롤러
 
@@ -70,6 +71,8 @@ class SellerAppBarState extends State<SellerAppBar> {
       setState(() {
         sellerInfo = response;
         storeName = sellerInfo['storeName'];
+        sllrNo = sellerInfo['sllrNo'];
+        print("12331223131323123132312123 : " + sllrNo.toString());
       });
     } else {
       // 오류 처리
@@ -164,6 +167,7 @@ class SellerAppBarState extends State<SellerAppBar> {
             if (newSllrNo.isNotEmpty) {
               setState(() {
                 sllrNo = int.tryParse(newSllrNo); // sllrNo 업데이트
+                widget.onSllrNoChanged(sllrNo); // 부모 위젯에 sllrNo 변경 알림
                 getSellerInfo(sllrNo); // 화면 재조회
                 getCashInfo(sllrNo); // 화면 재조회
               });

@@ -19,6 +19,7 @@ class EstimateRequestList extends StatefulWidget {
 
 class EstimateRequestListState extends State<EstimateRequestList> {
   List<dynamic> estimateRequestList = [];
+  bool isLoading = true; // 로딩 상태 추가
 
   @override
   void initState() {
@@ -31,27 +32,27 @@ class EstimateRequestListState extends State<EstimateRequestList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white, // 배경색을 흰색으로 설정
-      body: SingleChildScrollView( // 스크롤 가능하게 설정
+      body: isLoading // 로딩 상태에 따라 다르게 표시
+          ? Center(child: CircularProgressIndicator()) // 로딩 인디케이터 표시
+          : SingleChildScrollView( // 스크롤 가능하게 설정
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: estimateRequestList.isEmpty
-              ? [
-                  Center( // Center 위젯으로 텍스트 중앙 정렬
-                    child: Text(
-                      "조회된 내용이 없습니다.",
-                      style: WitHomeTheme.title.copyWith(fontSize: 24, color: WitHomeTheme.wit_black),
-                    ),
-                  ),
-                ] // 리스트가 비어있을 경우 텍스트 표시
-              : estimateRequestList.map((request) {
+          children: estimateRequestList.isNotEmpty // 리스트가 비어있지 않을 경우
+              ? estimateRequestList.map((request) {
             return buildEstimateItem(request, context);
-          }).toList(),
+          }).toList()
+              : [
+            Center( // Center 위젯으로 텍스트 중앙 정렬
+              child: Text(
+                "조회된 내용이 없습니다.",
+                style: WitHomeTheme.title.copyWith(fontSize: 24, color: WitHomeTheme.wit_black),
+              ),
+            ),
+          ], // 리스트가 비어있을 경우 텍스트 표시
         ),
       ),
     );
   }
-
-
 
   Widget buildEstimateItem(dynamic request, BuildContext context) {
     return EstimateItem(
@@ -84,6 +85,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
     // 결과 셋팅
     setState(() {
       estimateRequestList = _estimateRequestList;
+      isLoading = false; // 로딩 상태 종료
     });
   }
 }
@@ -235,9 +237,4 @@ class EstimateItem extends StatelessWidget {
       ),
     );
   }
-
-
-
-
-
 }

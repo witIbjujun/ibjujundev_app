@@ -17,8 +17,9 @@ import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 
 class SellerProfileView extends StatefulWidget {
   final dynamic sllrNo;
+  final dynamic appbarYn;
 
-  const SellerProfileView({Key? key, required this.sllrNo}) : super(key: key);
+  const SellerProfileView({Key? key, required this.sllrNo, required this.appbarYn}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -312,14 +313,17 @@ class SellerProfileViewState extends State<SellerProfileView> {
         /*appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
         ),*/
-        appBar: AppBar(
+        appBar: (widget.appbarYn == "Y")
+            ? AppBar(
           backgroundColor: WitHomeTheme.wit_gray,
           iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
           title: Text(
             '파트너 프로필',
             style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
           ),
-        ),
+        )
+          : null, // appbarYn이 "Y"가 아닐 경우 null을 반환하여 AppBar를 표시하지 않음
+
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: ListView(

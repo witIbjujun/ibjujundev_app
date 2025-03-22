@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_view_sc.dart';
 
 // import '../../main_toss.dart';
 import '../../util/wit_api_ut.dart';
@@ -105,6 +106,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
         "itemPrice1 정보 없음";
     String reqState = estimateRequestInfoForSend['reqState'] ??
         "reqState 정보 없음";
+    String appbarYn = "N";
 
     // 입력 필드에 초기값 설정
     if (reqState != "01") {
@@ -233,7 +235,11 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     children: [
                       Checkbox(
                         value: _isChecked,
-                        onChanged: _onCheckboxChanged,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _isChecked = value ?? false; // 체크 상태 업데이트
+                          });
+                        },
                         activeColor: Colors.blue, // 체크박스 체크 시 색상 설정
                       ),
                       Text(
@@ -242,6 +248,15 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ),
                     ],
                   ),
+// 체크박스가 체크된 경우 SellerProfileView 표시
+                  if (_isChecked)
+                    Container(
+                      constraints: BoxConstraints(
+                        minHeight: 100, // 최소 높이 설정
+                        maxHeight: 800, // 최대 높이 설정
+                      ),
+                      child: SellerProfileView(sllrNo: "17", appbarYn : "N"),
+                    ),
                   SizedBox(height: 5),
                   // 금액 입력란 카드
                   Container(

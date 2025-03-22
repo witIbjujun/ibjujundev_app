@@ -49,15 +49,23 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   dynamic sllrNo; // 새로운 sllrNo 변수 추가
   final TextEditingController _sllrNoController = TextEditingController(); // 입력 필드 컨트롤러
   late final DateTime? _selectedDate; // 선택된 날짜를 여기에 설정
-
+  String appbarYn = "";
 
   @override
   void initState() {
     super.initState();
     sllrNo = widget.sllrNo.toString(); // 초기값 설정
-    print("상세 sllrNo : " + sllrNo.toString() );
-    getSellerInfo(sllrNo);
-    getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵니다.
+    // 초기화 메서드 호출
+    fetchData();
+  }
+
+  void fetchData() {
+    // sllrNo가 설정된 경우에만 데이터를 가져옴
+    if (sllrNo != null) {
+      // API 호출 등의 초기화 로직 구현
+      getSellerInfo(sllrNo);
+      getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵
+    }
   }
 
   Future<void> getSellerInfo(dynamic sllrNo) async {
@@ -128,6 +136,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
 
         appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
+          onSllrNoChanged: (newSllrNo) {
+            setState(() {
+              sllrNo = newSllrNo; // sllrNo 업데이트
+              fetchData();
+            });
+          },
         ),
         body:
         SingleChildScrollView(
@@ -563,11 +577,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
 
                         ),
                         onPressed: () {
+
                           // 버튼 클릭 시 수행할 작업 추가
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SellerProfileView(sllrNo: sellerInfo["sllrNo"])),
+                                builder: (context) => SellerProfileView(sllrNo: sellerInfo["sllrNo"], appbarYn: 'Y')),
                           );
                         },
                         child: Container(
