@@ -497,8 +497,11 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               '02' // 상태를 '02'로 변경
                           );
                         } else if (reqState == "02") {
-                          MaterialPageRoute(builder: (context) => ChatPage());
-
+                          print("12313213212312312");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChatPage()),
+                          );
                           // 작업 진행 로직
 /*                          updateEstimateInfo(
                               sllrNo,
@@ -510,8 +513,10 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               '03' // 상태를 '05'로 변경
                           );*/
                         } else if (reqState == "03") {
-                          MaterialPageRoute(builder: (context) => ChatPage());
-
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ChatPage()),
+                          );
                         // 작업 진행 로직
                           /*updateEstimateInfo(
                               sllrNo,
