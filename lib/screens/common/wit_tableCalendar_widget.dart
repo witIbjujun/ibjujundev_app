@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:witibju/screens/common/wit_tableCalendar_sc.dart';
+
+import '../home/wit_home_theme.dart';
 
 /**
  * 달력 클릭 이벤트
@@ -14,59 +17,100 @@ List<Widget> buildEventList(List<Event> events) {
         event.dateTime.year != lastDisplayedDate.year ||
         event.dateTime.month != lastDisplayedDate.month ||
         event.dateTime.day != lastDisplayedDate.day) {
+      // 일자 위젯
       eventWidgets.add(
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            '${event.dateTime.year}년 ${event.dateTime.month}월 ${event.dateTime.day}일',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          padding: const EdgeInsets.fromLTRB(15.0, 5.0, 0, 5.0),
+          child: Row(
+            children: [
+              Text('○',
+                style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_black),
+              ),
+              SizedBox(width: 10),
+              Text(
+                '${event.dateTime.month}월 ${event.dateTime.day}일 ${DateFormat.E("ko_KR").format(event.dateTime)}요일',
+                style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_black),
+              ),
+            ],
           ),
         ),
       );
       lastDisplayedDate = event.dateTime;
     }
+
+    // 일자별 리스트 위젯
     eventWidgets.add(
       Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white, // 배경색
-            borderRadius: BorderRadius.circular(10), // 둥근 테두리
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2), // 그림자 색
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: Offset(0, 3), // 그림자 위치
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              const SizedBox(width: 10),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0), // 내용 여백
-                  child: Text(
-                    event.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold, // 글자 두껍게
-                      color: Colors.black, // 글자 색
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Row(
+          children: [
+            Container(
+              width: 1,
+              height: 80,
+              color: WitHomeTheme.wit_lightgray,
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_lightGreen,
+                  borderRadius: BorderRadius.circular(45),
+                ),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                        width: 45,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: WitHomeTheme.wit_lightGreen,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: WitHomeTheme.wit_white,
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          event.dateTime.hour.toString().padLeft(2, '0') + ":" + event.dateTime.minute.toString().padLeft(2, '0'),
+                          style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_white),
+                        ),
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              event.title,
+                              style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_white, fontWeight: FontWeight.bold),
+                            ),
+                            if (event.subtitle != "")
+                              Text(
+                                event.subtitle,
+                                style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_white),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
-
   }
 
   return eventWidgets;
 }
+
 
 /**
  * 달력 위젯
@@ -76,19 +120,21 @@ class CalendarWidget extends StatelessWidget {
   final DateTime? selectedDate;
   final Map<DateTime, List<Event>> events; // Event 타입으로 정의
   final Function(DateTime, DateTime) onDaySelected;
+  final Function(DateTime) onPageChanged;
 
   CalendarWidget({
     required this.focusedDay,
     required this.selectedDate,
     required this.events,
     required this.onDaySelected,
+    required this.onPageChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return TableCalendar(
       locale: 'ko_KR',
-      daysOfWeekHeight: 30,
+      daysOfWeekHeight: 25,
       focusedDay: focusedDay,
       firstDay: DateTime.utc(2023, 01, 01),
       lastDay: DateTime.utc(2030, 12, 31),
@@ -101,25 +147,26 @@ class CalendarWidget extends StatelessWidget {
         markersAutoAligned: true,
         markersAlignment: Alignment.bottomCenter,
         markersMaxCount: 4,
-        markerDecoration: BoxDecoration(
-          color: Colors.black,
+        markerMargin: const EdgeInsets.symmetric(horizontal: 0.0),
+        todayDecoration: BoxDecoration(
+          color: WitHomeTheme.wit_lightgray, // 현재 날짜 원형 색깔
           shape: BoxShape.circle,
         ),
-        markerMargin: const EdgeInsets.symmetric(horizontal: 2.0),
+        selectedDecoration: BoxDecoration(
+          color: WitHomeTheme.wit_lightBlue, // 선택한 날짜 원형 색깔
+          shape: BoxShape.circle,
+        ),
       ),
       onDaySelected: onDaySelected,
       selectedDayPredicate: (day) {
         return isSameDay(selectedDate, day);
       },
-      onPageChanged: (focusedDay) {
-        print(focusedDay);
-      },
+      onPageChanged: onPageChanged,
       calendarBuilders: CalendarBuilders(
         markerBuilder: (context, day, events) {
           // events는 List<dynamic> 형태로 들어올 수 있으므로, List<Event>로 변환
           final eventList = (this.events[day] ?? []) as List<Event>;
-          final eventCount = eventList.length; // 안전하게 길이 가져오기
-
+          final eventCount = eventList.length;
           if (eventCount > 0) {
             return Positioned(
               bottom: 4,
@@ -127,8 +174,7 @@ class CalendarWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: List.generate(
                   eventCount > 4 ? 4 : eventCount,
-                      (index) => const Text(
-                    '.',
+                      (index) => const Text('.',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
