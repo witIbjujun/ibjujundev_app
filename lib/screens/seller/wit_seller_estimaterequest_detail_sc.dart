@@ -231,32 +231,34 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ],
                     ),
                   ),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _isChecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _isChecked = value ?? false; // 체크 상태 업데이트
-                          });
-                        },
-                        activeColor: Colors.blue, // 체크박스 체크 시 색상 설정
-                      ),
-                      Text(
-                        "프로필 자동 붙이기",
-                        style: WitHomeTheme.title.copyWith(fontSize: 16),
-                      ),
-                    ],
-                  ),
-// 체크박스가 체크된 경우 SellerProfileView 표시
-                  if (_isChecked)
-                    Container(
-                      constraints: BoxConstraints(
-                        minHeight: 100, // 최소 높이 설정
-                        maxHeight: 800, // 최대 높이 설정
-                      ),
-                      child: SellerProfileView(sllrNo: "17", appbarYn : "N"),
+                  if (reqState == "01") ...[ // 조건이 만족할 때만 해당 위젯을 추가
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: _isChecked,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _isChecked = value ?? false; // 체크 상태 업데이트
+                            });
+                          },
+                          activeColor: Colors.blue, // 체크박스 체크 시 색상 설정
+                        ),
+                        Text(
+                          "프로필 자동 붙이기",
+                          style: WitHomeTheme.title.copyWith(fontSize: 16),
+                        ),
+                      ],
                     ),
+                    // 체크박스가 체크된 경우 SellerProfileView 표시
+                    if (_isChecked)
+                      Container(
+                        constraints: BoxConstraints(
+                          minHeight: 100, // 최소 높이 설정
+                          maxHeight: 800, // 최대 높이 설정
+                        ),
+                        child: SellerProfileView(sllrNo: "17", appbarYn: "N"),
+                      ),
+                  ],
                   SizedBox(height: 5),
                   // 금액 입력란 카드
                   Container(
