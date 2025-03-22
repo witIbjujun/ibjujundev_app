@@ -252,13 +252,18 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     // 체크박스가 체크된 경우 SellerProfileView 표시
                     if (_isChecked)
                       Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black), // 테두리 색상 설정
+                          borderRadius: BorderRadius.circular(2), // 둥근 모서리 설정
+                        ),
                         constraints: BoxConstraints(
                           minHeight: 100, // 최소 높이 설정
                           maxHeight: 800, // 최대 높이 설정
                         ),
-                        child: SellerProfileView(sllrNo: "17", appbarYn: "N"),
+                        child: SellerProfileView(sllrNo : widget.sllrNo, appbarYn: "N"),
                       ),
                   ],
+
                   SizedBox(height: 5),
                   // 금액 입력란 카드
                   Container(
