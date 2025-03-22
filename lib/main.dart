@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
 
       home: HomeScreen(), //현재 메인
-      ///home: NaverLoginScreen() , //네이버 로그인
+      ///home: TableCalenderMain() , //네이버 로그인
       // 토스 결재 후 처리
       getPages: [
         GetPage(name: '/result', page: () => ResultPage()), // 결과 화면 등록

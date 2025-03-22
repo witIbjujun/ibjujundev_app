@@ -51,7 +51,7 @@ class WitHomeTheme {
   );
 
 
-  static const TextTheme textTheme = TextTheme(
+  static TextTheme textTheme = const TextTheme(
     headlineMedium: display1,
     headlineSmall: headline,
     titleLarge: title,
@@ -59,6 +59,24 @@ class WitHomeTheme {
     bodyLarge: body2,
     bodyMedium: body1,
     bodySmall: caption,
+
+/*    NanumHeadlineMedium: NanumDisplay1,
+    NanumHeadlineSmall: NanumHeeadline,
+    NanumTitleLarge: NanumTitle,
+    NanumTitleSmall: NanumSubtitle,
+    NanumBodyLarge: NanumBody2,
+    NanumBodyMedium: NanumBody1,
+    NanumBodySmall: NanumCaption,*/
+
+  ).copyWith(
+    // Nanum 폰트 적용된 텍스트 스타일 추가
+    headlineMedium: NanumDisplay1,
+    headlineSmall: NanumHeeadline,
+    titleLarge: NanumTitle,
+    titleSmall: NanumSubtitle,
+    bodyLarge: NanumBody2,
+    bodyMedium: NanumBody1,
+    bodySmall: NanumCaption,
   );
 
   static const TextStyle display1 = TextStyle(
@@ -71,9 +89,28 @@ class WitHomeTheme {
     color: darkerText,
   );
 
+  static const TextStyle NanumDisplay1 = TextStyle(
+    // Caption -> caption
+    fontFamily: 'Nanum',
+    fontWeight: FontWeight.bold,
+    fontSize: 36,
+    letterSpacing: 0.4,
+    height: 0.9,
+    color: darkerText,
+  );
+
   static const TextStyle headline = TextStyle(
     // h5 -> headline
     fontFamily: 'WorkSans',
+    fontWeight: FontWeight.bold,
+    fontSize: 24,
+    letterSpacing: 0.27,
+    color: darkerText,
+  );
+
+  static const TextStyle NanumHeeadline= TextStyle(
+    // Caption -> caption
+    fontFamily: 'Nanum',
     fontWeight: FontWeight.bold,
     fontSize: 24,
     letterSpacing: 0.27,
@@ -98,6 +135,15 @@ class WitHomeTheme {
     color: darkerText,
   );
 
+  static const TextStyle NanumTitle = TextStyle(
+    // Caption -> caption
+    fontFamily: 'Nanum',
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+    letterSpacing: 0.18,
+    color: darkerText,
+  );
+
   static const TextStyle subtitle = TextStyle(
     // subtitle2 -> subtitle
     fontFamily: 'WorkSans',
@@ -107,9 +153,28 @@ class WitHomeTheme {
     color: darkText,
   );
 
+  static const TextStyle NanumSubtitle = TextStyle(
+    // Caption -> caption
+    fontFamily: 'Nanum',
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    letterSpacing: -0.04,
+    color: darkText,
+  );
+
+
   static const TextStyle body2 = TextStyle(
     // body1 -> body2
     fontFamily: 'WorkSans',
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    letterSpacing: 0.2,
+    color: darkText,
+  );
+
+  static const TextStyle NanumBody2 = TextStyle(
+    // Caption -> caption
+    fontFamily: 'Nanum',
     fontWeight: FontWeight.w400,
     fontSize: 14,
     letterSpacing: 0.2,
@@ -125,6 +190,15 @@ class WitHomeTheme {
     color: darkText,
   );
 
+  static const TextStyle NanumBody1 = TextStyle(
+    // Caption -> caption
+    fontFamily: 'Nanum',
+    fontWeight: FontWeight.bold,
+    fontSize: 12,
+    // letterSpacing: 0.2,
+    color: Colors.black, // was lightText
+  );
+
   static const TextStyle caption = TextStyle(
     // Caption -> caption
     fontFamily: 'WorkSans',
@@ -133,6 +207,16 @@ class WitHomeTheme {
     letterSpacing: 0.2,
     color: lightText, // was lightText
   );
+
+  static const TextStyle NanumCaption = TextStyle(
+    // Caption -> caption
+    fontFamily: 'Nanum',
+    fontWeight: FontWeight.w400,
+    fontSize: 12,
+    letterSpacing: 0.2,
+    color: lightText, // was lightText
+  );
+
 }
 
 class HexColor extends Color {

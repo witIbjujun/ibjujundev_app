@@ -151,14 +151,18 @@ class _ImageBoxState extends State<ImageBox> {
 class WitHomeWidgets {
   // getTabBarUI 함수 작성
   static Widget getTabBarUI(TabController tabController, List<String> tabNames) {
-    return TabBar(
-      controller: tabController,
-      tabs: tabNames.map((name) => Tab(text: name)).toList(),
-      indicatorColor: Color(0xFFAFCB54),
-      labelColor: Color(0xFFAFCB54),
-      unselectedLabelColor: Colors.grey,
+    return Container(
+      color: Colors.white, // ✅ 배경색 흰색 설정
+      child: TabBar(
+        controller: tabController,
+        tabs: tabNames.map((name) => Tab(text: name)).toList(),
+        indicatorColor: WitHomeTheme.wit_lightGreen,
+        labelColor: WitHomeTheme.wit_lightGreen,
+        unselectedLabelColor: Colors.grey,
+      ),
     );
   }
+
 
   // showSelectBox 함수 추가
   static void showSelectBox(BuildContext context, String selectedOption, List<String> options, Function(String) onSelect) {

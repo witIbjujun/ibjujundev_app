@@ -7,6 +7,7 @@ import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/login/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/home/wit_compay_view_sc_.dart';
+import 'package:witibju/screens/home/wit_gongu_request.dart';
 import 'package:witibju/screens/home/wit_home_get_estimate.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/wit_estimate_detail.dart';
@@ -301,6 +302,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               _buildIconWithLabel(
                                 imagePath: 'assets/home/GroupPurchase.png',
                                 label: '공동구매',
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => GonguRequest()),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -375,7 +381,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         const SizedBox(height: 4.0), // 이미지와 텍스트 간격 조정
         Text(
           label,
-          style: WitHomeTheme.title.copyWith(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.black),
+         // style: WitHomeTheme.title.copyWith(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.black),
+          style: WitHomeTheme.subtitle.copyWith(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold),
     ),
       ],
     );

@@ -109,9 +109,9 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
             top: 2,
             right: 2,
             child: Image.asset(
-              iconImage,
-              width: 24, // 아이콘 크기 조절
-              height: 24,
+              iconImage+".png",
+              width: 34, // 아이콘 크기 조절
+              height: 34,
             ),
           ),
 

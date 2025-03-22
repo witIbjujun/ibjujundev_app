@@ -10,10 +10,11 @@ import 'package:witibju/screens/home/wit_request_detail.dart';
 
 import '../../util/wit_api_ut.dart';
 import '../chat/chatMain.dart';
+import '../common/wit_common_util.dart';
 import 'models/requestInfo.dart';
 import 'wit_estimate_notice.dart'; // 알림 화면 연결
 
-/// 견적화면
+/// 견적요청화면
 class EstimateScreen extends StatefulWidget {
   @override
   State<EstimateScreen> createState() => _EstimateScreenState();
@@ -58,14 +59,16 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: WitHomeTheme.white,
         title: Text('견적 요청 화면'),
       ),
       body: Column(
         children: [
           // 광고 영역
           Container(
-            height: 200, // 높이를 고정하여 Overflow 방지]
+            height: 180, // 높이를 고정하여 Overflow 방지]
             color:WitHomeTheme.white,
             child:  CommonImageBanner(
               imagePath: 'assets/home/gongguBanner.png', // 원하는 이미지 파일명
@@ -73,7 +76,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
               widthRatio: 0.85,   // 화면 너비의 85% (기본값 90%)
             ),
           ),
-          SizedBox(height: 16.0),
+         // SizedBox(height: 2.0),
 
           // 견적 및 알림 탭
           WitHomeWidgets.getTabBarUI(_tabController, ['견적', '알림']),
@@ -102,12 +105,12 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
     );
   }
 
+  // 2025-03-22 수정: requestList 만으로 받은 견적 테이블 구성
   List<Widget> _buildReqNoSections() {
     Map<String, List<RequestInfo>> reqNoGroupedRequests = {};
 
     for (var request in requestList) {
       String reqNo = request.reqNo;
-      String formatReqNo = request.formatReqNo;
       if (!reqNoGroupedRequests.containsKey(reqNo)) {
         reqNoGroupedRequests[reqNo] = [];
       }
@@ -115,6 +118,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
     }
 
     List<Widget> sectionWidgets = [];
+
     reqNoGroupedRequests.forEach((reqNo, requests) {
       Map<String, List<RequestInfo>> categoryGroupedRequests = {};
       for (var request in requests) {
@@ -127,6 +131,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
 
       sectionWidgets.add(
         Container(
+          color: Colors.white,
           padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,14 +139,8 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '요청 번호: ${requests.first.formatReqNo}',
-                    style: WitHomeTheme.body2,
-                  ),
-                  Text(
-                    '${requests.first.timeAgo} 요청 견적',
-                    style: WitHomeTheme.body2,
-                  ),
+                  Text('${requests.first.timeAgo} 요청 견적', style: WitHomeTheme.body2),
+                  Text('${requests.first.formatReqNo}', style: WitHomeTheme.body2),
                 ],
               ),
               SizedBox(height: 8.0),
@@ -149,41 +148,28 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                 SectionWidget(
                   title: entry.value.first.companyCnt == '-'
                       ? '${entry.value.first.categoryNm} '
-                     : '${entry.value.first.categoryNm}',  /// (${entry.value.first.companyCnt}건)',
-                  items: entry.value.map((request) {
-                    print("무엇인가???==== ${request.reqState}");
-                    // reqState가 '02'가 아닌 경우, estimateAmount만 표시하는 ListItem 구성
-
-                    return request.reqState != '02'
-                        ? ListItem(
-                      company: '', // 회사명을 빈 문자열로 처리하여 숨김
-                      time: '',
-                      rate: '',
-                      estimateContents: request.estimateContents,
-                      reqDateInfo: request.reqDateInfo,
-                      reqState: request.reqState,
-                      reqStateNm: request.reqStateNm,
-                      estimateAmount: request.estimateAmount,
-                    )
-                        : ListItem(
-                      company: request.companyNm,
-                      time: request.reqDate,
-                      rate: request.rate,
-                      estimateContents: request.estimateContents,
-                      reqDateInfo: request.reqDateInfo,
-                      reqState: request.reqState,
-                      reqStateNm: request.reqStateNm,
-                      estimateAmount: request.estimateAmount,
-                    );
-                  }).toList(),
-                  onTap: () async {
-                    if (entry.value.isNotEmpty) {
-                      final selectedRequest = entry.value.first; // 선택한 요청
-                      await getRequesDetailtList(selectedRequest); // 선택된 요청을 직접 전달
-                     /// _showDetailPopupAsIs(context, requestDetailList);
-
-                      _showDetailPopup(context, requestDetailList);
-                    }
+                      : '${entry.value.first.categoryNm}',
+                  items: [
+                    ListItem(
+                      companyId: entry.value.first.companyId,
+                      companyNm: entry.value.first.companyNm,
+                      time: entry.value.first.reqDate ?? '',
+                      rate: entry.value.first.rate,
+                      estimateContents: entry.value.first.estimateContents,
+                      reqDateInfo: entry.value.first.reqDateInfo,
+                      reqState: entry.value.first.reqState,
+                      reqStateNm: entry.value.first.reqStateNm,
+                      estimateAmount: entry.value.first.estimateAmount,
+                      reqContents: entry.value.first.reqContents,
+                      receivedEstimates: entry.value.map((r) => EstimateItem(
+                        companyNm: r.companyNm,
+                        estimateAmount: r.estimateAmount,
+                        rate: r.rate,
+                      )).toList(), // ✅ entry.value에 모든 업체 정보가 포함됨
+                    ),
+                  ],
+                  onTap: () {
+                    // 상세 팝업 제거하고 테이블만 리스트에 노출
                   },
                 ),
                 SizedBox(height: 8.0),
@@ -196,6 +182,8 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
 
     return sectionWidgets;
   }
+
+
 
   void _showDetailPopup(BuildContext context, List<RequestInfo> requests) {
     if (requests.isEmpty) {
@@ -493,11 +481,12 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
     String? clerkNo = await secureStorage.read(key: 'clerkNo');
 
     final param = jsonEncode({"reqUser": clerkNo});
-
+    print('📡 상세 조회 응답:등러간다!!!!!!!!! ');
     try {
       final _requestList = await sendPostRequest(restId, param);
       setState(() {
         requestList = RequestInfo().parseRequestList(_requestList) ?? [];
+        print('📡 상세 조회 응답: ${requestList.length}');
       });
     } catch (e) {
       print('신청 목록 조회 중 오류 발생: $e');
@@ -519,6 +508,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
       final _requestDetailList = await sendPostRequest(restId, param);
       setState(() {
         requestDetailList = RequestInfo().parseRequestList(_requestDetailList) ?? [];
+        print('📡 상세 조회 응답: ${jsonEncode(_requestDetailList)}');
       });
     } catch (e) {
       print('신청 목록 조회 중 오류 발생: $e');
@@ -535,7 +525,8 @@ class SectionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.9;
+    double width = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: () {
         print('SectionWidget tapped');
@@ -546,38 +537,168 @@ class SectionWidget extends StatelessWidget {
         padding: EdgeInsets.all(8.0),
         margin: EdgeInsets.symmetric(vertical: 8.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
+          border: Border.all(color: Colors.red),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 제목 탭 시 동작 (예: 상세로 이동 등)
             GestureDetector(
               onTap: onTap,
               child: Text(
                 title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue,
+                ),
               ),
             ),
             for (var item in items) ...[
               SizedBox(height: 8.0),
-              Row(
-                children: [
-                  if (item.reqState == '02') ...[
-                    Text('- ${item.company}', style: TextStyle(fontSize: 16)),
-                    SizedBox(width: 4.0),
-                    Image.asset(
-                      'assets/images/star.png',
-                      width: 16.0,
-                      height: 16.0,
-                    ),
-                    SizedBox(width: 4.0),
-                    Text('${item.rate} ', style: TextStyle(fontSize: 16)),
-                  ],
-                ],
+
+              // 요청 내용 요약 박스
+              Container(
+                padding: EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black54),
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
+                child: Text(
+                  '- ${item.reqContents}',
+                  style: TextStyle(fontSize: 16),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              SizedBox(height: 4.0),
-              Text('- ' + item.estimateContents, style: TextStyle(color: Colors.grey)),
+
+              SizedBox(height: 8.0),
+
+              // 받은 견적 안내 텍스트
+              Text(
+                '- 받은 견적',
+                style: WitHomeTheme.body1.copyWith(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+
+              // 실제 받은 견적이 존재할 경우 테이블로 출력
+              if (item.receivedEstimates.isNotEmpty) ...[
+                SizedBox(height: 8.0),
+
+                // 총 견적 수 텍스트
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: Text(
+                      '총 ${item.receivedEstimates.length}건 견적 도착',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                  ),
+                ),
+
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue),
+                  ),
+                  child: Table(
+                    border: TableBorder.all(color: Colors.grey),
+                    columnWidths: {
+                      0: FlexColumnWidth(2),
+                      1: FlexColumnWidth(3),
+                      2: FlexColumnWidth(3),
+                    },
+                    children: [
+                      // 업체 Row
+                      TableRow(
+                        decoration: BoxDecoration(color: Colors.grey[200]),
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text("업체", style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(item.receivedEstimates[0].companyNm, textAlign: TextAlign.center),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              item.receivedEstimates.length > 1 ? item.receivedEstimates[1].companyNm : '-',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // 견적가 Row
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text("견적가", style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('${formatCash(item.receivedEstimates[0].estimateAmount)}원', textAlign: TextAlign.center),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              item.receivedEstimates.length > 1
+                                  ? '${formatCash(item.receivedEstimates[1].estimateAmount)}원'
+                                  : '-',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // 평점 Row
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text("평점", style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset('assets/images/star.png', width: 16.0, height: 16.0),
+                                SizedBox(width: 4.0),
+                                Text(item.receivedEstimates[0].rate),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: item.receivedEstimates.length > 1
+                                ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset('assets/images/star.png', width: 16.0, height: 16.0),
+                                SizedBox(width: 4.0),
+                                Text(item.receivedEstimates[1].rate),
+                              ],
+                            )
+                                : Text("-", textAlign: TextAlign.center),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+              ],
+              Divider(),
             ],
           ],
         ),
@@ -587,7 +708,8 @@ class SectionWidget extends StatelessWidget {
 }
 
 class ListItem {
-  final String company;
+  final String companyId;
+  final String companyNm;
   final String time;
   final String rate;
   final String estimateContents;
@@ -595,9 +717,11 @@ class ListItem {
   final String reqState;
   final String reqStateNm;
   final String estimateAmount;
-
+  final String reqContents;
+  final List<EstimateItem> receivedEstimates; // 받은 견적 리스트 추가
   ListItem({
-    required this.company,
+    required this.companyId,
+    required this.companyNm,
     required this.time,
     required this.rate,
     required this.estimateContents,
@@ -605,5 +729,20 @@ class ListItem {
     required this.reqState,
     required this.reqStateNm,
     required this.estimateAmount,
+    required this.reqContents,
+    required this.receivedEstimates, // 초기화
+  });
+
+
+}
+class EstimateItem {
+  final String companyNm;
+  final String estimateAmount;
+  final String rate;
+
+  EstimateItem({
+    required this.companyNm,
+    required this.estimateAmount,
+    required this.rate,
   });
 }

@@ -118,7 +118,7 @@ class CategoryView extends StatelessWidget {
                   height: 60, // 이미지 높이를 줄여서 고정
                   width: 60,
                   child: category!.imagePath != null && category!.imagePath.isNotEmpty
-                      ? Image.asset(category!.imagePath)
+                      ? Image.asset(category!.imagePath+"Green.png")
                       : Icon(Icons.image, size: 60), // 이미지가 없을 경우 대체 아이콘
                 ),
               ),

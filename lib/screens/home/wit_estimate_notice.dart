@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert'; // JSON 인코딩을 위해 추가
 import 'package:intl/intl.dart'; // 날짜 처리를 위한 패키지 추가
+import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/wit_request_detail.dart';
 import '../../util/wit_api_ut.dart';
 import 'models/requestInfo.dart';
@@ -64,129 +65,157 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 오늘 받은 알림 제목
-            Text(
-              '- 오늘 받은 알림',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            // 오늘 받은 알림 리스트
-            Expanded(
-              child: todayEstimates.isEmpty
-                  ? Center(child: Text('오늘 받은 알림이 없습니다.'))
-                  : ListView.builder(
-                itemCount: todayEstimates.length,
-                itemBuilder: (context, index) {
-                  final estimate = todayEstimates[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RequestDetailScreen(
-                            requests: todayEstimates,
-                            selectedRequest: estimate,
-                            categoryName: estimate.categoryNm,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${estimate.categoryNm} - ${estimate.companyNm} - ${estimate.timeAgo}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4.0),
-                          Text(
-                            '${estimate.estimateContents}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Divider(thickness: 1.0),
-                        ],
-                      ),
+      body: Container(
+        color: Colors.white, // ✅ 배경색 흰색 적용
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 오늘 받은 알림 제목
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10.0), // 위아래 패딩
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_lightGreen, // ✅ 연두색 배경 적용
+                  borderRadius: BorderRadius.circular(8.0), // ✅ 둥근 모서리
+                ),
+                child: Center(
+                  child: Text(
+                    '오늘 받은 알림',
+                    style: TextStyle(
+                      fontSize: 18, // ✅ 폰트 크기
+                      fontWeight: FontWeight.bold, // ✅ 볼드 처리
+                      color: Colors.white, // ✅ 텍스트 색상 흰색
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 16.0),
-            // 이전 알림 제목
-            Text(
-              '- 이전 알림',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            // 이전 알림 리스트
-            Expanded(
-              child: previousEstimates.isEmpty
-                  ? Center(child: Text('이전 알림이 없습니다.'))
-                  : ListView.builder(
-                itemCount: previousEstimates.length,
-                itemBuilder: (context, index) {
-                  final estimate = previousEstimates[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RequestDetailScreen(
-                            requests: previousEstimates,
-                            selectedRequest: estimate,
-                            categoryName: estimate.categoryNm,
+              SizedBox(height: 16.0),
+
+              // 오늘 받은 알림 리스트
+              Expanded(
+                child: todayEstimates.isEmpty
+                    ? Center(child: Text('오늘 받은 알림이 없습니다.'))
+                    : ListView.builder(
+                  itemCount: todayEstimates.length,
+                  itemBuilder: (context, index) {
+                    final estimate = todayEstimates[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RequestDetailScreen(
+                              requests: todayEstimates,
+                              selectedRequest: estimate,
+                              categoryName: estimate.categoryNm,
+                            ),
                           ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${estimate.categoryNm} - ${estimate.companyNm} - ${estimate.timeAgo}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4.0),
+                            Text(
+                              '${estimate.estimateContents}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            Divider(thickness: 1.0),
+                          ],
                         ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${estimate.categoryNm} - ${estimate.companyNm} - ${estimate.timeAgo}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          SizedBox(height: 4.0),
-                          Text(
-                            '${estimate.estimateContents}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Divider(thickness: 1.0),
-                        ],
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 16.0),
+
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10.0), // 위아래 패딩
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_gray,
+                  borderRadius: BorderRadius.circular(8.0), // ✅ 둥근 모서리
+                ),
+                child: Center(
+                  child: Text(
+                    '이전 알림',
+                    style: TextStyle(
+                      fontSize: 18, // ✅ 폰트 크기
+                      fontWeight: FontWeight.bold, // ✅ 볼드 처리
+                      color: Colors.white, // ✅ 텍스트 색상 흰색
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 16.0),
+
+              // 이전 알림 리스트
+              Expanded(
+                child: previousEstimates.isEmpty
+                    ? Center(child: Text('이전 알림이 없습니다.'))
+                    : ListView.builder(
+                  itemCount: previousEstimates.length,
+                  itemBuilder: (context, index) {
+                    final estimate = previousEstimates[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RequestDetailScreen(
+                              requests: previousEstimates,
+                              selectedRequest: estimate,
+                              categoryName: estimate.categoryNm,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${estimate.categoryNm} - ${estimate.companyNm} - ${estimate.timeAgo}',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4.0),
+                            Text(
+                              '${estimate.estimateContents}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            Divider(thickness: 1.0),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
