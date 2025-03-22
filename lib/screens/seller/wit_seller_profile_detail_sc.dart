@@ -449,14 +449,14 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                   /*appBar: SellerAppBar(
                                     sllrNo: widget.sllrNo,
                                   ),*/
-                                  appBar: AppBar(
+                                  /*appBar: AppBar(
                                     backgroundColor: WitHomeTheme.wit_gray,
                                     iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
                                     title: Text(
                                       '스케쥴 관리',
                                       style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                                     ),
-                                  ),
+                                  ),*/
                                   body: Container(
 
                                     padding: EdgeInsets.all(16.0),
