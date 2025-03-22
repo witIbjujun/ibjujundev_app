@@ -947,7 +947,6 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               TextField(
                 controller: openDateController,
                 decoration: InputDecoration(
-                  labelText: '개업일자 (필수)',
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
@@ -958,7 +957,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   Expanded(
                     child: Text(
                       '사업자 등록증 사본',
-                      style: TextStyle(fontSize: 16.0),
+                      style: WitHomeTheme.title.copyWith(fontSize: 16),
                     ),
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
@@ -1078,11 +1077,14 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               ),
               // 담당자 연락처 입력란 수정
               SizedBox(height: 16),
+              Text(
+                '휴대폰 번호',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              ),
               Column(
                 children: [
                   TextField(
                     controller: hp1Controller,
-                    decoration: InputDecoration(labelText: '휴대폰 번호'),
                   ),
                   ElevatedButton(
                     onPressed: _verifyPhone,
@@ -1096,9 +1098,15 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                       ),
                     ),
                   ),
+                  Align(
+                    alignment: Alignment.centerLeft, // 우측 정렬
+                    child: Text(
+                      '인증 코드 입력',
+                      style: WitHomeTheme.title.copyWith(fontSize: 16),
+                    ),
+                  ),
                   TextField(
                     controller: _smsController,
-                    decoration: InputDecoration(labelText: '인증 코드 입력'),
                     readOnly: false, // 사용자 입력을 방지
                     onTap: () async {
                       await SmsAutoFill().listenForCode; // SMS 코드 수신 시작

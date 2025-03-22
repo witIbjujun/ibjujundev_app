@@ -476,7 +476,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
               ),
               // 다섯 번째 영역: 시공 사진/동영상
               _buildContainer(
-                title: '시공 사진/동영상',
+                title: '시공 사진',
                 content: Container(
                   height: 120, // 높이 설정
                   child: ListView.builder(
