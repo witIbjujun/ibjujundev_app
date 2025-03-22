@@ -13,6 +13,7 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
 import '../board/wit_board_main_sc.dart';
 import '../checkList/wit_checkList_main_sc.dart';
+import '../common/wit_tableCalendar_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
 
 class MyProfile extends StatefulWidget  {
@@ -115,6 +116,7 @@ class _MyProfileState extends State<MyProfile> {
   Widget build(BuildContext context) {
     print("Rendering MyProfile...");
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: WitHomeTheme.nearlyWhite,
         iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
@@ -275,6 +277,15 @@ class _MyProfileState extends State<MyProfile> {
                   );
                 },
                 child:  _buildListTile(Icons.group, '커뮤니티'),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TableCalenderMain()),
+                  );
+                },
+                child:  _buildListTile(Icons.group, '달력'),
               ),
               _buildListTile(Icons.notifications, '공지사항'),
               GestureDetector(
