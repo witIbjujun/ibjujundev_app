@@ -41,44 +41,47 @@ class TableCalenderMainState extends State<TableCalenderMain> {
         title: Text("스케쥴 관리", style: WitHomeTheme.title),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            CalendarWidget(
-              focusedDay: _focusedDay,
-              selectedDate: _selectedDate,
-              events: _events,
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDate = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              onPageChanged: (focusedDay) {
-                setState(() {
-                  // 현재 월인지 확인
-                  if (focusedDay.year == DateTime.now().year && focusedDay.month == DateTime.now().month) {
-                    _selectedDate = null;
-                    _focusedDay = DateTime.now();
-                    // 월 스케쥴 조회
-                    getScheduleListByMonth(DateTime.now().year, DateTime.now().month);
-                  } else {
-                    _selectedDate = focusedDay;
+        child: Container(
+          color: Colors.white, // 배경색을 흰색으로 설정
+          child: Column(
+            children: [
+              CalendarWidget(
+                focusedDay: _focusedDay,
+                selectedDate: _selectedDate,
+                events: _events,
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    _selectedDate = selectedDay;
                     _focusedDay = focusedDay;
-                    // 월 스케쥴 조회
-                    getScheduleListByMonth(focusedDay.year, focusedDay.month);
-                  }
-                });
-              },
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView(
-                children: _selectedDate != null
-                    ? buildEventList(_getEventsForDay(_selectedDate!))
-                    : buildEventList(_getEventsForToday()),
+                  });
+                },
+                onPageChanged: (focusedDay) {
+                  setState(() {
+                    // 현재 월인지 확인
+                    if (focusedDay.year == DateTime.now().year && focusedDay.month == DateTime.now().month) {
+                      _selectedDate = null;
+                      _focusedDay = DateTime.now();
+                      // 월 스케쥴 조회
+                      getScheduleListByMonth(DateTime.now().year, DateTime.now().month);
+                    } else {
+                      _selectedDate = focusedDay;
+                      _focusedDay = focusedDay;
+                      // 월 스케쥴 조회
+                      getScheduleListByMonth(focusedDay.year, focusedDay.month);
+                    }
+                  });
+                },
               ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              Expanded(
+                child: ListView(
+                  children: _selectedDate != null
+                      ? buildEventList(_getEventsForDay(_selectedDate!))
+                      : buildEventList(_getEventsForToday()),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -113,10 +116,11 @@ class TableCalenderMainState extends State<TableCalenderMain> {
     String? loginClerkNo = await secureStorage.read(key: "clerkNo");
 
     // REST ID
-    String restId = "getScheduleListByMonth";
+    String restId = "getEstimateRequestList";
 
     // PARAM
     final param = jsonEncode({
+      "stat": "1",
       "date": month,
       "loginClerkNo": loginClerkNo,
     });
