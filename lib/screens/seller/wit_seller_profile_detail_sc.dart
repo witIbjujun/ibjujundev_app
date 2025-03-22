@@ -248,7 +248,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     ),
                                   ),
                                   body: Container(
-                                    padding: EdgeInsets.all(16.0),
+                                    // padding: EdgeInsets.all(16.0),
                                     child: EstimateRequestList(stat: '', sllrNo: sllrNo.toString()), // 리스트를 추가
                                   ),
                                 );
@@ -300,7 +300,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     ),
                                   ),
                                   body: Container(
-                                    padding: EdgeInsets.all(16.0),
+                                    // padding: EdgeInsets.all(16.0),
                                     child: EstimateRequestList(stat: '01', sllrNo: sllrNo.toString()), // 리스트를 추가
                                   ),
                                 );
@@ -354,7 +354,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     ),
                                   ),
                                   body: Container(
-                                    padding: EdgeInsets.all(16.0),
+                                    //padding: EdgeInsets.all(16.0),
                                     child: Board(widget.sllrNo,"C1"), // 리스트를 추가
                                   ),
                                 );
@@ -400,7 +400,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     ),
                                   ),
                                   body: Container(
-                                    padding: EdgeInsets.all(16.0),
+                                    // padding: EdgeInsets.all(16.0),
                                     child: SellerGroupPurchaseList(sllrNo: sllrNo.toString()), // 리스트를 추가
                                   ),
                                 );
@@ -434,7 +434,6 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
 
                     // 스케쥴 관리
                     Container(
-                      margin: EdgeInsets.symmetric(vertical: 10.0),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(50),
@@ -458,9 +457,6 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     ),
                                   ),*/
                                   body: Container(
-
-                                    padding: EdgeInsets.all(16.0),
-                                    //child: SellerScheduleList(sllrNo: sllrNo.toString()), // 리스트를 추가
                                     child: TableCalenderMain(),
 
                                   ),
@@ -622,7 +618,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     ),
                                   ),
                                   body: Container(
-                                    padding: EdgeInsets.all(16.0),
+                                    //padding: EdgeInsets.all(16.0),
                                     child: Board(widget.sllrNo,"C1"), // 리스트를 추가
                                   ),
                                 );
