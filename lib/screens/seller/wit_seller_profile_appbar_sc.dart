@@ -138,7 +138,7 @@ class SellerAppBarState extends State<SellerAppBar> {
       backgroundColor: WitHomeTheme.wit_gray,
       actions: [
         // 입력 필드 추가
-        /*Padding(
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: SizedBox(
             width: 100, // 입력 필드의 너비 설정
@@ -155,9 +155,9 @@ class SellerAppBarState extends State<SellerAppBar> {
               keyboardType: TextInputType.number, // 숫자 키패드로 설정
             ),
           ),
-        ),*/
+        ),
         // 버튼 추가
-       /* IconButton(
+       IconButton(
           onPressed: () {
             // 입력된 값을 sllrNo로 변경
             dynamic newSllrNo = _sllrNoController.text;
@@ -170,8 +170,9 @@ class SellerAppBarState extends State<SellerAppBar> {
             }
           },
           icon: Icon(Icons.search, color: Colors.white), // 아이콘 색상 하얀색으로 설정
-        ),*/
-        IconButton(
+        ),
+
+        /*IconButton(
           onPressed: () {
             Navigator.push(
               context,
@@ -181,7 +182,7 @@ class SellerAppBarState extends State<SellerAppBar> {
           },
           icon: Icon(
               Icons.perm_identity, color: Colors.white), // 아이콘 색상 하얀색으로 설정
-        ),
+        ),*/
         IconButton(
             onPressed: () {}, icon: Icon(Icons.mail, color: Colors.white)),
         // 아이콘 색상 하얀색으로 설정
