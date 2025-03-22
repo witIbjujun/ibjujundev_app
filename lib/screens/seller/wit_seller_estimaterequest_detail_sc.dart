@@ -41,8 +41,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   TextEditingController itemPrice1Controller = TextEditingController();
   TextEditingController estimateContentController = TextEditingController();
 
-
-
   Future<void> _pickImages(ImageSource source) async {
     final List<XFile>? pickedFiles = await _picker.pickMultiImage();
     if (pickedFiles != null) {
@@ -67,6 +65,14 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     super.initState();
     // 견적 상세 조회
     getEstimateRequestInfoForSend(widget.estNo, widget.seq);
+  }
+
+  @override
+  void dispose() {
+    _images.clear(); // 화면이 종료될 때 이미지 리스트 초기화
+    itemPrice1Controller.dispose();
+    estimateContentController.dispose();
+    super.dispose();
   }
 
   bool _isChecked = false; // 체크박스 상태 관리
@@ -106,7 +112,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
         "itemPrice1 정보 없음";
     String reqState = estimateRequestInfoForSend['reqState'] ??
         "reqState 정보 없음";
-    String appbarYn = "N";
 
     // 입력 필드에 초기값 설정
     if (reqState != "01") {
@@ -319,7 +324,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         ),
                       ],
                     ),
-
                   ),
 
                   SizedBox(height: 10),
@@ -444,30 +448,30 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     ),
                   ):
                   SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
-                    children: [
-                      GestureDetector(
-                        onTap: () => _pickImages(ImageSource.gallery),
-                        child: Column(
-                          children: [
-                            Icon(Icons.photo, size: 40), // 갤러리 아이콘
-                          ],
+                  if (reqState == "01") ...[ // reqState가 "01"일 때만 이 부분이 렌더링됨
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
+                      children: [
+                        GestureDetector(
+                          onTap: () => _pickImages(ImageSource.gallery),
+                          child: Column(
+                            children: [
+                              Icon(Icons.photo, size: 40), // 갤러리 아이콘
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 16), // 아이콘 간격
-                      GestureDetector(
-                        onTap: () => _pickImage(ImageSource.camera),
-                        child: Column(
-                          children: [
-                            Icon(Icons.camera_alt, size: 40), // 카메라 아이콘
-                          ],
+                        SizedBox(width: 16), // 아이콘 간격
+                        GestureDetector(
+                          onTap: () => _pickImage(ImageSource.camera),
+                          child: Column(
+                            children: [
+                              Icon(Icons.camera_alt, size: 40), // 카메라 아이콘
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-
+                      ],
+                    ),
+                  ],
                   SizedBox(height: 20),
                   Center(
                     child: reqState == "05" ? Container() : ElevatedButton(

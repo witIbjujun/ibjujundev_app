@@ -92,6 +92,12 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     getCategoryList();
   }
 
+  @override
+  void dispose() {
+    _images.clear(); // 화면이 종료될 때 이미지 리스트 초기화
+    super.dispose();
+  }
+
   Future<void> getSellerInfo(dynamic sllrNo) async {
 
     String restId = "getSellerInfo";
