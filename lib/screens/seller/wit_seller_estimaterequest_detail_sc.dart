@@ -497,7 +497,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               '02' // 상태를 '02'로 변경
                           );
                         } else if (reqState == "02") {
-                          print("12313213212312312");
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => ChatPage()),
