@@ -15,6 +15,7 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 
 import '../../util/wit_code_ut.dart';
 import '../board/wit_board_detail_sc.dart';
+import '../chat/chatMain.dart';
 import '../common/wit_ImageViewer_sc.dart';
 import '../home/wit_home_theme.dart';
 
@@ -475,7 +476,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   SizedBox(height: 20),
                   Center(
                     child: reqState == "05" ? Container() : ElevatedButton(
-                      onPressed: (reqState == "03" || reqState == "04") ? null : () {
+                      //onPressed: (reqState == "03" || reqState == "04") ? null : () {
+                      onPressed: (reqState == "04") ? null : () {
                         String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";
                         String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";
                         String estNo = estimateRequestInfoForSend['estNo'] ?? "";
@@ -495,8 +497,10 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               '02' // 상태를 '02'로 변경
                           );
                         } else if (reqState == "02") {
+                          MaterialPageRoute(builder: (context) => ChatPage());
+
                           // 작업 진행 로직
-                          updateEstimateInfo(
+/*                          updateEstimateInfo(
                               sllrNo,
                               sllrClerkNo,
                               estNo,
@@ -504,10 +508,12 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               estimateContent,
                               inputItemPrice1,
                               '03' // 상태를 '05'로 변경
-                          );
+                          );*/
                         } else if (reqState == "03") {
-                          // 작업 진행 로직
-                          updateEstimateInfo(
+                          MaterialPageRoute(builder: (context) => ChatPage());
+
+                        // 작업 진행 로직
+                          /*updateEstimateInfo(
                               sllrNo,
                               sllrClerkNo,
                               estNo,
@@ -515,7 +521,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               estimateContent,
                               inputItemPrice1,
                               '04' // 상태를 '05'로 변경
-                          );
+                          );*/
                         }
                         else {
                           // 견적 취소 로직
@@ -532,9 +538,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       },
                       child: Text(
                         reqState == "01" ? '견적보내기' :
-                        reqState == "02" ? '작업진행' :
-                        reqState == "03" || reqState == "04" ? '진행완료' :
-                        '견적취소',
+                        reqState == "02" ? '메시지 대화하기' :
+                        reqState == "03" || reqState == "04" ? '메시지 대화하기' :
+                        '취소',
                         style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
                       ),
                       style: ElevatedButton.styleFrom(
