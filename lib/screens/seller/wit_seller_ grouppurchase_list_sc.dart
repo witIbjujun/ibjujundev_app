@@ -109,27 +109,27 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                 children: [
                   TextSpan(
                     text: '> 선착순 모집 정원 ',
-                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_lightGreen), // 녹색
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
                   ),
                   TextSpan(
                     text: '10', //'${applicationList.length}', // 신청 수
-                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: Colors.red), // 빨간색
+                    style: WitHomeTheme.title.copyWith(fontSize: 16), // 빨간색
                   ),
                   TextSpan(
                     text: ' 명 ',
-                    style: WitHomeTheme.title.copyWith(fontSize: 20), // 녹색
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
                   ),
                   TextSpan(
                     text: '- 신청 ',
-                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_lightGreen), // 녹색
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
                   ),
                   TextSpan(
                     text: '5',
-                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_lightSteelBlue), // 녹색
+                    style: WitHomeTheme.title.copyWith(fontSize: 16), // 녹색
                   ),
                   TextSpan(
                     text: ' 명',
-                    style: WitHomeTheme.title.copyWith(fontSize: 20), // 녹색
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
                   ),
                 ],
               ),
@@ -141,15 +141,15 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                 children: [
                   TextSpan(
                     text: '> 모집 일자 ',
-                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_lightGreen),
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
                   ),
                   TextSpan(
                     text: '25 / 03 / 31',
-                    style: WitHomeTheme.title.copyWith(fontSize: 20, color: Colors.red), // 빨간색
+                    style: WitHomeTheme.title.copyWith(fontSize: 16), // 빨간색
                   ),
                   TextSpan(
                     text: ' 까지',
-                    style: WitHomeTheme.title.copyWith(fontSize: 20), // 빨간색
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 빨간색
                   ),
                 ],
               ),

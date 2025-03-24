@@ -37,18 +37,29 @@ class EstimateRequestListState extends State<EstimateRequestList> {
           : SingleChildScrollView( // 스크롤 가능하게 설정
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: estimateRequestList.isNotEmpty // 리스트가 비어있지 않을 경우
-              ? estimateRequestList.map((request) {
-            return buildEstimateItem(request, context);
-          }).toList()
-              : [
-            Center( // Center 위젯으로 텍스트 중앙 정렬
-              child: Text(
-                "조회된 내용이 없습니다.",
-                style: WitHomeTheme.title.copyWith(fontSize: 24, color: WitHomeTheme.wit_black),
+          children: [
+            if (estimateRequestList.isNotEmpty) ...[
+              // 리스트가 비어있지 않을 경우
+              ...estimateRequestList.map((request) {
+                return buildEstimateItem(request, context);
+              }).toList(),
+            ] else ...[
+              // 리스트가 비어있을 경우
+              Container(
+                height: MediaQuery.of(context).size.height - 100, // 여유 공간 설정
+                child: Center( // Center 위젯으로 텍스트 중앙 정렬
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.18,  // 화면 높이의 18%
+                    width: MediaQuery.of(context).size.width * 0.85,    // 화면 너비의 85%
+                    child: Image.asset(
+                      'assets/images/nolist3.png', // 광고 이미지 URL
+                      fit: BoxFit.contain, // 이미지 비율 유지
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ], // 리스트가 비어있을 경우 텍스트 표시
+            ],
+          ],
         ),
       ),
     );
