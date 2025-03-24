@@ -487,7 +487,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     ),
                                   ),*/
                               body: Container(
-                                child: TableCalenderMain(),
+                                child: TableCalenderMain(stat: "", sllrNo: widget.sllrNo.toString()),
                               ),
                             );
                           },

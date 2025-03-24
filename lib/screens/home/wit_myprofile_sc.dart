@@ -278,15 +278,6 @@ class _MyProfileState extends State<MyProfile> {
                 },
                 child:  _buildListTile(Icons.group, '커뮤니티'),
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => TableCalenderMain()),
-                  );
-                },
-                child:  _buildListTile(Icons.group, '달력'),
-              ),
               _buildListTile(Icons.notifications, '공지사항'),
               GestureDetector(
                 onTap: () async {

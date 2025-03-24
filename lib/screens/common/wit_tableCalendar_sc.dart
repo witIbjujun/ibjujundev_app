@@ -6,8 +6,12 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 
 class TableCalenderMain extends StatefulWidget {
+
+  final String stat; // stat을 멤버 변수로 추가
+  final String sllrNo; // sllrNo를 멤버 변수로 추가
+
   // 생성자
-  const TableCalenderMain({super.key});
+  const TableCalenderMain({super.key, required this.stat, required this.sllrNo});
 
   // 상태 생성
   @override
@@ -29,7 +33,7 @@ class TableCalenderMainState extends State<TableCalenderMain> {
     super.initState();
 
     // 월 스케쥴 조회
-    getScheduleListByMonth(DateTime.now().year, DateTime.now().month);
+    getEstimateRequestList(DateTime.now().year, DateTime.now().month);
     
   }
 
@@ -62,12 +66,12 @@ class TableCalenderMainState extends State<TableCalenderMain> {
                       _selectedDate = null;
                       _focusedDay = DateTime.now();
                       // 월 스케쥴 조회
-                      getScheduleListByMonth(DateTime.now().year, DateTime.now().month);
+                      getEstimateRequestList(DateTime.now().year, DateTime.now().month);
                     } else {
                       _selectedDate = focusedDay;
                       _focusedDay = focusedDay;
                       // 월 스케쥴 조회
-                      getScheduleListByMonth(focusedDay.year, focusedDay.month);
+                      getEstimateRequestList(focusedDay.year, focusedDay.month);
                     }
                   });
                 },
@@ -109,8 +113,54 @@ class TableCalenderMainState extends State<TableCalenderMain> {
     return events;
   }
 
+  // [서비스] 견적리스트 조회
+  Future<void> getEstimateRequestList(int year, int month) async {
+    // REST ID
+    String restId = "getEstimateRequestList";
+
+    // PARAM
+    final param = jsonEncode({
+      "stat": widget.stat, // stat을 사용하여 API에 전달
+      "sllrNo": widget.sllrNo,
+      "basDate" : year.toString() + month.toString().padLeft(2, '0'),
+    });
+
+    // API 호출 (사전 점검 미완료 리스트 조회)
+    final _estimateRequestList = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    setState(() {
+
+      // 이벤트 목록을 저장할 맵
+      Map<DateTime, List<Event>> events = {};
+
+      // 데이터 가공
+      for (var item in _estimateRequestList) {
+        DateTime estDate = DateTime.parse(item['estDt']);
+        String title = item['itemName'];
+        String contents = '${item['reqContents']}'; // 예시 주소
+        String prsnName = item['prsnName'];
+        String aptName = item['aptName'];
+        String statName = item['stat'];
+
+        // 이벤트 생성
+        Event event = Event(estDate, title, contents, prsnName, aptName, statName);
+
+        // 맵에 추가
+        if (events[DateTime.utc(estDate.year, estDate.month, estDate.day)] == null) {
+          events[DateTime.utc(estDate.year, estDate.month, estDate.day)] = [];
+        }
+        events[DateTime.utc(estDate.year, estDate.month, estDate.day)]!.add(event);
+      }
+
+      _events = events;
+
+    });
+  }
+
+
   // [서비스] 월 스케쥴 조회
-  Future<void> getScheduleListByMonth(int year, int month) async {
+  /*Future<void> getScheduleListByMonth(int year, int month) async {
 
     // 로그인 사번
     String? loginClerkNo = await secureStorage.read(key: "clerkNo");
@@ -129,9 +179,9 @@ class TableCalenderMainState extends State<TableCalenderMain> {
     //final scheduleList = await sendPostRequest(restId, param);
 
     // 데이터 셋팅
-    /*setState(() {
+    *//*setState(() {
       _events = scheduleList;
-    });*/
+    });*//*
 
     setState(() {
       _events = {
@@ -157,14 +207,17 @@ class TableCalenderMainState extends State<TableCalenderMain> {
       };
     });
 
-  }
+  }*/
 }
 
 
 class Event {
-  final DateTime dateTime; // 날짜 및 시간
-  final String title;      // 스케줄 제목
-  final String subtitle;     // 스케줄 제목
+  final DateTime dateTime;    // 날짜 및 시간
+  final String title;         // 제목
+  final String subtitle;      // 내용
+  final String prsnName;      // 거래요청자명
+  final String aptName;      // 아파트명
+  final String statName;      // 상태명
 
-  Event(this.dateTime, this.title, this.subtitle);
+  Event(this.dateTime, this.title, this.subtitle, this.prsnName, this.aptName, this.statName);
 }
