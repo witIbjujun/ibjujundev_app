@@ -68,7 +68,7 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
   }
 
   Future<void> getDirectEstimateSetList(dynamic sllrNo) async {
-    String restId = "getEstimateRequestList";
+    String restId = "getAutoEstimateList";
     final param = jsonEncode({"sllrNo": widget.sllrNo});
     final response = await sendPostRequest(restId, param);
 
@@ -288,8 +288,8 @@ class EstimateItem extends StatelessWidget {
                     children: [
                       // 날짜를 이름 위로 배치
                       Text(
-                        request['estDt'], // 날짜
-                        style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+                        request['autoYn'], // 날짜
+                        style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_gray),
                       ),
                       SizedBox(height: 4), // 날짜와 이름 사이의 간격
                       Text(
@@ -326,7 +326,7 @@ class EstimateItem extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    request['stat'], // 상태
+                    request['estDt'], // 상태
                     style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
                   ),
                 ),
