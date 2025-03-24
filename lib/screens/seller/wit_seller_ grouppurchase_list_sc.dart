@@ -281,7 +281,8 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                 // 신청 버튼 클릭 시 로직 추가
               },
               child: Text(
-                application['stat'] ?? '상태 없음', // 상태
+                // application['stat'] ?? '상태 없음', // 상태
+                '신청',
                 style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
               ),
             ),
