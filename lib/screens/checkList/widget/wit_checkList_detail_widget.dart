@@ -216,11 +216,14 @@ class ExpandableItem extends StatelessWidget {
                           isDismissible: true, // 바깥을 클릭해도 닫히지 않도록 설정
                           isScrollControlled: true, // 스크롤 가능하게 설정
                           builder: (context) {
-                            return Container(
-                              height: 510,
-                              child: ExamplePhotoPopup(
-                                checkInfoLv3: checkInfoLv3,
-                                onSwitchChanged: onSwitchChanged,
+                            return Padding(
+                              padding: MediaQuery.of(context).viewInsets,
+                              child: Container(
+                                height: 510,
+                                child: ExamplePhotoPopup(
+                                  checkInfoLv3: checkInfoLv3,
+                                  onSwitchChanged: onSwitchChanged,
+                                ),
                               ),
                             );
                           },

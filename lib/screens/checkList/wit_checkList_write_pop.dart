@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:image/image.dart' as img;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:witibju/screens/checkList/widget/wit_checkList_write_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_util.dart';
 import 'package:witibju/util/wit_code_ut.dart';
@@ -28,7 +29,9 @@ class ExamplePhotoPopup extends StatefulWidget {
 
 class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
 
-  bool _isLoading = false; // 로딩 상태 변수
+  bool isLoading = false;     // 하자 전체 저장
+  bool isImgLoading1 = false; // 이미지 1
+  bool isImgLoading2 = false; // 이미지 2
 
   DateTime? checkDate;
   DateTime? reprDate;
@@ -37,9 +40,9 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
   String? checkImg2;
 
   File? imageFile1;
-  String? imageUrl1;
+  String? imageUrl1 = "";
   File? imageFile2;
-  String? imageUrl2;
+  String? imageUrl2 = "";
 
   final TextEditingController _checkComtController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
@@ -50,14 +53,14 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
 
     setState(() {
       // checkDate 설정
-      checkDate = widget.checkInfoLv3["checkDate"] != null
+      /*checkDate = widget.checkInfoLv3["checkDate"] != null
           ? DateTime.parse(widget.checkInfoLv3["checkDate"])
-          : DateTime.now();
+          : DateTime.now();*/
 
       // reprDate 설정
-      reprDate = widget.checkInfoLv3["reprDate"] != null
+      /*reprDate = widget.checkInfoLv3["reprDate"] != null
           ? DateTime.parse(widget.checkInfoLv3["reprDate"])
-          : null;
+          : null;*/
 
       // checkComt 설정
       _checkComtController.text = widget.checkInfoLv3["checkComt"] ?? "";
@@ -88,393 +91,200 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
+      child: Stack( // Stack으로 전체 위젯을 감싸서 겹쳐서 배치
         children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: SizedBox(
-              height: 60,
-              width: double.infinity,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_lightGreen,
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                ),
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 3, // 막대의 두께
-                      width: 60, // 막대의 길이
-                      color: WitHomeTheme.wit_white, // 막대 색상
+          Column(
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: SizedBox(
+                  height: 60,
+                  width: double.infinity,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: WitHomeTheme.wit_lightGreen,
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                     ),
-                    SizedBox(height: 15), // 아이콘과 텍스트 사이의 간격
-                    Text(
-                      "하자 등록 [" + widget.checkInfoLv3["inspNm"] + "]",
-                      style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: 3, // 막대의 두께
+                          width: 60, // 막대의 길이
+                          color: WitHomeTheme.wit_white, // 막대 색상
+                        ),
+                        SizedBox(height: 15), // 아이콘과 텍스트 사이의 간격
+                        Text(
+                          "하자 등록 [" + widget.checkInfoLv3["inspNm"] + "]",
+                          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-
-          ),
-          // 여기 아래에 추가할 위젯을 넣으세요
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(35, 20, 35, 0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  /*Container(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(35, 20, 35, 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text("하자 일자",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Container(height: 10),
-                  GestureDetector(
-                    onTap: () => _selectDate(context, true),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            checkDate != null ? '${checkDate!.toLocal()}'.split(' ')[0] : '날짜 선택',
-                            style: TextStyle(fontSize: 14, color: Colors.black54),
+                            "하자 이미지",
+                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                           ),
-                          Icon(Icons.calendar_today),
                         ],
                       ),
-                    ),
-                  ),
-                  Container(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("수리 일자",
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Container(height: 10),
-                  GestureDetector(
-                    onTap: () => _selectDate(context, false),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Row(
+                      SizedBox(height: 10),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            reprDate != null ? '${reprDate!.toLocal()}'.split(' ')[0] : '날짜 선택',
-                            style: TextStyle(fontSize: 14, color: Colors.black54),
+                          // 첫번째 이미지 영역
+                          ImagePickerWidget(
+                            imageFile: imageFile1,
+                            imageUrl: imageUrl1 ?? "", // null일 경우 빈 문자열로 변환
+                            isImgLoading: isImgLoading1,
+                            onTap: () async {
+                              if (imageFile1 == null && (imageUrl1 == null || imageUrl1!.isEmpty)) {
+                                _showImagePickerOptions(1);
+                              } else {
+                                List<String> imageUrls = [imageUrl1!];
+                                await Navigator.push(
+                                  context,
+                                  SlideRoute(
+                                    page: ImageViewer(
+                                      imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
+                                      initialIndex: 0,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            onRemove: () {
+                              setState(() {
+                                imageFile1 = null;
+                                imageUrl1 = null; // null로 설정
+                              });
+                            },
                           ),
-                          Icon(Icons.calendar_today),
+                          SizedBox(width: 10),
+                          // 두번째 이미지 영역
+                          ImagePickerWidget(
+                            imageFile: imageFile2,
+                            imageUrl: imageUrl2 ?? "", // null일 경우 빈 문자열로 변환
+                            isImgLoading: isImgLoading2,
+                            onTap: () async {
+                              if (imageFile2 == null && (imageUrl2 == null || imageUrl2!.isEmpty)) {
+                                _showImagePickerOptions(2);
+                              } else {
+                                List<String> imageUrls = [imageUrl2!];
+                                await Navigator.push(
+                                  context,
+                                  SlideRoute(
+                                    page: ImageViewer(
+                                      imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
+                                      initialIndex: 0,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            onRemove: () {
+                              setState(() {
+                                imageFile2 = null;
+                                imageUrl2 = null; // null로 설정
+                              });
+                            },
+                          ),
                         ],
                       ),
-                    ),
-                  ),
-                  Container(height: 20),*/
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "하자 이미지",
-                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "하자 내용",
+                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // 첫번째 이미지 영역
-                      GestureDetector(
-                        onTap: () async {
-                          if (imageFile1 == null && imageUrl1 == "") {
-                            _showImagePickerOptions(1);
-                          } else {
-                            List<String> imageUrls = [imageUrl1!];
-                            await Navigator.push(
-                              context,
-                              SlideRoute(
-                                  page: ImageViewer(
-                                    imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
-                                    initialIndex: 0,
-                                  )
-                              ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          width: 140,
-                          height: 140,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: WitHomeTheme.wit_gray),
+                      Container(height: 10),
+                      Container(
+                        height: 100,
+                        child: TextField(
+                          controller: _checkComtController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: WitHomeTheme.wit_gray),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: WitHomeTheme.wit_gray),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: WitHomeTheme.wit_gray),
+                            ),
+                            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                           ),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: imageFile1 != null
-                                    ? Image.file(
-                                  imageFile1!,
-                                  fit: BoxFit.cover,
-                                  width: 140,
-                                  height: 140,
-                                )
-                                    : imageUrl1 != ""
-                                    ? Image.network(
-                                  apiUrl + imageUrl1!,
-                                  fit: BoxFit.cover,
-                                  width: 140,
-                                  height: 140,
-                                )
-                                    : Center(
-                                  child: Icon(
-                                    Icons.add_a_photo,
-                                    size: 40,
-                                    color: WitHomeTheme.wit_lightgray,
-                                  ),
-                                ),
-                              ),
-                              if (imageFile1 != null || imageUrl1 != "")
-                                Positioned(
-                                  right: 8,
-                                  top: 8,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      // 엑스 아이콘 클릭 시 이벤트 처리
-                                      setState(() {
-                                        imageFile1 = null;
-                                        imageUrl1 = "";
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: WitHomeTheme.wit_red,
-                                      ),
-                                      padding: EdgeInsets.all(4),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: WitHomeTheme.wit_white,
-                                        size: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              checkComt = value;
+                            });
+                          },
+                          maxLines: 5,
+                          style: TextStyle(height: 1.5),
                         ),
                       ),
-                      SizedBox(width: 10),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 버튼 간격을 일정하게
+                        children: [
+                          // 하자등록 버튼
+                          Expanded(
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: WitHomeTheme.wit_lightCoral,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onPressed: () async {
+                                setState(() {
+                                  isLoading = true;
+                                });
+                                // 하자등록
+                                await save(false);
 
-                      // 두번째 이미지 영역
-                      GestureDetector(
-                        onTap: () async {
-                          if (imageFile2 == null && imageUrl2 == "") {
-                            _showImagePickerOptions(2);
-                          } else {
-                            List<String> imageUrls = [imageUrl2!];
-                            await Navigator.push(
-                              context,
-                              SlideRoute(
-                                  page: ImageViewer(
-                                    imageUrls: imageUrls.map((item) => apiUrl + item).toList(),
-                                    initialIndex: 0,
-                                  )
+                                setState(() {
+                                  isLoading = false;
+                                });
+
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("하자 등록",
+                                style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
                               ),
-                            );
-                          }
-                        },
-                        child: Container(
-                          width: 140,
-                          height: 140,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: WitHomeTheme.wit_gray),
-                          ),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: imageFile2 != null
-                                    ? Image.file(
-                                  imageFile2!,
-                                  fit: BoxFit.cover,
-                                  width: 140,
-                                  height: 140,
-                                )
-                                    : imageUrl2 != ""
-                                    ? Image.network(
-                                  apiUrl + imageUrl2!,
-                                  fit: BoxFit.cover,
-                                  width: 140,
-                                  height: 140,
-                                )
-                                    : Center(
-                                  child: Icon(
-                                    Icons.add_a_photo,
-                                    size: 40,
-                                    color: WitHomeTheme.wit_lightgray,
-                                  ),
-                                ),
-                              ),
-                              if (imageFile2 != null || imageUrl2 != "")
-                                Positioned(
-                                  right: 8,
-                                  top: 8,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      // 엑스 아이콘 클릭 시 이벤트 처리
-                                      setState(() {
-                                        imageFile2 = null;
-                                        imageUrl2 = "";
-                                      });
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: WitHomeTheme.wit_red,
-                                      ),
-                                      padding: EdgeInsets.all(4),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: WitHomeTheme.wit_white,
-                                        size: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "하자 내용",
-                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                  Container(height: 10),
-                  Container(
-                    height: 100,
-                    child: TextField(
-                      controller: _checkComtController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: WitHomeTheme.wit_gray),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: WitHomeTheme.wit_gray),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: WitHomeTheme.wit_gray),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          checkComt = value;
-                        });
-                      },
-                      maxLines: 5,
-                      style: TextStyle(height: 1.5),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 버튼 간격을 일정하게
-                    children: [
-                      // 하자완료 버튼
-                      /*Expanded(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Color(0xFF7BB5C9),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            // 하자완료
-                            await save(true);
-
-                            setState(() {
-                              _isLoading = false;
-                            });
-
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("하자 완료",
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 20),*/
-                      // 하자등록 버튼
-                      Expanded(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: WitHomeTheme.wit_lightCoral,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            // 하자등록
-                            await save(false);
-
-                            setState(() {
-                              _isLoading = false;
-                            });
-
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("하자 등록",
-                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
-                          ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-          /*if (_isLoading) // 로딩 상태일 때만 표시
+          // 로딩 인디케이터 추가
+          if (isLoading) // 로딩 상태일 때만 표시
             Container(
-              width: double.infinity, // 전체 너비를 차지하도록 설정
+              color: Colors.black54, // 반투명 배경
               child: Center(
                 child: CircularProgressIndicator(), // 로딩 인디케이터
               ),
-            ),*/
+            ),
         ],
       ),
     );
@@ -491,7 +301,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
       setState(() {
         widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(checkDate);
         widget.checkInfoLv3["reprDate"] = formatDateYYYYMMDD(reprDate);
-        widget.checkInfoLv3["checkComt"] = checkComt;
+        widget.checkInfoLv3["checkComt"] = _checkComtController.text;
         widget.checkInfoLv3["checkImg1"] = imageUrl1;
         widget.checkInfoLv3["checkImg2"] = imageUrl2;
         widget.onSwitchChanged(checkflag);
@@ -519,7 +329,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
         setState(() {
           widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(checkDate);
           widget.checkInfoLv3["reprDate"] = formatDateYYYYMMDD(reprDate);
-          widget.checkInfoLv3["checkComt"] = checkComt;
+          widget.checkInfoLv3["checkComt"] = _checkComtController.text;
           widget.checkInfoLv3["checkImg1"] = imageFile1 == null ? imageUrl1 : "/WIT/" + imageFile1!.path.split('/').last ;
           widget.checkInfoLv3["checkImg2"] = imageFile2 == null ? imageUrl2 : "/WIT/" + imageFile2!.path.split('/').last ;
           widget.onSwitchChanged(checkflag);
@@ -582,9 +392,19 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
 
   // [유틸] 갤러리, 카메라 피커 호출
   Future<void> _pickImage(ImageSource source, index) async {
+
     final XFile? pickedFile = await _picker.pickImage(source: source);
 
     if (pickedFile != null) {
+
+      setState(() {
+        if (index == 1) {
+          isImgLoading1 = true;
+        } else {
+          isImgLoading2 = true;
+        }
+      });
+
       // 이미지 파일을 바이트로 읽기
       final bytes = await File(pickedFile.path).readAsBytes();
 
@@ -600,10 +420,12 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
 
       setState(() {
         if (index == 1) {
+          isImgLoading1 = false;
           imageFile1 = rotatedFile;
-          imageUrl1 = null;
+          imageUrl1 = "";
         }
         if (index == 2) {
+          isImgLoading2 = false;
           imageFile2 = rotatedFile;
           imageUrl2 = null;
         }
