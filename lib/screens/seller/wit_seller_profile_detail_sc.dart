@@ -130,6 +130,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: WitHomeTheme.wit_white, // Scaffold의 배경색을 하얀색으로 설정
+
         resizeToAvoidBottomInset: false,
         appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
@@ -141,344 +143,359 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
           },
         ),
         body: Container(
-            color: WitHomeTheme.wit_white,
             child: SingleChildScrollView(
                 child: SafeArea(
-                    child: Column(
-              children: <Widget>[
-                // 광고 이미지 영역
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.18, // 화면 높이의 18%
-                  width: MediaQuery.of(context).size.width * 0.85, // 화면 너비의 85%
-                  child: Image.asset(
-                    'assets/images/파트너 배너.png', // 광고 이미지 URL
-                    fit: BoxFit.contain, // 이미지 비율 유지
-                  ),
-                ),
+                    minimum: EdgeInsets.only(top: 0, bottom: 0),
+                    // 상단과 하단 여백을 0으로 설정
 
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 0.0, bottom: 5.0),                  color: Colors.white, // 회색 바탕
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // 양쪽 끝으로 배치
-                    children: [
-                      // 왼쪽에 IBJU와 금액 표기 부분
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Container(
-                              color: WitHomeTheme.wit_gray,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              child: Text(
-                                "IBJU",
-                                style: WitHomeTheme.title.copyWith(
-                                    fontSize: 20,
-                                    color: WitHomeTheme.wit_white),
-                              ),
-                            ),
-                            Expanded(
-                              // <<--- 여기 추가
-                              child: Container(
-                                alignment: Alignment.centerRight,
-                                color: Colors.grey[300],
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                child: Text(
-                                  (cashInfo['cash'] != null &&
-                                          cashInfo['cash'] != '')
-                                      ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
-                                      : '0 C',
-                                  style:
-                                      WitHomeTheme.title.copyWith(fontSize: 20),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(width: 5), // <<--- 여백 추가
-                      // 오른쪽에 캐시충전 버튼
-                      ElevatedButton(
-                        onPressed: () {
-                          print("sllrNo: " + widget.sllrNo.toString());
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SellerCashHistory(
-                                  sllrNo: sellerInfo["sllrNo"]),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          '캐시충전',
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: WitHomeTheme.wit_mediumSeaGreen,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                    child: Column(
+                      children: <Widget>[
+                        // 광고 이미지 영역
+                        Container(
+                          height: MediaQuery.of(context).size.height *
+                              0.18, // 화면 높이의 18%
+                          width: MediaQuery.of(context).size.width *
+                              0.91, // 화면 너비의 85%
+                          child: Image.asset(
+                            'assets/images/파트너 배너.png', // 광고 이미지 URL
+                            fit: BoxFit.contain, // 이미지 비율 유지
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 5), //
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_tan
-                    ),
-                    onPressed: () {
-                      // EstimateRequestList 화면으로 이동
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return Scaffold(
-                              /*appBar: SellerAppBar(
-                                    sllrNo: widget.sllrNo,
-                                  ),*/
-                              appBar: AppBar(
-                                backgroundColor: WitHomeTheme.wit_gray,
-                                iconTheme: const IconThemeData(
-                                    color: WitHomeTheme.wit_white),
-                                title: Text(
-                                  '거래내역',
-                                  style: WitHomeTheme.title
-                                      .copyWith(color: WitHomeTheme.wit_white),
-                                ),
-                              ),
-                              body: Container(
-                                // padding: EdgeInsets.all(16.0),
-                                child: EstimateRequestList(
-                                    stat: '',
-                                    sllrNo: sllrNo.toString()), // 리스트를 추가
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "거래내역",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
-                        ),
-                        SizedBox(width: 5),
-                        Text(
-                          '(${sellerInfo != null && sellerInfo['ingCnt'] != null ? sellerInfo['ingCnt'].toString() : '0'})',
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_lightBlue),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
 
-                // 견적요청목록버튼
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_lightOrchid
-                    ),
-                    onPressed: () {
-                      // 견적 요청 리스트 팝업 띄우기
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return Scaffold(
-                              /*appBar: SellerAppBar(
-                                    sllrNo: widget.sllrNo,
-                                  ),*/
-                              appBar: AppBar(
-                                backgroundColor: WitHomeTheme.wit_gray,
-                                iconTheme: const IconThemeData(
-                                    color: WitHomeTheme.wit_white),
-                                title: Text(
-                                  '견적요청내역',
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 0.0, bottom: 0.0),
+                          color: Colors.white,
+                          // 회색 바탕
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // 양쪽 끝으로 배치
+                            children: [
+                              // 왼쪽에 IBJU와 금액 표기 부분
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      color: WitHomeTheme.wit_gray,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 10),
+                                      child: Text(
+                                        "IBJU",
+                                        style: WitHomeTheme.title.copyWith(
+                                            fontSize: 20,
+                                            color: WitHomeTheme.wit_white),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      // <<--- 여기 추가
+                                      child: Container(
+                                        alignment: Alignment.centerRight,
+                                        color: Colors.grey[300],
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        child: Text(
+                                          (cashInfo['cash'] != null &&
+                                                  cashInfo['cash'] != '')
+                                              ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
+                                              : '0 C',
+                                          style: WitHomeTheme.title
+                                              .copyWith(fontSize: 20),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 5), // <<--- 여백 추가
+                              // 오른쪽에 캐시충전 버튼
+                              ElevatedButton(
+                                onPressed: () {
+                                  print("sllrNo: " + widget.sllrNo.toString());
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => SellerCashHistory(
+                                          sllrNo: sellerInfo["sllrNo"]),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  '캐시충전',
                                   style: WitHomeTheme.title
                                       .copyWith(color: WitHomeTheme.wit_white),
                                 ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      WitHomeTheme.wit_mediumSeaGreen,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
                               ),
-                              body: Container(
-                                // padding: EdgeInsets.all(16.0),
-                                child: EstimateRequestList(
-                                    stat: '01',
-                                    sllrNo: sllrNo.toString()), // 리스트를 추가
-                              ),
-                            );
-                          },
+                            ],
+                          ),
                         ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "견적요청내역",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
+                        SizedBox(height: 5), //
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 0.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_tan
+                            ),
+                            onPressed: () {
+                              // EstimateRequestList 화면으로 이동
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return Scaffold(
+                                      /*appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
+                                  ),*/
+                                      appBar: AppBar(
+                                        backgroundColor: WitHomeTheme.wit_gray,
+                                        iconTheme: const IconThemeData(
+                                            color: WitHomeTheme.wit_white),
+                                        title: Text(
+                                          '거래내역',
+                                          style: WitHomeTheme.title.copyWith(
+                                              color: WitHomeTheme.wit_white),
+                                        ),
+                                      ),
+                                      body: Container(
+                                        // padding: EdgeInsets.all(16.0),
+                                        child: EstimateRequestList(
+                                            stat: '',
+                                            sllrNo:
+                                                sllrNo.toString()), // 리스트를 추가
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "거래내역",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  '(${sellerInfo != null && sellerInfo['ingCnt'] != null ? sellerInfo['ingCnt'].toString() : '0'})',
+                                  style: WitHomeTheme.title.copyWith(
+                                      color: WitHomeTheme.wit_lightBlue),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        SizedBox(width: 5),
-                        Text(
-                          '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_lightBlue),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
 
-                // 커뮤니티 버튼
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.grey
-                    ),
-                    onPressed: () {
-                      // 커뮤니티 페이지로 이동
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return Scaffold(
-                              /*appBar: SellerAppBar(
+                        // 견적요청목록버튼
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_lightOrchid
+                            ),
+                            onPressed: () {
+                              // 견적 요청 리스트 팝업 띄우기
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return Scaffold(
+                                      /*appBar: SellerAppBar(
                                     sllrNo: widget.sllrNo,
                                   ),*/
-                              appBar: AppBar(
-                                backgroundColor: WitHomeTheme.wit_gray,
-                                iconTheme: const IconThemeData(
-                                    color: WitHomeTheme.wit_white),
-                                title: Text(
-                                  '커뮤니티',
-                                  style: WitHomeTheme.title
-                                      .copyWith(color: WitHomeTheme.wit_white),
+                                      appBar: AppBar(
+                                        backgroundColor: WitHomeTheme.wit_gray,
+                                        iconTheme: const IconThemeData(
+                                            color: WitHomeTheme.wit_white),
+                                        title: Text(
+                                          '견적요청내역',
+                                          style: WitHomeTheme.title.copyWith(
+                                              color: WitHomeTheme.wit_white),
+                                        ),
+                                      ),
+                                      body: Container(
+                                        // padding: EdgeInsets.all(16.0),
+                                        child: EstimateRequestList(
+                                            stat: '01',
+                                            sllrNo:
+                                                sllrNo.toString()), // 리스트를 추가
+                                      ),
+                                    );
+                                  },
                                 ),
-                              ),
-                              body: Container(
-                                //padding: EdgeInsets.all(16.0),
-                                child: Board(widget.sllrNo, "C1"), // 리스트를 추가
-                              ),
-                            );
-                          },
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "견적요청내역",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
+                                  style: WitHomeTheme.title.copyWith(
+                                      color: WitHomeTheme.wit_lightBlue),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "커뮤니티",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
 
-                // 공동구매 관리
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_mediumSeaGreen
-                    ),
-                    onPressed: () {
-                      // 공동구매 관리 화면으로 이동
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return Scaffold(
-                              /*appBar: SellerAppBar(
+                        // 커뮤니티 버튼
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.grey
+                            ),
+                            onPressed: () {
+                              // 커뮤니티 페이지로 이동
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return Scaffold(
+                                      /*appBar: SellerAppBar(
                                     sllrNo: widget.sllrNo,
                                   ),*/
-                              appBar: AppBar(
-                                backgroundColor: WitHomeTheme.wit_gray,
-                                iconTheme: const IconThemeData(
-                                    color: WitHomeTheme.wit_white),
-                                title: Text(
-                                  '공동구매 관리',
-                                  style: WitHomeTheme.title
-                                      .copyWith(color: WitHomeTheme.wit_white),
+                                      appBar: AppBar(
+                                        backgroundColor: WitHomeTheme.wit_gray,
+                                        iconTheme: const IconThemeData(
+                                            color: WitHomeTheme.wit_white),
+                                        title: Text(
+                                          '커뮤니티',
+                                          style: WitHomeTheme.title.copyWith(
+                                              color: WitHomeTheme.wit_white),
+                                        ),
+                                      ),
+                                      body: Container(
+                                        //padding: EdgeInsets.all(16.0),
+                                        child: Board(
+                                            widget.sllrNo, "C1"), // 리스트를 추가
+                                      ),
+                                    );
+                                  },
                                 ),
-                              ),
-                              body: Container(
-                                // padding: EdgeInsets.all(16.0),
-                                child: SellerGroupPurchaseList(
-                                    sllrNo: sllrNo.toString()), // 리스트를 추가
-                              ),
-                            );
-                          },
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "커뮤니티",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                )
+                              ],
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "공동구매 관리",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
-                        ),
-                        SizedBox(width: 5),
-                        // 나중에 DB 에서 가져오는 거로 수정필요
-                        /*Text(
+
+                        // 공동구매 관리
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_mediumSeaGreen
+                            ),
+                            onPressed: () {
+                              // 공동구매 관리 화면으로 이동
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return Scaffold(
+                                      /*appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
+                                  ),*/
+                                      appBar: AppBar(
+                                        backgroundColor: WitHomeTheme.wit_gray,
+                                        iconTheme: const IconThemeData(
+                                            color: WitHomeTheme.wit_white),
+                                        title: Text(
+                                          '공동구매 관리',
+                                          style: WitHomeTheme.title.copyWith(
+                                              color: WitHomeTheme.wit_white),
+                                        ),
+                                      ),
+                                      body: Container(
+                                        // padding: EdgeInsets.all(16.0),
+                                        child: SellerGroupPurchaseList(
+                                            sllrNo:
+                                                sllrNo.toString()), // 리스트를 추가
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "공동구매 관리",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                ),
+                                SizedBox(width: 5),
+                                // 나중에 DB 에서 가져오는 거로 수정필요
+                                /*Text(
                               '(${sellerInfo != null && sellerInfo['reqCnt'] != null ? sellerInfo['reqCnt'].toString() : '0'})',
                               style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                             ),*/
-                        Text(
-                          '(5/10)',
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_lightBlue),
+                                Text(
+                                  '(5/10)',
+                                  style: WitHomeTheme.title.copyWith(
+                                      color: WitHomeTheme.wit_lightBlue),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
 
-                // 스케쥴 관리
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_lightCoral
-                    ),
-                    onPressed: () {
-                      // 스케쥴 관리 화면으로 이동
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return Scaffold(
-                              /*appBar: SellerAppBar(
+                        // 스케쥴 관리
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_lightCoral
+                            ),
+                            onPressed: () {
+                              // 스케쥴 관리 화면으로 이동
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return Scaffold(
+                                      /*appBar: SellerAppBar(
                                     sllrNo: widget.sllrNo,
                                   ),*/
-                              /*appBar: AppBar(
+                                      /*appBar: AppBar(
                                     backgroundColor: WitHomeTheme.wit_gray,
                                     iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
                                     title: Text(
@@ -486,196 +503,206 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                                     ),
                                   ),*/
-                              body: Container(
-                                child: TableCalenderMain(stat: "", sllrNo: widget.sllrNo.toString()),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "스케쥴 관리",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // 결재정보 등록 버튼
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_lightGoldenrodYellow,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                CardInfo(sllrNo: sllrNo.toString())),
-                      );
-                    },
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          "결제정보 등록",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                // 거래내역 버튼
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_lightSteelBlue,
-                    ),
-                    onPressed: () {
-                      // 버튼 클릭 시 수행할 작업 추가
-                      // 가입정보 변경 페이지로 이동
-                      String aaa = sellerInfo["sllrNo"].toString();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SellerProfileModify(
-                              sllrNo: sellerInfo["sllrNo"].toString()),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          "가입정보 변경",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_lightGreen,
-                    ),
-                    onPressed: () {
-                      // 버튼 클릭 시 수행할 작업 추가
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EstimateRequestDirectList(
-                                sllrNo: sellerInfo["sllrNo"])),
-                      );
-                    },
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          "바로견적 서비스",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_lightBlue,
-                    ),
-                    onPressed: () {
-                      // 버튼 클릭 시 수행할 작업 추가
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SellerProfileView(
-                                sllrNo: sellerInfo["sllrNo"], appbarYn: 'Y')),
-                      );
-                    },
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          "파트너 프로필",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                Container(
-                  padding: EdgeInsets.only(
-                      left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
-                  // 좌우 10, 위아래 5의 패딩 설정
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      // backgroundColor: WitHomeTheme.wit_lightCoral,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return Scaffold(
-                              /*appBar: SellerAppBar(
-                                    sllrNo: widget.sllrNo,
-                                  ),*/
-                              appBar: AppBar(
-                                backgroundColor: WitHomeTheme.wit_gray,
-                                iconTheme: const IconThemeData(
-                                    color: WitHomeTheme.wit_white),
-                                title: Text(
-                                  '공지사항',
+                                      body: Container(
+                                        child: TableCalenderMain(
+                                            stat: "",
+                                            sllrNo: widget.sllrNo.toString()),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "스케쥴 관리",
                                   style: WitHomeTheme.title
-                                      .copyWith(color: WitHomeTheme.wit_white),
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // 결재정보 등록 버튼
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_lightGoldenrodYellow,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CardInfo(sllrNo: sllrNo.toString())),
+                              );
+                            },
+                            child: Container(
+                              child: Center(
+                                child: Text(
+                                  "결제정보 등록",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
                                 ),
                               ),
-                              body: Container(
-                                //padding: EdgeInsets.all(16.0),
-                                child: Board(widget.sllrNo, "C1"), // 리스트를 추가
+                            ),
+                          ),
+                        ),
+                        // 거래내역 버튼
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_lightSteelBlue,
+                            ),
+                            onPressed: () {
+                              // 버튼 클릭 시 수행할 작업 추가
+                              // 가입정보 변경 페이지로 이동
+                              String aaa = sellerInfo["sllrNo"].toString();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SellerProfileModify(
+                                      sllrNo: sellerInfo["sllrNo"].toString()),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              child: Center(
+                                child: Text(
+                                  "가입정보 변경",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                ),
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                    child: Container(
-                      child: Center(
-                        child: Text(
-                          "공지사항",
-                          style: WitHomeTheme.title
-                              .copyWith(color: WitHomeTheme.wit_black),
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_lightGreen,
+                            ),
+                            onPressed: () {
+                              // 버튼 클릭 시 수행할 작업 추가
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        EstimateRequestDirectList(
+                                            sllrNo: sellerInfo["sllrNo"])),
+                              );
+                            },
+                            child: Container(
+                              child: Center(
+                                child: Text(
+                                  "바로견적 서비스",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )))));
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_lightBlue,
+                            ),
+                            onPressed: () {
+                              // 버튼 클릭 시 수행할 작업 추가
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SellerProfileView(
+                                        sllrNo: sellerInfo["sllrNo"],
+                                        appbarYn: 'Y')),
+                              );
+                            },
+                            child: Container(
+                              child: Center(
+                                child: Text(
+                                  "파트너 프로필",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 5.0, bottom: 5.0),
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          // 좌우 10, 위아래 5의 패딩 설정
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(50),
+                              // backgroundColor: WitHomeTheme.wit_lightCoral,
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return Scaffold(
+                                      /*appBar: SellerAppBar(
+                                    sllrNo: widget.sllrNo,
+                                  ),*/
+                                      appBar: AppBar(
+                                        backgroundColor: WitHomeTheme.wit_gray,
+                                        iconTheme: const IconThemeData(
+                                            color: WitHomeTheme.wit_white),
+                                        title: Text(
+                                          '공지사항',
+                                          style: WitHomeTheme.title.copyWith(
+                                              color: WitHomeTheme.wit_white),
+                                        ),
+                                      ),
+                                      body: Container(
+                                        //padding: EdgeInsets.all(16.0),
+                                        child: Board(
+                                            widget.sllrNo, "C1"), // 리스트를 추가
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            child: Container(
+                              child: Center(
+                                child: Text(
+                                  "공지사항",
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_black),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )))));
   }
 }

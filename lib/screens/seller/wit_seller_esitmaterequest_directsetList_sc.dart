@@ -24,12 +24,14 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
   String storeName = "";
   List<dynamic> directEstimateSetList = [];
   TextEditingController estimateContentController = TextEditingController();
+  Map directEstimateSetInfo = {};
 
   @override
   void initState() {
     super.initState();
     getSellerInfo(widget.sllrNo);
-    getDirectEstimateSetList(widget.sllrNo);
+    getAutoEstimateList(widget.sllrNo);
+    getDirectEstimateSetInfo(widget.sllrNo);
   }
 
   bool _isChecked = false; // 체크박스 상태 관리
@@ -67,7 +69,34 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
     }
   }
 
-  Future<void> getDirectEstimateSetList(dynamic sllrNo) async {
+  // [서비스] 바로 견적 설정 정보 조회
+  Future<void> getDirectEstimateSetInfo(dynamic esdrNo) async {
+    // REST ID
+    String restId = "getDirectEstimateSetInfo";
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": widget.sllrNo, // 바로견적 설정 번호
+    });
+
+    // API 호출 (바로견적 설정 정보 조회)
+    final _directEstimateSetInfo = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    if (_directEstimateSetInfo != null) {
+      setState(() {
+        directEstimateSetInfo = _directEstimateSetInfo;
+
+        estimateContentController.text = directEstimateSetInfo['content'];
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("바로 견적 설정 정보 조회가 실패하였습니다.")),
+      );
+    }
+  }
+
+  Future<void> getAutoEstimateList(dynamic sllrNo) async {
     String restId = "getAutoEstimateList";
     final param = jsonEncode({"sllrNo": widget.sllrNo});
     final response = await sendPostRequest(restId, param);
@@ -79,6 +108,35 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("바로견적 설정 목록 조회가 실패하였습니다.")),
+      );
+    }
+  }
+
+  // [서비스] 바로 견적 설정 정보 수정
+  Future<void> updateDirectEstimateSetInfo() async {
+    // REST ID
+    String restId = "updateDirectEstimateSetInfo";
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": widget.sllrNo, // stat을 사용하여 API에 전달
+      "content": estimateContentController.text, // 견적 설명
+    });
+
+    // API 호출 (바로견적 설정 정보 조회)
+    final response = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    if (response != null) {
+      setState(() {
+        // 사용자에게 성공 메시지 표시
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("바로 견적 설정 정보가 수정되었습니다.")),
+        );
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("바로 견적 설정 정보 수정이 실패하였습니다.")),
       );
     }
   }
@@ -147,34 +205,59 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                   ],
                 ),
               ),
+              SizedBox(height: 10),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Checkbox(
-                    value: _isChecked,
-                    onChanged: (bool? value) {
-                      _onCheckboxChanged(value);
-                    },
-                    activeColor: Colors.blue, // 체크박스 체크 시 색상 설정
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _isChecked,
+                        onChanged: (bool? value) {
+                          _onCheckboxChanged(value); // 기존의 메소드 사용
+                        },
+                        activeColor: Colors.blue,
+                      ),
+                      Text(
+                        "프로필 자동 붙이기",
+                        style: WitHomeTheme.title.copyWith(fontSize: 16),
+                      ),
+                    ],
                   ),
-                  Text(
-                    "프로필 자동 붙이기",
-                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      updateDirectEstimateSetInfo();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: WitHomeTheme.wit_lightGreen,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                    ),
+                    child: Text(
+                      "저장하기",
+                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    ),
                   ),
                 ],
               ),
-              // 체크박스가 체크된 경우 SellerProfileView 표시
-              if (_isChecked)
+
+// 체크박스가 체크된 경우에만 SellerProfileView 표시
+              if (_isChecked) ...[
+                SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black), // 테두리 색상 설정
-                    borderRadius: BorderRadius.circular(2), // 둥근 모서리 설정
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(2),
                   ),
                   constraints: BoxConstraints(
-                    minHeight: 100, // 최소 높이 설정
-                    maxHeight: 800, // 최대 높이 설정
+                    minHeight: 100,
+                    maxHeight: 800,
                   ),
                   child: SellerProfileView(sllrNo: widget.sllrNo, appbarYn: "N"),
                 ),
+              ],
               SizedBox(height: 10),
               Text(
                 '* 견적 자동발송 제외시간입니다.',
@@ -185,7 +268,7 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                 '- 밤 9시~ 아침8시까지',
                 style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_gray),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               Text(
                 '- 이번주 견적 발송 내역',
                 style: WitHomeTheme.title.copyWith(fontSize: 16),
