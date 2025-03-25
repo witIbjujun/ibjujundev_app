@@ -3,6 +3,8 @@ import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/checkList/wit_checkList_write_pop.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
+import '../../common/wit_ImageViewer_sc.dart';
+
 /**
  * 체크리스트 상세 화면 UI
  */
@@ -292,53 +294,75 @@ class ExpandableItem extends StatelessWidget {
           AnimatedContainer(
             duration: Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            height: isExpanded ? 450 : 0,
+            height: isExpanded ? 230 : 0,
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   // 선택했을떄만 이미지 출력 (데이터 사용량 이슈)
                   if (isExpanded == true)
-                  Container(
-                    height: 320,
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: PageView.builder(
-                      itemCount: 3,
-                      itemBuilder: (context, imageIndex) {
-                        final inspImg = checkInfoLv3["inspImg"] ?? ""; // null 체크 및 디폴트 값 설정
-                        final imageUrlList = [
-                          apiUrl + "/WIT/checkList/" + inspImg + "1.png", // 첫 번째 이미지
-                          apiUrl + "/WIT/checkList/" + inspImg + "2.png", // 두 번째 이미지
-                          apiUrl + "/WIT/checkList/" + inspImg + "3.png", // 세 번째 이미지
-                        ];
-                        return Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.symmetric(horizontal: 0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(0),
-                          ),
-                          child: Image.network(
-                            imageUrlList[imageIndex],
-                            fit: BoxFit.cover,
-                            errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                              // 이미지 로드 실패 시 빈 이미지 또는 대체 이미지를 표시
-                              return Container(
-                                color: WitHomeTheme.wit_lightgray,
-                                child: Center(
-                                  child: Text(
-                                    '이미지 없음',
-                                    style: WitHomeTheme.subtitle,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                    Container(
+                      height: 100,
+                      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white, // 배경색 추가
+                      ),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal, // 수평 스크롤
+                        itemCount: 3,
+                        itemBuilder: (context, imageIndex) {
+                          final inspImg = checkInfoLv3["inspImg"] ?? ""; // null 체크 및 디폴트 값 설정
+                          final imageUrlList = [
+                            apiUrl + "/WIT/checkList/" + inspImg + "1.png", // 첫 번째 이미지
+                            apiUrl + "/WIT/checkList/" + inspImg + "2.png", // 두 번째 이미지
+                            apiUrl + "/WIT/checkList/" + inspImg + "3.png", // 세 번째 이미지
+                          ];
+                          return Container(
+                            width: 100, // 썸네일 너비
+                            margin: EdgeInsets.symmetric(horizontal: 5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                imageUrlList[imageIndex],
+                                fit: BoxFit.cover,
+                                errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                                  // 이미지 로드 실패 시 빈 컨테이너 반환
+                                  return Container(); // 빈 컨테이너 반환
+                                },
+                                // 이미지 로드 성공 여부를 확인하기 위한 상태 관리
+                                loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    // 이미지 로드가 완료된 경우
+                                    return GestureDetector(
+                                      onTap: () {
+                                        // 썸네일 클릭 시 큰 화면에서 이미지 보기
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ImageViewer(
+                                              imageUrls: imageUrlList, // 전체 이미지 URL 리스트 전달
+                                              initialIndex: imageIndex, // 현재 이미지 인덱스
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: child, // 이미지 표시
+                                    );
+                                  } else {
+                                    // 로딩 중일 경우 로딩 인디케이터 표시 (원하는 경우)
+                                    return Center(child: CircularProgressIndicator());
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  ,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
