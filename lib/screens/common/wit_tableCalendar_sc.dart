@@ -80,8 +80,8 @@ class TableCalenderMainState extends State<TableCalenderMain> {
               Expanded(
                 child: ListView(
                   children: _selectedDate != null
-                      ? buildEventList(_getEventsForDay(_selectedDate!))
-                      : buildEventList(_getEventsForToday()),
+                      ? buildEventList(_getEventsForDay(_selectedDate!), context)
+                      : buildEventList(_getEventsForToday(), context),
                 ),
               ),
             ],
@@ -137,14 +137,9 @@ class TableCalenderMainState extends State<TableCalenderMain> {
       // 데이터 가공
       for (var item in _estimateRequestList) {
         DateTime estDate = DateTime.parse(item['estDt']);
-        String title = item['itemName'];
-        String contents = '${item['reqContents']}'; // 예시 주소
-        String prsnName = item['prsnName'];
-        String aptName = item['aptName'];
-        String statName = item['stat'];
 
         // 이벤트 생성
-        Event event = Event(estDate, title, contents, prsnName, aptName, statName);
+        Event event = Event(estDate, item);
 
         // 맵에 추가
         if (events[DateTime.utc(estDate.year, estDate.month, estDate.day)] == null) {
@@ -213,11 +208,7 @@ class TableCalenderMainState extends State<TableCalenderMain> {
 
 class Event {
   final DateTime dateTime;    // 날짜 및 시간
-  final String title;         // 제목
-  final String subtitle;      // 내용
-  final String prsnName;      // 거래요청자명
-  final String aptName;      // 아파트명
-  final String statName;      // 상태명
+  final dynamic data;
 
-  Event(this.dateTime, this.title, this.subtitle, this.prsnName, this.aptName, this.statName);
+  Event(this.dateTime, this.data);
 }

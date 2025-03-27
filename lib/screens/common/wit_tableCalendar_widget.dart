@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:witibju/screens/common/wit_tableCalendar_sc.dart';
 
 import '../home/wit_home_theme.dart';
+import '../seller/wit_seller_estimaterequest_detail_sc.dart';
 
 /**
  * 달력 클릭 이벤트
@@ -111,11 +112,20 @@ import '../home/wit_home_theme.dart';
   return eventWidgets;
 }*/
 
-List<Widget> buildEventList(List<Event> events) {
+List<Widget> buildEventList(List<Event> events, BuildContext context) {
   List<Widget> eventWidgets = [];
   DateTime? lastDisplayedDate;
 
   for (var event in events) {
+
+    print("11☆★☆★☆★☆★☆★☆★");
+    print(event.data);
+    print("22☆★☆★☆★☆★☆★☆★");
+    print(event.data["statName"]);
+    print("33☆★☆★☆★☆★☆★☆★");
+    print(event.data["statName"]);
+    print("44☆★☆★☆★☆★☆★☆★");
+
     if (lastDisplayedDate == null ||
         event.dateTime.year != lastDisplayedDate.year ||
         event.dateTime.month != lastDisplayedDate.month ||
@@ -172,11 +182,11 @@ List<Widget> buildEventList(List<Event> events) {
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                       ),
                       SizedBox(height: 4), // 날짜와 이름 사이의 간격
-                      Text(event.prsnName ?? '요청자명 없음', // 요청자명
+                      Text(event.data["prsnName"] ?? '요청자명 없음', // 요청자명
                         style: WitHomeTheme.title.copyWith(fontSize: 18),
                       ),
                       SizedBox(height: 1), // 이름과 아파트명 사이의 간격
-                      Text(event.aptName,
+                      Text(event.data["aptName"],
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -186,7 +196,16 @@ List<Widget> buildEventList(List<Event> events) {
                 SizedBox(width: 10), // 상태 텍스트와의 간격
                 TextButton(
                   onPressed: () {
-
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EstimateRequestDetail(
+                          estNo: event.data["estNo"].toString(),
+                          seq: event.data["seq"].toString(),
+                          sllrNo: event.data["sllrNo"].toString(),
+                        ),
+                      ),
+                    );
                   },
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
@@ -194,7 +213,7 @@ List<Widget> buildEventList(List<Event> events) {
                       borderRadius: BorderRadius.circular(0), // 테두리 없애기
                     ),
                   ),
-                  child: Text(event.statName, // 상태
+                  child: Text(event.data["stat"] ?? "", // 상태
                     style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
                   ),
                 ),
@@ -209,7 +228,7 @@ List<Widget> buildEventList(List<Event> events) {
               ),
               child: Align(
                 alignment: Alignment.centerLeft, // 왼쪽 정렬
-                child: Text(event.subtitle, // 내용
+                child: Text(event.data["content"] ?? "", // 내용
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                   textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
                   maxLines: 3, // 기본 3줄 표시
