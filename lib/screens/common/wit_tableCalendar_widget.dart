@@ -118,14 +118,6 @@ List<Widget> buildEventList(List<Event> events, BuildContext context) {
 
   for (var event in events) {
 
-    print("11☆★☆★☆★☆★☆★☆★");
-    print(event.data);
-    print("22☆★☆★☆★☆★☆★☆★");
-    print(event.data["statName"]);
-    print("33☆★☆★☆★☆★☆★☆★");
-    print(event.data["statName"]);
-    print("44☆★☆★☆★☆★☆★☆★");
-
     if (lastDisplayedDate == null ||
         event.dateTime.year != lastDisplayedDate.year ||
         event.dateTime.month != lastDisplayedDate.month ||
