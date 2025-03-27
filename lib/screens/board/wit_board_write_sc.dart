@@ -57,8 +57,8 @@ class _BoardWriteState extends State<BoardWrite> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("글 작성",
-            style: WitHomeTheme.title),
+        title: Text("글 작성", style: WitHomeTheme.title),
+        backgroundColor: WitHomeTheme.wit_white,
       ),
       backgroundColor: WitHomeTheme.wit_white,
       body: SafeArea(
@@ -213,11 +213,14 @@ class _BoardWriteState extends State<BoardWrite> {
   // [서비스] 게시판 저장
   Future<void> saveBoardInfo(dynamic fileInfo) async {
 
+    print("파일파일파일");
+    print(fileInfo);
+
     // 로그인 사번
     String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
 
     String restId = "";
-    var param = null;
+    var param;
 
     if (widget.boardInfo == null) {
       restId = "saveBoardInfo";
