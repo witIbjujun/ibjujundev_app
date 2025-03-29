@@ -87,6 +87,12 @@ class SellerProfileViewState extends State<SellerProfileView> {
     getSellerInfo(widget.sllrNo);
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   /*Future<void> getSellerInfo(dynamic sllrNo) async {
     // API 호출 로직 (여기서는 가상의 데이터 사용)
     setState(() {

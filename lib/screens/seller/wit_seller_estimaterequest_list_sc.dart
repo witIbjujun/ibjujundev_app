@@ -52,7 +52,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                     height: MediaQuery.of(context).size.height * 0.18,  // 화면 높이의 18%
                     width: MediaQuery.of(context).size.width * 0.85,    // 화면 너비의 85%
                     child: Image.asset(
-                      'assets/images/nolist2.png', // 광고 이미지 URL
+                      'assets/images/nolist3.png', // 광고 이미지 URL
                       fit: BoxFit.contain, // 이미지 비율 유지
                     ),
                   ),

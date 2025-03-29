@@ -27,8 +27,12 @@ Future<dynamic> sendPostRequest(String restId, dynamic param) async {
   // 호출 성공
   if (response.statusCode == 200) {
     // 성공적으로 데이터를 전송했을 때의 처리
-    return json.decode(utf8.decode(response.bodyBytes));
-
+    if (!response.body.isEmpty) {
+      return json.decode(utf8.decode(response.bodyBytes));
+    }
+    else {
+        return {}; // 빈 응답 방지
+    }
     // 호출 실패
   } else {
     throw Exception('Request failed with status: ${response.statusCode}');

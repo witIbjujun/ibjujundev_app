@@ -120,7 +120,7 @@ class SellerAppBarState extends State<SellerAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leadingWidth: 90,
+      leadingWidth: 150,
       leading: Container(
         height: double.infinity,
         child: Center(

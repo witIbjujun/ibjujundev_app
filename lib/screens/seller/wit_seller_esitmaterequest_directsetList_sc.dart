@@ -83,13 +83,18 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
     final _directEstimateSetInfo = await sendPostRequest(restId, param);
 
     // 결과 셋팅
-    if (_directEstimateSetInfo != null) {
+    if (_directEstimateSetInfo is Map<String, dynamic>) {
       setState(() {
         directEstimateSetInfo = _directEstimateSetInfo;
-
         estimateContentController.text = directEstimateSetInfo['content'];
       });
-    } else {
+    }
+    else if(_directEstimateSetInfo != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("바로견적 설정 정보가 없습니다..")),
+      );
+    }
+    else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("바로 견적 설정 정보 조회가 실패하였습니다.")),
       );
@@ -108,6 +113,38 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("바로견적 설정 목록 조회가 실패하였습니다.")),
+      );
+    }
+  }
+
+  // [서비스] 바로 견적 설정 정보 저장
+  Future<void> insertDirectEstimateSetInfo() async {
+    // REST ID
+    String restId = "insertDirectEstimateSetInfo";
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": widget.sllrNo, // stat을 사용하여 API에 전달
+      "content": estimateContentController.text, // 견적 설명
+      "categoryId": sellerInfo['serviceItem'],
+    });
+
+    print("1231132123 : " + widget.sllrNo.toString());
+
+    // API 호출 (바로견적 설정 정보 조회)
+    final response = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    if (response != null) {
+      setState(() {
+        // 사용자에게 성공 메시지 표시
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("바로 견적 설정 정보가 저장되었습니다.")),
+        );
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("바로 견적 설정 정보 수정이 실패하였습니다.")),
       );
     }
   }
@@ -226,7 +263,11 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      updateDirectEstimateSetInfo();
+                      if (directEstimateSetInfo['sllrNo'] != null && directEstimateSetInfo['sllrNo'] != '') {
+                        updateDirectEstimateSetInfo();
+                      } else {
+                        insertDirectEstimateSetInfo();
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: WitHomeTheme.wit_lightGreen,
@@ -258,6 +299,8 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                   child: SellerProfileView(sllrNo: widget.sllrNo, appbarYn: "N"),
                 ),
               ],
+
+
               SizedBox(height: 10),
               Text(
                 '* 견적 자동발송 제외시간입니다.',
