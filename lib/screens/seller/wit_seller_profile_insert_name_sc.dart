@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_insert_content_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
@@ -115,23 +116,48 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
       setState(() {
         // 선택된 지역 추가
         selectedLocations.add({
-
           'cdNm': selectedItem['cdNm'], // cdNm 값
           'cd': selectedItem['cd'],      // cd 값
         });
         // 선택된 지역 초기화
         selectedLocation = null;
+
+        // 오류 메시지 초기화
+        areaErrorMessage = ''; // 서비스 지역 오류 메시지 초기화
       });
     }
   }
+
   void _addServiceWithAsPeriod() {
     if (selectedServiceType != null && selectedAsPeriod != null) {
-      String combinedService = '$selectedServiceType / $selectedAsPeriod';
-      setState(() {
-        selectedServiceTypes.add(combinedService);
-        selectedServiceType = null; // 선택 후 초기화
-        selectedAsPeriod = null; // 선택 후 초기화
-      });
+      // 선택된 서비스와 AS 기간을 찾기
+      final selectedItem = categoryList.firstWhere(
+              (item) => item['categoryId'] == selectedServiceType,
+          orElse: () => {'categoryNm': '서비스 없음', 'categoryId': null}); // 기본값 설정
+
+      final selectedAsItem = asList.firstWhere(
+              (item) => item['cd'] == selectedAsPeriod,
+          orElse: () => {'cdNm': 'AS 기간 없음', 'cd': null}); // 기본값 설정
+
+      // 선택된 서비스와 AS 기간이 유효한지 확인
+      if (selectedItem['categoryId'] != null && selectedAsItem['cd'] != null) {
+        String combinedService = '${selectedItem['categoryNm']} / ${selectedAsItem['cdNm']}'; // 디스플레이할 값
+        String serviceCd = selectedItem['categoryId']; // 저장할 서비스 품목 ID
+        String asCd = selectedAsItem['cd']; // 저장할 AS 기간 ID
+
+        setState(() {
+          selectedServiceTypes.add(combinedService); // 디스플레이용 추가
+          selectedServiceWithAsPeriod.add(combinedService); // 디스플레이용 추가
+          selectedServiceWithAsPeriodCd = '$serviceCd / $asCd'; // 실제 저장할 값을 결합
+          selectedServiceType = null; // 선택 후 초기화
+          selectedAsPeriod = null; // 선택 후 초기화
+
+          serviceErrorMessage = ''; // 서비스 오류 메시지 초기화
+        });
+      } else {
+        // 선택된 서비스 또는 AS 기간이 유효하지 않은 경우
+        print("Invalid selection: Service Item or AS Period not found");
+      }
     }
   }
 
@@ -239,9 +265,14 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                         items: areaList.map<DropdownMenuItem<String>>((item) {
                           return DropdownMenuItem<String>(
                             value: item['cd'],
-                            child: Text(item['cdNm']),
+                            child: Container(
+                              color: WitHomeTheme.white, // 드롭다운 항목 배경색 하얗게 설정
+                              child: Text(item['cdNm']),
+                            ),
                           );
                         }).toList(),
+                        // 드롭다운의 배경색을 흰색으로 설정
+                        dropdownColor: WitHomeTheme.white, // 드롭다운 메뉴 배경색
                       ),
                     ),
                   ),
@@ -264,6 +295,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                   ),
                 ],
               ),
+
 // 선택된 지역 표시
               Wrap(
                 spacing: 8.0,
@@ -318,17 +350,9 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                         isExpanded: true, // Dropdown이 가득 차게 설정
                         underline: SizedBox(), // 기본 언더라인 제거
                         onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              selectedServiceType = newValue;
-                              final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == newValue);
-                              selectedServiceTypes.add(selectedItem2['categoryNm']);
-                              // AS 기간과 함께 선택된 경우 추가
-                              if (selectedAsPeriod != null) {
-                                selectedServiceWithAsPeriod.add('${selectedItem2['categoryNm']} / ${asList.firstWhere((item) => item['cd'] == selectedAsPeriod)['cdNm']}');
-                              }
-                            });
-                          }
+                          setState(() {
+                            selectedServiceType = newValue; // 서비스 품목 선택
+                          });
                         },
                         items: categoryList.map<DropdownMenuItem<String>>((item) {
                           return DropdownMenuItem<String>(
@@ -338,6 +362,8 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                             ),
                           );
                         }).toList(),
+                        dropdownColor: WitHomeTheme.white, // 드롭다운 메뉴 배경색
+
                       ),
                     ),
                   ),
@@ -360,15 +386,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                         underline: SizedBox(), // 기본 언더라인 제거
                         onChanged: (String? newValue) {
                           setState(() {
-                            selectedAsPeriod = newValue;
-                            // AS 기간과 서비스 품목이 함께 선택된 경우 추가
-                            if (selectedServiceType != null) {
-                              final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == selectedServiceType);
-                              selectedServiceWithAsPeriodCd = '${selectedItem2['categoryId']}/${asList.firstWhere((item) => item['cd'] == newValue)['cd']}';
-                              selectedServiceWithAsPeriod.add(
-                                  '${selectedItem2['categoryNm']} ( ${asList.firstWhere((item) => item['cd'] == newValue)['cdNm']} )'
-                              );
-                            }
+                            selectedAsPeriod = newValue; // AS 기간 선택
                           });
                         },
                         items: asList.map<DropdownMenuItem<String>>((item) {
@@ -379,6 +397,8 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                             ),
                           );
                         }).toList(),
+                        dropdownColor: WitHomeTheme.white, // 드롭다운 메뉴 배경색
+
                       ),
                     ),
                   ),
@@ -423,6 +443,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                 )).toList(),
               ),
 
+
               // 오류 메시지 표시
               if (serviceErrorMessage.isNotEmpty)
                 Text(
@@ -447,15 +468,21 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                       areaErrorMessage = ''; // 서비스 지역 오류 메시지 초기화
                       serviceErrorMessage = ''; // 서비스 품목 오류 메시지 초기화
 
-                      if (storeNameController.text.isEmpty) {
+                      // 필수 입력 체크
+                      bool isStoreNameValid = storeNameController.text.isNotEmpty;
+                      bool isServiceAreaValid = selectedLocations.isNotEmpty;
+                      bool isServiceTypeValid = selectedServiceTypes.isNotEmpty;
+
+                      if (!isStoreNameValid) {
                         errorMessage = '판매자명을 입력해주세요.'; // 오류 메시지 설정
                       }
-                      if (selectedLocations.isEmpty) {
+                      if (!isServiceAreaValid) {
                         areaErrorMessage = '서비스 지역을 선택해주세요.'; // 오류 메시지 설정
                       }
-                      if (selectedServiceTypes.isEmpty) {
+                      if (!isServiceTypeValid) {
                         serviceErrorMessage = '서비스 품목을 선택해주세요.'; // 오류 메시지 설정
                       }
+
                     });
 
                     // 오류가 없을 경우 프로필 등록
@@ -495,16 +522,35 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
     dynamic serviceArea,
     dynamic serviceItem,
   ) async {
+
     // REST ID
     String restId = "saveSellerProfile";
 
-    print("aaaa: : " + "123");
+    String? saveServiceAreaCd = '';
+    if (selectedLocations.isNotEmpty && selectedLocations.first['cd'] != null) {
+      saveServiceAreaCd = selectedLocations.first['cd']; // 선택된 서비스 지역의 cd
+    }
+
+    // AS 기간과 서비스 품목을 선택하고 처리
+    List<String> parts = selectedServiceWithAsPeriodCd.split('/');
+
+    String saveServiceItemCd = ''; // 서비스 품목 ID 초기화
+    String saveAsGbn = ''; // AS 기간 초기화
+
+    if (parts.length > 0) {
+      saveServiceItemCd = parts[0].trim(); // 서비스 품목 ID
+    }
+
+    if (parts.length > 1) {
+      saveAsGbn = parts[1].trim(); // AS 기간
+    }
 
     // PARAM
     final param = jsonEncode({
       "storeName": storeName,
-      "serviceArea": serviceArea,
-      "serviceItem": serviceItem,
+      "serviceArea": saveServiceAreaCd,
+      "serviceItem": saveServiceItemCd,
+      "asGbn":saveAsGbn,
     });
 
     // API 호출
@@ -513,7 +559,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
     if (response != null) {
       // 성공적으로 저장된 경우 처리
 
-      int sllrNo = response; // response에서 ID 값을 가져옴
+      dynamic sllrNo = response; // response에서 ID 값을 가져옴
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("파트너 프로필이 성공적으로 저장되었습니다.")),
@@ -523,7 +569,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SellerProfileDetail(sllrNo: sllrNo),
+          builder: (context) => SellerProfileInsertContents(sllrNo: sllrNo),
         ),
       );
     } else {
