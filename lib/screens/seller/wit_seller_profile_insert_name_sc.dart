@@ -174,10 +174,6 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
 
   @override
   Widget build(BuildContext context) {
-    // 필수 입력 체크를 위한 상태 변수 추가
-    bool isStoreNameValid = storeNameController.text.isNotEmpty;
-    bool isServiceAreaValid = selectedLocations.isNotEmpty;
-    bool isServiceTypeValid = selectedServiceTypes.isNotEmpty;
 
     return Scaffold(
       backgroundColor: WitHomeTheme.wit_white,
@@ -362,7 +358,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                             ),
                           );
                         }).toList(),
-                        dropdownColor: WitHomeTheme.white, // 드롭다운 메뉴 배경색
+                        dropdownColor: WitHomeTheme.wit_white, // 드롭다운 메뉴 배경색
 
                       ),
                     ),
@@ -397,7 +393,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                             ),
                           );
                         }).toList(),
-                        dropdownColor: WitHomeTheme.white, // 드롭다운 메뉴 배경색
+                        dropdownColor: WitHomeTheme.wit_white, // 드롭다운 메뉴 배경색
 
                       ),
                     ),

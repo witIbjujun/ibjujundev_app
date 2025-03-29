@@ -605,6 +605,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                             child: Text(item['cdNm']),
                           );
                         }).toList(),
+                        dropdownColor: WitHomeTheme.wit_white, // 드롭다운 메뉴 배경색
+
                       ),
                     ),
                   ),
@@ -694,6 +696,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                             ),
                           );
                         }).toList(),
+                        dropdownColor: WitHomeTheme.wit_white, // 드롭다운 메뉴 배경색
+
                       ),
                     ),
                   ),
@@ -735,6 +739,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                             ),
                           );
                         }).toList(),
+                        dropdownColor: WitHomeTheme.wit_white, // 드롭다운 메뉴 배경색
+
                       ),
                     ),
                   ),

@@ -5,6 +5,7 @@ import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetList_
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_insert_content_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_insert_name_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_view_sc.dart';
@@ -151,10 +152,10 @@ class SellerAppBarState extends State<SellerAppBar> {
               decoration: InputDecoration(
                 hintText: 'sllrNo 입력',
                 border: OutlineInputBorder(),
-                hintStyle:  WitHomeTheme.title.copyWith(color: Colors.white),
+                hintStyle:  WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
               ),
-              style:  WitHomeTheme.title.copyWith(color: Colors.white),
+              style:  WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
 
               keyboardType: TextInputType.number, // 숫자 키패드로 설정
             ),
@@ -174,7 +175,7 @@ class SellerAppBarState extends State<SellerAppBar> {
               });
             }
           },
-          icon: Icon(Icons.search, color: Colors.white), // 아이콘 색상 하얀색으로 설정
+          icon: Icon(Icons.search, color: WitHomeTheme.wit_white), // 아이콘 색상 하얀색으로 설정
         ),
 
         IconButton(
@@ -186,17 +187,17 @@ class SellerAppBarState extends State<SellerAppBar> {
             );
           },
           icon: Icon(
-              Icons.perm_identity, color: Colors.white), // 아이콘 색상 하얀색으로 설정
+              Icons.perm_identity, color: WitHomeTheme.wit_white), // 아이콘 색상 하얀색으로 설정
         ),
         IconButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => SellerProfileInsertName()), // HomeScreen으로 이동
+                    builder: (context) => SellerProfileInsertContents(sllrNo: sllrNo)), // HomeScreen으로 이동
               );
 
-            }, icon: Icon(Icons.mail, color: Colors.white)),
+            }, icon: Icon(Icons.mail, color: WitHomeTheme.wit_white)),
         // 아이콘 색상 하얀색으로 설정
         /*IconButton(
           onPressed: () {
