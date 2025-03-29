@@ -5,7 +5,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
-import 'package:witibju/screens/seller/wit_seller_profile_insert_bizInfo_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
@@ -14,17 +13,17 @@ import '../board/wit_board_detail_sc.dart';
 import '../common/wit_ImageViewer_sc.dart';
 import '../home/wit_home_theme.dart';
 
-class SellerProfileInsertContents extends StatefulWidget {
+class SellerProfileInsertBizInfo extends StatefulWidget {
   final dynamic sllrNo;
-  const SellerProfileInsertContents({super.key, required this.sllrNo});
+  const SellerProfileInsertBizInfo({super.key, required this.sllrNo});
 
   @override
   State<StatefulWidget> createState() {
-    return SellerProfileInsertContentsState();
+    return SellerProfileInsertBizInfoState();
   }
 }
 
-class SellerProfileInsertContentsState extends State<SellerProfileInsertContents> {
+class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> {
   dynamic sellerInfo;
   TextEditingController sllrContentController = TextEditingController();
   TextEditingController sllrImageController = TextEditingController();
@@ -329,7 +328,7 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SellerProfileInsertBizInfo(sllrNo: widget.sllrNo),
+          builder: (context) => SellerProfileDetail(sllrNo: widget.sllrNo),
         ),
       );
     } else {
