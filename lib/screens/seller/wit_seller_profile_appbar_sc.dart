@@ -5,6 +5,7 @@ import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetList_
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_insert_bizInfo_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_insert_content_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_insert_name_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
@@ -194,7 +195,7 @@ class SellerAppBarState extends State<SellerAppBar> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => SellerProfileInsertContents(sllrNo: sllrNo)), // HomeScreen으로 이동
+                    builder: (context) => SellerProfileInsertName()), // HomeScreen으로 이동
               );
 
             }, icon: Icon(Icons.mail, color: WitHomeTheme.wit_white)),
