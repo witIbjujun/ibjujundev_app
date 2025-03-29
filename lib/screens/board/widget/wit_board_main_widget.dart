@@ -166,28 +166,9 @@ class BoardListView extends StatelessWidget {
                           child: Column(
                           children: [
                             ListTile(
-                              contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              contentPadding: EdgeInsets.fromLTRB(17, 7, 17, 7),
                               title: Row(
                                 children: [
-                                  if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
-                                    Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(5),
-                                          child: Image.network(
-                                            apiUrl + boardInfo["imagePath"],
-                                            width: 60,
-                                            height: 60,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) {
-                                              return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
-                                            },
-                                          ),
-                                        ),
-                                        SizedBox(width: 20), // 이미지 영역 뒤에 추가된 SizedBox
-                                      ],
-                                    ),
-                                  ],
                                   Expanded(
                                     child: Container(
                                       child: Column(
@@ -226,6 +207,25 @@ class BoardListView extends StatelessWidget {
                                       ),
                                     ),
                                   ),
+                                  if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
+                                    Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: Image.network(
+                                            apiUrl + boardInfo["imagePath"],
+                                            width: 55,
+                                            height: 55,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
+                                      ],
+                                    ),
+                                  ],
                                   Container(
                                     child: Column(
                                       children: [
@@ -235,9 +235,9 @@ class BoardListView extends StatelessWidget {
                                             Container(
                                               decoration: BoxDecoration(
                                                 color: WitHomeTheme.wit_lightgray,
-                                                borderRadius: BorderRadius.circular(5),
+                                                borderRadius: BorderRadius.circular(10),
                                               ),
-                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                                               child: Column(
                                                 children: [
                                                   Center(
@@ -267,9 +267,12 @@ class BoardListView extends StatelessWidget {
                                 await refreshBoardList();
                               },
                             ),
-                            Container(
-                              height: 1,
-                              color: WitHomeTheme.wit_lightgray,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                              child: Container(
+                                height: 1,
+                                color: WitHomeTheme.wit_extraLightGrey,
+                              ),
                             ),
                           ],
                         ),

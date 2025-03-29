@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/common/wit_tableCalendar_widget.dart';
+import 'package:witibju/screens/common/wit_tableCalender_write_pop.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 
@@ -43,6 +44,27 @@ class TableCalenderMainState extends State<TableCalenderMain> {
       appBar: AppBar(
         backgroundColor: WitHomeTheme.wit_white,
         title: Text("스케쥴 관리", style: WitHomeTheme.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add), // 아이콘으로 '+'를 사용
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isDismissible: true,
+                isScrollControlled: true,
+                builder: (context) {
+                  return Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: Container(
+                      height: 530,
+                      child: ScheduleWritePopWidget(sllrNo : widget.sllrNo),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: SafeArea(
         child: Container(
@@ -205,7 +227,7 @@ class TableCalenderMainState extends State<TableCalenderMain> {
   }*/
 }
 
-
+// 스케쥴 이벤트 객체
 class Event {
   final DateTime dateTime;    // 날짜 및 시간
   final dynamic data;
