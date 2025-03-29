@@ -81,6 +81,8 @@ class SellerCashHistoryState extends State<SellerCashHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: WitHomeTheme.wit_white,
+
       /*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
       ),*/

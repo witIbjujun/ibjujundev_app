@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../home/wit_home_theme.dart';
+
 class EstimateRequestExTimePop extends StatefulWidget {
   final dynamic sllrNo;
   const EstimateRequestExTimePop({Key? key, required this.sllrNo}) : super(key: key);
@@ -28,6 +30,8 @@ class EstimateRequestExTimePopState extends State<EstimateRequestExTimePop> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: WitHomeTheme.wit_white,
+
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),

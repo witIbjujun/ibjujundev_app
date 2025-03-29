@@ -5,6 +5,7 @@ import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetList_
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_insert_name_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_view_sc.dart';
 import 'dart:convert';
@@ -188,7 +189,14 @@ class SellerAppBarState extends State<SellerAppBar> {
               Icons.perm_identity, color: Colors.white), // 아이콘 색상 하얀색으로 설정
         ),
         IconButton(
-            onPressed: () {}, icon: Icon(Icons.mail, color: Colors.white)),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SellerProfileInsertName()), // HomeScreen으로 이동
+              );
+
+            }, icon: Icon(Icons.mail, color: Colors.white)),
         // 아이콘 색상 하얀색으로 설정
         /*IconButton(
           onPressed: () {

@@ -316,7 +316,9 @@ class SellerProfileViewState extends State<SellerProfileView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        /*appBar: SellerAppBar(
+      backgroundColor: WitHomeTheme.wit_white,
+
+      /*appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
         ),*/
         appBar: (widget.appbarYn == "Y")
@@ -522,6 +524,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                   ),
                 ),
               ),
+              SizedBox(height: 8),
               if (widget.appbarYn == "Y") ...[ // ... 연산자를 사용하여 위젯 리스트를 펼침
                 Container(
                   padding: EdgeInsets.all(10),

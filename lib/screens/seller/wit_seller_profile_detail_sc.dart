@@ -131,7 +131,6 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: WitHomeTheme.wit_white, // Scaffold의 배경색을 하얀색으로 설정
-
         resizeToAvoidBottomInset: false,
         appBar: SellerAppBar(
           sllrNo: widget.sllrNo,

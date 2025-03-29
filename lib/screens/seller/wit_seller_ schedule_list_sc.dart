@@ -27,7 +27,8 @@ class SellerScheduleListState extends State<SellerScheduleList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+      backgroundColor: WitHomeTheme.wit_white,
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

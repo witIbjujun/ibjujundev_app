@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../util/wit_api_ut.dart';
+import '../home/wit_home_theme.dart';
 
 class EstimateRequestAreaPop extends StatefulWidget {
   final dynamic sllrNo;
@@ -54,6 +55,8 @@ class EstimateRequestAreaPopState extends State<EstimateRequestAreaPop> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: WitHomeTheme.wit_white,
+
       insetPadding: EdgeInsets.all(16.0), // 다이얼로그 여백 설정
       child: Container(
         width: MediaQuery

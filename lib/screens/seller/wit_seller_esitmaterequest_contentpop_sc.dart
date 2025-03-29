@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../util/wit_api_ut.dart';
+import '../home/wit_home_theme.dart';
 
 dynamic sllrNo;
 
@@ -21,6 +22,8 @@ class EstimateRequestContentPopState extends State<EstimateRequestContentPop> {
   @override
   Widget build(BuildContext context) {
     return Dialog( // AlertDialog 대신 Dialog 사용
+      backgroundColor: WitHomeTheme.wit_white,
+
       insetPadding: EdgeInsets.all(16.0), // 다이얼로그 여백 설정
       child: Container(
         padding: EdgeInsets.all(16.0), // 내용 여백 추가

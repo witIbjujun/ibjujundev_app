@@ -224,7 +224,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     } else {
       // 오류 처리
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("사업자 프로필 조회가 실패하였습니다.")),
+        SnackBar(content: Text("파트너 프로필 조회가 실패하였습니다.")),
       );
     }
 
@@ -489,9 +489,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*appBar: SellerAppBar(
-        sllrNo: widget.sllrNo,
-      ),*/
+      backgroundColor: WitHomeTheme.wit_white,
       appBar: AppBar(
         backgroundColor: WitHomeTheme.wit_gray,
         iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
@@ -524,7 +522,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               SizedBox(height: 16), // 제목과 아래 요소 간격
               // 대표자명 레이블
               Text(
-                '대표자명 (필수)',
+                '판매자명 (필수)',
                 style: WitHomeTheme.title.copyWith(fontSize: 16),
 
               ),
@@ -542,7 +540,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   controller: storeNameController,
                   decoration: InputDecoration(
                     border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '대표자명을 입력하세요', // 힌트 텍스트
+                    hintText: '판매자명을 입력하세요', // 힌트 텍스트
                     contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
                   ),
                 ),
@@ -1383,7 +1381,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       //int sllrNo = response; // response에서 ID 값을 가져옴
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("사업자 프로필이 성공적으로 변경되었습니다.")),
+        SnackBar(content: Text("파트너 프로필이 성공적으로 변경되었습니다.")),
       );
 
       // 상세 화면으로 이동
@@ -1396,7 +1394,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     } else {
       // 오류 처리
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("사업자 프로필 변경에 실패했습니다.")),
+        SnackBar(content: Text("파트너 프로필 변경에 실패했습니다.")),
       );
     }
   }

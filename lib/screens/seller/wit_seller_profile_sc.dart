@@ -134,6 +134,8 @@ class SellerProfileState extends State<SellerProfile> {
     bool isReceiverAddress1Valid = true;
 
     return Scaffold(
+      backgroundColor: WitHomeTheme.wit_white,
+
       appBar: AppBar(
         title: Text('회원가입',
           style: WitHomeTheme.title,

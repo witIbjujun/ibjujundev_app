@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: WitHomeTheme.wit_white,
         appBar: AppBar(
           backgroundColor: WitHomeTheme.wit_gray,
           title: Text('포인트 구매 팝업',

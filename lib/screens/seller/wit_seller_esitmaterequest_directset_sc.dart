@@ -139,6 +139,8 @@ class EstimateRequestDirectSetState extends State<EstimateRequestDirectSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: WitHomeTheme.wit_white,
+
       /*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
       ),*/

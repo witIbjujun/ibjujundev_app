@@ -181,6 +181,8 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: WitHomeTheme.wit_white,
+
       appBar: AppBar(
         backgroundColor: WitHomeTheme.wit_gray,
         iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),

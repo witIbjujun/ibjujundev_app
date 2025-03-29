@@ -98,6 +98,8 @@ class CashRechargeAutoState extends State<CashRechargeAuto> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: WitHomeTheme.wit_white,
+
       /*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
       ),*/

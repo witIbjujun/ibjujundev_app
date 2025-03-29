@@ -122,6 +122,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
     return
       Scaffold(
+        backgroundColor: WitHomeTheme.wit_white,
+
         /*appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
         ),*/
