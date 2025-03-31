@@ -224,21 +224,20 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
         // PARAM
         final param = jsonEncode({
-          "bizCd": "SR02",
-          "bizKey": sellerInfo["sllrNo"],
+          "sllrNo": widget.sllrNo,
           "fileInfo": fileInfo,
         });
 
         // API 호출 (게시판 상세 조회)
         final _bizImageList = await sendPostRequest(restId, param);
 
-        if (_bizImageList.isNotEmpty) {
+        /*if (_bizImageList > 0) {
           // 값이 있을 때 수행할 작업
-          print("보드 상세 이미지 리스트에 값이 있습니다: ${bizImageList.length}개");
+          print("보드 상세 이미지 리스트에 값이 있습니다");
         } else {
           // 값이 없을 때 수행할 작업
           print("보드 상세 이미지 리스트가 비어 있습니다.");
-        }
+        }*/
 
         // 결과 셋팅
         setState(() {
@@ -256,7 +255,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": sellerInfo["sllrNo"],
+      "sllrNo": widget.sllrNo,
       "bizCertification": "01",
     });
 
@@ -358,9 +357,8 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   SizedBox(width: 16.0), // 버튼 간격
                   ElevatedButton(
                     onPressed: () async {
-                      print("12312312312");
                       // 첨부 버튼 클릭 시 이미지 선택
-                      final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+                      /*final XFile? image = await _picker.pickImage(source: ImageSource.camera);
 
                       if (image != null) {
                         // 이미지가 선택된 경우
@@ -370,13 +368,13 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                           setState(() {
                             bizImageList.add({'imagePath': image.path}); // XFile의 경로를 포함하는 맵으로 추가
                           });
-                        }
+                        }*/
                         saveSellerBizImage();
                         // 선택된 이미지 경로 출력
-                      } else {
+                      /*} else {
                         // 이미지 선택이 취소된 경우
                         print('이미지 선택 취소됨');
-                      }
+                      }*/
                     },
                     child: Text('첨부',
                       style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
@@ -423,7 +421,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                             right: 0,
                             top: 0,
                             child: IconButton(
-                              icon: Icon(Icons.close, color: Colors.red), // X 아이콘
+                              icon: Icon(Icons.close, color: WitHomeTheme.nearlysYellow,), // X 아이콘
                               onPressed: () {
                                 setState(() {
                                   _images.removeAt(index); // 이미지 삭제
@@ -472,6 +470,29 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                     );
                   },
                 ),
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
+                children: [
+                  GestureDetector(
+                    onTap: () => _pickImages(ImageSource.gallery),
+                    child: Column(
+                      children: [
+                        Icon(Icons.photo, size: 40), // 갤러리 아이콘
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 16), // 아이콘 간격
+                  GestureDetector(
+                    onTap: () => _pickImage(ImageSource.camera),
+                    child: Column(
+                      children: [
+                        Icon(Icons.camera_alt, size: 40), // 카메라 아이콘
+                      ],
+                    ),
+                  ),
+                ],
               ),
 
 

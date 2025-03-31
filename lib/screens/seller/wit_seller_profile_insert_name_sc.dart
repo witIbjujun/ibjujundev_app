@@ -42,6 +42,120 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
   String errorMessage = ''; // 판매자명 오류 메시지 변수
   String areaErrorMessage = ''; // 서비스 지역 오류 메시지 변수
   String serviceErrorMessage = ''; // 서비스 품목 오류 메시지 변수
+  bool _isAgreed = false; // 체크박스 상태 변수 (초기값 설정)
+
+
+  void showAsPeriodDialog(bool isAgreed, void Function(bool) onAgreed) {
+    bool agreed = isAgreed; // 다이얼로그 내부에서 사용할 상태 변수
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: WitHomeTheme.wit_white,
+          contentPadding: EdgeInsets.all(16.0),
+          insetPadding: EdgeInsets.zero, // 다이얼로그의 padding을 0으로 설정
+          content: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Container(
+                width: MediaQuery.of(context).size.width, // 화면 넓이에 맞춤
+                child: Column(
+                  mainAxisSize: MainAxisSize.min, // 내용에 맞게 크기 조정
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'AS 1년/2년 무상 선택시',
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            '1. AS 보증기간\n'
+                                '• 본 제품은 구매일로부터 [XX년] 동안 서비스제공 업체의 AS 보증을 받습니다.\n'
+                                '• AS 보증 기간 내 제품에 문제가 발생한 경우, 무료 수리가 가능합니다.\n'
+                                '• 이 보증은 구매자 본인에 한해 적용되며, 타인에게 양도되지 않습니다.\n\n'
+                                '2. 보증 범위와 제외사항\n'
+                                '• 보증 기간 내에 발생한 제품의 결함에 대해서는 무상으로 수리 또는 교환해 드립니다. 단, 사용자 부주의나 외부 충격으로 인한 손상은 보증 범위에서 제외됩니다.\n'
+                                '• 보증기간 동안 정상적인 사용에서 발생한 고장에 대해서는 무상 수리 서비스가 제공됩니다. 단, 물리적 손상이나 액세서리 및 소모품은 제외됩니다.\n\n'
+                                '3. 절차와 방법\n'
+                                '• AS 서비스를 받으려면 서비스업체에 연락을 하시거나 입주전 AS요청을 통해 진행하시기 바랍니다.\n'
+                                '• AS 별도 접수 시, 입주전에서 구매 진행함을 알려주시기 바랍니다.\n\n'
+                                '• 고객님께서 불편을 겪지 않도록, 빠른 처리와 친절한 서비스를 제공해 드리기 위해 노력하겠습니다. 감사합니다.\n\n'
+                                '• 만약 본 제품의 AS 서비스가 미흡하거나 부적절하게 처리될 경우, 법적 절차나 소비자 보호기관을 통해 추가적인 대응을 요구할 수 있고 입주전에서 패널티가 적용됩니다.\n',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // 체크박스와 텍스트를 담는 Row
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: agreed,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              agreed = value!;
+                            });
+                          },
+                        ),
+                        Expanded(
+                          child: Text(
+                            '위의 내용을 확인하였으며,\n동의하는 경우 체크박스를 클릭해 주세요.',
+                            style: TextStyle(fontSize: 11),
+                            softWrap: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // "동의합니다" 버튼을 담는 Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            if (agreed) {
+                              Navigator.of(context).pop();
+                              onAgreed(agreed); // 콜백 함수 호출
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text('체크박스를 선택해야 동의할 수 있습니다.')),
+                              );
+                            }
+                          },
+                          child: Text('동의합니다', style: TextStyle(fontSize: 12)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+
+
+  void _showAsPeriodDialogOrAddService() {
+    if (selectedAsPeriod != null && selectedAsPeriod != '03') {
+      showAsPeriodDialog(_isAgreed, (bool value) {
+        setState(() {
+          _isAgreed = value; // 부모 위젯 상태 업데이트
+        });
+        _addServiceWithAsPeriod();
+      });
+    } else {
+      _addServiceWithAsPeriod();
+    }
+  }
+
+
 
   // [서비스] 공통코드 조회
   Future<void> getCodeList() async {
@@ -402,7 +516,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                   Container(
                     height: 48, // 드롭다운과 높이를 맞추기 위해 설정
                     child: ElevatedButton(
-                      onPressed: _addServiceWithAsPeriod,
+                      onPressed: _showAsPeriodDialogOrAddService,
                       child: Text(
                         '선택',
                         style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
