@@ -286,6 +286,9 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패")));
     }
 
+    // Snackbar가 표시된 후 BottomSheet 닫기
+    Navigator.of(context).pop();
+
   }
 
   // DatePicker
