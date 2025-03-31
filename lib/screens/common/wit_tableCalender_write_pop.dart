@@ -11,7 +11,7 @@ class ScheduleWritePopWidget extends StatefulWidget {
   final String sllrNo;
 
   // 생성자
-  const ScheduleWritePopWidget({super.key, required this.sllrNo});
+  const ScheduleWritePopWidget({required this.sllrNo});
 
   @override
   _ScheduleWritePopWidgetState createState() => _ScheduleWritePopWidgetState();
@@ -258,39 +258,33 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
   // 스케쥴 저장
   Future<void> saveScheduleInfo() async {
 
-    print(_titleController.text);
-    print(startDate);
-    print(startTime);
-    print(endDate);
-    print(endTime);
-    print(_contentController.text);
-    print(DateTime(startDate!.year,startDate!.month,startDate!.day,startTime!.hour,startTime!.minute));
-    print(DateTime(endDate!.year,endDate!.month,endDate!.day,endTime!.hour,endTime!.minute));
-
     // 로그인 사번
     String? loginClerkNo = await secureStorage.read(key: "clerkNo");
 
     // REST ID
-    String restId = "saveScheduleInfo";
+    String restId = "insertScheduleInfo";
 
     // PARAM
     final param = jsonEncode({
       "sllrNo": widget.sllrNo,
-      "startDate": DateTime(startDate!.year,startDate!.month,startDate!.day,startTime!.hour,startTime!.minute).toString(),
-      "endDate": DateTime(endDate!.year,endDate!.month,endDate!.day,endTime!.hour,endTime!.minute).toString(),
-      "title" : _titleController.text,
-      "contents" : _contentController.text,
-      "loginClerkNo": loginClerkNo,
+      "reqGbn": "MY",
+      "startDate": startDate!.year.toString()  + startDate!.month.toString().padLeft(2, '0')  + startDate!.day.toString().padLeft(2, '0') ,
+      "startYm": startTime!.hour.toString().padLeft(2, '0') + startTime!.minute.toString().padLeft(2, '0') ,
+      "endDate": endDate!.year.toString()  + endDate!.month.toString().padLeft(2, '0')  + endDate!.day.toString().padLeft(2, '0') ,
+      "endYm": endTime!.hour.toString().padLeft(2, '0')  + endTime!.minute.toString().padLeft(2, '0') ,
+      "cldrTitle" : _titleController.text,
+      "cldrTxt" : _contentController.text,
+      "regUser": loginClerkNo,
     });
 
     // API 호출 (스케쥴 저장)
-    //final result = await sendPostRequest(restId, param);
+    final result = await sendPostRequest(restId, param);
 
-    /*if (result > 0) {
+    if (result > 0) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 성공")));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패")));
-    }*/
+    }
 
   }
 
@@ -341,9 +335,9 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
     );
     if (picked != null && picked != time) {
       setState(() {
-        if ("startDate" == dateGbn) {
+        if ("startTime" == dateGbn) {
           startTime = picked;
-        } else if ("endDate" == dateGbn) {
+        } else if ("endTime" == dateGbn) {
           endTime = picked;
         }
       });

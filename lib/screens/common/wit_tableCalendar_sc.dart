@@ -57,11 +57,16 @@ class TableCalenderMainState extends State<TableCalenderMain> {
                     padding: MediaQuery.of(context).viewInsets,
                     child: Container(
                       height: 530,
-                      child: ScheduleWritePopWidget(sllrNo : widget.sllrNo),
+                      child: ScheduleWritePopWidget(
+                        sllrNo: widget.sllrNo,
+                      ),
                     ),
                   );
                 },
-              );
+              ).then((_) {
+                // BottomSheet가 닫힌 후 새로고침
+                getEstimateRequestList(_focusedDay.year, _focusedDay.month);
+              });
             },
           ),
         ],
@@ -171,6 +176,55 @@ class TableCalenderMainState extends State<TableCalenderMain> {
       }
 
       _events = events;
+
+      // 개인 스케쥴 조회
+      getScheduleList(year, month);
+      
+    });
+  }
+
+  // [서비스] 스케쥴 조회
+  Future<void> getScheduleList(int year, int month) async {
+
+    // REST ID
+    String restId = "selectScheduleList";
+    
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": widget.sllrNo,
+      "reqGbn": "MY",
+      "searchDate" : year.toString() + month.toString().padLeft(2, '0'),
+    });
+
+    // API 호출 (사전 점검 미완료 리스트 조회)
+    final _scheduleList = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    setState(() {
+
+      // 이벤트 목록을 저장할 맵
+      Map<DateTime, List<Event>> events = {};
+
+      // 데이터 가공
+      for (var item in _scheduleList) {
+
+        // 날짜와 시간을 결합하여 DateTime 문자열 생성
+        String dateTimeString = '${item['startDate'].substring(0, 4)}-${item['startDate'].substring(4, 6)}-${item['startDate'].substring(6, 8)} ${item['startYm'].substring(0, 2)}:${item['startYm'].substring(2, 4)}';
+
+
+        DateTime scheduleDate = DateTime.parse(dateTimeString);
+
+        // 이벤트 생성
+        Event event = Event(scheduleDate, item);
+
+        // 맵에 추가
+        if (events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)] == null) {
+          events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)] = [];
+        }
+        events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)]!.add(event);
+      }
+
+      _events.addAll(events);
 
     });
   }
