@@ -87,10 +87,16 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
                           color: WitHomeTheme.wit_white, // 막대 색상
                         ),
                         SizedBox(height: 15), // 아이콘과 텍스트 사이의 간격
+                        if (popGbn == "I")
                         Text(
                           "스케쥴 등록",
                           style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
                         ),
+                        if (popGbn == "U")
+                          Text(
+                            "스케쥴 수정",
+                            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                          ),
                       ],
                     ),
                   ),
