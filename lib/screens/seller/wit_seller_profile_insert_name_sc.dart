@@ -9,6 +9,7 @@ import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
 import '../home/wit_home_theme.dart';
+import 'dot_line.dart';
 
 class SellerProfileInsertName extends StatefulWidget {
   const SellerProfileInsertName({super.key});
@@ -66,11 +67,21 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'AS 1년/2년 무상 선택시',
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
+                          Row(
+                            children: [
+                              Icon(Icons.notification_important, color: WitHomeTheme.wit_red,), // 알림 아이콘
+                              SizedBox(width: 4), // 아이콘과 텍스트 사이 간격 (선택 사항)
+                              Text(
+                                'AS 1년/2년 무상 선택시',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
+                          SizedBox(height: 16),
+                          DotWidget(), // 점선
                           SizedBox(height: 16),
                           Text(
                             '1. AS 보증기간\n'
@@ -85,11 +96,14 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                                 '• AS 별도 접수 시, 입주전에서 구매 진행함을 알려주시기 바랍니다.\n\n'
                                 '• 고객님께서 불편을 겪지 않도록, 빠른 처리와 친절한 서비스를 제공해 드리기 위해 노력하겠습니다. 감사합니다.\n\n'
                                 '• 만약 본 제품의 AS 서비스가 미흡하거나 부적절하게 처리될 경우, 법적 절차나 소비자 보호기관을 통해 추가적인 대응을 요구할 수 있고 입주전에서 패널티가 적용됩니다.\n',
-                            style: TextStyle(fontSize: 12),
+                            style: WitHomeTheme.subtitle.copyWith(fontSize: 12),
                           ),
                         ],
                       ),
                     ),
+                    SizedBox(height: 16),
+                    DotWidget(), // 점선
+                    SizedBox(height: 16),
                     // 체크박스와 텍스트를 담는 Row
                     Row(
                       children: [
@@ -104,7 +118,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                         Expanded(
                           child: Text(
                             '위의 내용을 확인하였으며,\n동의하는 경우 체크박스를 클릭해 주세요.',
-                            style: TextStyle(fontSize: 11),
+                            style: WitHomeTheme.title.copyWith(fontSize: 12),
                             softWrap: true,
                           ),
                         ),
@@ -114,7 +128,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextButton(
+                        ElevatedButton( // TextButton 대신 ElevatedButton 사용
                           onPressed: () {
                             if (agreed) {
                               Navigator.of(context).pop();
@@ -122,14 +136,27 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                    content: Text('체크박스를 선택해야 동의할 수 있습니다.')),
+                                  content: Text('체크박스를 선택해야 동의할 수 있습니다.',
+                                    style: WitHomeTheme.title.copyWith(fontSize: 12),
+                                  ),
+                                ),
                               );
                             }
                           },
-                          child: Text('동의합니다', style: TextStyle(fontSize: 12)),
+                          style: ElevatedButton.styleFrom( // 버튼 스타일 지정
+                            backgroundColor: WitHomeTheme.wit_lightGreen, // 배경색 변경 (원하는 색상으로 변경 가능)
+                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // 패딩 추가
+                            shape: RoundedRectangleBorder( // 둥근 모서리 설정
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text('동의합니다',
+                            style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_white),
+                          ),
                         ),
                       ],
-                    ),
+                    )
+
                   ],
                 ),
               );
@@ -608,7 +635,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                       );
                     }
                   },
-                  child: Text('프로필등록',
+                  child: Text('다음',
                     style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                   ),
                   style: ElevatedButton.styleFrom(

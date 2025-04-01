@@ -25,6 +25,7 @@ import 'package:witibju/screens/seller/wit_seller_profile_modify_sc.dart';
 import '../board/wit_board_main_sc.dart';
 import '../common/wit_tableCalendar_sc.dart';
 import '../common/wit_tableCalendar_widget.dart';
+import '../home/widgets/wit_home_widgets2.dart';
 import '../home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
@@ -144,97 +145,106 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
         body: Container(
             child: SingleChildScrollView(
                 child: SafeArea(
-                    minimum: EdgeInsets.only(top: 0, bottom: 0),
-                    // 상단과 하단 여백을 0으로 설정
-
                     child: Column(
-                      children: <Widget>[
-                        // 광고 이미지 영역
-                        Container(
-                          height: MediaQuery.of(context).size.height *
-                              0.18, // 화면 높이의 18%
-                          width: MediaQuery.of(context).size.width *
-                              0.91, // 화면 너비의 85%
-                          child: Image.asset(
-                            'assets/images/파트너 배너.png', // 광고 이미지 URL
-                            fit: BoxFit.contain, // 이미지 비율 유지
-                          ),
-                        ),
-
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.only(
-                              left: 20.0, right: 20.0, top: 0.0, bottom: 0.0),
-                          color: Colors.white,
-                          // 회색 바탕
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            // 양쪽 끝으로 배치
-                            children: [
-                              // 왼쪽에 IBJU와 금액 표기 부분
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      color: WitHomeTheme.wit_gray,
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 10),
-                                      child: Text(
-                                        "IBJU",
-                                        style: WitHomeTheme.title.copyWith(
-                                            fontSize: 20,
-                                            color: WitHomeTheme.wit_white),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      // <<--- 여기 추가
-                                      child: Container(
-                                        alignment: Alignment.centerRight,
-                                        color: Colors.grey[300],
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 10),
-                                        child: Text(
-                                          (cashInfo['cash'] != null &&
-                                                  cashInfo['cash'] != '')
-                                              ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
-                                              : '0 C',
-                                          style: WitHomeTheme.title
-                                              .copyWith(fontSize: 20),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                      children: [
+                        // 광고 이미지 영역 (LayoutBuilder 적용)
+                        /*CommonImageBanner(
+                          imagePath: 'assets/images/판매자 환영.png', // 원하는 이미지 파일명
+                          heightRatio: 0.25,  // 화면 높이의 18%
+                          widthRatio: 1,   // 화면 너비의 85%
+                        ),*/
+                        Column(
+                          children: [
+                            // 광고 이미지 영역 (LayoutBuilder 적용)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 40.0), // 원하는 왼쪽 패딩 값 설정
+                              child: Container(
+                                //width: 900,
+                                // height: 250,
+                                decoration: BoxDecoration(
+                                  color: Colors.white, // 배경색 설정
+                                  borderRadius: BorderRadius.circular(12.0), // 모서리 둥글게
+                                ),
+                                child: Center( // Image.asset을 가운데 정렬
+                                  child: Image.asset(
+                                    'assets/images/판매자 환영.png', // 여기에 이미지 경로를 지정하세요.
+                                    width: 900.0, // 원하는 너비 (Container 너비의 절반)
+                                    height: 200.0, // 원하는 높이 (Container 높이의 절반)
+                                    fit: BoxFit.fill, // 이미지 비율 유지
+                                  ),
                                 ),
                               ),
-                              SizedBox(width: 5), // <<--- 여백 추가
-                              // 오른쪽에 캐시충전 버튼
+                            ),
+                          ],
+                        ),
+
+
+
+                        // 캐시 정보 영역
+                        Container(
+                          width: 370,
+                          height: 100,
+                          // padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0, bottom: 0.0),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/images/캐시.png'),
+                              // fit: BoxFit.cover,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween, // 양쪽 끝으로 배치
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 50.0, right: 20.0, top: 0.0, bottom: 0.0),
+                                  alignment: Alignment.centerLeft,
+                                  //color: Colors.grey[300],
+                                  //padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                  child: Text(
+                                    (cashInfo['cash'] != null && cashInfo['cash'] != '')
+                                        ? '${NumberFormat('#,###').format(int.parse(cashInfo['cash']))} C'
+                                        : '0 C',
+                                    style: WitHomeTheme.title.copyWith(fontSize: 18),
+                                    overflow: TextOverflow.ellipsis, // 텍스트 오버플로우 처리
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: 5),
                               ElevatedButton(
                                 onPressed: () {
-                                  print("sllrNo: " + widget.sllrNo.toString());
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => SellerCashHistory(
-                                          sllrNo: sellerInfo["sllrNo"]),
+                                      builder: (context) => SellerCashHistory(sllrNo: widget.sllrNo),
                                     ),
                                   );
                                 },
-                                child: Text(
-                                  '캐시충전',
-                                  style: WitHomeTheme.title
-                                      .copyWith(color: WitHomeTheme.wit_white),
-                                ),
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      WitHomeTheme.wit_mediumSeaGreen,
+                                  padding: EdgeInsets.only(right: 10.0, top: 0.0, bottom: 0.0),
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  minimumSize: Size(80, 30), // 최소 크기 설정
+                                ),
+                                child: Ink(
+                                  width: 80,
+                                  height: 25,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage('assets/images/캐시충전.png'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: BorderRadius.circular(30),
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
+
                         SizedBox(height: 5), //
                         Container(
                           padding: EdgeInsets.only(

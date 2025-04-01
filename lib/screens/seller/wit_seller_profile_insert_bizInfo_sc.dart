@@ -299,6 +299,20 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Container(
+                width: double.infinity, // 넓이를 최대로 설정
+                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                child: Text(
+                  '사업자정보를 입력해주세요~\n견적요청시 사장님 회사를 돋보이게\n뱃지도 달아드려요~',
+                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                ),
+              ),
+              SizedBox(height: 8),
               Text(
                 '사업자명 (필수)',
                 style: WitHomeTheme.title.copyWith(fontSize: 16),
