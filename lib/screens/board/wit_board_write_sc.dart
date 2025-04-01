@@ -57,8 +57,9 @@ class _BoardWriteState extends State<BoardWrite> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("글 작성", style: WitHomeTheme.title),
-        backgroundColor: WitHomeTheme.wit_white,
+        title: Text("글 작성", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
+        iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
+        backgroundColor: WitHomeTheme.wit_black,
       ),
       backgroundColor: WitHomeTheme.wit_white,
       body: SafeArea(

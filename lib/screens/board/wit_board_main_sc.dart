@@ -13,7 +13,7 @@ class Board extends StatefulWidget {
   final String? bordType;
   final bool appBarFlag;
 
-  const Board(this.bordNo, this.bordType, {this.appBarFlag = false, super.key});
+  const Board(this.bordNo, this.bordType, {this.appBarFlag = true, super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -85,12 +85,16 @@ class BoardState extends State<Board> {
             );
             await refreshBoardList();
           },
-          backgroundColor: WitHomeTheme.wit_lightCoral,
+          backgroundColor: WitHomeTheme.wit_black,
           shape: CircleBorder(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.add)
+              Icon(
+                Icons.add,
+                color: WitHomeTheme.wit_white,
+                size: 35,
+              )
             ],
           ),
         ),

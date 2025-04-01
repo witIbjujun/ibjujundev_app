@@ -306,7 +306,8 @@ class CommentInput extends StatelessWidget {
         ),
         Container(
           decoration: BoxDecoration(
-            color: WitHomeTheme.wit_lightBlue,
+            color: WitHomeTheme.wit_gray,
+            borderRadius: BorderRadius.circular(10),
           ),
           child: IconButton(
             icon: Icon(Icons.send, size: 25, color: WitHomeTheme.wit_white),

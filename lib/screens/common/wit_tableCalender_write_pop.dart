@@ -9,9 +9,20 @@ import '../home/wit_home_theme.dart';
 class ScheduleWritePopWidget extends StatefulWidget {
 
   final String sllrNo;
+  final String reqNo;
+  final DateTime startDate;
+  final TimeOfDay startTime;
+  final DateTime endDate;
+  final TimeOfDay endTime;
+  final String title;
+  final String content;
+  final String popGbn;
 
   // 생성자
-  const ScheduleWritePopWidget({required this.sllrNo});
+  const ScheduleWritePopWidget({required this.sllrNo, required this.reqNo
+    , required this.startDate, required this.startTime
+    , required this.endDate, required this.endTime
+    , required this.title, required this.content, required this.popGbn});
 
   @override
   _ScheduleWritePopWidgetState createState() => _ScheduleWritePopWidgetState();
@@ -21,15 +32,33 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
 
   final secureStorage = FlutterSecureStorage();
 
-  DateTime? startDate = DateTime.now();
-  TimeOfDay? startTime = TimeOfDay(hour: 00, minute: 00);
-  DateTime? endDate = DateTime.now();
-  TimeOfDay? endTime = TimeOfDay(hour: 12, minute: 00);
+  late String sllrNo;
+  late String reqNo;
+  late DateTime startDate;
+  late TimeOfDay startTime;
+  late DateTime endDate;
+  late TimeOfDay endTime;
+  late String popGbn;
 
   // 제목
   final TextEditingController _titleController = TextEditingController();
   // 내용
   final TextEditingController _contentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    sllrNo = widget.sllrNo;
+    reqNo = widget.reqNo;
+    startDate = widget.startDate;
+    startTime = widget.startTime;
+    endDate = widget.endDate;
+    endTime = widget.endTime;
+    _titleController.text = widget.title;
+    _contentController.text = widget.content;
+    popGbn = widget.popGbn;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,11 +291,18 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
     String? loginClerkNo = await secureStorage.read(key: "clerkNo");
 
     // REST ID
-    String restId = "insertScheduleInfo";
+    String restId = "";
+
+    if (widget.popGbn == "U") {
+      restId = "updateScheduleInfo";
+    } else {
+      restId = "insertScheduleInfo";
+    }
 
     // PARAM
     final param = jsonEncode({
       "sllrNo": widget.sllrNo,
+      "reqNo": widget.reqNo,
       "reqGbn": "MY",
       "startDate": startDate!.year.toString()  + startDate!.month.toString().padLeft(2, '0')  + startDate!.day.toString().padLeft(2, '0') ,
       "startYm": startTime!.hour.toString().padLeft(2, '0') + startTime!.minute.toString().padLeft(2, '0') ,
@@ -275,6 +311,7 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
       "cldrTitle" : _titleController.text,
       "cldrTxt" : _contentController.text,
       "regUser": loginClerkNo,
+      "udtUser": loginClerkNo,
     });
 
     // API 호출 (스케쥴 저장)

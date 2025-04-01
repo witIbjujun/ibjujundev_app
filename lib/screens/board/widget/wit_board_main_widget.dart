@@ -37,15 +37,16 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: WitHomeTheme.wit_white,
+      iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
+      backgroundColor: WitHomeTheme.wit_black,
       title: _isSearching
           ? TextField(
         controller: widget.searchController,
         autofocus: true,
-        style: WitHomeTheme.subtitle,
+        style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_white),
         decoration: InputDecoration(
           hintText: "검색어를 입력해주세요",
-          hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+          hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_white),
           border: InputBorder.none,
         ),
         onSubmitted: (String value) {
@@ -54,11 +55,12 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
       )
           : Text(
         "자유게시판",
-        style: WitHomeTheme.title,
+        style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
       ),
       actions: [
         IconButton(
           icon: Icon(Icons.search),
+          color: WitHomeTheme.wit_white,
           onPressed: () {
             if (_isSearching) {
               if (widget.searchController.text.isEmpty) {
@@ -93,7 +95,7 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
           IconButton(
             icon: Icon(
               Icons.clear,
-              color: WitHomeTheme.wit_black,
+              color: WitHomeTheme.wit_white,
             ),
             onPressed: _toggleSearch, // 검색 취소
           ),

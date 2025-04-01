@@ -59,6 +59,14 @@ class TableCalenderMainState extends State<TableCalenderMain> {
                       height: 530,
                       child: ScheduleWritePopWidget(
                         sllrNo: widget.sllrNo,
+                        reqNo: "",
+                        startDate: _selectedDate ?? DateTime.now(),
+                        startTime: TimeOfDay(hour: 09, minute: 00),
+                        endDate: _selectedDate ?? DateTime.now(),
+                        endTime: TimeOfDay(hour: 18, minute: 00),
+                        title: "",
+                        content: "",
+                        popGbn: "I",
                       ),
                     ),
                   );
@@ -152,14 +160,13 @@ class TableCalenderMainState extends State<TableCalenderMain> {
       "basDate" : year.toString() + month.toString().padLeft(2, '0'),
     });
 
+    _events = {};
+
     // API 호출 (사전 점검 미완료 리스트 조회)
     final _estimateRequestList = await sendPostRequest(restId, param);
 
     // 결과 셋팅
     setState(() {
-
-      // 이벤트 목록을 저장할 맵
-      Map<DateTime, List<Event>> events = {};
 
       // 데이터 가공
       for (var item in _estimateRequestList) {
@@ -169,13 +176,11 @@ class TableCalenderMainState extends State<TableCalenderMain> {
         Event event = Event(estDate, item);
 
         // 맵에 추가
-        if (events[DateTime.utc(estDate.year, estDate.month, estDate.day)] == null) {
-          events[DateTime.utc(estDate.year, estDate.month, estDate.day)] = [];
+        if (_events[DateTime.utc(estDate.year, estDate.month, estDate.day)] == null) {
+          _events[DateTime.utc(estDate.year, estDate.month, estDate.day)] = [];
         }
-        events[DateTime.utc(estDate.year, estDate.month, estDate.day)]!.add(event);
+        _events[DateTime.utc(estDate.year, estDate.month, estDate.day)]!.add(event);
       }
-
-      _events = events;
 
       // 개인 스케쥴 조회
       getScheduleList(year, month);
@@ -202,9 +207,6 @@ class TableCalenderMainState extends State<TableCalenderMain> {
     // 결과 셋팅
     setState(() {
 
-      // 이벤트 목록을 저장할 맵
-      Map<DateTime, List<Event>> events = {};
-
       // 데이터 가공
       for (var item in _scheduleList) {
 
@@ -218,13 +220,11 @@ class TableCalenderMainState extends State<TableCalenderMain> {
         Event event = Event(scheduleDate, item);
 
         // 맵에 추가
-        if (events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)] == null) {
-          events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)] = [];
+        if (_events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)] == null) {
+          _events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)] = [];
         }
-        events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)]!.add(event);
+        _events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)]!.add(event);
       }
-
-      _events.addAll(events);
 
     });
   }

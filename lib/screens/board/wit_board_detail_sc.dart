@@ -47,8 +47,9 @@ class BoardDetailState extends State<BoardDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("자유게시판", style: WitHomeTheme.title),
-        backgroundColor: WitHomeTheme.wit_white,
+        title: Text("자유게시판", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
+        iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
+        backgroundColor: WitHomeTheme.wit_black,
       ),
       backgroundColor: WitHomeTheme.wit_white,
       body: SafeArea(
