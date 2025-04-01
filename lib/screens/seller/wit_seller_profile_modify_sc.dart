@@ -1172,7 +1172,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                         await saveImages(storeName, itemPrice1, itemPrice2, itemPrice3, sllrContent, sllrImage, name,
                             ceoName, email, storeCode, storeImage, hp1, zipCode, address1, address2, openDate, categoryContent);
                       },
-                      child: Text('프로필변경',
+                      child: Text('사업자등록 완료',
                         style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                       ),
                       style: ElevatedButton.styleFrom(
