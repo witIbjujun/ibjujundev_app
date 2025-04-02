@@ -491,7 +491,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     return Scaffold(
       backgroundColor: WitHomeTheme.wit_white,
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.wit_gray,
+        backgroundColor: WitHomeTheme.wit_black,
         iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
         title: Text(
           '가입정보 변경',

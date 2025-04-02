@@ -286,7 +286,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
     return Scaffold(
       backgroundColor: WitHomeTheme.wit_white,
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.wit_gray,
+        backgroundColor: WitHomeTheme.wit_black,
         iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
         title: Text(
           '파트너 사업자 정보 등록',

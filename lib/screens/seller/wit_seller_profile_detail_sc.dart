@@ -146,40 +146,18 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
             child: SingleChildScrollView(
                 child: SafeArea(
                     child: Column(
-                      children: [
-                        // 광고 이미지 영역 (LayoutBuilder 적용)
-                        /*CommonImageBanner(
-                          imagePath: 'assets/images/판매자 환영.png', // 원하는 이미지 파일명
-                          heightRatio: 0.25,  // 화면 높이의 18%
-                          widthRatio: 1,   // 화면 너비의 85%
-                        ),*/
-                        Column(
-                          children: [
-                            // 광고 이미지 영역 (LayoutBuilder 적용)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 40.0), // 원하는 왼쪽 패딩 값 설정
-                              child: Container(
-                                //width: 900,
-                                // height: 250,
-                                decoration: BoxDecoration(
-                                  color: Colors.white, // 배경색 설정
-                                  borderRadius: BorderRadius.circular(12.0), // 모서리 둥글게
-                                ),
-                                child: Center( // Image.asset을 가운데 정렬
-                                  child: Image.asset(
-                                    'assets/images/판매자 환영.png', // 여기에 이미지 경로를 지정하세요.
-                                    width: 900.0, // 원하는 너비 (Container 너비의 절반)
-                                    height: 200.0, // 원하는 높이 (Container 높이의 절반)
-                                    fit: BoxFit.fill, // 이미지 비율 유지
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+                      children: <Widget>[
+                    // 광고 이미지 영역
+                        Container(
+                          height: MediaQuery.of(context).size.height *
+                              0.25, // 화면 높이의 18%
+                          width: MediaQuery.of(context).size.width *
+                              0.90, // 화면 너비의 85%
+                          child: Image.asset(
+                            'assets/images/판매자 환영.png', // 광고 이미지 URL
+                            fit: BoxFit.contain, // 이미지 비율 유지
+                          ),
                         ),
-
-
-
                         // 캐시 정보 영역
                         Container(
                           width: 370,
@@ -265,7 +243,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     sllrNo: widget.sllrNo,
                                   ),*/
                                       appBar: AppBar(
-                                        backgroundColor: WitHomeTheme.wit_gray,
+                                        backgroundColor: WitHomeTheme.wit_black,
                                         iconTheme: const IconThemeData(
                                             color: WitHomeTheme.wit_white),
                                         title: Text(
@@ -326,7 +304,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     sllrNo: widget.sllrNo,
                                   ),*/
                                       appBar: AppBar(
-                                        backgroundColor: WitHomeTheme.wit_gray,
+                                        backgroundColor: WitHomeTheme.wit_black,
                                         iconTheme: const IconThemeData(
                                             color: WitHomeTheme.wit_white),
                                         title: Text(
@@ -386,7 +364,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       /*appBar: SellerAppBar(
                                     sllrNo: widget.sllrNo,
                                   ),*/
-                                      appBar: AppBar(
+                                      /*appBar: AppBar(
                                         backgroundColor: WitHomeTheme.wit_gray,
                                         iconTheme: const IconThemeData(
                                             color: WitHomeTheme.wit_white),
@@ -395,7 +373,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                           style: WitHomeTheme.title.copyWith(
                                               color: WitHomeTheme.wit_white),
                                         ),
-                                      ),
+                                      ),*/
                                       body: Container(
                                         //padding: EdgeInsets.all(16.0),
                                         child: Board(
@@ -410,7 +388,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  "커뮤니티",
+                                  "업체후기",
                                   style: WitHomeTheme.title
                                       .copyWith(color: WitHomeTheme.wit_black),
                                 )
@@ -440,7 +418,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                     sllrNo: widget.sllrNo,
                                   ),*/
                                       appBar: AppBar(
-                                        backgroundColor: WitHomeTheme.wit_gray,
+                                        backgroundColor: WitHomeTheme.wit_black,
                                         iconTheme: const IconThemeData(
                                             color: WitHomeTheme.wit_white),
                                         title: Text(
@@ -680,7 +658,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       /*appBar: SellerAppBar(
                                     sllrNo: widget.sllrNo,
                                   ),*/
-                                      appBar: AppBar(
+                                      /*appBar: AppBar(
                                         backgroundColor: WitHomeTheme.wit_gray,
                                         iconTheme: const IconThemeData(
                                             color: WitHomeTheme.wit_white),
@@ -689,7 +667,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                           style: WitHomeTheme.title.copyWith(
                                               color: WitHomeTheme.wit_white),
                                         ),
-                                      ),
+                                      ),*/
                                       body: Container(
                                         //padding: EdgeInsets.all(16.0),
                                         child: Board(

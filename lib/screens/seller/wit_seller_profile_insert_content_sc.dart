@@ -90,7 +90,7 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
     return Scaffold(
       backgroundColor: WitHomeTheme.wit_white,
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.wit_gray,
+        backgroundColor: WitHomeTheme.wit_black,
         iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
         title: Text(
           '파트너 설명 등록',

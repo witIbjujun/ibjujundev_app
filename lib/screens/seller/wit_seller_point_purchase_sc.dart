@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: WitHomeTheme.wit_white,
         appBar: AppBar(
-          backgroundColor: WitHomeTheme.wit_gray,
+          backgroundColor: WitHomeTheme.wit_black,
           title: Text('포인트 구매 팝업',
               style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
         ),

@@ -141,7 +141,7 @@ class SellerAppBarState extends State<SellerAppBar> {
 
       ),*/
       centerTitle: true,
-      backgroundColor: WitHomeTheme.wit_gray,
+      backgroundColor: WitHomeTheme.wit_black,
       actions: [
         // 입력 필드 추가
         Padding(

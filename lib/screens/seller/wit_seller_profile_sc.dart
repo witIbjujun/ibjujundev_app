@@ -141,7 +141,7 @@ class SellerProfileState extends State<SellerProfile> {
           style: WitHomeTheme.title,
         ),
         centerTitle: true,
-        backgroundColor: WitHomeTheme.wit_gray,
+        backgroundColor: WitHomeTheme.wit_black,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
