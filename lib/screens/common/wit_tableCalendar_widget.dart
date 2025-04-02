@@ -7,6 +7,7 @@ import 'package:witibju/screens/common/wit_tableCalender_write_pop.dart';
 import '../home/wit_home_theme.dart';
 import '../seller/wit_seller_estimaterequest_detail_sc.dart';
 
+// [위젯] 스케쥴 리스트
 List<Widget> buildEventList(List<Event> events, BuildContext context, Future<void> Function(int year, int month, int day) getEstimateRequestList) {
 
   List<Widget> eventWidgets = [];
@@ -31,8 +32,7 @@ List<Widget> buildEventList(List<Event> events, BuildContext context, Future<voi
                 ),
                 SizedBox(width: 10),
                 Text(
-                  '${event.dateTime.month}월 ${event.dateTime.day}일 ${DateFormat
-                      .E("ko_KR").format(event.dateTime)}요일',
+                  '${event.dateTime.month}월 ${event.dateTime.day}일 ${DateFormat.E("ko_KR").format(event.dateTime)}요일',
                   style: WitHomeTheme.subtitle.copyWith(
                       color: WitHomeTheme.wit_black),
                 ),

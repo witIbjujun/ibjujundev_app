@@ -6,13 +6,14 @@ import 'package:witibju/screens/common/wit_tableCalender_write_pop.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 
+// 스케쥴 메인
 class TableCalenderMain extends StatefulWidget {
 
-  final String stat; // stat을 멤버 변수로 추가
-  final String sllrNo; // sllrNo를 멤버 변수로 추가
+  final String sllrNo; // 판매자 번호
+  final String stat; // 상태 코드
 
   // 생성자
-  const TableCalenderMain({super.key, required this.stat, required this.sllrNo});
+  const TableCalenderMain({super.key, required this.sllrNo, required this.stat});
 
   // 상태 생성
   @override
@@ -21,19 +22,21 @@ class TableCalenderMain extends StatefulWidget {
   }
 }
 
+// 스케쥴 메인 State
 class TableCalenderMainState extends State<TableCalenderMain> {
 
+  // 스토리지
   final secureStorage = FlutterSecureStorage();
 
-  DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDate;
-  Map<DateTime, List<Event>> _events = {};
+  DateTime _focusedDay = DateTime.now();    // 포커스 날짜
+  DateTime? _selectedDate;                  // 선택 날짜
+  Map<DateTime, List<Event>> _events = {};  // 이벤트 리스트
 
   @override
   void initState() {
     super.initState();
 
-    // 월 스케쥴 조회
+    // 스케쥴 조회
     getEstimateRequestList(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     
   }
@@ -47,7 +50,7 @@ class TableCalenderMainState extends State<TableCalenderMain> {
         title: Text("스케쥴 관리", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
         actions: [
           IconButton(
-            icon: Icon(Icons.add, color: WitHomeTheme.wit_white), // 아이콘으로 '+'를 사용
+            icon: Icon(Icons.add, color: WitHomeTheme.wit_white),
             onPressed: () {
               showModalBottomSheet(
                 context: context,
@@ -72,9 +75,9 @@ class TableCalenderMainState extends State<TableCalenderMain> {
                     ),
                   );
                 },
-              ).then((_) {
-                // BottomSheet가 닫힌 후 새로고침
-                getEstimateRequestList(_focusedDay.year, _focusedDay.month, _focusedDay.day);
+              ).then((result) async {
+                // 저장 후 스케쥴 재조회
+                getEstimateRequestList(int.parse(result.substring(0, 4)), int.parse(result.substring(4, 6)), int.parse(result.substring(6, 8)));
               });
             },
           ),
@@ -82,7 +85,7 @@ class TableCalenderMainState extends State<TableCalenderMain> {
       ),
       body: SafeArea(
         child: Container(
-          color: Colors.white, // 배경색을 흰색으로 설정
+          color: Colors.white,
           child: Column(
             children: [
               CalendarWidget(
@@ -101,12 +104,10 @@ class TableCalenderMainState extends State<TableCalenderMain> {
                     if (focusedDay.year == DateTime.now().year && focusedDay.month == DateTime.now().month) {
                       _selectedDate = null;
                       _focusedDay = DateTime.now();
-                      // 월 스케쥴 조회
                       getEstimateRequestList(DateTime.now().year, DateTime.now().month, DateTime.now().day);
                     } else {
                       _selectedDate = focusedDay;
                       _focusedDay = focusedDay;
-                      // 월 스케쥴 조회
                       getEstimateRequestList(focusedDay.year, focusedDay.month, focusedDay.day);
                     }
                   });
@@ -125,28 +126,6 @@ class TableCalenderMainState extends State<TableCalenderMain> {
         ),
       ),
     );
-  }
-
-  // 오늘의 이벤트만 가져오는 함수
-  List<Event> _getEventsForToday() {
-    DateTime today = DateTime.now();
-    return _events[DateTime.utc(today.year, today.month, today.day)] ?? [];
-  }
-
-  // 해당 년/월/일에 걸리는 스케쥴 조회
-  List<Event> _getEventsForDay(DateTime date) {
-    return _events[date] ?? [];
-  }
-
-  // 해당 년/월에 걸리는 스케쥴 조회
-  List<Event> _getEventsForMonth(DateTime date) {
-    List<Event> events = [];
-    _events.forEach((eventDate, eventList) {
-      if (eventDate.year == date.year && eventDate.month == date.month) {
-        events.addAll(eventList);
-      }
-    });
-    return events;
   }
 
   // [서비스] 견적리스트 조회
@@ -214,7 +193,6 @@ class TableCalenderMainState extends State<TableCalenderMain> {
         // 날짜와 시간을 결합하여 DateTime 문자열 생성
         String dateTimeString = '${item['startDate'].substring(0, 4)}-${item['startDate'].substring(4, 6)}-${item['startDate'].substring(6, 8)} ${item['startYm'].substring(0, 2)}:${item['startYm'].substring(2, 4)}';
 
-
         DateTime scheduleDate = DateTime.parse(dateTimeString);
 
         // 이벤트 생성
@@ -232,56 +210,17 @@ class TableCalenderMainState extends State<TableCalenderMain> {
     });
   }
 
+  // 오늘의 이벤트만 가져오는 함수
+  List<Event> _getEventsForToday() {
+    DateTime today = DateTime.now();
+    return _events[DateTime.utc(today.year, today.month, today.day)] ?? [];
+  }
 
-  // [서비스] 월 스케쥴 조회
-  /*Future<void> getScheduleListByMonth(int year, int month) async {
+  // 해당 년/월/일에 걸리는 스케쥴 조회
+  List<Event> _getEventsForDay(DateTime date) {
+    return _events[date] ?? [];
+  }
 
-    // 로그인 사번
-    String? loginClerkNo = await secureStorage.read(key: "clerkNo");
-
-    // REST ID
-    String restId = "getEstimateRequestList";
-
-    // PARAM
-    final param = jsonEncode({
-      "stat": "1",
-      "date": month,
-      "loginClerkNo": loginClerkNo,
-    });
-
-    // API 호출 (월 스케쥴 조회)
-    //final scheduleList = await sendPostRequest(restId, param);
-
-    // 데이터 셋팅
-    *//*setState(() {
-      _events = scheduleList;
-    });*//*
-
-    setState(() {
-      _events = {
-        DateTime.utc(2025, month, 01): [
-          Event(DateTime(2025, month, 01, 10, 30), '줄눈1', '')
-        ],
-        DateTime.utc(2025, month, 18): [
-          Event(DateTime(2025, month, 18, 10, 30), '줄눈2', '')
-        ],
-        DateTime.utc(2025, month, 19): [
-          Event(DateTime(2025, month, 19, 10, 25), '탄성코트', ''),
-          Event(DateTime(2025, month, 19, 12, 00), '입주청소', ''),
-          Event(DateTime(2025, month, 19, 14, 00), '입주청소', ''),
-          Event(DateTime(2025, month, 19, 16, 30), '입주청소', ''),
-          Event(DateTime(2025, month, 19, 18, 30), '입주청소', ''),
-        ],
-        DateTime.utc(2025, month, 20): [
-          Event(DateTime(2025, month, 20, 9, 00), '미세방충망', '경기도 화성시 병점역 병점역아이파크캐슬 118동 105호')
-        ],
-        DateTime.utc(2025, month, 22): [
-          Event(DateTime(2025, month, 22, 14, 50), '커튼', '병점역아이파크캐슬 118동 105호')
-        ],
-      };
-    });
-
-  }*/
 }
 
 // 스케쥴 이벤트 객체

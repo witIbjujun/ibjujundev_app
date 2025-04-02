@@ -261,25 +261,47 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 버튼 간격을 일정하게
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // 버튼 간격을 일정하게
                   children: [
-                    // 하자등록 버튼
-                    Expanded(
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: WitHomeTheme.wit_lightBlue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                    if (popGbn == "U") // 삭제 버튼
+                      Expanded(
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: WitHomeTheme.wit_lightCoral,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () async {
+                            deleteScheduleInfo();
+                          },
+                          child: Text(
+                            "삭제",
+                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
                           ),
                         ),
-                        onPressed: () async {
-                          saveScheduleInfo();
-                        },
-                        child: Text("등록",
-                          style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
+                      ),
+                    if (popGbn == "U") // 삭제 버튼과 수정 버튼 사이의 공간
+                      SizedBox(width: 20), // 이 부분은 필요 없을 수 있음
+
+                    if (popGbn == "I" || popGbn == "U") // 수정 버튼
+                      Expanded(
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: WitHomeTheme.wit_lightBlue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () async {
+                            saveScheduleInfo();
+                          },
+                          child: Text(
+                            popGbn == "I" ? "등록" : "수정",
+                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -327,6 +349,33 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 성공")));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패")));
+    }
+
+    // Snackbar가 표시된 후 BottomSheet 닫기
+    Navigator.of(context).pop(startDate!.year.toString()  + startDate!.month.toString().padLeft(2, '0')  + startDate!.day.toString().padLeft(2, '0'));
+
+  }
+
+  // 스케쥴 저장
+  Future<void> deleteScheduleInfo() async {
+
+    // REST ID
+    String restId = "deleteScheduleInfo";
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": widget.sllrNo,
+      "reqNo": widget.reqNo,
+      "reqGbn": "MY",
+    });
+
+    // API 호출 (스케쥴 저장)
+    final result = await sendPostRequest(restId, param);
+
+    if (result > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("삭제 성공")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("삭제 실패")));
     }
 
     // Snackbar가 표시된 후 BottomSheet 닫기
