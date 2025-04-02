@@ -42,11 +42,12 @@ class TableCalenderMainState extends State<TableCalenderMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.wit_white,
-        title: Text("스케쥴 관리", style: WitHomeTheme.title),
+        iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
+        backgroundColor: WitHomeTheme.wit_black,
+        title: Text("스케쥴 관리", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
         actions: [
           IconButton(
-            icon: Icon(Icons.add), // 아이콘으로 '+'를 사용
+            icon: Icon(Icons.add, color: WitHomeTheme.wit_white), // 아이콘으로 '+'를 사용
             onPressed: () {
               showModalBottomSheet(
                 context: context,

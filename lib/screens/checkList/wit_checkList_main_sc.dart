@@ -53,11 +53,11 @@ class CheckListMainState extends State<CheckListMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //backgroundColor: WitHomeTheme.wit_lightGreen,
-        backgroundColor: WitHomeTheme.wit_white,
+        iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
+        backgroundColor: WitHomeTheme.wit_black,
         title: Text(
           isEditing == false ? "입주전 체크리스트" : "입주전 체크리스트 설정",
-          style: WitHomeTheme.title,
+          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
         ),
         actions: [
           if (isEditing)
@@ -75,7 +75,7 @@ class CheckListMainState extends State<CheckListMain> {
             ),
           IconButton(
             icon: Icon(isEditing ? Icons.check : Icons.settings),
-            color: isEditing ? WitHomeTheme.wit_lightGreen : WitHomeTheme.wit_black,
+            color: isEditing ? WitHomeTheme.wit_white : WitHomeTheme.wit_white,
             onPressed: () {
               setState(() {
                 if (isEditing) {
@@ -119,7 +119,7 @@ class CheckListMainState extends State<CheckListMain> {
             );
             await getCheckListByLv1();
           },
-          backgroundColor: WitHomeTheme.wit_lightCoral,
+          backgroundColor: WitHomeTheme.wit_black,
           shape: CircleBorder(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

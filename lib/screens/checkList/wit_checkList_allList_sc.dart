@@ -48,9 +48,10 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.wit_white,
+        iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
+        backgroundColor: WitHomeTheme.wit_black,
         title: Text("하자 전체 리스트",
-          style: WitHomeTheme.title,
+          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
         ),
       ),
       body: SafeArea(

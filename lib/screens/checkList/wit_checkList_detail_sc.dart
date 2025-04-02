@@ -51,10 +51,11 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: WitHomeTheme.wit_white,
+        iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
+        backgroundColor: WitHomeTheme.wit_black,
         title: Text(
           widget.checkInfoLv1["inspNm"],
-          style: WitHomeTheme.title,
+          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
         ),
       ),
       body: CheckListDetailView(
