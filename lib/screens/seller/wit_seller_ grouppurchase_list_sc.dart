@@ -63,6 +63,17 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: EdgeInsets.only(left:5,top: 0.0),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.25,
+                width: MediaQuery.of(context).size.width * 0.90,
+                child: Image.asset(
+                  'assets/images/바로견적.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
             Text(
               '> 공동구매 진행 APT',
               style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_lightGreen),
