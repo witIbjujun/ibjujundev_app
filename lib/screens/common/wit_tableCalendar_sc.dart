@@ -34,7 +34,7 @@ class TableCalenderMainState extends State<TableCalenderMain> {
     super.initState();
 
     // 월 스케쥴 조회
-    getEstimateRequestList(DateTime.now().year, DateTime.now().month);
+    getEstimateRequestList(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     
   }
 
@@ -74,7 +74,7 @@ class TableCalenderMainState extends State<TableCalenderMain> {
                 },
               ).then((_) {
                 // BottomSheet가 닫힌 후 새로고침
-                getEstimateRequestList(_focusedDay.year, _focusedDay.month);
+                getEstimateRequestList(_focusedDay.year, _focusedDay.month, _focusedDay.day);
               });
             },
           ),
@@ -102,12 +102,12 @@ class TableCalenderMainState extends State<TableCalenderMain> {
                       _selectedDate = null;
                       _focusedDay = DateTime.now();
                       // 월 스케쥴 조회
-                      getEstimateRequestList(DateTime.now().year, DateTime.now().month);
+                      getEstimateRequestList(DateTime.now().year, DateTime.now().month, DateTime.now().day);
                     } else {
                       _selectedDate = focusedDay;
                       _focusedDay = focusedDay;
                       // 월 스케쥴 조회
-                      getEstimateRequestList(focusedDay.year, focusedDay.month);
+                      getEstimateRequestList(focusedDay.year, focusedDay.month, focusedDay.day);
                     }
                   });
                 },
@@ -150,7 +150,7 @@ class TableCalenderMainState extends State<TableCalenderMain> {
   }
 
   // [서비스] 견적리스트 조회
-  Future<void> getEstimateRequestList(int year, int month) async {
+  Future<void> getEstimateRequestList(int year, int month, int day) async {
     // REST ID
     String restId = "getEstimateRequestList";
 
@@ -184,13 +184,13 @@ class TableCalenderMainState extends State<TableCalenderMain> {
       }
 
       // 개인 스케쥴 조회
-      getScheduleList(year, month);
+      getScheduleList(year, month, day);
       
     });
   }
 
   // [서비스] 스케쥴 조회
-  Future<void> getScheduleList(int year, int month) async {
+  Future<void> getScheduleList(int year, int month, int day) async {
 
     // REST ID
     String restId = "selectScheduleList";
@@ -226,6 +226,8 @@ class TableCalenderMainState extends State<TableCalenderMain> {
         }
         _events[DateTime.utc(scheduleDate.year, scheduleDate.month, scheduleDate.day)]!.add(event);
       }
+
+      _selectedDate = DateTime.utc(year, month, day);
 
     });
   }

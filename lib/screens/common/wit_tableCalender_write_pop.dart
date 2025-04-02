@@ -330,7 +330,7 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
     }
 
     // Snackbar가 표시된 후 BottomSheet 닫기
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(startDate!.year.toString()  + startDate!.month.toString().padLeft(2, '0')  + startDate!.day.toString().padLeft(2, '0'));
 
   }
 
