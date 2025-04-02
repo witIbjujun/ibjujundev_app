@@ -46,201 +46,247 @@ List<Widget> buildEventList(List<Event> events, BuildContext context, Future<voi
         // 일자별 리스트 위젯
         eventWidgets.add(
           Padding(
-            padding: EdgeInsets.all(16), // 내부 여백 추가
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
-              children: [
-                Row(
-                  children: [
-                    // 왼쪽에 사진
-                    Container(
-                      width: 50,
-                      height: 50, // 이미지 높이 설정
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25), // 둥근 프로필 사진
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/profile1.png'),
-                          fit: BoxFit.cover,
+            padding: EdgeInsets.all(16), // 겉 박스 주변에 패딩 추가
+            child: Container(
+              padding: EdgeInsets.all(16), // 내부 여백 추가
+              decoration: BoxDecoration(
+                color: Colors.white, // 배경색 추가
+                borderRadius: BorderRadius.circular(8), // 둥근 모서리
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1), // 그림자 색상
+                    blurRadius: 6, // 흐림 정도
+                    spreadRadius: 2, // 퍼짐 정도
+                    offset: Offset(0, 3), // 그림자의 위치
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+                children: [
+                  Row(
+                    children: [
+                      // 왼쪽에 사진
+                      Container(
+                        width: 50,
+                        height: 50, // 이미지 높이 설정
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25), // 둥근 프로필 사진
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/profile1.png'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 10), // 이미지와 텍스트 사이의 간격 추가
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // 날짜를 이름 위로 배치
-                          Text('${event.dateTime}', // 날짜
-                            style: WitHomeTheme.title.copyWith(
-                                fontSize: 12, color: WitHomeTheme.wit_gray),
-                          ),
-                          SizedBox(height: 4), // 날짜와 이름 사이의 간격
-                          Text(event.data["prsnName"] ?? '요청자명 없음', // 요청자명
-                            style: WitHomeTheme.title.copyWith(fontSize: 18),
-                          ),
-                          SizedBox(height: 1), // 이름과 아파트명 사이의 간격
-                          Text(event.data["aptName"],
-                            style: WitHomeTheme.title.copyWith(
-                                fontSize: 12, color: WitHomeTheme.wit_gray),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 10), // 상태 텍스트와의 간격
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                EstimateRequestDetail(
-                                  estNo: event.data["estNo"].toString(),
-                                  seq: event.data["seq"].toString(),
-                                  sllrNo: event.data["sllrNo"].toString(),
-                                ),
-                          ),
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0), // 테두리 없애기
+                      SizedBox(width: 10), // 이미지와 텍스트 사이의 간격 추가
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // 날짜를 이름 위로 배치
+                            Text(
+                              '${event.dateTime}', // 날짜
+                              style: WitHomeTheme.title.copyWith(
+                                  fontSize: 12, color: WitHomeTheme.wit_gray),
+                            ),
+                            SizedBox(height: 4), // 날짜와 이름 사이의 간격
+                            Text(
+                              event.data["prsnName"] ?? '요청자명 없음', // 요청자명
+                              style: WitHomeTheme.title.copyWith(fontSize: 18),
+                            ),
+                            SizedBox(height: 1), // 이름과 아파트명 사이의 간격
+                            Text(
+                              event.data["aptName"],
+                              style: WitHomeTheme.title.copyWith(
+                                  fontSize: 12, color: WitHomeTheme.wit_gray),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ),
                       ),
-                      child: Text(event.data["stat"] ?? "", // 상태
-                        style: WitHomeTheme.title.copyWith(
-                            fontSize: 14, color: WitHomeTheme.wit_lightBlue),
+                      SizedBox(width: 10), // 상태 텍스트와의 간격
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EstimateRequestDetail(
+                                estNo: event.data["estNo"].toString(),
+                                seq: event.data["seq"].toString(),
+                                sllrNo: event.data["sllrNo"].toString(),
+                              ),
+                            ),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0), // 테두리 없애기
+                          ),
+                        ),
+                        child: Text(
+                          event.data["stat"] ?? "", // 상태
+                          style: WitHomeTheme.title.copyWith(
+                              fontSize: 14, color: WitHomeTheme.wit_lightBlue),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10), // 텍스트와 내용 사이의 간격
+                  Container(
+                    padding: EdgeInsets.all(12), // 내용의 내부 여백
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300], // 회색 배경
+                      borderRadius: BorderRadius.circular(8), // 둥근 모서리
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft, // 왼쪽 정렬
+                      child: Text(
+                        event.data["content"] ?? "", // 내용
+                        style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                        textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
+                        maxLines: 3, // 기본 3줄 표시
+                        overflow: TextOverflow.ellipsis, // 줄 넘침 처리
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(height: 10), // 텍스트와 내용 사이의 간격
-                Container(
-                  padding: EdgeInsets.all(12), // 내용의 내부 여백
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300], // 회색 배경
-                    borderRadius: BorderRadius.circular(8), // 둥근 모서리
                   ),
-                  child: Align(
-                    alignment: Alignment.centerLeft, // 왼쪽 정렬
-                    child: Text(event.data["content"] ?? "", // 내용
-                      style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                      textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
-                      maxLines: 3, // 기본 3줄 표시
-                      overflow: TextOverflow.ellipsis, // 줄 넘침 처리
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
       } else if (event.data["reqGbn"] == "MY") {
         eventWidgets.add(
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Row(
-              children: [
-                Container(
-                  width: 1,
-                  height: 80,
-                  color: WitHomeTheme.wit_lightgray,
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: WitHomeTheme.wit_lightGreen,
-                      borderRadius: BorderRadius.circular(45),
-                    ),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            width: 45,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              color: WitHomeTheme.wit_lightGreen,
-                              shape: BoxShape.circle,
-                              border: Border.all(
+            padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white, // 배경색 설정 (그림자가 잘 보이도록)
+                borderRadius: BorderRadius.circular(10), // 둥근 모서리
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1), // 그림자 색상
+                    blurRadius: 6, // 흐림 정도
+                    spreadRadius: 2, // 퍼짐 정도
+                    offset: Offset(0, 3), // 그림자의 위치
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: WitHomeTheme.wit_white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Container(
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
                                 color: WitHomeTheme.wit_white,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: WitHomeTheme.wit_lightSteelBlue,
+                                ),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                event.dateTime.hour.toString().padLeft(2, '0') +
+                                    ":" +
+                                    event.dateTime.minute.toString().padLeft(2, '0'),
+                                style: WitHomeTheme.caption.copyWith(
+                                    color: WitHomeTheme.wit_lightSteelBlue),
                               ),
                             ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              event.dateTime.hour.toString().padLeft(2, '0') +
-                                  ":" +
-                                  event.dateTime.minute.toString().padLeft(2, '0'),
-                              style: WitHomeTheme.caption.copyWith(
-                                  color: WitHomeTheme.wit_white),
-                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  event.data["cldrTitle"],
-                                  style: WitHomeTheme.subtitle.copyWith(
-                                      color: WitHomeTheme.wit_white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                if (event.data["cldrTxt"] != "")
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
                                   Text(
-                                    event.data["cldrTxt"],
-                                    style: WitHomeTheme.caption.copyWith(
-                                        color: WitHomeTheme.wit_white),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                    event.data["cldrTitle"],
+                                    style: WitHomeTheme.subtitle.copyWith(
+                                        color: WitHomeTheme.wit_black,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                              ],
+                                  if (event.data["cldrTxt"] != "")
+                                    Text(
+                                      event.data["cldrTxt"],
+                                      style: WitHomeTheme.caption.copyWith(
+                                          color: WitHomeTheme.wit_black),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.edit, // > 모양 아이콘
-                            color: WitHomeTheme.wit_white,
-                          ),
-                          onPressed: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isDismissible: true,
-                              isScrollControlled: true,
-                              builder: (context) {
-                                return Padding(
-                                  padding: MediaQuery.of(context).viewInsets,
-                                  child: Container(
-                                    height: 530,
-                                    child: ScheduleWritePopWidget(
-                                      sllrNo: event.data["sllrNo"],
-                                      reqNo: event.data["reqNo"],
-                                      startDate: DateTime.utc(int.parse(event.data["startDate"].substring(0, 4)), int.parse(event.data["startDate"].substring(4, 6)), int.parse(event.data["startDate"].substring(6, 8))),
-                                      startTime: TimeOfDay(hour: int.parse(event.data["startYm"].substring(0, 2)), minute: int.parse(event.data["startYm"].substring(2, 4))),
-                                      endDate: DateTime.utc(int.parse(event.data["endDate"].substring(0, 4)), int.parse(event.data["endDate"].substring(4, 6)), int.parse(event.data["endDate"].substring(6, 8))),
-                                      endTime: TimeOfDay(hour: int.parse(event.data["endYm"].substring(0, 2)), minute: int.parse(event.data["endYm"].substring(2, 4))),
-                                      title: event.data["cldrTitle"],
-                                      content: event.data["cldrTxt"],
-                                      popGbn: "U",
+                          IconButton(
+                            icon: Icon(
+                              Icons.edit_calendar_rounded, // > 모양 아이콘
+                              size: 25,
+                              color: WitHomeTheme.wit_lightSteelBlue,
+                            ),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isDismissible: true,
+                                isScrollControlled: true,
+                                builder: (context) {
+                                  return Padding(
+                                    padding: MediaQuery.of(context).viewInsets,
+                                    child: Container(
+                                      height: 530,
+                                      child: ScheduleWritePopWidget(
+                                        sllrNo: event.data["sllrNo"],
+                                        reqNo: event.data["reqNo"],
+                                        startDate: DateTime.utc(
+                                          int.parse(event.data["startDate"].substring(0, 4)),
+                                          int.parse(event.data["startDate"].substring(4, 6)),
+                                          int.parse(event.data["startDate"].substring(6, 8)),
+                                        ),
+                                        startTime: TimeOfDay(
+                                          hour: int.parse(event.data["startYm"].substring(0, 2)),
+                                          minute: int.parse(event.data["startYm"].substring(2, 4)),
+                                        ),
+                                        endDate: DateTime.utc(
+                                          int.parse(event.data["endDate"].substring(0, 4)),
+                                          int.parse(event.data["endDate"].substring(4, 6)),
+                                          int.parse(event.data["endDate"].substring(6, 8)),
+                                        ),
+                                        endTime: TimeOfDay(
+                                          hour: int.parse(event.data["endYm"].substring(0, 2)),
+                                          minute: int.parse(event.data["endYm"].substring(2, 4)),
+                                        ),
+                                        title: event.data["cldrTitle"],
+                                        content: event.data["cldrTxt"],
+                                        popGbn: "U",
+                                      ),
                                     ),
-                                  ),
+                                  );
+                                },
+                              ).then((result) async {
+                                getEstimateRequestList(
+                                  int.parse(result.substring(0, 4)),
+                                  int.parse(result.substring(4, 6)),
+                                  int.parse(result.substring(6, 8)),
                                 );
-                              },
-                            ).then((result) async {
-                              getEstimateRequestList(int.parse(result.substring(0, 4)), int.parse(result.substring(4, 6)), int.parse(result.substring(6, 8)));
-                            });
-                          },
-                        ),
-                      ],
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
