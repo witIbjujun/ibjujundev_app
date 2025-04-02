@@ -49,7 +49,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
                 height: MediaQuery.of(context).size.height - 100, // 여유 공간 설정
                 child: Center( // Center 위젯으로 텍스트 중앙 정렬
                   child: Container(
-                    height: MediaQuery.of(context).size.height * 0.18,  // 화면 높이의 18%
+                    height: MediaQuery.of(context).size.height * 0.40,  // 화면 높이의 18%
                     width: MediaQuery.of(context).size.width * 0.85,    // 화면 너비의 85%
                     child: Image.asset(
                       'assets/images/조회된 내용 (1).png', // 광고 이미지 URL
