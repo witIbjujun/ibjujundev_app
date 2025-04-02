@@ -408,13 +408,17 @@ class EstimateItem extends StatelessWidget {
                 SizedBox(width: 10), // 상태 텍스트와의 간격
                 TextButton(
                   onPressed: () {
+                    print('estNo: ${request['estNo']}');
+                    print('seq: ${request['seq']}');
+                    print('sllrNo: ${request['companyId']}');
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => EstimateRequestDetail(
                           estNo: request['estNo'],
                           seq: request['seq'],
-                          sllrNo: request[sllrNo],
+                          sllrNo: request['companyId'],
                         ),
                       ),
                     );
