@@ -7,7 +7,7 @@ import 'package:witibju/screens/common/wit_tableCalender_write_pop.dart';
 import '../home/wit_home_theme.dart';
 import '../seller/wit_seller_estimaterequest_detail_sc.dart';
 
-List<Widget> buildEventList(List<Event> events, BuildContext context) {
+List<Widget> buildEventList(List<Event> events, BuildContext context, Future<void> Function(int year, int month) getEstimateRequestList) {
 
   List<Widget> eventWidgets = [];
   DateTime? lastDisplayedDate;
@@ -233,7 +233,7 @@ List<Widget> buildEventList(List<Event> events, BuildContext context) {
                               },
                             ).then((_) {
                               // BottomSheet가 닫힌 후 새로고침
-
+                              getEstimateRequestList(int.parse(event.data["startDate"].substring(0, 4)), int.parse(event.data["startDate"].substring(4, 6)));
                             });
                           },
                         ),
