@@ -17,6 +17,7 @@ import '../../main.dart';
 import '../../util/wit_api_ut.dart';
 import '../../util/wit_apppush.dart';
 import '../board/wit_board_main_sc.dart';
+import '../chat/CustomChatScreen.dart';
 import '../checkList/wit_checkList_main_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
 import '../question/wit_question_main_sc.dart';
@@ -39,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   int _selectedIndex = 2; // 기본으로 Home (1번 인덱스) 선택
 
-
+  DateTime? _lastBackPressed;
   // SelectBox에 표시할 옵션 리스트
   Map<String, String> options = {};
   String selectedOption = ""; // 기본 선택된 옵션
@@ -94,272 +95,301 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final mainViewModel = Provider.of<MainViewModel>(context);
-    // FirebaseMessageService 초기화
     FirebaseMessageService.initialize(context);
-    return Container(
-      color: WitHomeTheme.white,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: WitHomeTheme.white,
-          iconTheme: const IconThemeData(color: Colors.black),
-          titleSpacing: 20.0, // 기본값은 16.0, 간격을 더 넓히려면 증가
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 16.0), // 왼쪽 여백 추가
-            child: IconButton(
-              iconSize: 35.0,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SellerProfileDetail(sllrNo: 17),
-                  ),
-                );
-              },
-              icon: Image.asset(
-                'assets/home/logo.png',
-                width: 30,
-                height: 30,
+
+    return WillPopScope( // 📆 2025.04.01 - WillPopScope로 감싸기
+      onWillPop: () async {
+        if (_lastBackPressed == null ||
+            DateTime.now().difference(_lastBackPressed!) > Duration(seconds: 2)) {
+          _lastBackPressed = DateTime.now();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('뒤로 버튼을 한 번 더 누르시면 종료됩니다.')),
+          );
+          return false;
+        }
+        return true; // 종료 허용
+      },
+      child: Container(
+        color: WitHomeTheme.white,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: WitHomeTheme.white,
+            iconTheme: const IconThemeData(color: Colors.black),
+            titleSpacing: 20.0,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: IconButton(
+                iconSize: 35.0,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SellerProfileDetail(sllrNo: 17),
+                    ),
+                  );
+                },
+                icon: Image.asset(
+                  'assets/home/logo.png',
+                  width: 30,
+                  height: 30,
+                ),
               ),
             ),
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0), // 오른쪽 여백 추가
-              child: Row(
-                children: [
-                  // 위치 정보 버튼
-                  IconButton(
-                    iconSize: 35.0,
-                    onPressed: () async {
-                      bool isLoggedIn = await checkLoginStatus();
-                      if (isLoggedIn) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => EstimateScreen(),
-                          ),
-                        );
-                      } else {
-                        _showLoginDialog(context);
-                      }
-                    },
-                    icon: FutureBuilder<String?>(
-                      future: secureStorage.read(key: 'mainAptNm'),
-                      builder: (context, snapshot) {
-                        String aptName = snapshot.data ?? ''; // 기본값 설정
-                        return Row(
-                          children: [
-                            Image.asset(
-                              'assets/home/locationMain.png',
-                              width: 30,
-                              height: 30,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      iconSize: 35.0,
+                      onPressed: () async {
+                        bool isLoggedIn = await checkLoginStatus();
+                        if (isLoggedIn) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => EstimateScreen(),
                             ),
-                            if (aptName.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5.0),
-                                child: Text(
-                                  aptName,
-                                  style: WitHomeTheme.body1.copyWith(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                          );
+                        } else {
+                          _showLoginDialog(context);
+                        }
+                      },
+                      icon: FutureBuilder<String?>(
+                        future: secureStorage.read(key: 'mainAptNm'),
+                        builder: (context, snapshot) {
+                          String aptName = snapshot.data ?? '';
+                          return Row(
+                            children: [
+                              Image.asset(
+                                'assets/home/locationMain.png',
+                                width: 30,
+                                height: 30,
+                              ),
+                              if (aptName.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5.0),
+                                  child: Text(
+                                    aptName,
+                                    style: WitHomeTheme.body1.copyWith(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                  // 로그아웃 버튼
-                  IconButton(
-                    iconSize: 25.0,
-                    onPressed: () {
-                      logOut(context);
-                    },
-                    icon: const Icon(Icons.logout),
-                  ),
-                  // 닉네임 표시
-                  if (nickname != null)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Text(
-                        nickname!,
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                    ),
-                  // 메시지 아이콘
-                  IconButton(
-                    iconSize: 35.0,
-                    onPressed: () async {
-                      bool isLoggedIn = await checkLoginStatus();
-                      if (isLoggedIn) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => EstimateScreen(),
-                          ),
-                        );
-                      } else {
-                        _showLoginDialog(context);
-                      }
-                    },
-                    icon: Image.asset(
-                      'assets/home/message.png',
-                      width: 30,
-                      height: 30,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.transparent,
-        // 2025-01-16: 기존 UI를 유지하며 하단에 TabBar와 TabBarView 추가
-        body: SafeArea(
-          child: Column(
-            children: [
-              // 기존 UI 유지
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // 상태 위젯
-                      APTStatusWidget(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        height: MediaQuery.of(context).size.height * 0.20,
-                      ),
-                      const SizedBox(height: 6.0),
-                      Container(
-                        height: 80, // 기존 75에서 높이를 늘려 공간 확보
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0), // 위아래 간격 추가
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 간격 균등 배치
-                            children: [
-                              _buildIconWithLabel(
-                                imagePath: 'assets/home/FloorPlan.png',
-                                label: '평면도',
-                                onTap: () {
-                                  showImagePopup(
-                                    context: context,
-                                    imageUrl: '/WIT/12345.png',
-                                  );
-                                },
-                              ),
-                              _buildIconWithLabel(
-                                imagePath: 'assets/home/guide.png',
-                                label: '가이드',
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => Question(qustCd: 'Q10001')),
-                                  );
-                                },
-                              ),
-                              _buildIconWithLabel(
-                                imagePath: 'assets/home/apt.png',
-                                label: '아파트',
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => Board(1,'B1')),
-                                  );
-                                },
-                              ),
-                              _buildIconWithLabel(
-                                imagePath: 'assets/home/best.png',
-                                label: '베스트',
-                                onTap: () {
-                                  showGuirdDialog(
-                                    context: context,
-                                    description: "예산별 시공 품목 가이드입니다!\n\n각 품목별 비교견적을 받아세요",
-                                    descriptionStyle: WitHomeTheme.subtitle,
-                                    options: [
-                                      {'text': 'Simple 인테리어', 'color': Color(0xFF7294CC)},
-                                      {'text': 'Standard 인테리어', 'color': Color(0xFFC19AC6)},
-                                      {'text': 'Premium 인테리어', 'color': Color(0xFFA68150)},
-                                      {'text': 'My Choice 인테리어', 'color': Color(0xFF91C58C)},
-                                    ],
-                                    onOptionSelected: (selectedOption) {
-                                      if (selectedOption == 'Simple 인테리어') {
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('S')));
-                                      } else if (selectedOption == 'Standard 인테리어') {
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('T')));
-                                      } else if (selectedOption == 'Premium 인테리어') {
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('P')));
-                                      } else if (selectedOption == 'My Choice 인테리어') {
-                                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('A')));
-                                      }
-                                    },
-                                  );
-                                },
-                              ),
-                              _buildIconWithLabel(
-                                imagePath: 'assets/home/GroupPurchase.png',
-                                label: '공동구매',
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => GonguRequest()),
-                                  );
-                                },
-                              ),
                             ],
-                          ),
+                          );
+                        },
+                      ),
+                    ),
+                    IconButton(
+                      iconSize: 25.0,
+                      onPressed: () {
+                        logOut(context);
+                      },
+                      icon: const Icon(Icons.logout),
+                    ),
+                    if (nickname != null)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(
+                          nickname!,
+                          style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ),
-
-
-                      // 추가된 문구
-                      Align(
-                        alignment: Alignment.centerLeft, // 좌측 정렬
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0), // 좌우 여백 추가
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.9, // 컨테이너 너비 설정
-                            padding: const EdgeInsets.all(12.0), // 내부 여백 추가
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    IconButton(
+                      iconSize: 35.0,
+                      onPressed: () async {
+                        bool isLoggedIn = await checkLoginStatus();
+                        if (isLoggedIn) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => EstimateScreen(),
+                            ),
+                          );
+                        } else {
+                          _showLoginDialog(context);
+                        }
+                      },
+                      icon: Image.asset(
+                        'assets/home/message.png',
+                        width: 30,
+                        height: 30,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.transparent,
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        APTStatusWidget(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: MediaQuery.of(context).size.height * 0.20,
+                        ),
+                        const SizedBox(height: 6.0),
+                        Container(
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                // "견적서비스"에 밑줄 및 간격 추가
-                                Column(
-
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "견적서비스",
-                                      style: WitHomeTheme.title.copyWith(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                                _buildIconWithLabel(
+                                  imagePath: 'assets/home/FloorPlan.png',
+                                  label: '평면도',
+                                  onTap: () {
+                                    showImagePopup(
+                                      context: context,
+                                      imageUrl: '/WIT/12345.png',
+                                    );
+                                  },
+                                ),
+                                _buildIconWithLabel(
+                                  imagePath: 'assets/home/guide.png',
+                                  label: '가이드',
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CustomChatScreen('1', '72091587')),
+                                    );
+                                  },
+                                ),
+                                _buildIconWithLabel(
+                                  imagePath: 'assets/home/apt.png',
+                                  label: '아파트',
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CustomChatScreen('1', '1')),
+                                    );
+                                  },
+                                ),
+                                _buildIconWithLabel(
+                                  imagePath: 'assets/home/best.png',
+                                  label: '베스트',
+                                  onTap: () {
+                                    showGuirdDialog(
+                                      context: context,
+                                      description:
+                                      "예산별 시공 품목 가이드입니다!\n\n각 품목별 비교견적을 받아세요",
+                                      descriptionStyle: WitHomeTheme.subtitle,
+                                      options: [
+                                        {
+                                          'text': 'Simple 인테리어',
+                                          'color': Color(0xFF7294CC)
+                                        },
+                                        {
+                                          'text': 'Standard 인테리어',
+                                          'color': Color(0xFFC19AC6)
+                                        },
+                                        {
+                                          'text': 'Premium 인테리어',
+                                          'color': Color(0xFFA68150)
+                                        },
+                                        {
+                                          'text': 'My Choice 인테리어',
+                                          'color': Color(0xFF91C58C)
+                                        },
+                                      ],
+                                      onOptionSelected: (selectedOption) {
+                                        if (selectedOption == 'Simple 인테리어') {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      getEstimate('S')));
+                                        } else if (selectedOption ==
+                                            'Standard 인테리어') {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      getEstimate('T')));
+                                        } else if (selectedOption ==
+                                            'Premium 인테리어') {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      getEstimate('P')));
+                                        } else if (selectedOption ==
+                                            'My Choice 인테리어') {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      getEstimate('A')));
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
+                                _buildIconWithLabel(
+                                  imagePath: 'assets/home/GroupPurchase.png',
+                                  label: '공동구매',
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) => GonguRequest()),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
                           ),
                         ),
-                      ),
-                      ///const SizedBox(height: 2.0),
-                      getPopularCourseUI(), // Popular Course 추가
-                    ],
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "견적서비스",
+                                        style: WitHomeTheme.title.copyWith(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        getPopularCourseUI(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+          bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
         ),
-
-        bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
-
       ),
     );
   }
-
 
   Widget _buildIconWithLabel({required String imagePath, required String label, VoidCallback? onTap}) {
     return Column(
@@ -389,7 +419,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   /// 개별 항목을 생성하는 함수
-  Widget _buildGridItem(String bgImage, String iconImage, String title) {
+  /*Widget _buildGridItem(String bgImage, String iconImage, String title) {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -414,8 +444,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             right: 8,
             child: Image.asset(
               iconImage,
-              width: 24, // 아이콘 크기 조절
-              height: 24,
+              width: 50, // 아이콘 크기 조절
+              height: 50,
             ),
           ),
 
@@ -435,11 +465,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ],
       ),
     );
-  }
+  }*/
 
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
-    print("들어오나??");
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0), // 좌우만 여백
 

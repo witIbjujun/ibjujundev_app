@@ -1,3 +1,4 @@
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:witibju/screens/home/models/category.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,7 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
   }
 
   Widget _buildGridItem(String bgImage, String iconImage, String title) {
+    print("bgImage=="+bgImage+"  iconImage=="+iconImage);
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -110,22 +112,42 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
             right: 2,
             child: Image.asset(
               iconImage+".png",
-              width: 34, // 아이콘 크기 조절
-              height: 34,
+              width: 45, // 아이콘 크기 조절
+              height: 45,
             ),
           ),
 
-          /// 좌측 하단 텍스트
+          /// 좌측 하단 텍스트 및 우측 마감
+          // 2025-03-24 수정: 좌측 하단 텍스트와 우측 하단 아이콘을 Row로 묶어서 정렬
+          // 2025-03-24 수정: Align으로 텍스트를 좌측 하단에 고정
           Positioned(
             bottom: 2,
             left: 2,
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.white, // 흰색 글씨 적용
-              ),
+            right: 2,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end, // 하단 정렬
+              children: [
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+               /* if (bgImage == "assets/home/CATE003.png" || bgImage == "assets/home/CATE004.png")
+                  Image.asset(
+                    bgImage == "assets/home/CATE003.png"
+                        ? 'assets/home/Done1.png'
+                        : 'assets/home/Done2.png',
+                    height: bgImage == "assets/home/CATE003.png" ? 45 : 20,
+                    width: bgImage == "assets/home/CATE003.png" ? 45 : 70,
+                  ),*/
+              ],
             ),
           ),
         ],

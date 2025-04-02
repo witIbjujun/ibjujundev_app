@@ -40,7 +40,6 @@ class _loingPopHomeState extends State<loingPopHome> {
               ElevatedButton(
                 onPressed: () async {
                   String userId = _idController.text.trim();
-                    ///await getUserInfo(context,viewModel, '72091587');
                   String result =  await getChckUser(viewModel, '72091587');
 
                   if (widget.onLoginSuccess != null) {
@@ -57,9 +56,6 @@ class _loingPopHomeState extends State<loingPopHome> {
               ElevatedButton(
                 onPressed: () async {
                   String userId = _idController.text.trim();
-
-                  print('입력된 아이디: $userId');
-                ///  await getUserInfo(context,viewModel, '72091586');
                   String result =  await getChckUser(viewModel, '72091586');
                   // 로그인 로직 추가 가능
                   if (widget.onLoginSuccess != null) {
@@ -77,7 +73,6 @@ class _loingPopHomeState extends State<loingPopHome> {
                   String userId = _idController.text.trim();
 
                   print('입력된 아이디: $userId');
-                  ///await getUserInfo(context,viewModel,'72091588');
                   String result =  await getChckUser(viewModel, '72091588');
 
                   if (widget.onLoginSuccess != null) {
@@ -94,10 +89,6 @@ class _loingPopHomeState extends State<loingPopHome> {
               ElevatedButton(
                 onPressed: () async {
                   String userId = _idController.text.trim();
-
-                  print('입력된 아이디: $userId');
-                 /// await getUserInfo(context,viewModel,'72091584');
-
                   String result =  await getChckUser(viewModel, '72091584');
 
                   if (widget.onLoginSuccess != null) {

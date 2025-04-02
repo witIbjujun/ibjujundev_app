@@ -115,183 +115,180 @@ class _MyProfileState extends State<MyProfile> {
   @override
   Widget build(BuildContext context) {
     print("Rendering MyProfile...");
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: WitHomeTheme.nearlyWhite,
-        iconTheme: const IconThemeData(color: WitHomeTheme.nearlyBlack),
-        title: Text(
-          'My Profile',
-          style: WitHomeTheme.title, // 제목에 동일한 폰트 스타일 적용
+
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomeScreen()),
+        );
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text(
+            'My Profile',
+            style: TextStyle(
+              color: Colors.white,             // 텍스트 색상
+              fontSize: 20.0,                  // 폰트 크기
+              fontWeight: FontWeight.bold,     // 굵기
+              fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.white), // ← 아이콘 색상도 검정으로 맞추려면 추가
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // ImageBox() 호출
-
-              CommonImageBanner(
-                imagePath: 'assets/home/gongguBanner.png', // 원하는 이미지 파일명
-                heightRatio: 0.18,  // 화면 높이의 15% (기본값 10%)
-                widthRatio: 0.85,   // 화면 너비의 85% (기본값 90%)
-              ),
-
-             /* ImageSlider(
-                heightRatio: 0.10, // 화면 높이의 18%
-                widthRatio: 0.9,  // 화면 너비의 90%
-              ), */// 여기에 이미지 위젯 추가
-
-              const SizedBox(height: 16),
-
-              // MY 닉네임 입력 필드
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isEditable = true;
-                    _focusNode.requestFocus();
-                  });
-                },
-                child: AbsorbPointer(
-                  absorbing: !_isEditable,
-                  child: TextFormField(
-                    focusNode: _focusNode,
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      labelText: 'MY 닉네임',
-                      labelStyle: const TextStyle(
-                        color: Color(0xFFAFCB54),
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.blue,
-                          width: 1.0,
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.lightBlue,
-                          width: 2.0,
-                        ),
-                      ),
-                    ),
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.black,
-                    ),
-                    readOnly: !_isEditable,
-                  ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CommonImageBanner(
+                  imagePath: 'assets/home/gongguBanner.png',
+                  heightRatio: 0.18,
+                  widthRatio: 0.85,
                 ),
-              ),
-              const SizedBox(height: 16),
-
-              // 내 APT 선택
-              GestureDetector(
-                onTap: () {
-                  String initialSelection = options.isNotEmpty ? options.first : ''; // 기본값을 options의 첫 번째 값으로 설정
-                  WitHomeWidgets.showSelectBox(context, initialSelection, options, (option) {
+                const SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () {
                     setState(() {
-                      selectedOption = option;
-                     /// _storage.write(key: 'aptName', value: option);
+                      _isEditable = true;
+                      _focusNode.requestFocus();
                     });
-                  });
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 50.0,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: WitHomeTheme.grey),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
-                        child: Text(
-                          selectedOption.isNotEmpty ? selectedOption : (options.isNotEmpty ? options.first : 'APT 선택'),
-                          style: WitHomeTheme.title,
+                  },
+                  child: AbsorbPointer(
+                    absorbing: !_isEditable,
+                    child: TextFormField(
+                      focusNode: _focusNode,
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        labelText: 'MY 닉네임',
+                        labelStyle: const TextStyle(
+                          color: Color(0xFFAFCB54),
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.blue,
+                            width: 1.0,
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.lightBlue,
+                            width: 2.0,
+                          ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(right: 16.0),
-                        child: Icon(Icons.arrow_drop_down, color: WitHomeTheme.darkText),
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                        color: Colors.black,
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // 변경 버튼을 GestureDetector 아래에 배치하고, 중앙 정렬
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    updateMyInfo(); // 변경 버튼을 눌렀을 때 updateMyInfo 호출
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(200, 50), // 버튼 크기 조정
-                    backgroundColor: Color(0xFFAFCB54),
-                  ),
-                  child: Text(
-                    '변경',
-                    style: WitHomeTheme.body2.copyWith(color: Colors.white),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // 카시, 거래내역, 겸재내역, MY 체크리스트, 커뮤니티, 공지사항 리스트 항목 디자인
-              _buildListTile(Icons.attach_money, '캐시'),
-              ///_buildListTile(Icons.history, '거래내역'),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EstimateScreen()),
-                  );
-                },
-                child: _buildListTile(Icons.assignment, '견적내역'),
-              ),
-
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => CheckListMain(), // MyProfile 페이지로 이동
+                      readOnly: !_isEditable,
                     ),
-                  );
-                },
-                child:  _buildListTile(Icons.group, 'MY 체크리스트'),
-              ),
-
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Board(1,'B1')),
-                  );
-                },
-                child:  _buildListTile(Icons.group, '커뮤니티'),
-              ),
-              _buildListTile(Icons.notifications, '공지사항'),
-              GestureDetector(
-                onTap: () async {
-
-                  // 로그아웃 처리
-                  logOut(context);
-                },
-                child:  _buildListTile(Icons.group, '로그아웃'),
-              ),
-            ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () {
+                    String initialSelection = options.isNotEmpty ? options.first : '';
+                    WitHomeWidgets.showSelectBox(context, initialSelection, options,
+                            (option) {
+                          setState(() {
+                            selectedOption = option;
+                          });
+                        });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: WitHomeTheme.grey),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: Text(
+                            selectedOption.isNotEmpty
+                                ? selectedOption
+                                : (options.isNotEmpty ? options.first : 'APT 선택'),
+                            style: WitHomeTheme.title,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(right: 16.0),
+                          child: Icon(Icons.arrow_drop_down,
+                              color: WitHomeTheme.darkText),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      updateMyInfo();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(200, 50),
+                      backgroundColor: Color(0xFFAFCB54),
+                    ),
+                    child: Text(
+                      '변경',
+                      style: WitHomeTheme.body2.copyWith(color: Colors.white),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildListTile(Icons.attach_money, '캐시'),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EstimateScreen()),
+                    );
+                  },
+                  child: _buildListTile(Icons.assignment, '견적내역'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CheckListMain(),
+                      ),
+                    );
+                  },
+                  child: _buildListTile(Icons.group, 'MY 체크리스트'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Board(1, 'B1')),
+                    );
+                  },
+                  child: _buildListTile(Icons.group, '커뮤니티'),
+                ),
+                _buildListTile(Icons.notifications, '공지사항'),
+                GestureDetector(
+                  onTap: () async {
+                    logOut(context);
+                  },
+                  child: _buildListTile(Icons.group, '로그아웃'),
+                ),
+              ],
+            ),
           ),
         ),
+        bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
       ),
-      bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),  // ✅ 공통 네비게이션 적용
     );
   }
 

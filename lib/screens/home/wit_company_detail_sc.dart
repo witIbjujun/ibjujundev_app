@@ -554,15 +554,17 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
 
   Widget getAppBarUI() {
     return AppBar(
-      backgroundColor: WitHomeTheme.nearlyWhite,
+      backgroundColor: Colors.black,
       title: Text(
-        "견적서비스",
-        style: WitHomeTheme.body1.copyWith(
-          fontSize: 20.0, // 원하는 폰트 크기로 조절
-          fontWeight: FontWeight.bold, // 폰트 굵기 설정 (선택)
-          color: Colors.black, // 글자 색상 설정 (선택)
+        '견적서비스',
+        style: TextStyle(
+          color: Colors.white,             // 텍스트 색상
+          fontSize: 20.0,                  // 폰트 크기
+          fontWeight: FontWeight.bold,     // 굵기
+          fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
         ),
       ),
+      iconTheme: IconThemeData(color: Colors.white),
     );
   }
 

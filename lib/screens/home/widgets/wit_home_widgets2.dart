@@ -5,7 +5,9 @@ import 'package:witibju/screens/preInspaction/wit_preInsp_main_sc.dart';
 
 import '../../../util/wit_code_ut.dart';
 import '../../checkList/wit_checkList_main_sc.dart';
+import '../../common/wit_common_util.dart';
 import '../../question/wit_question_main_sc.dart';
+import '../models/requestInfo.dart';
 import '../wit_home_theme.dart'; // PreInspaction 화면 import
 
 class ImageSlider extends StatefulWidget {
@@ -535,3 +537,83 @@ class DialogUtils {
     );
   }
 }
+
+// 2025-03-25 공통 위젯으로 분리
+class EstimateTable extends StatelessWidget {
+  final List<RequestInfo> estimates;
+
+  const EstimateTable({
+    Key? key,
+    required this.estimates,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal, // 많을 경우 대응
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: const EdgeInsets.all(4.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.blue),
+        ),
+        child: Table(
+          border: TableBorder.all(color: Colors.grey),
+          columnWidths: {
+            0: const FlexColumnWidth(2),
+            for (int i = 0; i < estimates.length; i++) i + 1: const FlexColumnWidth(3),
+          },
+          children: [
+            _buildRow("업체", (e) => e.companyNm),
+            _buildRow("견적가", (e) => '${formatCash(e.estimateAmount)}원'),
+            _buildRow("평점", (e) => e.rate, isRating: true),
+          ///  _buildRow("시공건수", (e) => '${e.constructCount ?? "-"}건'),
+            _buildRow("시공건수", (e) => '11건'),
+            //_buildRow("입주전인증", (e) => e.certifiedBeforeMove == "Y" ? "인증완료" : "미인증"),
+            _buildRow("입주전인증", (e) => "Y" == "Y" ? "인증완료" : "미인증"),
+            //_buildRow("AS 가능여부", (e) => e.asAvailable == "Y" ? "가능" : "불가"),
+            _buildRow("AS 가능여부", (e) => "Y" == "Y" ? "가능" : "불가"),
+            //_buildRow("창업년도", (e) => e.foundYear ?? "-"),
+            _buildRow("창업년도", (e) => "2019년" ?? "-"),
+          ],
+        ),
+      ),
+    );
+  }
+
+  TableRow _buildRow(String title, String Function(RequestInfo) valueBuilder, {bool isRating = false}) {
+    return TableRow(
+      decoration: title == "업체" ? BoxDecoration(color: Colors.grey[200]) : null,
+      children: [
+        _cell(title, isHeader: true),
+        ...estimates.map((e) => isRating ? _ratingCell(valueBuilder(e)) : _cell(valueBuilder(e))).toList(),
+      ],
+    );
+  }
+
+  Widget _cell(String text, {bool isHeader = false}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        text,
+        style: TextStyle(fontWeight: isHeader ? FontWeight.bold : FontWeight.normal),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _ratingCell(String rate) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/images/star.png', width: 16.0, height: 16.0),
+          const SizedBox(width: 4.0),
+          Text(rate),
+        ],
+      ),
+    );
+  }
+}
+

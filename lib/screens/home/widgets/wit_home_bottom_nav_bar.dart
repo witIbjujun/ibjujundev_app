@@ -52,8 +52,8 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/home/checkList_Bottom.png', // 이미지 경로
-            width: 24, // 아이콘 크기 조절
-            height: 24,
+            width: 30, // 아이콘 크기 조절
+            height: 30,
           ),
           label: '체크리스트',
         ),
@@ -61,24 +61,24 @@ class BottomNavBar extends StatelessWidget {
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/home/info_Bottom.png', // 이미지 경로
-            width: 24, // 아이콘 크기 조절
-            height: 24,
+            width: 30, // 아이콘 크기 조절
+            height: 30,
           ),
           label: '견적정보',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/home/home_BottomNew.png', // 이미지 경로
-            width: 24, // 아이콘 크기 조절
-            height: 24,
+            width: 30, // 아이콘 크기 조절
+            height: 30,
           ),
-          label: 'Home',
+          label: '홈',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
             'assets/home/myInfo_Bottom.png', // 이미지 경로
-            width: 24, // 아이콘 크기 조절
-            height: 24,
+            width: 30, // 아이콘 크기 조절
+            height: 30,
           ),
           label: '내정보',
         ),

@@ -103,7 +103,7 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
                     final estimate = todayEstimates[index];
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        /*Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => RequestDetailScreen(
@@ -112,7 +112,7 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
                               categoryName: estimate.categoryNm,
                             ),
                           ),
-                        );
+                        );*/
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -175,7 +175,7 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
                     final estimate = previousEstimates[index];
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        /*Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => RequestDetailScreen(
@@ -184,7 +184,7 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
                               categoryName: estimate.categoryNm,
                             ),
                           ),
-                        );
+                        );*/
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
