@@ -23,6 +23,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
   String selectedOption = ''; // 기본 선택 값
   List<String> options = [];
   final _storage = const FlutterSecureStorage();
+  String _selectedApartment = '병점아이파크캐슬'; // 초기 선택 값
 
   @override
   void initState() {
@@ -63,17 +64,76 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.only(left:5,top: 0.0),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.25,
-                width: MediaQuery.of(context).size.width * 0.90,
-                child: Image.asset(
-                  'assets/images/바로견적.png',
-                  fit: BoxFit.contain,
+            Stack(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 5, top: 0.0),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: MediaQuery.of(context).size.width * 0.90,
+                    child: Image.asset(
+                      'assets/images/공동구매 판매자 배너.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
-              ),
+                Positioned(
+                  top: 20,
+                  left: 20,
+                  child: Container(
+                    width: 340,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: DropdownButton<String>(
+                      value: _selectedApartment,
+                      items: <String>['병점아이파크캐슬', '기흥역푸르지오'].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Container( // DropdownMenuItem에 Container 추가
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // 패딩 추가
+                            child: Text(
+                              value,
+                              style: WitHomeTheme.title.copyWith(fontSize: 14),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedApartment = newValue!;
+                        });
+                      },
+                      dropdownColor: Colors.grey.withOpacity(0.7),
+                      style: WitHomeTheme.title.copyWith(fontSize: 14),
+                      underline: Container(),
+                      icon: Icon(Icons.arrow_drop_down, color: WitHomeTheme.wit_black),
+                      isExpanded: true,
+                      alignment: AlignmentDirectional.centerEnd,
+                      // 드롭다운 메뉴 스타일 변경
+                      selectedItemBuilder: (BuildContext context) {
+                        return <String>['병점아이파크캐슬', '기흥역푸르지오'].map<Widget>((String value) {
+                          return Container(
+                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                            child: Text(
+                              _selectedApartment,
+                              style: WitHomeTheme.title.copyWith(fontSize: 14),
+                            ),
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
+
+
+
+
             Text(
               '> 공동구매 진행 APT',
               style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_lightGreen),
