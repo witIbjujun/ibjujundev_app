@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:witibju/screens/common/wit_common_widget.dart';
 import '../../util/wit_api_ut.dart';
 import '../home/wit_home_theme.dart';
 
@@ -273,7 +274,13 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
                             ),
                           ),
                           onPressed: () async {
-                            deleteScheduleInfo();
+                            ConfimDialog.show(context,
+                                "확인",
+                                "선택한 스케쥴을 삭제하시겠습니까?",
+                              () async {
+                                deleteScheduleInfo();
+                              }
+                            );
                           },
                           child: Text(
                             "삭제",
@@ -358,7 +365,7 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
 
   // 스케쥴 저장
   Future<void> deleteScheduleInfo() async {
-
+    
     // REST ID
     String restId = "deleteScheduleInfo";
 
