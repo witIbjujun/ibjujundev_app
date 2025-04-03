@@ -153,20 +153,20 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                     ),
                   ],
                 ),
-                SizedBox(height: 0),
+                SizedBox(height: 10),
                 Padding( // Row 전체를 Padding으로 감싸서 여백 조정
                   padding: EdgeInsets.only(left: 0, right: 0), // Stack의 Padding 값과 동일하게 설정
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 3,
+                        flex: 2,
                         child: InkWell(
                           onTap: () {
                             // onTap 이벤트 추가
                             // 마감 완료 로직 추가
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                            padding: EdgeInsets.all(0), // 모든 방향 패딩을 0으로 설정
                             child: Center(
                               child: Image.asset(
                                 'assets/images/마감완료.png',
@@ -186,7 +186,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                             // 마감 완료 로직 추가
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 20),
+                            padding: EdgeInsets.all(0), // 모든 방향 패딩을 0으로 설정
                             child: Center(
                               child: Image.asset(
                                 'assets/images/조기마감.png',
@@ -206,13 +206,13 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                             // 마감 완료 로직 추가
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 8),
+                            padding: EdgeInsets.all(0), // 모든 방향 패딩을 0으로 설정
                             child: Center(
                               child: Image.asset(
                                 'assets/images/메세지.png',
                                 fit: BoxFit.contain,
-                                width: 30,
-                                height: 30,
+                                width: 40,
+                                height: 40,
                               ),
                             ),
                           ),
@@ -244,16 +244,11 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
-        color: Colors.grey[100], // 회색 배경 추가
-        borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3), // 그림자 위치
-          ),
-        ],
+        image: DecorationImage(
+          image: AssetImage('assets/images/견적설명 (1).png'), // 배경 이미지 설정
+          fit: BoxFit.cover, // 배경 이미지를 꽉 채우도록 설정
+        ),
+        borderRadius: BorderRadius.circular(8), // 모서리 둥글게
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -268,11 +263,11 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  /*Text(
                     application['estDt'] ?? '날짜 없음', // 신청 날짜
                     style: WitHomeTheme.title
                         .copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
-                  ),
+                  ),*/
                   SizedBox(height: 4),
                   Text(
                     application['prsnName'] ?? '신청자명 없음', // 신청자 이름
@@ -295,7 +290,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                 // application['stat'] ?? '상태 없음', // 상태
                 '신청',
                 style: WitHomeTheme.title
-                    .copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
+                    .copyWith(fontSize: 14,),
               ),
             ),
           ],
