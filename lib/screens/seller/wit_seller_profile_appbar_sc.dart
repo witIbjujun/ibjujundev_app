@@ -27,12 +27,12 @@ import '../board/wit_board_main_sc.dart';
 import '../home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
-
 //import '../intro.dart';
 class SellerAppBar extends StatefulWidget implements PreferredSizeWidget {
   final dynamic sllrNo;
   final Function(dynamic) onSllrNoChanged; // 콜백 추가
-  const SellerAppBar({super.key, required this.sllrNo, required this.onSllrNoChanged});
+  const SellerAppBar(
+      {super.key, required this.sllrNo, required this.onSllrNoChanged});
 
   @override
   State<StatefulWidget> createState() => SellerAppBarState();
@@ -48,7 +48,7 @@ class SellerAppBarState extends State<SellerAppBar> {
   dynamic sllrNo; // 새로운 sllrNo 변수 추가
   late final Function(dynamic) onSllrNoChanged; // 콜백 추가
   final TextEditingController _sllrNoController =
-  TextEditingController(); // 입력 필드 컨트롤러
+      TextEditingController(); // 입력 필드 컨트롤러
 
   @override
   void initState() {
@@ -123,15 +123,15 @@ class SellerAppBarState extends State<SellerAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leadingWidth: 150,
-      leading: Container(
-        height: double.infinity,
-        child: Center(
+      leadingWidth: 200,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 20.0),
+        child: Align(
+          alignment: Alignment.centerLeft, // 높이 가운데, 왼쪽 정렬
           child: Text(
             storeName,
             style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
-            // 글씨 굵게 및 하얀색 설정
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.left, // 텍스트 자체도 왼쪽 정렬
           ),
         ),
       ),
@@ -153,17 +153,17 @@ class SellerAppBarState extends State<SellerAppBar> {
               decoration: InputDecoration(
                 hintText: 'sllrNo 입력',
                 border: OutlineInputBorder(),
-                hintStyle:  WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
-
+                hintStyle:
+                    WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
               ),
-              style:  WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
+              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
 
               keyboardType: TextInputType.number, // 숫자 키패드로 설정
             ),
           ),
         ),
         // 버튼 추가
-       IconButton(
+        IconButton(
           onPressed: () {
             // 입력된 값을 sllrNo로 변경
             dynamic newSllrNo = _sllrNoController.text;
@@ -176,7 +176,8 @@ class SellerAppBarState extends State<SellerAppBar> {
               });
             }
           },
-          icon: Icon(Icons.search, color: WitHomeTheme.wit_black), // 아이콘 색상 하얀색으로 설정
+          icon: Icon(Icons.search,
+              color: WitHomeTheme.wit_black), // 아이콘 색상 하얀색으로 설정
         ),
 
         IconButton(
@@ -187,18 +188,25 @@ class SellerAppBarState extends State<SellerAppBar> {
                   builder: (context) => HomeScreen()), // HomeScreen으로 이동
             );
           },
-          icon: Icon(
-              Icons.perm_identity, color: WitHomeTheme.wit_black), // 아이콘 색상 하얀색으로 설정
+          icon: Icon(Icons.change_circle,
+              color: WitHomeTheme.wit_lightGreen), // 아이콘 색상 하얀색으로 설정
         ),
         IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => SellerProfileInsertName()), // HomeScreen으로 이동
-              );
-
-            }, icon: Icon(Icons.mail, color: WitHomeTheme.wit_black)),
+          padding: const EdgeInsets.only(right: 20.0),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      SellerProfileInsertName()), // HomeScreen으로 이동
+            );
+          },
+          icon: Image.asset(
+            'assets/home/message.png',
+            width: 30,
+            height: 30,
+          ),
+        ),
         // 아이콘 색상 하얀색으로 설정
         /*IconButton(
           onPressed: () {

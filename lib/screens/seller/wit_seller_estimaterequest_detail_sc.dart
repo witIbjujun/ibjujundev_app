@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_child_view_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_view_sc.dart';
 
 // import '../../main_toss.dart';
@@ -264,11 +265,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                           border: Border.all(color: Colors.black), // 테두리 색상 설정
                           borderRadius: BorderRadius.circular(2), // 둥근 모서리 설정
                         ),
-                        constraints: BoxConstraints(
-                          minHeight: 100, // 최소 높이 설정
-                          maxHeight: 800, // 최대 높이 설정
-                        ),
-                        child: SellerProfileView(sllrNo : widget.sllrNo, appbarYn: "N"),
+                        child: SellerProfileChildView(sllrNo : widget.sllrNo, appbarYn: "N"),
                       ),
                   ],
 

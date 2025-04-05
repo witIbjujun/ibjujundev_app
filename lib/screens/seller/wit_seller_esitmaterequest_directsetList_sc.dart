@@ -370,7 +370,7 @@ class EstimateItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(8), // 모서리 둥글게
       ),
       child: Padding(
-        padding: EdgeInsets.all(16), // 내부 여백 추가
+        padding: const EdgeInsets.only(top : 12.0, bottom: 27, left: 16, right: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
           children: [
@@ -388,7 +388,7 @@ class EstimateItem extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 10), // 이미지와 텍스트 사이의 간격 추가
+                SizedBox(width: 12), // 이미지와 텍스트 사이의 간격 추가
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -403,7 +403,7 @@ class EstimateItem extends StatelessWidget {
                         request['prsnName'] ?? '요청자명 없음', // 요청자명
                         style: WitHomeTheme.title.copyWith(fontSize: 16),
                       ),
-                      SizedBox(height: 1), // 이름과 아파트명 사이의 간격
+                      SizedBox(height: 3), // 이름과 아파트명 사이의 간격
                       Text(
                         request['aptName'], // 아파트명
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
@@ -431,7 +431,8 @@ class EstimateItem extends StatelessWidget {
                     );
                   },
                   style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
+                    //padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
+                    padding: EdgeInsets.only(top:14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0), // 테두리 없애기
                     ),

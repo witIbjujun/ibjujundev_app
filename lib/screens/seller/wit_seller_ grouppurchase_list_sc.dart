@@ -248,14 +248,21 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
         borderRadius: BorderRadius.circular(8), // 모서리 둥글게
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(top : 12.0, bottom: 27, left: 16, right: 16),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundImage:
-                  AssetImage('assets/images/profile1.png'), // 사용자 사진
+            Container(
+              width: 50,
+              height: 50, // 이미지 높이 설정
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25), // 둥근 프로필 사진
+                image: DecorationImage(
+                  image: AssetImage('assets/images/profile1.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
-            SizedBox(width: 16),
+            SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -270,7 +277,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                     application['prsnName'] ?? '신청자명 없음', // 신청자 이름
                     style: WitHomeTheme.title.copyWith(fontSize: 16),
                   ),
-                  //SizedBox(height: 1),
+                  SizedBox(height: 6), // 이름과 아파트명 사이의 간격
                   Text(
                     application['aptName'] ?? '아파트명 없음', // 아파트명
                     style: WitHomeTheme.title
@@ -283,6 +290,13 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
               onPressed: () {
                 // 신청 버튼 클릭 시 로직 추가
               },
+              style: TextButton.styleFrom(
+                //padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
+                padding: EdgeInsets.only(top:14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(0), // 테두리 없애기
+                ),
+              ),
               child: Text(
                 // application['stat'] ?? '상태 없음', // 상태
                 '신청',
