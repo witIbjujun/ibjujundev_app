@@ -198,7 +198,8 @@ class SellerAppBarState extends State<SellerAppBar> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      SellerProfileInsertName()), // HomeScreen으로 이동
+                      SellerProfileInsertName()
+              ), // HomeScreen으로 이동
             );
           },
           icon: Image.asset(
