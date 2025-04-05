@@ -5,6 +5,7 @@ import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directset_sc.d
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_estimaterequest_detail_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_child_view_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_view_sc.dart';
 import '../../util/wit_api_ut.dart';
 import '../home/wit_home_theme.dart';
@@ -295,12 +296,12 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                     border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.circular(2),
                   ),
-                  constraints: BoxConstraints(
-                    minHeight: 100,
-                    maxHeight: 800,
+                  child: SellerProfileChildView(
+                    sllrNo: widget.sllrNo,
+                    appbarYn: "N",
+                   // isStandalone: false, // 부모 창에서 호출
                   ),
-                  child: SellerProfileView(sllrNo: widget.sllrNo, appbarYn: "N"),
-                ),
+                )
               ],
 
               SizedBox(height: 10),
