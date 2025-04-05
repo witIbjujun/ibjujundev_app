@@ -87,52 +87,48 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                         width: 340,
                         height: 30,
                         decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.7),
-                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey, // 드롭박스 배경색을 WitHomeTheme.wit_gray로 설정
+                          borderRadius: BorderRadius.circular(10), // 둥근 모서리
                         ),
-                        child: DropdownButton<String>(
-                          value: _selectedApartment,
-                          items: <String>['병점아이파크캐슬', '기흥역푸르지오']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Container(
-                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                child: Text(
-                                  value,
-                                  style: WitHomeTheme.title.copyWith(fontSize: 14),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValue) {
+                        child: PopupMenuButton<String>(
+                          initialValue: _selectedApartment,
+                          onSelected: (String item) {
                             setState(() {
-                              _selectedApartment = newValue!;
+                              _selectedApartment = item;
                             });
                           },
-                          dropdownColor: Colors.grey.withOpacity(0.7),
-                          style: WitHomeTheme.title.copyWith(fontSize: 14),
-                          underline: Container(),
-                          icon: Icon(Icons.arrow_drop_down,
-                              color: WitHomeTheme.wit_black),
-                          isExpanded: true,
-                          alignment: AlignmentDirectional.centerEnd,
-                          selectedItemBuilder: (BuildContext context) {
-                            return <String>['병점아이파크캐슬', '기흥역푸르지오']
-                                .map<Widget>((String value) {
-                              return Container(
-                                alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                          itemBuilder: (BuildContext context) {
+                            return <String>['병점아이파크캐슬', '기흥역푸르지오'].map((String value) {
+                              return PopupMenuItem<String>(
+                                value: value,
                                 child: Text(
-                                  _selectedApartment,
+                                  value,
                                   style: WitHomeTheme.title.copyWith(fontSize: 14),
                                 ),
                               );
                             }).toList();
                           },
+                          child: Row( // Row 위젯으로 감싸기
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10.0), // 텍스트 왼쪽 패딩
+                                child: Text(
+                                  _selectedApartment ?? '아파트 선택',
+                                  style: WitHomeTheme.title.copyWith(fontSize: 14),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0), // 아이콘 오른쪽 패딩
+                                child: Icon(Icons.arrow_drop_down, color: WitHomeTheme.wit_black),
+                              ),
+                            ],
+                          ),
+                          offset: Offset(0, 40), // 드롭다운 메뉴 위치 조정 (선택 사항)
                         ),
                       ),
                     ),
+
                     Positioned(
                       bottom: 69,
                       left: 60,
@@ -143,7 +139,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                       ),
                     ),
                     Positioned(
-                      bottom: 38,
+                      bottom: 37,
                       left: 60,
                       child: Text(
                         '모집일자 2025/04/30 까지',
@@ -240,12 +236,13 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
   }
 
 
+
   Widget buildApplicationItem(dynamic application) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/견적설명 (1).png'), // 배경 이미지 설정
+          image: AssetImage('assets/images/견적설명 (2).png'), // 배경 이미지 설정
           fit: BoxFit.cover, // 배경 이미지를 꽉 채우도록 설정
         ),
         borderRadius: BorderRadius.circular(8), // 모서리 둥글게
@@ -263,17 +260,17 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /*Text(
+                  Text(
                     application['estDt'] ?? '날짜 없음', // 신청 날짜
                     style: WitHomeTheme.title
                         .copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
-                  ),*/
-                  SizedBox(height: 4),
+                  ),
+                  //SizedBox(height: 4),
                   Text(
                     application['prsnName'] ?? '신청자명 없음', // 신청자 이름
-                    style: WitHomeTheme.title.copyWith(fontSize: 18),
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
                   ),
-                  SizedBox(height: 1),
+                  //SizedBox(height: 1),
                   Text(
                     application['aptName'] ?? '아파트명 없음', // 아파트명
                     style: WitHomeTheme.title

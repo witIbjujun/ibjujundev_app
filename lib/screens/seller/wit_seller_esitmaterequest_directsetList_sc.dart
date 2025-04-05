@@ -222,7 +222,7 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 40),
+                    SizedBox(height: 30),
                     TextField(
                       style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                       controller: estimateContentController,
@@ -232,10 +232,10 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                         border: InputBorder.none,
                         hintText: '여기에 견적 설명을 입력하세요',
                         hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                        contentPadding: EdgeInsets.all(8),
+                        contentPadding: EdgeInsets.only(top: 0, bottom: 8, right: 8), // 좌측 패딩을 0으로 설정
                       ),
                     ),
-                    SizedBox(height: 20), // 버튼과 텍스트 필드 사이 간격 조절
+                    SizedBox(height: 10), // 버튼과 텍스트 필드 사이 간격 조절
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, // 전체 Row는 양쪽 정렬
                       children: [
@@ -262,19 +262,25 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                         // 저장 버튼 (오른쪽 정렬)
                         GestureDetector(
                           onTap: () {
-                            print("저장 버튼 클릭됨");
+                            if (directEstimateSetInfo['sllrNo'] != null && directEstimateSetInfo['sllrNo'] != '') {
+                              updateDirectEstimateSetInfo();
+                            } else {
+                              insertDirectEstimateSetInfo();
+                            }
                           },
                           child: Container(
-                            width: 80, // 버튼 크기 조절
-                            height: 30,
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6), // 텍스트 주변 패딩
                             decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/images/저장하기.png'), // 저장 버튼 배경 이미지
-                                fit: BoxFit.fill,
-                              ),
+                              color: Colors.black, // 검정색 버튼 배경색 설정
+                              borderRadius: BorderRadius.circular(20), // 둥근 모서리
+                            ),
+                            child: Text(
+                              "저장하기",
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
                             ),
                           ),
                         ),
+
                       ],
                     ),
                   ],
@@ -357,7 +363,7 @@ class EstimateItem extends StatelessWidget {
       margin: EdgeInsets.symmetric(vertical: 8), // 카드 간의 간격 설정
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/견적설명 (1).png'), // 배경 이미지 설정
+          image: AssetImage('assets/images/견적설명 (2).png'), // 배경 이미지 설정
           fit: BoxFit.cover, // 배경 이미지를 꽉 채우도록 설정
         ),
         borderRadius: BorderRadius.circular(8), // 모서리 둥글게
@@ -387,14 +393,14 @@ class EstimateItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // 날짜를 이름 위로 배치
-                      /*Text(
+                      Text(
                         request['autoYn'], // 날짜
-                        style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_gray),
-                      ),*/
+                        style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+                      ),
                       SizedBox(height: 4), // 날짜와 이름 사이의 간격
                       Text(
                         request['prsnName'] ?? '요청자명 없음', // 요청자명
-                        style: WitHomeTheme.title.copyWith(fontSize: 18),
+                        style: WitHomeTheme.title.copyWith(fontSize: 16),
                       ),
                       SizedBox(height: 1), // 이름과 아파트명 사이의 간격
                       Text(
