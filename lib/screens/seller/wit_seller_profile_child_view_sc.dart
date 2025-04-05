@@ -617,6 +617,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
 
   Widget _buildContainer({String? title, required Widget content}) {
     return Container(
+      width: double.infinity, // 추가된 부분
       margin: EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
