@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_launcher_icons/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_insert_bizInfo_sc.dart';
 import '../../util/wit_api_ut.dart';
-import 'package:kpostal/kpostal.dart';
-
 import '../../util/wit_code_ut.dart';
 import '../board/wit_board_detail_sc.dart';
 import '../common/wit_ImageViewer_sc.dart';
