@@ -372,7 +372,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                   ),
                   SizedBox(height: 5),
-                  SingleChildScrollView(
+                  /*SingleChildScrollView(
                     scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
                     child: Row(
                       children: _images.asMap().entries.map((entry) {
@@ -409,9 +409,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         );
                       }).toList(),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  boardDetailImageList.isNotEmpty
+                  ),*/
+                  //SizedBox(height: 16),
+                  /*boardDetailImageList.isNotEmpty
                       ? Container(
                     height: 120, // 높이 설정
                     child: ListView.builder(
@@ -446,32 +446,99 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         );
                       },
                     ),
-                  ):
+                  ):*/
                   SizedBox(height: 16),
-                  if (reqState == "01") ...[ // reqState가 "01"일 때만 이 부분이 렌더링됨
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
-                      children: [
-                        GestureDetector(
-                          onTap: () => _pickImages(ImageSource.gallery),
-                          child: Column(
-                            children: [
-                              Icon(Icons.photo, size: 40), // 갤러리 아이콘
-                            ],
-                          ),
+                  //if (reqState == "01") ...[ // reqState가 "01"일 때만 이 부분이 렌더링됨
+                    Container(
+                      height: 120, // 높이 설정
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            // 카메라 아이콘
+                            GestureDetector(
+                              onTap: () => _showImagePickerOptions(),
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                margin: EdgeInsets.only(right: 8), // 이미지 간격
+                                decoration: BoxDecoration(
+                                  color: WitHomeTheme.wit_white,
+                                  border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
+                                alignment: Alignment.center,
+                              ),
+                            ),
+                            // 등록된 이미지 리스트
+                            ...boardDetailImageList.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              return GestureDetector(
+                                onTap: () {
+                                  // 클릭 시 ImageViewer로 이동
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ImageViewer(
+                                        imageUrls: boardDetailImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                                        initialIndex: index, // 클릭한 이미지 인덱스 전달
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 120,
+                                  height: 120,
+                                  margin: EdgeInsets.only(right: 8), // 이미지 간격
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12), // 둥글게 처리
+                                    image: DecorationImage(
+                                      image: NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            // 선택한 이미지 리스트
+                            ..._images.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              var image = entry.value;
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
+                                      child: Image.file(
+                                        image,
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover, // 이미지 비율 유지
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: IconButton(
+                                        icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
+                                        onPressed: () {
+                                          setState(() {
+                                            _images.removeAt(index); // 이미지 삭제
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ],
                         ),
-                        SizedBox(width: 16), // 아이콘 간격
-                        GestureDetector(
-                          onTap: () => _pickImage(ImageSource.camera),
-                          child: Column(
-                            children: [
-                              Icon(Icons.camera_alt, size: 40), // 카메라 아이콘
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ],
+                  //],
                   SizedBox(height: 20),
                   Center(
                     child: reqState == "05" ? Container() : ElevatedButton(
@@ -562,6 +629,41 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
           ),
         ),
       );
+  }
+
+  // [팝업] 갤러리, 카메라 팝업 호출
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: WitHomeTheme.wit_white,
+      builder: (BuildContext context) {
+        return Container(
+          height: 150,
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.photo),
+                title: Text('갤러리에서 선택',
+                    style: WitHomeTheme.title),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera),
+                title: Text('사진 찍기',
+                    style: WitHomeTheme.title),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   // [서비스] 견적발송 용 데이터 조회
@@ -934,6 +1036,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       );
     }
   }
+
+
 
   // 성공 다이얼로그를 표시하는 메서드
   /*void _showSuccessDialog(BuildContext context) {
