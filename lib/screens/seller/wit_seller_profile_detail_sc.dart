@@ -486,7 +486,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => EstimateRequestDirectList(
-                          sllrNo: sellerInfo["sllrNo"])),
+                          sllrNo: sllrNo.toString())),
                 );
               },
               style: TextButton.styleFrom(
@@ -535,7 +535,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => SellerProfileView(
-                          sllrNo: sellerInfo["sllrNo"], appbarYn: 'Y')),
+                          sllrNo: sllrNo.toString(), appbarYn: 'Y')),
                 );
               },
               style: TextButton.styleFrom(

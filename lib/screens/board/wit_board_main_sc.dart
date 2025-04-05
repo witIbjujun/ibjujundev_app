@@ -9,7 +9,7 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 // 게시판 메인
 class Board extends StatefulWidget {
 
-  final int? bordNo;
+  final dynamic bordNo;
   final String? bordType;
   final bool appBarFlag;
 
