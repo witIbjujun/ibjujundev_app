@@ -106,14 +106,14 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
   List<File> _images = [];
   final ImagePicker _picker = ImagePicker();
 
-  Future<void> _pickImages(ImageSource source) async {
+  /*Future<void> _pickImages(ImageSource source) async {
     final List<XFile>? pickedFiles = await _picker.pickMultiImage();
     if (pickedFiles != null) {
       setState(() {
         _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
       });
     }
-  }
+  }*/
 
   Future<void> _pickImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);

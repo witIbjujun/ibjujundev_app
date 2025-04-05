@@ -879,100 +879,95 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),
               ),*/
               SizedBox(height: 16),
+
               Container(
                 height: 120, // 높이 설정
-                child: ListView.builder(
+                child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  itemCount: boardDetailImageList.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // 클릭 시 ImageViewer로 이동
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ImageViewer(
-                              imageUrls: boardDetailImageList.map((item) => apiUrl + item["imagePath"]).toList(),
-                              initialIndex: index, // 클릭한 이미지 인덱스 전달
+                  child: Row(
+                    children: [
+                      // 카메라 아이콘
+                      GestureDetector(
+                        onTap: () => _showImagePickerOptions(),
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: EdgeInsets.only(right: 8), // 이미지 간격
+                          decoration: BoxDecoration(
+                            color: WitHomeTheme.wit_white,
+                            border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
+                          alignment: Alignment.center,
+                        ),
+                      ),
+                      // 등록된 이미지 리스트
+                      ...boardDetailImageList.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        return GestureDetector(
+                          onTap: () {
+                            // 클릭 시 ImageViewer로 이동
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageViewer(
+                                  imageUrls: boardDetailImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                                  initialIndex: index, // 클릭한 이미지 인덱스 전달
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 120,
+                            height: 120,
+                            margin: EdgeInsets.only(right: 8), // 이미지 간격
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12), // 둥글게 처리
+                              image: DecorationImage(
+                                image: NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         );
-                      },
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        margin: EdgeInsets.only(right: 8), // 이미지 간격
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12), // 둥글게 처리
-                          image: DecorationImage(
-                            image: NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
-                            fit: BoxFit.cover,
+                      }).toList(),
+                      // 선택한 이미지 리스트
+                      ..._images.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        var image = entry.value;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
+                                child: Image.file(
+                                  image,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover, // 이미지 비율 유지
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
+                                  onPressed: () {
+                                    setState(() {
+                                      _images.removeAt(index); // 이미지 삭제
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                    );
-                  },
+                        );
+                      }).toList(),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
-                children: [
-                  GestureDetector(
-                    onTap: () => _showImagePickerOptions(),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: WitHomeTheme.wit_white,
-                        border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
-                      alignment: Alignment.center,
-                    ),
-                  ),
-                  SizedBox(width: 16), // GestureDetector와 이미지 리스트 간격 추가
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: _images.asMap().entries.map((entry) {
-                          int index = entry.key;
-                          var image = entry.value;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
-                            child: Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
-                                  child: Image.file(
-                                    image,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover, // 이미지 비율 유지
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  child: IconButton(
-                                    icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
-                                    onPressed: () {
-                                      setState(() {
-                                        _images.removeAt(index); // 이미지 삭제
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
               ),
 
               SizedBox(height: 10),
@@ -1111,101 +1106,97 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),
               ),*/
               SizedBox(height: 16),
+
               Container(
                 height: 120, // 높이 설정
-                child: ListView.builder(
+                child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  itemCount: bizImageList.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // 클릭 시 ImageViewer로 이동
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ImageViewer(
-                              imageUrls: bizImageList.map((item) => apiUrl + item["imagePath"]).toList(),
-                              initialIndex: index, // 클릭한 이미지 인덱스 전달
+                  child: Row(
+                    children: [
+                      // 카메라 아이콘
+                      GestureDetector(
+                        onTap: () => _showImagePickerOptions2(),
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: EdgeInsets.only(right: 8), // 이미지 간격
+                          decoration: BoxDecoration(
+                            color: WitHomeTheme.wit_white,
+                            border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
+                          alignment: Alignment.center,
+                        ),
+                      ),
+                      // 등록된 이미지 리스트
+                      ...bizImageList.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        return GestureDetector(
+                          onTap: () {
+                            // 클릭 시 ImageViewer로 이동
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageViewer(
+                                  imageUrls: bizImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                                  initialIndex: index, // 클릭한 이미지 인덱스 전달
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 120,
+                            height: 120,
+                            margin: EdgeInsets.only(right: 8), // 이미지 간격
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12), // 둥글게 처리
+                              image: DecorationImage(
+                                image: NetworkImage(apiUrl + bizImageList[index]["imagePath"]),
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         );
-                      },
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        margin: EdgeInsets.only(right: 8), // 이미지 간격
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12), // 둥글게 처리
-                          image: DecorationImage(
-                            image: NetworkImage(apiUrl + bizImageList[index]["imagePath"]),
-                            fit: BoxFit.cover,
+                      }).toList(),
+                      // 선택한 이미지 리스트
+                      ..._images2.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        var image = entry.value;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
+                                child: Image.file(
+                                  image,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover, // 이미지 비율 유지
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
+                                  onPressed: () {
+                                    setState(() {
+                                      _images2.removeAt(index); // 이미지 삭제
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                    );
-                  },
+                        );
+                      }).toList(),
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
-                children: [
-                  GestureDetector(
-                    onTap: () => _showImagePickerOptions2(),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: WitHomeTheme.wit_white,
-                        border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
-                      alignment: Alignment.center,
-                    ),
-                  ),
-                  SizedBox(width: 16), // GestureDetector와 이미지 리스트 간격 추가
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: _images2.asMap().entries.map((entry) {
-                          int index = entry.key;
-                          var image = entry.value;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
-                            child: Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
-                                  child: Image.file(
-                                    image,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover, // 이미지 비율 유지
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  child: IconButton(
-                                    icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
-                                    onPressed: () {
-                                      setState(() {
-                                        _images2.removeAt(index); // 이미지 삭제
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+
               // 담당자 연락처 입력란 수정
               SizedBox(height: 16),
               Text(
