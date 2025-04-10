@@ -70,6 +70,14 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
   String? _verificationId;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  String nameErrorMessage = ''; // 오류 메시지 초기화
+  String ceoErrorMessage = '';
+  String emailErrorMessage = '';
+  String openDateErrorMessage = '';
+  String hpErrorMessage = '';
+  String zipCodeErrorMessage = '';
+  String address2ErrorMessage = '';
+
   @override
   void initState() {
     super.initState();
@@ -323,45 +331,145 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
               ),
               SizedBox(height: 8),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+              Container(
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '사업자명을 입력하세요', // 힌트 텍스트
+                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                  ),
+                  onChanged: (text) {
+                    setState(() {
+                      // 텍스트가 변경될 때마다 오류 메시지 초기화
+                      nameErrorMessage = '';
+                    });
+                  },
+                ),
+
               ),
+              // 오류 메시지 표시
+              if (nameErrorMessage.isNotEmpty)
+                Text(
+                  nameErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
+              SizedBox(height: 10),
               Text(
                 '대표자명 (필수)',
                 style: WitHomeTheme.title.copyWith(fontSize: 16),
 
               ),
-              TextField(
-                controller: ceoNameController,
-                decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                  controller: ceoNameController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '대표자명을 입력하세요', // 힌트 텍스트
+                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                  ),
+                  onChanged: (text) {
+                    setState(() {
+                      // 텍스트가 변경될 때마다 오류 메시지 초기화
+                      ceoErrorMessage = '';
+                    });
+                  },
+                ),
+
               ),
+              // 오류 메시지 표시
+              if (ceoErrorMessage.isNotEmpty)
+                Text(
+                  ceoErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
               SizedBox(height: 10),
               Text(
                 '대표 이메일 (필수)',
                 style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '대표 이메일을 입력하세요', // 힌트 텍스트
+                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                  ),
+                  onChanged: (text) {
+                    setState(() {
+                      // 텍스트가 변경될 때마다 오류 메시지 초기화
+                      emailErrorMessage = '';
+                    });
+                  },
+                ),
+
               ),
+              // 오류 메시지 표시
+              if (emailErrorMessage.isNotEmpty)
+                Text(
+                  emailErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
               SizedBox(height: 10),
               Text(
                 '개업일자 (필수)',
                 style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
-              TextField(
-                controller: openDateController,
-                decoration: InputDecoration(
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                  controller: openDateController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '개업일자를 입력하세요', // 힌트 텍스트
+                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                  ),
+                  onChanged: (text) {
+                    setState(() {
+                      // 텍스트가 변경될 때마다 오류 메시지 초기화
+                      openDateErrorMessage = '';
+                    });
+                  },
+                ),
+
               ),
+              // 오류 메시지 표시
+              if (openDateErrorMessage.isNotEmpty)
+                Text(
+                  openDateErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
               SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -516,14 +624,43 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
               // 담당자 연락처 입력란 수정
               SizedBox(height: 16),
               Text(
-                '휴대폰 번호',
+                '담당자 연락처 (필수)',
                 style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
-              Column(
-                children: [
-                  TextField(
-                    controller: hp1Controller,
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                  controller: hp1Controller,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '담당자 연락처를 입력하세요', // 힌트 텍스트
+                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
                   ),
+                  onChanged: (text) {
+                    setState(() {
+                      // 텍스트가 변경될 때마다 오류 메시지 초기화
+                      hpErrorMessage = '';
+                    });
+                  },
+                ),
+
+              ),
+              // 오류 메시지 표시
+              if (hpErrorMessage.isNotEmpty)
+                Text(
+                  hpErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
+              SizedBox(height: 10),
+              /*Column(
+                children: [
                   ElevatedButton(
                     onPressed: _verifyPhone,
                     child: Text('인증 코드 요청',
@@ -563,31 +700,90 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                     ),
                   ),
                 ],
-              ),
+              ),*/
 
               receiverZipTextField(),
+              if (zipCodeErrorMessage.isNotEmpty)
+                Text(
+                  zipCodeErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
+              SizedBox(height: 10),
               receiverAddress1TextField(),
+              SizedBox(height: 6),
               receiverAddress2TextField(),
-              SizedBox(height: 20),
+              if (address2ErrorMessage.isNotEmpty)
+                Text(
+                  address2ErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
+
+              SizedBox(height: 10),
               Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
                 child: ElevatedButton(
                   onPressed: () async {
-                    // 사업자 프로필 변경 로직
-                    String name = nameController.text;
-                    String ceoName = ceoNameController.text;
-                    String email = emailController.text;
-                    String openDate = openDateController.text;
-                    String storeCode = storeCodeController.text;
-                    String hp1 = hp1Controller.text;
-                    String zipCode = receiverZipController.text;
-                    String address1 = receiverAddress1Controller.text;
-                    String address2 = receiverAddress2Controller.text;
-                    // String categoryContent = categoryContentController.text;
+                    setState(() {
+                      nameErrorMessage = ''; // 오류 메시지 초기화
+                      ceoErrorMessage = '';
+                      emailErrorMessage = '';
+                      openDateErrorMessage = '';
+                      hpErrorMessage = '';
+                      zipCodeErrorMessage = '';
+                      address2ErrorMessage = '';
 
-                    // 이미지 저장 후 프로필 업데이트
-                    await updateSellerProfile(name, ceoName, email, storeCode, hp1, zipCode, address1, address2, openDate);
-                  },
-                  child: Text('프로필변경',
+                      bool isNameValid = nameController.text.isNotEmpty;
+                      bool isCeoName = ceoNameController.text.isNotEmpty;
+                      bool isEmail = emailController.text.isNotEmpty;
+                      bool isOpenDate = openDateController.text.isNotEmpty;
+                      // bool isStoreCode = storeCodeController.text.isNotEmpty;
+                      bool isHp1 = hp1Controller.text.isNotEmpty;
+                      bool isZipCode = receiverZipController.text.isNotEmpty;
+                      // bool isAddress1 = receiverAddress1Controller.text.isNotEmpty;
+                      bool isAddress2 = receiverAddress2Controller.text.isNotEmpty;
+
+                      if (!isNameValid) {
+                        nameErrorMessage = '사업자명을 입력해주세요.'; // 오류 메시지 설정
+                      }
+                      if (!isCeoName) {
+                        ceoErrorMessage = '대표자명을 입력해주세요.'; // 오류 메시지 설정
+                      }
+                      if (!isEmail) {
+                        emailErrorMessage = '대표 이메일을 입력해주세요.'; // 오류 메시지 설정
+                      }
+                      if (!isOpenDate) {
+                        openDateErrorMessage = '개업일자를 입력해주세요.'; // 오류 메시지 설정
+                      }
+                      if (!isHp1) {
+                        hpErrorMessage = '휴대폰 번호를 입력해주세요.'; // 오류 메시지 설정
+                      }
+                      if (!isZipCode) {
+                        zipCodeErrorMessage = '우편번호를 입력해주세요.'; // 오류 메시지 설정
+                      }
+                      if (!isAddress2) {
+                        address2ErrorMessage = '상세주소를 입력해주세요.'; // 오류 메시지 설정
+                      }
+                    });
+
+                    if (nameErrorMessage.isEmpty && ceoErrorMessage.isEmpty && emailErrorMessage.isEmpty
+                    && openDateErrorMessage.isEmpty & hpErrorMessage.isEmpty & zipCodeErrorMessage.isEmpty
+                    && address2ErrorMessage.isEmpty)
+                    {
+                      // 사업자 프로필 변경 로직
+                      String name = nameController.text;
+                      String ceoName = ceoNameController.text;
+                      String email = emailController.text;
+                      String openDate = openDateController.text;
+                      String storeCode = storeCodeController.text;
+                      String hp1 = hp1Controller.text;
+                      String zipCode = receiverZipController.text;
+                      String address1 = receiverAddress1Controller.text;
+                      String address2 = receiverAddress2Controller.text;
+
+                      // 이미지 저장 후 프로필 업데이트
+                      await updateSellerProfile(name, ceoName, email, storeCode, hp1, zipCode, address1, address2, openDate);
+                    }
+                   },
+                  child: Text('사업자등록 완료',
                     style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -665,19 +861,22 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
   Widget receiverZipTextField() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0),
       child: Row(
         children: [
           Expanded(
             child: TextFormField(
               readOnly: true,
               controller: receiverZipController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0), // 원하는 둥근 정도를 설정
+                ), // 원하는 둥근 정도를 설정
                 hintText: "우편번호",
               ),
             ),
           ),
+          // 오류 메시지 표시
           const SizedBox(width: 15),
           FilledButton(
             onPressed: () {
@@ -695,12 +894,12 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
             },
             style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(10),
               ),
               backgroundColor: WitHomeTheme.wit_lightBlue,
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 22.0),
+              padding: EdgeInsets.symmetric(vertical: 16.0),
               child: Text(
                 "우편 번호 찾기",
                 style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
@@ -715,11 +914,13 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
   Widget receiverAddress1TextField() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0.0),
       child: TextFormField(
         controller: receiverAddress1Controller,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0), // 원하는 둥근 정도를 설정
+          ),
           hintText: "기본 주소",
         ),
       ),
@@ -728,11 +929,13 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
   Widget receiverAddress2TextField() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(0.0),
       child: TextFormField(
         controller: receiverAddress2Controller,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0), // 원하는 둥근 정도를 설정
+          ),
           hintText: "상세 주소",
         ),
       ),
