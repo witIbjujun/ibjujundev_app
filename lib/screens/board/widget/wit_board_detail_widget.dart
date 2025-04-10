@@ -113,7 +113,7 @@ class UserInfo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "${boardDetailInfo["creUser"] ?? "익명"}",
+              "${boardDetailInfo["creUserNm"] ?? "익명"}",
               style: WitHomeTheme.subtitle,
             ),
             Row(
@@ -262,11 +262,17 @@ class CommentList extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      (commentList[index]["creUser"] ?? "") + " | " + (commentList[index]["creDateTxt"] ?? ""),
+                      (commentList[index]["creUserNm"] ?? "") + " | " + (commentList[index]["creDateTxt"] ?? ""),
                       style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                     ),
                   ],
                 ),
+              ),
+              IconButton(
+                icon: Icon(Icons.delete, color: WitHomeTheme.wit_gray), // 휴지통 아이콘
+                onPressed: () {
+
+                },
               ),
             ],
           ),

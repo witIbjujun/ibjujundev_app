@@ -75,7 +75,7 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
                   width: double.infinity,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: WitHomeTheme.wit_lightGreen,
+                      color: WitHomeTheme.wit_black,
                       borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                     ),
                     alignment: Alignment.center,
@@ -103,213 +103,221 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text("* ",
-                          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightCoral),
-                        ),
-                        Text("제목",
-                          style: WitHomeTheme.title,
-                        ),
-                      ],
-                    ),
-                    TextField(
-                      controller: _titleController,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "제목을 입력하세요",
-                        hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+              Container(
+                  color: WitHomeTheme.wit_white, // 전체 배경색을 흰색으로 설정
+                  child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text("* ",
+                            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightCoral),
+                          ),
+                          Text("제목",
+                            style: WitHomeTheme.title,
+                          ),
+                        ],
                       ),
-                      style: WitHomeTheme.subtitle,
-                      maxLines: 1,
-                    ),
-                    Divider(),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text("* ",
-                          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightCoral),
+                      TextField(
+                        controller: _titleController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "제목을 입력하세요",
+                          hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
                         ),
-                        Text("날짜",
-                          style: WitHomeTheme.title,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _selectDate(context, "startDate");
-                                },
-                                child: Text(
-                                  "${startDate!.toLocal()}".split(' ')[0],
-                                  style: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text("~",
-                          style: WitHomeTheme.title,
-                        ),
-                        // 오른쪽 종료일자 영역
-                        Expanded(
-                          child: Column(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _selectDate(context, "endDate");
-                                },
-                                child: Text(
-                                  "${endDate!.toLocal()}".split(' ')[0],
-                                  style: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Divider(),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text("* ",
-                          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightCoral),
-                        ),
-                        Text("시간",
-                          style: WitHomeTheme.title,
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _selectTime(context, "startTime");
-                                },
-                                child: Text(
-                                  startTime!.format(context),
-                                  style: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Text("~",
-                          style: WitHomeTheme.title,
-                        ),
-                        // 오른쪽 종료일자 영역
-                        Expanded(
-                          child: Column(
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  _selectTime(context, "endTime");
-                                },
-                                child: Text(
-                                  endTime!.format(context),
-                                  style: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Divider(),
-                    SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text(
-                          "내용",
-                          style: WitHomeTheme.title,
-                        ),
-                      ],
-                    ),
-                    TextField(
-                      controller: _contentController,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "내용을 입력하세요",
-                        hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+                        style: WitHomeTheme.subtitle,
+                        maxLines: 1,
                       ),
-                      style: WitHomeTheme.subtitle,
-                      maxLines: 3,
-                    ),
-                  ],
+                      Divider(),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text("* ",
+                            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightCoral),
+                          ),
+                          Text("날짜",
+                            style: WitHomeTheme.title,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    _selectDate(context, "startDate");
+                                  },
+                                  child: Text(
+                                    "${startDate!.toLocal()}".split(' ')[0],
+                                    style: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text("~",
+                            style: WitHomeTheme.title,
+                          ),
+                          // 오른쪽 종료일자 영역
+                          Expanded(
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    _selectDate(context, "endDate");
+                                  },
+                                  child: Text(
+                                    "${endDate!.toLocal()}".split(' ')[0],
+                                    style: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Divider(),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text("* ",
+                            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_lightCoral),
+                          ),
+                          Text("시간",
+                            style: WitHomeTheme.title,
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    _selectTime(context, "startTime");
+                                  },
+                                  child: Text(
+                                    startTime!.format(context),
+                                    style: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text("~",
+                            style: WitHomeTheme.title,
+                          ),
+                          // 오른쪽 종료일자 영역
+                          Expanded(
+                            child: Column(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    _selectTime(context, "endTime");
+                                  },
+                                  child: Text(
+                                    endTime!.format(context),
+                                    style: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Divider(),
+                      SizedBox(height: 5),
+                      Row(
+                        children: [
+                          Text(
+                            "내용",
+                            style: WitHomeTheme.title,
+                          ),
+                        ],
+                      ),
+                      TextField(
+                        controller: _contentController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "내용을 입력하세요",
+                          hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+                        ),
+                        style: WitHomeTheme.subtitle,
+                        maxLines: 3,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(height: 20), // 텍스트 필드와 버튼 사이의 간격
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // 버튼 간격을 일정하게
-                  children: [
-                    if (popGbn == "U") // 삭제 버튼
-                      Expanded(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: WitHomeTheme.wit_lightCoral,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+              Container(
+                color: Colors.white, // 전체 배경색을 흰색으로 설정
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween, // 버튼 간격을 일정하게
+                        children: [
+                          if (popGbn == "U") // 삭제 버튼
+                            Expanded(
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: WitHomeTheme.wit_lightCoral,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  ConfimDialog.show(context,
+                                      "확인",
+                                      "선택한 스케쥴을 삭제하시겠습니까?",
+                                          () async {
+                                        deleteScheduleInfo();
+                                      }
+                                  );
+                                },
+                                child: Text(
+                                  "삭제",
+                                  style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
+                                ),
+                              ),
                             ),
-                          ),
-                          onPressed: () async {
-                            ConfimDialog.show(context,
-                                "확인",
-                                "선택한 스케쥴을 삭제하시겠습니까?",
-                              () async {
-                                deleteScheduleInfo();
-                              }
-                            );
-                          },
-                          child: Text(
-                            "삭제",
-                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
-                          ),
-                        ),
-                      ),
-                    if (popGbn == "U") // 삭제 버튼과 수정 버튼 사이의 공간
-                      SizedBox(width: 20), // 이 부분은 필요 없을 수 있음
+                          if (popGbn == "U") // 삭제 버튼과 수정 버튼 사이의 공간
+                            SizedBox(width: 20), // 이 부분은 필요 없을 수 있음
 
-                    if (popGbn == "I" || popGbn == "U") // 수정 버튼
-                      Expanded(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: WitHomeTheme.wit_lightBlue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                          if (popGbn == "I" || popGbn == "U") // 수정 버튼
+                            Expanded(
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: WitHomeTheme.wit_lightBlue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  saveScheduleInfo();
+                                },
+                                child: Text(
+                                  popGbn == "I" ? "등록" : "수정",
+                                  style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
+                                ),
+                              ),
                             ),
-                          ),
-                          onPressed: () async {
-                            saveScheduleInfo();
-                          },
-                          child: Text(
-                            popGbn == "I" ? "등록" : "수정",
-                            style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
-                          ),
-                        ),
+                        ],
                       ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

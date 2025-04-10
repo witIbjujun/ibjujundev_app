@@ -199,7 +199,7 @@ class BoardListView extends StatelessWidget {
                                             children: [
                                               Expanded(
                                                 child: Text(
-                                                  "${boardInfo["creUser"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
+                                                  "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
                                                   style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                                                 ),
                                               ),

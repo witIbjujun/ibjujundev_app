@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/board/widget/wit_board_detail_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
@@ -25,6 +26,8 @@ class BoardDetail extends StatefulWidget {
 
 class BoardDetailState extends State<BoardDetail> {
   TextEditingController commentController = TextEditingController();
+
+  final secureStorage = FlutterSecureStorage();
 
   @override
   void initState() {
@@ -195,6 +198,10 @@ class BoardDetailState extends State<BoardDetail> {
 
   // 댓글 저장
   Future<void> saveCommentInfo() async {
+
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+
     String cmmtContent = commentController.text;
 
     // 댓글 내용이 비어있지 않은 경우에만 추가
@@ -208,7 +215,7 @@ class BoardDetailState extends State<BoardDetail> {
         "bordType": boardDetailInfo["bordType"],
         "bordSeq": boardDetailInfo["bordSeq"],
         "cmmtContent": cmmtContent,
-        "creUser": "테스트",
+        "creUser": loginClerkNo,
       });
 
       // API 호출 (댓글 추가)
