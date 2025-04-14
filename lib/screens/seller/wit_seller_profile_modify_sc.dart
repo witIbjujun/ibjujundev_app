@@ -304,14 +304,6 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   List<dynamic> codeList = [];
   List<dynamic> categoryList = [];
 
-
-  final TextEditingController generalPriceController = TextEditingController();
-  final TextEditingController premiumPriceController = TextEditingController();
-  final TextEditingController specialPriceController = TextEditingController();
-
-  final TextEditingController contact1Controller = TextEditingController();
-  final TextEditingController contact2Controller = TextEditingController();
-  final TextEditingController contact3Controller = TextEditingController();
   final TextEditingController verificationCodeController = TextEditingController();
 
 
@@ -319,6 +311,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String? selectedPostalCode;
   String? selectedAddress;
   final TextEditingController detailAddressController = TextEditingController();
+
+  String errorMessage = ''; // 판매자명 오류 메시지 변수
+
 
   void _startListeningForSms() async {
     await SmsAutoFill().listenForCode;
@@ -1256,6 +1251,44 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
                 child: ElevatedButton(
                       onPressed: () async {
+                        // 정합성 체크
+                        setState(() {
+                          errorMessage = ''; // 오류 메시지 초기화
+
+                          // 필수 입력 체크
+                          bool isStoreNameValid = storeNameController.text.isNotEmpty;
+                          bool isServiceAreaValid = selectedLocations.isNotEmpty;
+                          bool isServiceTypeValid = selectedServiceTypes.isNotEmpty;
+                          bool isSllrContentValid = sllrContentController.text.isNotEmpty;
+                          TextEditingController nameController = TextEditingController();
+                          TextEditingController ceoNameController = TextEditingController();
+                          TextEditingController emailController = TextEditingController();
+                          TextEditingController openDateController = TextEditingController();
+                          TextEditingController storeCodeController = TextEditingController();
+                          TextEditingController storeImageController = TextEditingController();
+                          TextEditingController hp1Controller = TextEditingController();
+                          TextEditingController hp2Controller = TextEditingController();
+                          TextEditingController hp3Controller = TextEditingController();
+                          TextEditingController zipCodeController = TextEditingController();
+
+                          TextEditingController receiverZipController = TextEditingController();
+                          TextEditingController receiverAddress1Controller = TextEditingController();
+                          TextEditingController receiverAddress2Controller = TextEditingController();
+
+
+                          if (!isStoreNameValid) {
+                            errorMessage = '판매자명을 입력해주세요.'; // 오류 메시지 설정
+                          }
+                          /*if (!isServiceAreaValid) {
+                            areaErrorMessage = '서비스 지역을 선택해주세요.'; // 오류 메시지 설정
+                          }
+                          if (!isServiceTypeValid) {
+                            serviceErrorMessage = '서비스 품목을 선택해주세요.'; // 오류 메시지 설정
+                          }*/
+
+                        });
+
+
                         // 사업자 프로필 변경 로직
                         String storeName = storeNameController.text;
                         String itemPrice1 = itemPrice1Controller.text;
@@ -1284,7 +1317,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                         await saveImages(storeName, itemPrice1, itemPrice2, itemPrice3, sllrContent, sllrImage, name,
                             ceoName, email, storeCode, storeImage, hp1, zipCode, address1, address2, openDate, categoryContent);
                       },
-                      child: Text('사업자등록 완료',
+                      child: Text('수정하기',
                         style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                       ),
                       style: ElevatedButton.styleFrom(

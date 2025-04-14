@@ -619,8 +619,21 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   },
                 ),
               ),*/
-
-
+              SizedBox(height: 6),
+              Container(
+                width: double.infinity, // 넓이를 최대로 설정
+                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                child: Text(
+                  '* 사업자 인증 후 전문업체 뱃지가 표시됩니다.',
+                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                ),
+              ),
+              SizedBox(height: 20),
               // 담당자 연락처 입력란 수정
               SizedBox(height: 16),
               Text(
@@ -701,7 +714,11 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   ),
                 ],
               ),*/
-
+              Text(
+                '사업장 주소 (필수)',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              ),
+              SizedBox(height: 8),
               receiverZipTextField(),
               if (zipCodeErrorMessage.isNotEmpty)
                 Text(

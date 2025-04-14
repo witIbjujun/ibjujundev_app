@@ -188,8 +188,8 @@ class SellerAppBarState extends State<SellerAppBar> {
                   builder: (context) => HomeScreen()), // HomeScreen으로 이동
             );
           },
-          icon: Icon(Icons.change_circle,
-              color: WitHomeTheme.wit_lightGreen), // 아이콘 색상 하얀색으로 설정
+          icon: Icon(Icons.swap_horiz,
+              color: WitHomeTheme.wit_black), // 아이콘 색상 하얀색으로 설정
         ),
         IconButton(
           padding: const EdgeInsets.only(right: 20.0),

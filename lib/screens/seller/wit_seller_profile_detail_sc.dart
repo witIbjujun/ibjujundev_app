@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:witibju/screens/seller/wit_seller_%20grouppurchase_list_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_%20schedule_list_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_aptSubscribe_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_card_info_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_esitmaterequest_directsetList_sc.dart';
@@ -52,6 +53,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
   late final DateTime? _selectedDate; // 선택된 날짜를 여기에 설정
   String appbarYn = "";
 
+  List<Map<String, dynamic>> aptList = [
+    {'aptno': 1, 'aptName': '동탄숨마데시앙'},
+    {'aptno': 2, 'aptName': '동탄어울림 파밀리에'},
+    {'aptno': 3, 'aptName': '동탄 아이파크자이'},
+  ];
   @override
   void initState() {
     super.initState();
@@ -92,6 +98,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
       );
     }
   }
+
+
 
   /*Future<void> getCashInfo(dynamic sllrNo) async {
     // REST ID
@@ -240,12 +248,112 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                 ],
               ),
             ),*/
-            SizedBox(height: 10), // 레이블과 카드 사이의 간격
+
+            // 내 구독 APT
+            SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.0), // 좌우 패딩 추가
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // 좌우 정렬
+                children: [
+                  Text(
+                    '내 구독 APT',
+                    style: WitHomeTheme.title.copyWith(fontSize: 20),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: 다른 화면으로 이동하는 코드 작성
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SellerAptSubscribe(sllrNo:widget.sllrNo)), // NextScreen은 이동할 화면
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          '구독하기',
+                          style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightBlue),
+                        ),
+                        Icon(Icons.arrow_right, color: Colors.blue), // 아이콘 추가
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            if (aptList.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, top: 8.0),
+                child: Text(
+                  '구독 중인 아파트가 없습니다.',
+                  style: TextStyle(fontSize: 16, color: WitHomeTheme.wit_black),
+                ),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // 줄 수 계산
+                    int rowCount = (aptList.length / 2).ceil();
+                    print("rowCount :" + rowCount.toString());
+                    // 전체 높이 계산 (한 줄당 높이를 50으로 가정)
+                    double totalHeight = rowCount * 50;
+
+                    return SizedBox(
+                      height: totalHeight, // 계산된 높이 적용
+                      child: Column(
+                        children: List.generate(rowCount, (index) {
+                          // 각 줄에 들어갈 아파트 목록
+                          List<Map<String, dynamic>> rowApts = aptList.sublist(
+                            index * 2,
+                            (index * 2 + 2) <= aptList.length ? index * 2 + 2 : aptList.length,
+                          );
+
+                          return Row(
+                            children: [
+                              ...rowApts.map((apt) => Expanded( // Expanded 추가
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                  child: Chip(
+                                    backgroundColor: WitHomeTheme.wit_lightGreen,
+                                    label: Center(
+                                      child: Text(
+                                        apt['aptName'],
+                                        style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                      ),
+                                    ), // Center 추가
+                                    shape: RoundedRectangleBorder( // 테두리 없애기
+                                      side: BorderSide.none,
+                                      borderRadius: BorderRadius.circular(8.0), // 원하는 radius 값으로 조절
+                                    ),
+                                  ),
+                                ),
+                              )),
+                              // 마지막 줄에 항목이 하나만 있는 경우 남는 공간을 채우는 SizedBox 추가
+                              if (rowApts.length == 1 && index == rowCount - 1)
+                                Expanded(child: SizedBox.shrink()),
+                            ],
+                          );
+                        }),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+
+
+
+
+
+            SizedBox(height: 8), // 레이블과 카드 사이의 간격
             Container(
               padding: EdgeInsets.only(left: 20.0), // 전체 패딩 20
               alignment: Alignment.centerLeft, // 왼쪽 정렬
               child: Text(
-                '거래설정',
+                '거래관리',
                 style: WitHomeTheme.title.copyWith(fontSize: 20),
               ),
             ),
@@ -367,7 +475,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           iconTheme: const IconThemeData(
                               color: WitHomeTheme.wit_white),
                           title: Text(
-                            '견적요청내역',
+                            '받은 요청',
                             style: WitHomeTheme.title
                                 .copyWith(color: WitHomeTheme.wit_white),
                           ),
@@ -395,7 +503,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                   Row(
                     children: [
                       Text(
-                        "견적요청내역",
+                        "받은 요청",
                         style: WitHomeTheme.subtitle.copyWith(
                             fontSize: 14, color: WitHomeTheme.wit_black),
                       ),
@@ -429,7 +537,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                           iconTheme: const IconThemeData(
                               color: WitHomeTheme.wit_white),
                           title: Text(
-                            '거래내역',
+                            '진행중',
                             style: WitHomeTheme.title
                                 .copyWith(color: WitHomeTheme.wit_white),
                           ),
@@ -457,7 +565,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                   Row(
                     children: [
                       Text(
-                        "거래내역",
+                        "진행중",
                         style: WitHomeTheme.subtitle.copyWith(
                             fontSize: 14, color: WitHomeTheme.wit_black),
                       ),
