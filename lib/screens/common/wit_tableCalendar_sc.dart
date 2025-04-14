@@ -48,40 +48,6 @@ class TableCalenderMainState extends State<TableCalenderMain> {
         iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
         backgroundColor: WitHomeTheme.wit_black,
         title: Text("스케쥴 관리", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add, color: WitHomeTheme.wit_white),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isDismissible: true,
-                isScrollControlled: true,
-                builder: (context) {
-                  return Padding(
-                    padding: MediaQuery.of(context).viewInsets,
-                    child: Container(
-                      height: 530,
-                      child: ScheduleWritePopWidget(
-                        sllrNo: widget.sllrNo,
-                        reqNo: "",
-                        startDate: _selectedDate ?? DateTime.now(),
-                        startTime: TimeOfDay(hour: 09, minute: 00),
-                        endDate: _selectedDate ?? DateTime.now(),
-                        endTime: TimeOfDay(hour: 18, minute: 00),
-                        title: "",
-                        content: "",
-                        popGbn: "I",
-                      ),
-                    ),
-                  );
-                },
-              ).then((result) async {
-                // 저장 후 스케쥴 재조회
-                getEstimateRequestList(int.parse(result.substring(0, 4)), int.parse(result.substring(4, 6)), int.parse(result.substring(6, 8)));
-              });
-            },
-          ),
-        ],
       ),
       body: SafeArea(
         child: Container(
@@ -125,8 +91,60 @@ class TableCalenderMainState extends State<TableCalenderMain> {
           ),
         ),
       ),
+      floatingActionButton: Container(
+        width: 80, // 원하는 너비
+        height: 70, // 원하는 높이
+        child: FloatingActionButton(
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              isDismissible: true,
+              isScrollControlled: true,
+              builder: (context) {
+                return Padding(
+                  padding: MediaQuery.of(context).viewInsets,
+                  child: Container(
+                    height: 530,
+                    child: ScheduleWritePopWidget(
+                      sllrNo: widget.sllrNo,
+                      reqNo: "",
+                      startDate: _selectedDate ?? DateTime.now(),
+                      startTime: TimeOfDay(hour: 09, minute: 00),
+                      endDate: _selectedDate ?? DateTime.now(),
+                      endTime: TimeOfDay(hour: 18, minute: 00),
+                      title: "",
+                      content: "",
+                      popGbn: "I",
+                    ),
+                  ),
+                );
+              },
+            ).then((result) async {
+              // 저장 후 스케쥴 재조회
+              getEstimateRequestList(int.parse(result.substring(0, 4)), int.parse(result.substring(4, 6)), int.parse(result.substring(6, 8)));
+            });
+          },
+          backgroundColor: WitHomeTheme.wit_black,
+          shape: CircleBorder(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.add, // 추가 아이콘
+                size: 35, // 아이콘 크기 조정
+                color: WitHomeTheme.wit_white,
+              ),
+              Text("추가", // 버튼 텍스트
+                textAlign: TextAlign.center,
+                style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_white),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
+
 
   // [서비스] 견적리스트 조회
   Future<void> getEstimateRequestList(int year, int month, int day) async {

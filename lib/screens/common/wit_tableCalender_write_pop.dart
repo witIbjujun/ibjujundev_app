@@ -110,6 +110,7 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 5),
                       Row(
                         children: [
                           Text("* ",
@@ -263,7 +264,7 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
               Container(
                 color: Colors.white, // 전체 배경색을 흰색으로 설정
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 27),
                   child: Column(
                     children: [
                       Row(

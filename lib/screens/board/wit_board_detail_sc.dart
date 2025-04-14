@@ -29,6 +29,8 @@ class BoardDetailState extends State<BoardDetail> {
 
   final secureStorage = FlutterSecureStorage();
 
+  String loginClerkNo = "";
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +72,7 @@ class BoardDetailState extends State<BoardDetail> {
                         boardDetailInfo: boardDetailInfo,
                         boardDetailImageList: boardDetailImageList,
                         context: context,
+                        loginClerkNo : loginClerkNo,
                       ),
                       SizedBox(height: 20),
                       UserInfo(
@@ -94,6 +97,8 @@ class BoardDetailState extends State<BoardDetail> {
                       SizedBox(height: 5),
                       CommentList(
                         commentList: commentList,
+                        loginClerkNo : loginClerkNo,
+                        //deleteComment : endCommentInfo(),
                       ),
                       CommentInput(
                         commentController: commentController,
@@ -113,6 +118,10 @@ class BoardDetailState extends State<BoardDetail> {
 
   // [서비스] 게시판 조회수 증가
   Future<void> boardRdCntUp() async {
+
+    // 로그인 사번
+    loginClerkNo = (await secureStorage.read(key: 'clerkNo'))!;
+
     // REST ID
     String restId = "boardRdCntUp";
 
@@ -256,31 +265,27 @@ class BoardDetailState extends State<BoardDetail> {
   }
   
   // 댓글 삭제
-  Future<void> deleteCommentInfo() async {
-    String cmmtContent = commentController.text;
+  /*Future<void> endCommentInfo() async {
 
-    // 댓글 내용이 비어있지 않은 경우에만 추가
-    if (cmmtContent.isNotEmpty) {
-      // REST ID
-      String restId = "saveCommentInfo";
+    // REST ID
+    String restId = "endCommentInfo";
 
-      // PARAM
-      final param = jsonEncode({
-        "bordNo": boardDetailInfo["bordNo"],
-        "bordType": boardDetailInfo["bordType"],
-        "bordSeq": boardDetailInfo["bordSeq"],
-        "cmmtContent": cmmtContent,
-        "updUser": "테스트",
-      });
+    // PARAM
+    final param = jsonEncode({
+      "bordNo": boardDetailInfo["bordNo"],
+      "bordType": boardDetailInfo["bordType"],
+      "bordSeq": boardDetailInfo["bordSeq"],
+      "updUser" : loginClerkNo,
+    });
 
-      // API 호출 (댓글 추가)
-      final _commentList = await sendPostRequest(restId, param);
+    // API 호출 (댓글 추가)
+    final endResult = await sendPostRequest(restId, param);
 
-      // 댓글 리스트 갱신
-      setState(() {
-        commentList = _commentList;
-        commentController.clear();
-      });
-    }
-  }
+    // 댓글 리스트 갱신
+    setState(() {
+      if (endResult > 0) {
+
+      }
+    });
+  }*/
 }

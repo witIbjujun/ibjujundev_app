@@ -212,6 +212,7 @@ class BoardListView extends StatelessWidget {
                                   if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
                                     Row(
                                       children: [
+                                        SizedBox(width: 10),
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(10),
                                           child: Image.network(
@@ -224,10 +225,10 @@ class BoardListView extends StatelessWidget {
                                             },
                                           ),
                                         ),
-                                        SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
                                       ],
                                     ),
                                   ],
+                                  SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
                                   Container(
                                     child: Column(
                                       children: [

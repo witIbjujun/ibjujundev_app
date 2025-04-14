@@ -10,11 +10,13 @@ class TitleAndMenu extends StatelessWidget {
   final Map<String, dynamic> boardDetailInfo;
   final List<dynamic> boardDetailImageList;
   final BuildContext context;
+  final String loginClerkNo;
 
   TitleAndMenu({
     required this.boardDetailInfo,
     required this.boardDetailImageList,
     required this.context,
+    required String this.loginClerkNo,
   });
 
   @override
@@ -28,69 +30,50 @@ class TitleAndMenu extends StatelessWidget {
             style: WitHomeTheme.title,
           ),
         ),
-        PopupMenuButton<String>(
-          icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
-          color: WitHomeTheme.wit_white,
-          onSelected: (value) {
-            if (value == 'edit') {
-              Navigator.push(
-                context,
-                SlideRoute(page: BoardWrite(
-                  boardInfo: boardDetailInfo,
-                  imageList: boardDetailImageList,
-                  bordNo: boardDetailInfo["bordNo"],
-                  bordType: boardDetailInfo["bordType"],
-                )),
-              );
-            } else if (value == 'delete') {
-              _showConfirmDialog(context, '삭제하시겠습니까?');
-            }
-          },
-          itemBuilder: (BuildContext context) {
-            return [
-              PopupMenuItem<String>(
-                value: 'edit',
-                child: Text('수정하기',
-                  style: WitHomeTheme.subtitle,
-                ),
-              ),
-              PopupMenuItem<String>(
-                value: 'delete',
-                child: Text('삭제하기',
-                  style: WitHomeTheme.subtitle,
-                ),
-              ),
-            ];
-          },
-        ),
-      ],
-    );
-  }
+        if (boardDetailInfo["creUser"] == loginClerkNo)...[
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
+            color: WitHomeTheme.wit_white,
+            onSelected: (value) {
+              if (value == 'edit') {
+                Navigator.push(
+                  context,
+                  SlideRoute(page: BoardWrite(
+                    boardInfo: boardDetailInfo,
+                    imageList: boardDetailImageList,
+                    bordNo: boardDetailInfo["bordNo"],
+                    bordType: boardDetailInfo["bordType"],
+                  )),
+                );
+              } else if (value == 'delete') {
+                ConfimDialog.show(context,
+                    "삭제",
+                    "삭제하시겠습니까?",
+                    () async {
 
-  void _showConfirmDialog(BuildContext context, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("확인", style: WitHomeTheme.subtitle),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // 다이얼로그 닫기
-              },
-              child: Text("취소", style: WitHomeTheme.subtitle),
-            ),
-            TextButton(
-              onPressed: () {
-                // 삭제 로직 구현
-                Navigator.of(context).pop(); // 다이얼로그 닫기
-              },
-              child: Text("확인", style: WitHomeTheme.subtitle),
-            ),
-          ],
-        );
-      },
+                    }
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem<String>(
+                  value: 'edit',
+                  child: Text('수정하기',
+                    style: WitHomeTheme.subtitle,
+                  ),
+                ),
+                PopupMenuItem<String>(
+                  value: 'delete',
+                  child: Text('삭제하기',
+                    style: WitHomeTheme.subtitle,
+                  ),
+                ),
+              ];
+            },
+          ),
+        ]
+      ],
     );
   }
 }
@@ -230,9 +213,13 @@ class CommentCount extends StatelessWidget {
 // 댓글 리스트 영역
 class CommentList extends StatelessWidget {
   final List<dynamic> commentList;
+  final String loginClerkNo;
+  //final Future<void> deleteComment;
 
   CommentList({
     required this.commentList,
+    required this.loginClerkNo,
+    //required this.deleteComment,
   });
 
   @override
@@ -268,12 +255,20 @@ class CommentList extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                icon: Icon(Icons.delete, color: WitHomeTheme.wit_gray), // 휴지통 아이콘
-                onPressed: () {
-
-                },
-              ),
+              if (commentList[index]["creUser"] == loginClerkNo)...[
+                IconButton(
+                  icon: Icon(Icons.delete, color: WitHomeTheme.wit_gray), // 휴지통 아이콘
+                  onPressed: () {
+                    ConfimDialog.show(context,
+                        "삭제",
+                        "선택하신 댓글을 삭제하시겠습니까?",
+                        () async {
+                          //deleteComment;
+                        }
+                    );
+                  },
+                ),
+              ]
             ],
           ),
         );
