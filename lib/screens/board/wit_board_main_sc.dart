@@ -11,9 +11,10 @@ class Board extends StatefulWidget {
 
   final dynamic bordNo;
   final String? bordType;
+  final String bordTitle;
   final bool appBarFlag;
 
-  const Board(this.bordNo, this.bordType, {this.appBarFlag = true, super.key});
+  const Board(this.bordNo, this.bordType, {this.bordTitle = "", this.appBarFlag = true, super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -63,6 +64,7 @@ class BoardState extends State<Board> {
       appBar: widget.appBarFlag ? CustomSearchAppBar(
         searchController: _searchController,
         refreshBoardList: refreshBoardList,
+        bordTitle: widget.bordTitle,
       ) : null,
       body: Scrollbar(
         child: Container(

@@ -7,10 +7,12 @@ import 'package:witibju/screens/board//wit_board_detail_sc.dart';
 class CustomSearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final TextEditingController searchController;
   final Function refreshBoardList;
+  final String bordTitle;
 
   CustomSearchAppBar({
     required this.searchController,
     required this.refreshBoardList,
+    required this.bordTitle,
   });
 
   @override
@@ -54,7 +56,7 @@ class _CustomSearchAppBarState extends State<CustomSearchAppBar> {
         },
       )
           : Text(
-        "자유게시판",
+        (widget.bordTitle.isNotEmpty) ? widget.bordTitle : "게시판",
         style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
       ),
       actions: [
