@@ -71,6 +71,7 @@ class BoardDetailState extends State<BoardDetail> {
                       TitleAndMenu(
                         boardDetailInfo: boardDetailInfo,
                         boardDetailImageList: boardDetailImageList,
+                        endBoardInfo: endBoardInfo,
                         context: context,
                         loginClerkNo : loginClerkNo,
                       ),
@@ -98,7 +99,7 @@ class BoardDetailState extends State<BoardDetail> {
                       CommentList(
                         commentList: commentList,
                         loginClerkNo : loginClerkNo,
-                        //deleteComment : endCommentInfo(),
+                        endCommentInfo : endCommentInfo,
                       ),
                       CommentInput(
                         commentController: commentController,
@@ -248,13 +249,16 @@ class BoardDetailState extends State<BoardDetail> {
       "bordNo": boardDetailInfo["bordNo"],
       "bordType": boardDetailInfo["bordType"],
       "bordSeq": boardDetailInfo["bordSeq"],
-      "updUser": "테스트",
+      "updUser": loginClerkNo,
     });
 
     // API 호출 (게시판 상세 조회)
     final result = await sendPostRequest(restId, param);
 
     if (result > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('삭제되었습니다.')),
+      );
       Navigator.of(context).pop(true);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -265,16 +269,22 @@ class BoardDetailState extends State<BoardDetail> {
   }
   
   // 댓글 삭제
-  /*Future<void> endCommentInfo() async {
+  Future<void> endCommentInfo(dynamic data) async {
 
     // REST ID
     String restId = "endCommentInfo";
+
+    print(boardDetailInfo["bordNo"]);
+    print(boardDetailInfo["bordType"]);
+    print(data["cmmtNo"]);
+    print(data["cmmtSeq"]);
 
     // PARAM
     final param = jsonEncode({
       "bordNo": boardDetailInfo["bordNo"],
       "bordType": boardDetailInfo["bordType"],
-      "bordSeq": boardDetailInfo["bordSeq"],
+      "cmmtNo": data["cmmtNo"],
+      "cmmtSeq": data["cmmtSeq"],
       "updUser" : loginClerkNo,
     });
 
@@ -284,8 +294,11 @@ class BoardDetailState extends State<BoardDetail> {
     // 댓글 리스트 갱신
     setState(() {
       if (endResult > 0) {
-
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('댓글 삭제 되었습니다.')),
+        );
+        getCommentList();
       }
     });
-  }*/
+  }
 }

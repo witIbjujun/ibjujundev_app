@@ -9,12 +9,14 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 class TitleAndMenu extends StatelessWidget {
   final Map<String, dynamic> boardDetailInfo;
   final List<dynamic> boardDetailImageList;
+  final Function endBoardInfo;
   final BuildContext context;
   final String loginClerkNo;
 
   TitleAndMenu({
     required this.boardDetailInfo,
     required this.boardDetailImageList,
+    required this.endBoardInfo,
     required this.context,
     required String this.loginClerkNo,
   });
@@ -50,7 +52,7 @@ class TitleAndMenu extends StatelessWidget {
                     "삭제",
                     "삭제하시겠습니까?",
                     () async {
-
+                      endBoardInfo();
                     }
                 );
               }
@@ -214,12 +216,12 @@ class CommentCount extends StatelessWidget {
 class CommentList extends StatelessWidget {
   final List<dynamic> commentList;
   final String loginClerkNo;
-  //final Future<void> deleteComment;
+  final Function endCommentInfo;
 
   CommentList({
     required this.commentList,
     required this.loginClerkNo,
-    //required this.deleteComment,
+    required this.endCommentInfo,
   });
 
   @override
@@ -263,7 +265,7 @@ class CommentList extends StatelessWidget {
                         "삭제",
                         "선택하신 댓글을 삭제하시겠습니까?",
                         () async {
-                          //deleteComment;
+                          endCommentInfo(commentList[index]);
                         }
                     );
                   },
