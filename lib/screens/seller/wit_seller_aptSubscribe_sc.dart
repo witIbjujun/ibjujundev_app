@@ -21,22 +21,23 @@ class SellerAptSubscribe extends StatefulWidget {
 
 class SellerAptSubscribeState extends State<SellerAptSubscribe> {
   dynamic sellerInfo;
-  List<dynamic> cashHistoryList = [];
-  Map cashInfo = {};
   String storeName = "";
+  // 아파트구독 리스트
+  List<dynamic> subscribeAptList= [];
 
   @override
   void initState() {
     super.initState();
-    getSellerInfo(widget.sllrNo);
+    // getSellerInfo(widget.sllrNo);
+    getSubscribeAptList(widget.sllrNo);
   }
 
-  Future<void> getSellerInfo(dynamic sllrNo) async {
+ /* Future<void> getSellerInfo(dynamic sllrNo) async {
 
     String restId = "getSellerInfo";
     // PARAM
     final param = jsonEncode({
-      "sllrNo": sllrNo,
+      //"sllrNo": sllrNo,
     });
 
     print("sllrNo :" + sllrNo.toString());
@@ -56,24 +57,31 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
       );
     }
 
-  }
+  }*/
 
-  Future<void> getCashInfo() async {
-    // REST ID
-    String restId = "getCashInfo";
+  // 아파트 구독 리스트
+  Future<void> getSubscribeAptList(dynamic sllrNo) async {
+    String restId = "getSubscribeAptList";
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": widget.sllrNo,
+      "sllrNo": sllrNo,
+      "searchType": "",
     });
 
-    // API 호출 (사전 점검 미완료 리스트 조회)
-    final _cashInfo = await sendPostRequest(restId, param);
+    // API 호출
+    final response = await sendPostRequest(restId, param);
 
-    // 결과 셋팅
-    setState(() {
-      cashInfo = _cashInfo;
-    });
+    if (response != null) {
+      setState(() {
+        subscribeAptList = response;
+      });
+    } else {
+      // 오류 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("아파트 구독 리스트 조회가 실패하였습니다.")),
+      );
+    }
   }
 
   @override
@@ -96,21 +104,21 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
         ),
         body: ListView(
           padding: EdgeInsets.all(16.0),
-          children: [
-            _buildItem('24년 8월', [
-              _buildSubItem('616세대', '동탄 숨마데시안', '구독중'),
-              _buildSubItem('640세대', '동탄 어울림 파밀리에', '구독중'),
-            ]),
-            _buildItem('24년 9월', [
-              _buildSubItem('916세대', '편한세상 평택 하이센트(4BL)', '구독하기'),
-              _buildSubItem('1063세대', '편한세상 평택 라시엣(2-1BL)', '구독하기'),
-            ]),
-            _buildItem('24년 10월', [
-              _buildSubItem('492세대', '외국인치지구 대방 디에트르 센터럴(B1BL)', '구독하기'),
-              _buildSubItem('250세대', '남양주 빌리브세트하이', '구독하기'),
-            ]),
-          ],
+          children: subscribeAptList.map((item) {
+            String month = item['moveinScjDate'] ?? '미정'; // moveinScjDate가 null이면 "미정"을 사용
+            String aptName = item['aptName']; // 아파트 이름은 'aptName' 키에서 가져옴
+            String splSize = item['splSize'] + ' 세대';
+            String stat = item['stat'];
+
+            // 각 아파트 정보를 _buildSubItem으로 전달
+            Widget subItem = _buildSubItem(splSize, aptName, stat);
+
+            // 월 정보와 아파트 정보를 함께 _buildItem으로 전달
+            return _buildItem(month, [subItem]); // subItems는 List<Widget> 형태여야 함
+          }).toList(),
         ),
+
+
       ),
     );
   }
@@ -133,12 +141,14 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(unit, style: TextStyle(fontSize: 16)),
-              Text(description, style: TextStyle(color: Colors.grey)),
-            ],
+          Expanded( // Expanded로 감싸서 공간을 나누어 가지도록 함
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(unit, style: TextStyle(fontSize: 16)),
+                Text(description, style: TextStyle(color: Colors.grey)),
+              ],
+            ),
           ),
           TextButton(
             onPressed: () {

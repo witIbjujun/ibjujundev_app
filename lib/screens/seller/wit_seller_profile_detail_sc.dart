@@ -52,12 +52,9 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
       TextEditingController(); // 입력 필드 컨트롤러
   late final DateTime? _selectedDate; // 선택된 날짜를 여기에 설정
   String appbarYn = "";
-
-  List<Map<String, dynamic>> aptList = [
-    {'aptno': 1, 'aptName': '동탄숨마데시앙'},
-    {'aptno': 2, 'aptName': '동탄어울림 파밀리에'},
-    {'aptno': 3, 'aptName': '동탄 아이파크자이'},
-  ];
+  // 아파트구독 리스트
+  List<dynamic> subscribeAptList= [];
+  
   @override
   void initState() {
     super.initState();
@@ -71,6 +68,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
     if (sllrNo != null) {
       // API 호출 등의 초기화 로직 구현
       getSellerInfo(sllrNo);
+      getSubscribeAptList(sllrNo);
       // getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵
     }
   }
@@ -95,6 +93,31 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
       // 오류 처리
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("사업자 프로필 조회가 실패하였습니다.")),
+      );
+    }
+  }
+
+  // 아파트 구독 리스트
+  Future<void> getSubscribeAptList(dynamic sllrNo) async {
+    String restId = "getSubscribeAptList";
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": sllrNo,
+      "searchType": "S",
+    });
+
+    // API 호출
+    final response = await sendPostRequest(restId, param);
+
+    if (response != null) {
+      setState(() {
+        subscribeAptList = response;
+      });
+    } else {
+      // 오류 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("아파트 구독 리스트 조회가 실패하였습니다.")),
       );
     }
   }
@@ -282,7 +305,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               ),
             ),
 
-            if (aptList.isEmpty)
+            if (subscribeAptList.isEmpty)
               Padding(
                 padding: const EdgeInsets.only(left: 20.0, top: 8.0),
                 child: Text(
@@ -296,7 +319,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     // 줄 수 계산
-                    int rowCount = (aptList.length / 2).ceil();
+                    int rowCount = (subscribeAptList.length / 2).ceil();
                     print("rowCount :" + rowCount.toString());
                     // 전체 높이 계산 (한 줄당 높이를 50으로 가정)
                     double totalHeight = rowCount * 50;
@@ -306,9 +329,9 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       child: Column(
                         children: List.generate(rowCount, (index) {
                           // 각 줄에 들어갈 아파트 목록
-                          List<Map<String, dynamic>> rowApts = aptList.sublist(
+                          List<dynamic> rowApts = subscribeAptList.sublist(
                             index * 2,
-                            (index * 2 + 2) <= aptList.length ? index * 2 + 2 : aptList.length,
+                            (index * 2 + 2) <= subscribeAptList.length ? index * 2 + 2 : subscribeAptList.length,
                           );
 
                           return Row(
