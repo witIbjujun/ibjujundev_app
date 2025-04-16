@@ -12,6 +12,7 @@ class TitleAndMenu extends StatelessWidget {
   final Function endBoardInfo;
   final BuildContext context;
   final String loginClerkNo;
+  final Function callBack;
 
   TitleAndMenu({
     required this.boardDetailInfo,
@@ -19,6 +20,7 @@ class TitleAndMenu extends StatelessWidget {
     required this.endBoardInfo,
     required this.context,
     required String this.loginClerkNo,
+    required this.callBack,
   });
 
   @override
@@ -36,9 +38,9 @@ class TitleAndMenu extends StatelessWidget {
           PopupMenuButton<String>(
             icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
             color: WitHomeTheme.wit_white,
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'edit') {
-                Navigator.push(
+                await Navigator.push(
                   context,
                   SlideRoute(page: BoardWrite(
                     boardInfo: boardDetailInfo,
@@ -46,7 +48,9 @@ class TitleAndMenu extends StatelessWidget {
                     bordNo: boardDetailInfo["bordNo"],
                     bordType: boardDetailInfo["bordType"],
                   )),
-                );
+                ).then((_) {
+                  callBack();
+                });
               } else if (value == 'delete') {
                 ConfimDialog.show(context,
                     "삭제",
@@ -124,16 +128,18 @@ class UserInfo extends StatelessWidget {
 // 내용 영역
 class ContentDisplay extends StatelessWidget {
   final String content;
+  final int imgCnt;
 
   ContentDisplay({
     required this.content,
+    required this.imgCnt,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        minHeight: 300,
+        minHeight: imgCnt == 0 ? 500 : 300,
       ),
       child: Text(content,
         style: WitHomeTheme.subtitle,

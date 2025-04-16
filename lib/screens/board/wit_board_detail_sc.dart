@@ -74,6 +74,7 @@ class BoardDetailState extends State<BoardDetail> {
                         endBoardInfo: endBoardInfo,
                         context: context,
                         loginClerkNo : loginClerkNo,
+                        callBack: getBoardDetailList,
                       ),
                       SizedBox(height: 20),
                       UserInfo(
@@ -84,14 +85,19 @@ class BoardDetailState extends State<BoardDetail> {
                       SizedBox(height: 10),
                       ContentDisplay(
                         content: boardDetailInfo["bordContent"] ?? "",
+                        imgCnt: boardDetailImageList.length,
                       ),
-                      SizedBox(height: 10),
-                      ImageListDisplay(
-                        boardDetailImageList: boardDetailImageList,
-                      ),
-                      SizedBox(height: 10),
-                      Divider(),
-                      SizedBox(height: 10),
+                      if (boardDetailImageList.length > 0)...[
+                        SizedBox(height: 10),
+                        Divider(),
+                        SizedBox(height: 10),
+                        ImageListDisplay(
+                          boardDetailImageList: boardDetailImageList,
+                        ),
+                        SizedBox(height: 10),
+                        Divider(),
+                        SizedBox(height: 10),
+                      ] else ...[],
                       CommentCount(
                         count: commentList.length,
                       ),
@@ -106,6 +112,7 @@ class BoardDetailState extends State<BoardDetail> {
                         saveCommentInfo: saveCommentInfo,
                         isEmpty: commentList.isEmpty,
                       ),
+
                     ],
                   ),
                 ),
@@ -273,11 +280,6 @@ class BoardDetailState extends State<BoardDetail> {
 
     // REST ID
     String restId = "endCommentInfo";
-
-    print(boardDetailInfo["bordNo"]);
-    print(boardDetailInfo["bordType"]);
-    print(data["cmmtNo"]);
-    print(data["cmmtSeq"]);
 
     // PARAM
     final param = jsonEncode({

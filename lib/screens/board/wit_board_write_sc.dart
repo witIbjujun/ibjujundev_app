@@ -8,6 +8,8 @@ import 'package:witibju/screens/board/wit_board_main_sc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
+import '../../util/wit_code_ut.dart';
+
 class BoardWrite extends StatefulWidget {
 
   final int? bordNo;
@@ -47,9 +49,9 @@ class _BoardWriteState extends State<BoardWrite> {
     // boardImageList가 있을 경우 이미지 목록 설정
     if (widget.imageList?.isNotEmpty ?? false) {
 
-      /*widget.imageList!.forEach((item) {
-        _images.add(Image.network(apiUrl + item["imagePath"]) as File);
-      });*/
+      widget.imageList!.forEach((item) {
+        _imageUrl.add(apiUrl + item["imagePath"]);
+      });
     }
   }
 
@@ -124,38 +126,82 @@ class _BoardWriteState extends State<BoardWrite> {
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        children: _images.asMap().entries.map((entry) {
-                          int index = entry.key;
-                          var image = entry.value;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
-                            child: Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
-                                  child: Image.file(
-                                    image,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover, // 이미지 비율 유지
+                        children: [
+                          // 첫 번째 이미지 리스트
+                          if (_images.isNotEmpty) ...[
+                            Row(
+                              children: _images.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                var image = entry.value;
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        child: Image.file(
+                                          image,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 0,
+                                        top: 0,
+                                        child: IconButton(
+                                          icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                          onPressed: () {
+                                            setState(() {
+                                              _images.removeAt(index);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  child: IconButton(
-                                    icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
-                                    onPressed: () {
-                                      setState(() {
-                                        _images.removeAt(index); // 이미지 삭제
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
+                                );
+                              }).toList(),
                             ),
-                          );
-                        }).toList(),
+                          ],
+                          // 두 번째 이미지 URL 리스트
+                          if (_imageUrl.isNotEmpty) ...[
+                            Row(
+                              children: _imageUrl.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                var image = entry.value;
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        child: Image.network(
+                                          image,
+                                          width: 100,
+                                          height: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 0,
+                                        top: 0,
+                                        child: IconButton(
+                                          icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                          onPressed: () {
+                                            setState(() {
+                                              _imageUrl.removeAt(index); // URL 이미지 삭제
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                   ),
@@ -169,7 +215,18 @@ class _BoardWriteState extends State<BoardWrite> {
         padding: const EdgeInsets.all(10), // 패딩 10 설정
         child: ElevatedButton(
           onPressed: () async {
+
+            showDialog(
+              context: context,
+              barrierDismissible: false, // 배경 클릭으로 닫히지 않도록 설정
+              builder: (BuildContext context) {
+                return Center(
+                  child: CircularProgressIndicator(), // 프로그래스 바
+                );
+              },
+            );
             await saveImages();
+            Navigator.of(context).pop(); // 프로그래스 바 닫기
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: WitHomeTheme.wit_lightBlue, // 옅은 녹색 배경
@@ -214,9 +271,6 @@ class _BoardWriteState extends State<BoardWrite> {
   // [서비스] 게시판 저장
   Future<void> saveBoardInfo(dynamic fileInfo) async {
 
-    print("파일파일파일");
-    print(fileInfo);
-
     // 로그인 사번
     String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
 
@@ -234,6 +288,9 @@ class _BoardWriteState extends State<BoardWrite> {
       });
 
     } else {
+
+      print(widget.boardInfo["bordNo"]);
+      print(widget.boardInfo["bordType"]);
 
       restId = "updateBoardInfo";
       param = jsonEncode({
