@@ -48,6 +48,18 @@ class BoardDetailState extends State<BoardDetail> {
     getCommentList();
   }
 
+  void reSearch() {
+
+    // 게시판 상세 조회
+    getBoardDetailList();
+
+    // 게시판 상세 이미지 조회
+    getBoardDetailImageList();
+
+    // 댓글 리스트 조회
+    getCommentList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +86,7 @@ class BoardDetailState extends State<BoardDetail> {
                         endBoardInfo: endBoardInfo,
                         context: context,
                         loginClerkNo : loginClerkNo,
-                        callBack: getBoardDetailList,
+                        callBack: reSearch,
                       ),
                       SizedBox(height: 20),
                       UserInfo(
