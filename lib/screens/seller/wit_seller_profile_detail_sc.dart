@@ -282,15 +282,40 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                   Text(
                     '내 구독 APT',
                     style: WitHomeTheme.title.copyWith(fontSize: 20),
+
                   ),
-                  GestureDetector(
-                    onTap: () {
+
+                  TextButton(
+                    onPressed: () {
                       // TODO: 다른 화면으로 이동하는 코드 작성
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SellerAptSubscribe(sllrNo:widget.sllrNo)), // NextScreen은 이동할 화면
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) {
+                            return Scaffold(
+                              appBar: AppBar(
+                                backgroundColor: WitHomeTheme.wit_black,
+                                iconTheme: const IconThemeData(
+                                    color: WitHomeTheme.wit_white),
+                                title: Text(
+                                  '입주 APT',
+                                  style: WitHomeTheme.title
+                                      .copyWith(color: WitHomeTheme.wit_white),
+                                ),
+                              ),
+                              body: Container(
+                                child: SellerAptSubscribe(
+                                    sllrNo: sllrNo.toString()), // 리스트를 추가
+                              ),
+                            );
+                          },
+                        ),
                       );
                     },
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero, // 기본 패딩 제거
+                      minimumSize: Size.zero, // 최소 크기 제거
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 터치 영역 최소 크기 제거
+                    ),
                     child: Row(
                       children: [
                         Text(
@@ -301,6 +326,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       ],
                     ),
                   ),
+
                 ],
               ),
             ),
@@ -340,7 +366,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                   child: Chip(
-                                    backgroundColor: WitHomeTheme.wit_lightGreen,
+                                    backgroundColor: WitHomeTheme.wit_lightgray,
                                     label: Center(
                                       child: Text(
                                         apt['aptName'],
@@ -348,8 +374,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                       ),
                                     ), // Center 추가
                                     shape: RoundedRectangleBorder( // 테두리 없애기
-                                      side: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(8.0), // 원하는 radius 값으로 조절
+                                      side: BorderSide(
+                                        color: Colors.transparent, // 테두리 색상을 투명하게 설정
+                                        width: 0.0, // 테두리 두께를 0으로 설정
+                                      ),
+                                      borderRadius: BorderRadius.circular(12.0), // 원하는 radius 값으로 조절
                                     ),
                                   ),
                                 ),
