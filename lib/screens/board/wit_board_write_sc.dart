@@ -298,6 +298,7 @@ class _BoardWriteState extends State<BoardWrite> {
         "bordContent": _contentController.text,
         "bordNo" : widget.boardInfo["bordNo"],
         "bordType": widget.boardInfo["bordType"],
+        "creUser": loginClerkNo,
         "updUser": loginClerkNo,
         "fileInfo": fileInfo
       });
