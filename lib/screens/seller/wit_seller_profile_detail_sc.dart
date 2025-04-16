@@ -366,7 +366,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                   child: Chip(
-                                    backgroundColor: WitHomeTheme.wit_lightgray,
+                                    backgroundColor: Colors.grey[100],
                                     label: Center(
                                       child: Text(
                                         apt['aptName'],
