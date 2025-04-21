@@ -139,7 +139,7 @@ class ContentDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        minHeight: imgCnt == 0 ? 500 : 300,
+        minHeight: imgCnt == 0 ? 540 : 340,
       ),
       child: Text(content,
         style: WitHomeTheme.subtitle,
@@ -159,7 +159,7 @@ class ImageListDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 120,
+      height: 80,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: boardDetailImageList.length,
@@ -175,8 +175,8 @@ class ImageListDisplay extends StatelessWidget {
               );
             },
             child: Container(
-              width: 120,
-              height: 120,
+              width: 80,
+              height: 80,
               margin: EdgeInsets.only(right: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),

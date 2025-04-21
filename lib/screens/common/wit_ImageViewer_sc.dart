@@ -76,12 +76,12 @@ class _ImageViewerState extends State<ImageViewer> {
                           });
                         },
                         child: Container(
-                          margin: EdgeInsets.all(20), // 오른쪽 여백
+                          margin: EdgeInsets.fromLTRB(5, 15, 5, 15), // 오른쪽 여백
                           width: 100, // 너비 100 설정
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: currentIndex == index ? Colors.red : Colors.transparent,
-                              width: 2,
+                              width: 1,
                             ),
                             borderRadius: BorderRadius.circular(8), // 모서리 둥글게
                             image: DecorationImage(
