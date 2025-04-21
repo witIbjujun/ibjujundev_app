@@ -239,7 +239,7 @@ class BoardListView extends StatelessWidget {
                                           children: [
                                             Container(
                                               decoration: BoxDecoration(
-                                                color: WitHomeTheme.wit_lightgray,
+                                                color: WitHomeTheme.wit_extraLightGrey,
                                                 borderRadius: BorderRadius.circular(10),
                                               ),
                                               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),

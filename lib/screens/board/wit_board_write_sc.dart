@@ -12,10 +12,10 @@ import '../../util/wit_code_ut.dart';
 
 class BoardWrite extends StatefulWidget {
 
-  final int? bordNo;
-  final String? bordType;
   final dynamic? boardInfo;
   final List<dynamic>? imageList;
+  final int? bordNo;
+  final String? bordType;
 
   const BoardWrite({super.key, this.boardInfo, this.imageList, this.bordNo, this.bordType});
 
@@ -28,7 +28,7 @@ class _BoardWriteState extends State<BoardWrite> {
   final secureStorage = FlutterSecureStorage();
 
   List<File> _images = [];
-  List<String> _imageUrl = [];
+  List<String> fileDelInfo = [];
 
   // 제목
   final TextEditingController _titleController = TextEditingController();
@@ -45,13 +45,6 @@ class _BoardWriteState extends State<BoardWrite> {
     if (widget.boardInfo != null) {
       _titleController.text = widget.boardInfo['bordTitle'] ?? '';
       _contentController.text = widget.boardInfo['bordContent'] ?? '';
-    }
-    // boardImageList가 있을 경우 이미지 목록 설정
-    if (widget.imageList?.isNotEmpty ?? false) {
-
-      widget.imageList!.forEach((item) {
-        _imageUrl.add(apiUrl + item["imagePath"]);
-      });
     }
   }
 
@@ -165,11 +158,13 @@ class _BoardWriteState extends State<BoardWrite> {
                             ),
                           ],
                           // 두 번째 이미지 URL 리스트
-                          if (_imageUrl.isNotEmpty) ...[
+                          // 이미지 URL 리스트
+                          if (widget.imageList != null && widget.imageList!.isNotEmpty) ...[
                             Row(
-                              children: _imageUrl.asMap().entries.map((entry) {
-                                int index = entry.key;
-                                var image = entry.value;
+                              children: widget.imageList!.map((item) {
+                                print("TEST1");
+                                print(item);
+                                var image = apiUrl + item["imagePath"];
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: Stack(
@@ -190,7 +185,8 @@ class _BoardWriteState extends State<BoardWrite> {
                                           icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
                                           onPressed: () {
                                             setState(() {
-                                              _imageUrl.removeAt(index); // URL 이미지 삭제
+                                              fileDelInfo.add(item["imagePath"]);
+                                              widget.imageList!.remove(item); // URL 이미지 삭제
                                             });
                                           },
                                         ),
@@ -289,9 +285,6 @@ class _BoardWriteState extends State<BoardWrite> {
 
     } else {
 
-      print(widget.boardInfo["bordNo"]);
-      print(widget.boardInfo["bordType"]);
-
       restId = "updateBoardInfo";
       param = jsonEncode({
         "bordTitle": _titleController.text,
@@ -300,7 +293,8 @@ class _BoardWriteState extends State<BoardWrite> {
         "bordType": widget.boardInfo["bordType"],
         "creUser": loginClerkNo,
         "updUser": loginClerkNo,
-        "fileInfo": fileInfo
+        "fileInfo": fileInfo,
+        "fileDelInfo": fileDelInfo,
       });
     }
 
