@@ -225,7 +225,7 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                   children: [
                     SizedBox(height: 30),
                     TextField(
-                      style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                      style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                       controller: estimateContentController,
                       minLines: 3,
                       maxLines: null,

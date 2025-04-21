@@ -120,7 +120,7 @@ class CardInfoState extends State<CardInfo> {
               Center( // 버튼을 Center로 감싸서 가운데 정렬
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: WitHomeTheme.wit_mediumSeaGreen,
+                    backgroundColor: WitHomeTheme.wit_lightGreen,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

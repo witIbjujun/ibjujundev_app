@@ -66,89 +66,109 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
           children: [
             Column(
               children: [
-                Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 2, top: 0.0, bottom: 0),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        width: MediaQuery.of(context).size.width * 0.92,
-                        child: Image.asset(
-                          'assets/images/공동구매 판매자 배너.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 20,
-                      left: 20,
-                      child: Container(
-                        width: 340,
-                        height: 30,
-                        decoration: BoxDecoration(
-                          color: Colors.grey, // 드롭박스 배경색을 WitHomeTheme.wit_gray로 설정
-                          borderRadius: BorderRadius.circular(10), // 둥근 모서리
-                        ),
-                        child: PopupMenuButton<String>(
-                          initialValue: _selectedApartment,
-                          onSelected: (String item) {
-                            setState(() {
-                              _selectedApartment = item;
-                            });
-                          },
-                          itemBuilder: (BuildContext context) {
-                            return <String>['병점아이파크캐슬', '기흥역푸르지오'].map((String value) {
-                              return PopupMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                  style: WitHomeTheme.title.copyWith(fontSize: 14),
-                                ),
-                              );
-                            }).toList();
-                          },
-                          child: Row( // Row 위젯으로 감싸기
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0), // 텍스트 왼쪽 패딩
-                                child: Text(
-                                  _selectedApartment ?? '아파트 선택',
-                                  style: WitHomeTheme.title.copyWith(fontSize: 14),
+                SizedBox( // Column에 높이 제한을 추가
+                  height: MediaQuery.of(context).size.height * 0.25, // 예시: 화면 높이의 50%
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 2, top: 0.0, bottom: 0),
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * 0.25,
+                                width: MediaQuery.of(context).size.width * 0.92,
+                                child: Image.asset(
+                                  'assets/images/공동구매 판매자 배너.png',
+                                  fit: BoxFit.contain,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10.0), // 아이콘 오른쪽 패딩
-                                child: Icon(Icons.arrow_drop_down, color: WitHomeTheme.wit_black),
+                            ),
+                            Positioned(
+                              top: 20,
+                              left: 20,
+                              child: Container(
+                                width: 340,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: PopupMenuButton<String>(
+                                  initialValue: _selectedApartment,
+                                  onSelected: (String item) {
+                                    setState(() {
+                                      _selectedApartment = item;
+                                    });
+                                  },
+                                  itemBuilder: (BuildContext context) {
+                                    return <String>['병점아이파크캐슬', '기흥역푸르지오'].map((String value) {
+                                      return PopupMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: WitHomeTheme.title.copyWith(fontSize: 14),
+                                        ),
+                                      );
+                                    }).toList();
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 10.0),
+                                        child: Text(
+                                          _selectedApartment ?? '아파트 선택',
+                                          style: WitHomeTheme.title.copyWith(fontSize: 14),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 10.0),
+                                        child: Icon(Icons.arrow_drop_down, color: WitHomeTheme.wit_black),
+                                      ),
+                                    ],
+                                  ),
+                                  offset: Offset(0, 40),
+                                ),
                               ),
-                            ],
-                          ),
-                          offset: Offset(0, 40), // 드롭다운 메뉴 위치 조정 (선택 사항)
+                            ),
+                            LayoutBuilder(
+                              builder: (BuildContext context, BoxConstraints constraints) {
+                                return Stack(
+                                  children: [
+                                    Positioned(
+                                      bottom: constraints.maxHeight * 0.31,
+                                      left: constraints.maxWidth * 0.15,
+                                      child: Text(
+                                        '선착순모집 정원 10 / 신청 5',
+                                        style: WitHomeTheme.subtitle.copyWith(
+                                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                                          color: WitHomeTheme.wit_white,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: constraints.maxHeight * 0.16,
+                                      left: constraints.maxWidth * 0.15,
+                                      child: Text(
+                                        '모집일자 2025/04/30 까지',
+                                        style: WitHomeTheme.subtitle.copyWith(
+                                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                                          color: WitHomeTheme.wit_white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-
-                    Positioned(
-                      bottom: 69,
-                      left: 60,
-                      child: Text(
-                        '선착순모집 정원 10 / 신청 5',
-                        style: WitHomeTheme.subtitle
-                            .copyWith(fontSize: 12, color: WitHomeTheme.wit_white),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 37,
-                      left: 60,
-                      child: Text(
-                        '모집일자 2025/04/30 까지',
-                        style: WitHomeTheme.subtitle
-                            .copyWith(fontSize: 12, color: WitHomeTheme.wit_white),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+
                 SizedBox(height: 10),
                 Padding( // Row 전체를 Padding으로 감싸서 여백 조정
                   padding: EdgeInsets.only(left: 0, right: 0), // Stack의 Padding 값과 동일하게 설정

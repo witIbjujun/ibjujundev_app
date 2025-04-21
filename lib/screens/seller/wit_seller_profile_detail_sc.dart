@@ -320,9 +320,9 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                       children: [
                         Text(
                           '구독하기',
-                          style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightBlue),
+                          style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightGreen),
                         ),
-                        Icon(Icons.arrow_right, color: Colors.blue), // 아이콘 추가
+                        Icon(Icons.arrow_right, color: WitHomeTheme.wit_lightGreen), // 아이콘 추가
                       ],
                     ),
                   ),
@@ -366,11 +366,11 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                   child: Chip(
-                                    backgroundColor: Colors.grey[100],
+                                    backgroundColor: WitHomeTheme.wit_black,
                                     label: Center(
                                       child: Text(
                                         apt['aptName'],
-                                        style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                        style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                                       ),
                                     ), // Center 추가
                                     shape: RoundedRectangleBorder( // 테두리 없애기
@@ -400,7 +400,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
 
 
 
-            SizedBox(height: 8), // 레이블과 카드 사이의 간격
+            SizedBox(height: 20), // 레이블과 카드 사이의 간격
             Container(
               padding: EdgeInsets.only(left: 20.0), // 전체 패딩 20
               alignment: Alignment.centerLeft, // 왼쪽 정렬
@@ -409,6 +409,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                 style: WitHomeTheme.title.copyWith(fontSize: 20),
               ),
             ),
+            SizedBox(height: 8), // 레이블과 카드 사이의 간격
             // 스케쥴 관리
             TextButton(
               onPressed: () {
@@ -428,7 +429,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -481,7 +482,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -543,7 +544,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -605,7 +606,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -651,7 +652,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -686,6 +687,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                 style: WitHomeTheme.title.copyWith(fontSize: 20),
               ),
             ),
+            SizedBox(height: 8), // 레이블과 카드 사이의 간격
 
             // 파트너 프로필
             TextButton(
@@ -700,7 +702,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -738,7 +740,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -773,7 +775,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -806,6 +808,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
                 style: WitHomeTheme.title.copyWith(fontSize: 20),
               ),
             ),
+            SizedBox(height: 8), // 레이블과 카드 사이의 간격
 
             // 업체후기
             TextButton(
@@ -825,7 +828,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -865,7 +868,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
               },
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
-                padding: EdgeInsets.only(left: 20.0, top: 8.0, bottom: 8.0, right: 0.0), // 왼쪽 20, 상하 0
+                padding: EdgeInsets.only(left: 20.0, top: 6.0, bottom: 6.0, right: 0.0), // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,

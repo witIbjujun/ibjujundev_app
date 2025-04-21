@@ -614,7 +614,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                         style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: WitHomeTheme.wit_lightBlue,
+                        backgroundColor: WitHomeTheme.wit_black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -748,7 +748,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                         style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: WitHomeTheme.wit_lightBlue,
+                        backgroundColor: WitHomeTheme.wit_black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
