@@ -6,6 +6,8 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 
+import '../common/wit_common_util.dart';
+
 /**
  * 하자 전체 리스트
  */
@@ -133,6 +135,8 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
   // [서비스] 사전 점검 상세 저장
   Future<void> saveCheckInfo(dynamic item, String newCheckYn) async {
 
+    print(item);
+
     // 로그인 사번
     String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
 
@@ -144,7 +148,7 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
       "inspId": item["inspId"],
       "inspDetlId": item["inspDetlId"],
       "checkYn": newCheckYn,
-      "checkDate": item["checkDate"],
+      "checkDate": formatDateYYYYMMDD(DateTime.now()),
       "reprDate": item["reprDate"],
       "checkComt": item["checkComt"],
       "checkImg1": item["checkImg1"],
@@ -155,7 +159,7 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
     // API 호출 (사전점검 상세 항목 저장)
     final result = await sendPostRequest(restId, param);
 
-    // 결과값이 0보다 크면 카운트 업데이트
+    /*// 결과값이 0보다 크면 카운트 업데이트
     if (result > 0) {
 
       if (newCheckYn == "N") {
@@ -163,6 +167,6 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
       } else {
         alertDialog.show(context, "하자등록 되었습니다.");
       }
-    }
+    }*/
   }
 }

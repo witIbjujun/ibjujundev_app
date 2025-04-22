@@ -299,7 +299,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
     // 이미지 없으면
     if (imageFile1 == null && imageFile2 == null) {
       setState(() {
-        widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(checkDate);
+        widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(DateTime.now());
         widget.checkInfoLv3["reprDate"] = formatDateYYYYMMDD(reprDate);
         widget.checkInfoLv3["checkComt"] = _checkComtController.text;
         widget.checkInfoLv3["checkImg1"] = imageUrl1;

@@ -246,20 +246,28 @@ class ExpandableItem extends StatelessWidget {
                         },
                       ),
                     ),
-                  Container(
-                    child: IconButton(
-                      icon: Text(
-                        checkInfoLv3["checkYn"] == "Y" ? "🔴"  // 축하 이모티콘
-                            : checkInfoLv3["checkYn"] == "D" ? "⚪️"  // 손握기 이모티콘
-                            : "️⚪️",  // 빨간 따봉 뒤집힌 것
-                        style: TextStyle(fontSize: 18),
+                    SizedBox(width: 16),
+                    Container(
+                      child: GestureDetector(
+                        onTap: () {
+                          onSwitchChanged(checkInfoLv3["checkYn"] == "Y"); // Y일 경우 false, 나머지 경우 true
+                        },
+                        child: Image.network(
+                                checkInfoLv3["checkYn"] == "D"
+                              ? apiUrl + "/WIT/checkList/미체크버튼.png"
+                              : checkInfoLv3["checkYn"] == "Y"
+                              ? apiUrl + "/WIT/checkList/오류버튼.png"
+                              : checkInfoLv3["checkYn"] == "N" && checkInfoLv3["checkDate"] == null
+                              ? apiUrl + "/WIT/checkList/미체크버튼.png"
+                              : checkInfoLv3["checkYn"] == "N" && checkInfoLv3["checkDate"] != null
+                              ? apiUrl + "/WIT/checkList/정상버튼.png"
+                              : apiUrl + "/WIT/checkList/정상버튼.png",
+                          width: 20,
+                          height: 20,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      // 사용할지 확인 필요
-                      onPressed: () {
-                        onSwitchChanged(checkInfoLv3["checkYn"] == "Y"); // Y일 경우 false, 나머지 경우 true
-                      },
                     ),
-                  ),
                   /*Transform.scale(
                     scale: 0.7,
                     child: Switch(
