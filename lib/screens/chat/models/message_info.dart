@@ -11,7 +11,9 @@ class MessageInfo {
     this.imageUrl = '',
     this.time = '',
     this.storeName = '',
-
+    this.anwCode = '',
+    this.messageId = '',
+    this.targetView = '',
 
   });
 
@@ -26,6 +28,9 @@ class MessageInfo {
   String imageUrl;
   String time;
   String storeName;
+  String anwCode;
+  String messageId;
+  String targetView;
 
 
   List<MessageInfo>? parseMessageList(List<dynamic> messageList) {
@@ -41,6 +46,9 @@ class MessageInfo {
           chatgubun: messageInfo['chatgubun'] ?? '',
           type: messageInfo['type'] ?? '',
           time: messageInfo['time'] ?? '',
+          anwCode: messageInfo['anwCode'] ?? '',
+          messageId: messageInfo['messageId'] ?? '',
+          targetView: messageInfo['targetView'] ?? '',
           storeName: messageInfo['storeName'] ?? ''
       );
     }).toList();
@@ -57,6 +65,9 @@ class MessageInfo {
       'time': time,
       'storeName': storeName,
       'profileImage': imageUrl,
+      'messageId': messageId,
+      'anwCode': anwCode,
+      'targetView': targetView,
     };
   }
 }

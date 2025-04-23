@@ -8,6 +8,7 @@ import 'package:witibju/screens/home/wit_estimate_detail.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
 import '../../util/wit_code_ut.dart';
+import '../chat/CustomChatScreen.dart';
 import '../chat/chatMain.dart';
 import 'models/requestInfo.dart';
 
@@ -65,6 +66,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       print('신청 목록 조회 중 오류 발생: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -371,6 +373,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                   ),
                 ],
               ),
+
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
@@ -481,37 +484,80 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     );
   }
 
-  void _handleRequestAction(RequestInfo request) {
-    // 예시: 요청 상태를 업데이트하거나 추가 작업을 수행
+  // 2025.04.16: 진행 요청 시 updateRequestState 호출 후 EstimateScreen 이동 처리
+  // 2025.04.16: 진행 요청 시 updateRequestState 호출 후 CustomChatScreen 이동 처리
+  // 2025.04.16: 진행 요청 시 updateRequestState 호출 후 CustomChatScreen 이동 처리
+  void _handleRequestAction(RequestInfo request) async {
+    String? clerkNo = await secureStorage.read(key: 'clerkNo'); // 🔹 스토리지에서 clerkNo 읽기
+
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('작업 진행'),
-          content: Text('${request.companyNm} 업체에 작업을 진행하시겠습니까?'),
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          title: Text(
+            '작업 진행',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            '${request.companyNm} 업체에 작업을 진행하시겠습니까?',
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
           actions: [
-            TextButton(
-              onPressed: () {
-                // 작업 진행 로직
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onPressed: () async {
                 Navigator.pop(context); // 다이얼로그 닫기
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('작업이 진행되었습니다.')),
+
+                /// ✅ Chat 화면으로 이동
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => CustomChatScreen(
+                      '1',                    // chatId
+                      clerkNo ?? '',          // clerkNo (스토리지에서 가져옴)
+                      request.companyNm,      // 세 번째 인자 예: 업체 이름
+                    ),
+                  ),
                 );
               },
-              child: Text('확인'),
+              child: const Text(
+                '확인',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-            TextButton(
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
               onPressed: () {
-                Navigator.pop(context); // 다이얼로그 닫기
+                Navigator.pop(context);
               },
-              child: Text('취소'),
+              child: const Text(
+                '취소',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         );
       },
     );
   }
-
 }
 
 // 2025-03-25 추가: SectionWidget에서 사용하는 데이터 클래스

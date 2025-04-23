@@ -283,7 +283,17 @@ class SectionWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print('SectionWidget tapped');
-        onTap();
+        if (items.isNotEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RequestDetailScreen(
+                categoryId: items.first.categoryId,
+                reqNo: items.first.reqNo,
+              ),
+            ),
+          );
+        }
       },
       child: Container(
         width: width,
@@ -291,24 +301,20 @@ class SectionWidget extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
-          image: DecorationImage( // 📆 2025.04.01 - 배경 이미지 추가
-            image: AssetImage('assets/home/estimateback2.png'), // 경로는 실제 이미지에 맞게 변경
-            fit: BoxFit.cover, // 이미지가 컨테이너에 맞게 채워짐
+          image: DecorationImage(
+            image: AssetImage('assets/home/estimateback2.png'),
+            fit: BoxFit.cover,
           ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 제목 탭 시 동작 (예: 상세로 이동 등)
-            GestureDetector(
-              onTap: onTap,
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
             for (var item in items) ...[

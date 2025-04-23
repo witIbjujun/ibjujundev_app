@@ -103,16 +103,6 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/result', page: () => ResultPage()), // 결과 화면 등록
       ],
 
-
-      // home: FCMSender(), //현재 메인
-      ///home: kakoLoingHome(),
-
-      ///home: Directionality(
-      ///   textDirection: TextDirection.ltr,
-      /// child: ChatPage(),
-      ///),   채팅
-      ///
-      ///
-    );
+          );
   }
 }

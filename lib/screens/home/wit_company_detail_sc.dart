@@ -100,15 +100,26 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     return Container(
       color: WitHomeTheme.nearlyWhite,
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          title: Text(
+            '견적서비스',
+            style: TextStyle(
+              color: Colors.white,             // 텍스트 색상
+              fontSize: 20.0,                  // 폰트 크기
+              fontWeight: FontWeight.bold,     // 굵기
+              fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.white), // ← 아이콘 색상도 검정으로 맞추려면 추가
+        ),
         body: SafeArea(
           child: CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    ///  SizedBox(height: MediaQuery.of(context).padding.top),
-                    getAppBarUI(),
                     if (categoryInfo != null)
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -203,17 +214,40 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   }
 
 
+  // 2025-04-22: 이미지 비율에 따라 fullHeight 자동 계산 + Semantics 오류 방지 적용
   Widget getCategoryDetailInfo() {
-    double initialHeight = 250.0; // 초기 이미지 높이
-    double fullHeight = 800.0; // 전체 이미지 높이
-    bool _isExpanded = false;
+    double initialHeight = 250.0;
+    double? fullHeight; // 이미지 로딩 후 계산된 높이 저장
+    bool _isExpanded = true;
+    bool imageLoaded = false; // 이미지 중복 처리 방지
 
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
+        final imageUrl = apiUrl + '/WIT/lineEye.jpg';
+
+        // 2025-04-22: 이미지 비율을 기반으로 fullHeight 계산
+        if (!imageLoaded) {
+          final imageProvider = NetworkImage(imageUrl);
+          final imageStream = imageProvider.resolve(const ImageConfiguration());
+          imageStream.addListener(
+            ImageStreamListener((ImageInfo info, bool _) {
+              final imageWidth = info.image.width.toDouble();
+              final imageHeight = info.image.height.toDouble();
+              final screenWidth = MediaQuery.of(context).size.width;
+              final calculatedHeight = screenWidth * imageHeight / imageWidth;
+
+              setState(() {
+                fullHeight = calculatedHeight;
+                imageLoaded = true;
+              });
+            }),
+          );
+        }
+
         return ListView(
-          primary: true, // 🔥 스크롤 이벤트가 제대로 전달되도록 설정
+          primary: true,
           shrinkWrap: true,
-          physics: AlwaysScrollableScrollPhysics(), // 항상 스크롤 가능하도록 설정
+          physics: AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(16.0),
           children: [
             if (categoryInfo != null)
@@ -223,23 +257,23 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
               ),
             SizedBox(height: 16.0),
 
-            // 이미지 영역
+            // 🔽 자동 높이 이미지 영역
             ClipRect(
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 300),
                 width: MediaQuery.of(context).size.width,
-                height: _isExpanded ? fullHeight : initialHeight,
+                height: _isExpanded
+                    ? (fullHeight ?? initialHeight)
+                    : initialHeight,
                 child: Image.network(
-                  apiUrl + '/WIT/lineEye.jpg',
+                  imageUrl,
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
                 ),
               ),
             ),
-
             SizedBox(height: 8.0),
 
-            // "상품정보 펼쳐보기 ▽" / "상품정보 접기 △" 버튼
             Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -249,7 +283,8 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: WitHomeTheme.white,
-                  padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
@@ -264,17 +299,16 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 ),
               ),
             ),
-
             SizedBox(height: 16.0),
 
-            // ✅ 구분선 추가
             Divider(thickness: 1, color: Colors.grey),
             SizedBox(height: 16.0),
 
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                   decoration: BoxDecoration(
                     color: WitHomeTheme.white,
                     borderRadius: BorderRadius.circular(6.0),
@@ -294,7 +328,8 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                   child: GestureDetector(
                     onTap: () => _selectDate(context),
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 12.0),
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(6.0),
@@ -306,7 +341,8 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                             _selectedDate ?? "날짜 선택",
                             style: TextStyle(fontSize: 16.0),
                           ),
-                          Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                          Icon(Icons.keyboard_arrow_down,
+                              color: Colors.grey),
                         ],
                       ),
                     ),
@@ -314,9 +350,12 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 ),
               ],
             ),
+
             SizedBox(height: 16.0),
-            /// ✅ 추가조건/요구사항
-            Text("추가조건/요구사항", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+
+            Text("추가조건/요구사항",
+                style:
+                TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
             SizedBox(height: 8.0),
             TextField(
               controller: _additionalRequirementsController,
@@ -324,7 +363,8 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
-                contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                contentPadding:
+                EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
               ),
             ),
             SizedBox(height: 14.0),
@@ -353,7 +393,10 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 child: Center(
                   child: Text(
                     '견적 요청하기',
-                    style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -363,6 +406,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
       },
     );
   }
+
 
   Widget buildBottomNavigationBar1() {
     return Container(
@@ -551,23 +595,6 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
 
     return Container(); // 화면 이동 후 기존 위젯은 필요 없으므로 빈 컨테이너 반환
   }
-
-  Widget getAppBarUI() {
-    return AppBar(
-      backgroundColor: Colors.black,
-      title: Text(
-        '견적서비스',
-        style: TextStyle(
-          color: Colors.white,             // 텍스트 색상
-          fontSize: 20.0,                  // 폰트 크기
-          fontWeight: FontWeight.bold,     // 굵기
-          fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
-        ),
-      ),
-      iconTheme: IconThemeData(color: Colors.white),
-    );
-  }
-
 
   /**
    * 견적 요청하기

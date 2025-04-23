@@ -298,79 +298,175 @@ void showImagePopup({
 /**
  * 가이드 팝업
  */
-// 2025-01-16: 옵션을 버튼 형태로 표시하고, 색상을 옵션별로 설정
+// 2025-04-22: 배경색을 검정으로, 상단 이미지/문구 추가 및 강조 텍스트 적용
 void showGuirdDialog({
   required BuildContext context,
-  required String description, // 설명 텍스트
-  TextStyle? descriptionStyle, // 폰트 스타일을 조절할 수 있도록 추가
-  required List<Map<String, dynamic>> options, // 옵션 리스트 (텍스트, 색상)
-  required Function(String) onOptionSelected, // 선택 시 호출될 함수
+  required List<Map<String, dynamic>> options,
+  required Function(String) onOptionSelected,
+  double dialogWidth  = 320.0,
+  double dialogHeight = 420.0,
 }) {
   showDialog(
     context: context,
-    barrierDismissible: true, // 팝업 외부 클릭 가능
+    barrierDismissible: true,
     builder: (BuildContext dialogContext) {
       return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        backgroundColor: Colors.transparent, // 배경을 투명하게 설정 (이미지 적용을 위해)
+        insetPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        backgroundColor: Colors.transparent,
         child: Container(
+          width : dialogWidth,
+          height: dialogHeight,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/home/showGuirdDialogBack.png'), // 배경 이미지 설정
-              fit: BoxFit.cover, // 전체 크기에 맞게 조정
-            ),
+            color: Colors.black, // 2025-04-22: 배경색을 이미지 대신 검정색으로 고정
             borderRadius: BorderRadius.circular(20.0),
           ),
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 10.0),
-              // 설명 문구
-              Text(
-                description,
-                style: descriptionStyle ?? const TextStyle(
-                  fontSize: 20.0, // 기본 폰트 크기
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black, // 기본 글씨 색상
-                  height: 1.5, // 줄 간격 조정
-                ),
-                textAlign: TextAlign.left,
+              // 2025-04-22: 상단 이미지 추가
+              Image.asset(
+                'assets/home/bestBack.png',
+                width: double.infinity,
+                fit: BoxFit.cover,
               ),
-              const SizedBox(height: 50.0),
+              const SizedBox(height: 12),
 
-              // 옵션 버튼 표시
-              ...options.map((option) {
-                final text = option['text'] as String;
-                final color = option['color'] as Color;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: color, // 버튼 색상
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+              // 2025-04-22: 강조 텍스트 포함 문구
+              RichText(
+                textAlign: TextAlign.center,
+                text: const TextSpan(
+                  style: TextStyle(color: Colors.white, fontSize: 15),
+                  children: [
+                    TextSpan(
+                      text:'예산별 ',
+                      style: TextStyle(
+                        color: Colors.white,             // 텍스트 색상
+                        fontSize: 20.0,                  // 폰트 크기
+                        fontWeight: FontWeight.bold,     // 굵기
+                        fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
                     ),
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop(); // 팝업 닫기
-                      onOptionSelected(text); // 선택된 옵션 처리
-                    },
-                    child: Text(
-                      text,
-                      style: const TextStyle(
-                        color: Colors.white, // 텍스트 색상
-                        fontSize: 16.0,
+                    TextSpan(
+                      text:'시공 품목 ',
+                      style: TextStyle(
+                        color: WitHomeTheme.wit_lightGreen,             // 텍스트 색상
+                        fontSize: 20.0,                  // 폰트 크기
+                        fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+                      ),
+                    ),
+                    TextSpan(
+                      text:'가이드 입니다.!\n',
+                      style: TextStyle(
+                        color: Colors.white,             // 텍스트 색상
+                        fontSize: 20.0,                  // 폰트 크기
+                        fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+                      ),
+                    ),
+                    TextSpan(
+                      text:'각 품목별',
+                      style: TextStyle(
+                        color: Colors.white,             // 텍스트 색상
+                        fontSize: 20.0,                  // 폰트 크기
+                        fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+                      ),
+                    ),
+                    TextSpan(
+                      text:' 비교견적',
+                      style: TextStyle(
+                        color: WitHomeTheme.wit_lightGreen,             // 텍스트 색상
+                        fontSize: 20.0,                  // 폰트 크기
+                        fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+                      ),
+                    ),
+                    TextSpan(
+                      text:'을 받아보세요',
+                      style: TextStyle(
+                        color: Colors.white,             // 텍스트 색상
+                        fontSize: 20.0,                  // 폰트 크기
+                        fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // 옵션 버튼 리스트
+              ...options.asMap().entries.map((entry) {
+                final int idx = entry.key;
+                final Map<String, dynamic> opt = entry.value;
+
+                // 필드 파싱
+                final String text      = opt['text'];
+                final String? sub      = opt['textSub'];
+                final String? bgImgRaw = opt['bgImage'] ?? opt['bgImage '];
+                final Color   bgColor  = (opt['color'] as Color?) ?? Colors.grey;
+                final double  btnH     = (opt['height'] as double?) ?? 56.0;
+                final double  btnW     = (opt['width']  as double?) ?? double.infinity;
+
+                // 경로 자동 보정
+                String? resolvedImg;
+                if (bgImgRaw != null && bgImgRaw.isNotEmpty) {
+                  resolvedImg = bgImgRaw.startsWith('assets/') ? bgImgRaw : 'assets/home/$bgImgRaw';
+                }
+
+                return Container(
+                  width : btnW,
+                  height: btnH,
+                  margin: EdgeInsets.only(
+                    top   : idx == 0 ? 0 : 14, // 2025-04-22: 첫 번째 버튼 상단 마진 제거
+                    bottom: idx == options.length - 1 ? 0 : 14,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    image: resolvedImg != null
+                        ? DecorationImage(
+                      image: AssetImage(resolvedImg),
+                      fit: BoxFit.cover,
+                    )
+                        : null,
+                    color : resolvedImg == null ? bgColor.withOpacity(0.9) : null,
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(30),
+                      onTap: () {
+                        Navigator.of(dialogContext).pop();
+                        onOptionSelected(text);
+                      },
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              text,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.5,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (sub != null) ...[
+                              const SizedBox(width: 6),
+                              Text(
+                                '($sub)',
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14.5,
+                                  fontWeight: FontWeight.bold, // ← 굵게 적용됨
+                                ),
+                              ),
+                            ]
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 );
               }).toList(),
-              const SizedBox(height: 8.0),
             ],
           ),
         ),
@@ -378,7 +474,6 @@ void showGuirdDialog({
     },
   );
 }
-
 
 /*금액표시 UTil*/
 class FormatUtils {
@@ -393,9 +488,6 @@ class FormatUtils {
   }
 }
 
-
-
-
 class DialogUtils {
   // 12/14: 공통 다이얼로그 메서드
   static Future<bool> showConfirmationDialog({
@@ -409,59 +501,60 @@ class DialogUtils {
       context: context,
       barrierDismissible: false, // 팝업 외부 클릭 시 닫히지 않도록 설정
       builder: (BuildContext context) {
+        // 2025.04.03: 다이얼로그 테마 어둡게 변경
         return AlertDialog(
-          backgroundColor: WitHomeTheme.nearlyWhite, // 기본 배경색 흰색
+          backgroundColor: Colors.black, // 배경 검정색
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0), // 다이얼로그 모서리 둥글게
+            borderRadius: BorderRadius.circular(10.0),
           ),
           title: Text(
             title,
-            style: TextStyle(
-              color: WitHomeTheme.darkerText, // 제목 색상 테마에 맞춤
+            style: const TextStyle(
+              color: Colors.white, // 제목 흰색
               fontWeight: FontWeight.bold,
             ),
           ),
           content: Text(
             content,
-            style: TextStyle(
-              color: WitHomeTheme.darkText, // 본문 색상 테마에 맞춤
+            style: const TextStyle(
+              color: Colors.white, // 본문 흰색
             ),
           ),
           actions: <Widget>[
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: WitHomeTheme.nearlyWhite, // 취소 버튼
+                backgroundColor: Colors.grey, // 회색 버튼 배경
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // 버튼 모서리 둥글게
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
               child: Text(
                 cancelButtonText,
-                style: TextStyle(
-                  color: WitHomeTheme.lightText, // 취소 텍스트 색상
+                style: const TextStyle(
+                  color: Colors.white, // 흰색 텍스트
                   fontWeight: FontWeight.bold,
                 ),
               ),
               onPressed: () {
-                Navigator.of(context).pop(false); // 취소 시 false 반환
+                Navigator.of(context).pop(false);
               },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: WitHomeTheme.nearlyWhite, // 진행 버튼 배경색
+                backgroundColor: Colors.grey, // 회색 버튼 배경
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0), // 버튼 모서리 둥글게
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
               child: Text(
                 confirmButtonText,
-                style: TextStyle(
-                  color: WitHomeTheme.nearlyslowBlue, // 진행 버튼 텍스트 색상
+                style: const TextStyle(
+                  color: Colors.white, // 흰색 텍스트
                   fontWeight: FontWeight.bold,
                 ),
               ),
               onPressed: () {
-                Navigator.of(context).pop(true); // 확인 시 true 반환
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -510,7 +603,7 @@ class DialogUtils {
               height: 50, // 버튼 높이 설정
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: WitHomeTheme.nearlyBlue, // 버튼 배경색
+                  backgroundColor: WitHomeTheme.wit_lightGreen, // 버튼 배경색
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
                   ),

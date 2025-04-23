@@ -71,15 +71,32 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
 
     setState(() {
       categoryList = Category().parseCategoryList(_categoryList)!;
-      selectedList = List<bool>.filled(categoryList.length, false); // categoryList의 길이에 맞춰 selectedList를 초기화
+
+      // 2025-04-15: 모든 항목 선택 및 선택된 갯수 설정
+      selectedList = List<bool>.filled(categoryList.length, true);
+      _selectedItemCount = selectedList.length;
+
+      isLoading = false;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('견적받기'),
+        backgroundColor: Colors.black,
+        title: Text(
+          '견적받기',
+          style: TextStyle(
+            color: Colors.white,             // 텍스트 색상
+            fontSize: 20.0,                  // 폰트 크기
+            fontWeight: FontWeight.bold,     // 굵기
+            fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+          ),
+        ),
+        iconTheme: IconThemeData(color: Colors.white), // ← 아이콘 색상도 검정으로 맞추려면 추가
       ),
       body: SafeArea(
         child: isLoading
@@ -90,6 +107,24 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
             Expanded(
               child: SingleChildScrollView(
                 child: getPopularCourseUI(widget.type), // 인기 코스 UI만 스크롤 가능
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0), // ✅ 좌우 여백 통일
+              child: Container(
+                height: 50.0, // ✅ 기본 높이 지정
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0), // 텍스트 내부 여백
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.white,
+                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                alignment: Alignment.centerLeft, // 텍스트 왼쪽 정렬
+                child: Text(
+                  '필요한 것만 견적을 받아보세요',
+                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                ),
               ),
             ),
             Padding(

@@ -12,6 +12,7 @@ import '../models/main_view_model.dart';
 import '../models/userInfo.dart';
 import '../widgets/wit_home_widgets2.dart';
 import '../wit_home_sc.dart';
+import '../wit_home_theme.dart';
 
 class WitUserLoginStep2 extends StatefulWidget {
   @override
@@ -123,7 +124,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep2> {
                         decoration: BoxDecoration(
                           border: option == (title == '내 APT' ? selectedApt : selectedPyung)
                               ? Border.all(
-                            color: Colors.blue,
+                            color: WitHomeTheme.wit_lightGreen,
                             width: 2.0,
                           )
                               : null,
@@ -170,13 +171,13 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep2> {
             // Custom Horizontal Stepper
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(3, (index) {
+              children: List.generate(2, (index) {
                 return Expanded(
                   child: Column(
                     children: [
                       CircleAvatar(
                         radius: 18.0,
-                        backgroundColor: _currentStep >= index ? Colors.blue : Colors.grey,
+                        backgroundColor: _currentStep >= index ? WitHomeTheme.wit_lightGreen : Colors.grey,
                         child: Text(
                           '${index + 1}',
                           style: const TextStyle(color: Colors.white),
@@ -272,11 +273,21 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep2> {
                 width: MediaQuery.of(context).size.width * 0.9, // 버튼 너비 조정
                 height: 50.0, // 버튼 높이 설정
                 decoration: BoxDecoration(
-                  color: Colors.blue, // 버튼 배경색 설정
+                  color: WitHomeTheme.wit_lightGreen, // 버튼 배경색 설정
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: ElevatedButton(
                   onPressed: () async {
+                    if (selectedApt == "선택" || selectedPyung == "선택") {
+                      // 2025-04-22: 아파트 또는 평수 미선택 시 경고 팝업
+                      await DialogUtils.showCustomDialog(
+                        context: context,
+                        title: '알림',
+                        content: '아파트와 평수를 모두 선택해 주세요.',
+                        confirmButtonText: '확인',
+                      );
+                      return; // 더 이상 진행하지 않음
+                    }
                     String? nickname = await secureStorage.read(key: 'nickName');
                     String selectedAptNo = options[selectedApt] ?? "";
                     String selectedPyungNo = pyungOptions.contains(selectedPyung) ? selectedPyung.replaceAll('평', '') : "";

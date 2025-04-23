@@ -9,8 +9,14 @@ import '../models/userInfo.dart';
 
 class loingPopHome extends StatefulWidget {
   final Function(MainViewModel)? onLoginSuccess;
+  final double width;  // ← 외부에서 받는 너비
+  final double height; // ← 외부에서 받는 높이
 
-  loingPopHome({this.onLoginSuccess});
+  loingPopHome({
+    this.onLoginSuccess,
+    this.width = 300,       // 기본값 설정 가능
+    this.height = 300,
+  });
 
   @override
   State<loingPopHome> createState() => _loingPopHomeState();
@@ -22,155 +28,139 @@ class _loingPopHomeState extends State<loingPopHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            '로그인하고 무료견적을 받아보세요!',
-            style: WitHomeTheme.title.copyWith(
-              decoration: TextDecoration.none,
+    return Center(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: SizedBox(
+          width: widget.width,
+          height: widget.height,
+          child: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/home/loginForm.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            // 2025-04-22: Column → SingleChildScrollView + Column으로 변경
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  /*Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          String result = await getChckUser(viewModel, '72091587');
+                          if (widget.onLoginSuccess != null) {
+                            viewModel.userInfo = UserInfo(tempClerkNo: '72091587');
+                            widget.onLoginSuccess!(viewModel);
+                          }
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('이'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () async {
+                          String result = await getChckUser(viewModel, '72091586');
+                          if (widget.onLoginSuccess != null) {
+                            viewModel.userInfo = UserInfo(tempClerkNo: '72091586');
+                            widget.onLoginSuccess!(viewModel);
+                          }
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('백'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () async {
+                          String result = await getChckUser(viewModel, '72091588');
+                          if (widget.onLoginSuccess != null) {
+                            viewModel.userInfo = UserInfo(tempClerkNo: '72091588');
+                            widget.onLoginSuccess!(viewModel);
+                          }
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('조'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () async {
+                          String result = await getChckUser(viewModel, '72091584');
+                          if (widget.onLoginSuccess != null) {
+                            viewModel.userInfo = UserInfo(tempClerkNo: '72091584');
+                            widget.onLoginSuccess!(viewModel);
+                          }
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('우'),
+                      ),
+                    ],
+                  ),*/
+                  const SizedBox(height: 120),
+                  // 2025-04-22: 로그인 성공 시 사용자 정보를 팝업으로 보여주고, 이후 로그인 팝업 닫기
+                  GestureDetector(
+                    onTap: () async {
+                      final ok = await viewModel.login(context);
+
+                      if (ok) {
+                        await getChckUser(viewModel, '');
+                      //  viewModel.userInfo?.tempClerkNo = '72091587';
+                        widget.onLoginSuccess?.call(viewModel);
+
+
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('로그인에 실패했습니다.')),
+                        );
+                      }
+                    },
+
+                    child: Container(
+                      width: 310,
+                      height: 40,
+                      color: Colors.black,
+                      child: Image.asset(
+                        'assets/home/kakaoLogin.png',
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () async {
+                      final ok = await viewModel.loginWithNaver(context);
+                      if (ok) {
+                        await getChckUser(viewModel, '');
+                        ///viewModel.userInfo?.tempClerkNo = '72091587';
+                        viewModel.userInfo?.tempClerkNo = '72091587';
+                        widget.onLoginSuccess?.call(viewModel);
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('로그인에 실패했습니다.')),
+                        );
+                      }
+                    },
+                    child: Container(
+                      width: 310,
+                      height: 40, // 전체 박스 높이
+                      color: Colors.black, // ✅ 흰색 배경 추가
+                      child: Image.asset(
+                        'assets/home/naverLogin.png',
+                        /// width: 200,        // 이미지 자체 너비
+                        /// height: 300,       // 이미지 자체 높이
+                        fit: BoxFit.fill, // 비율 유지
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-          SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  String userId = _idController.text.trim();
-                  String result =  await getChckUser(viewModel, '72091587');
-
-                  if (widget.onLoginSuccess != null) {
-
-                    viewModel.userInfo = UserInfo(tempClerkNo: '72091587');
-                    widget.onLoginSuccess!(viewModel);
-                  }
-                  // 팝업창 닫기
-                  Navigator.of(context).pop();
-                },
-                child: Text('이'),
-              ),
-              SizedBox(width: 8), // 버튼 사이 간격
-              ElevatedButton(
-                onPressed: () async {
-                  String userId = _idController.text.trim();
-                  String result =  await getChckUser(viewModel, '72091586');
-                  // 로그인 로직 추가 가능
-                  if (widget.onLoginSuccess != null) {
-                    viewModel.userInfo = UserInfo(tempClerkNo: '72091586');
-                    widget.onLoginSuccess!(viewModel);
-                  }
-                  // 팝업창 닫기
-                  Navigator.of(context).pop();
-                },
-                child: Text('백'),
-              ),
-              SizedBox(width: 8), // 버튼 사이 간격
-              ElevatedButton(
-                onPressed: () async {
-                  String userId = _idController.text.trim();
-
-                  print('입력된 아이디: $userId');
-                  String result =  await getChckUser(viewModel, '72091588');
-
-                  if (widget.onLoginSuccess != null) {
-                    viewModel.userInfo = UserInfo(tempClerkNo: '72091588');
-                    widget.onLoginSuccess!(viewModel);
-                  }
-
-                  // 팝업창 닫기
-                  Navigator.of(context).pop();
-                },
-                child: Text('조'),
-              ),
-              SizedBox(width: 8), // 버튼 사이 간격
-              ElevatedButton(
-                onPressed: () async {
-                  String userId = _idController.text.trim();
-                  String result =  await getChckUser(viewModel, '72091584');
-
-                  if (widget.onLoginSuccess != null) {
-                    viewModel.userInfo = UserInfo(tempClerkNo: '72091584');
-                    widget.onLoginSuccess!(viewModel);
-                  }
-
-                  // 팝업창 닫기
-                  Navigator.of(context).pop();
-                },
-                child: Text('우'),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          GestureDetector(
-            onTap: () async {
-              bool isLoginSuccessful = await viewModel.login(context);
-              print('아파트 번호 모야???$isLoginSuccessful');
-              if (isLoginSuccessful) {
-                // 로그인 성공 시 콜백 호출
-                String userId = _idController.text.trim();
-
-                String result =  await getChckUser(viewModel, '');
-                ///await getUserInfo(context,viewModel, '');
-                viewModel.userInfo?.tempClerkNo = '72091587';
-                if (widget.onLoginSuccess != null) {
-                  widget.onLoginSuccess!(viewModel);
-                }
-
-                // 팝업창 닫기
-                Navigator.of(context).pop();
-              } else {
-                // 로그인 실패 시 에러 메시지를 표시하거나 다른 처리를 할 수 있음
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('로그인에 실패했습니다.')),
-                );
-              }
-            },
-            child: Image.asset(
-              'assets/home/kakao_login_medium_narrow.png',
-              width: 200,
-              height: 50,
-            ),
-          ),
-          GestureDetector(
-            onTap: () async {
-              bool isLoginSuccessful = await viewModel.loginWithNaver(context);
-              print('아파트 번호 모야??? $isLoginSuccessful');
-
-              if (isLoginSuccessful) {
-                // 로그인 성공 시 콜백 호출
-                String userId = _idController.text.trim();
-                print("🔹 모델 userInfo.id: ${viewModel.userInfo?.id}");
-                print("🔹 모델 userInfo 닉네임: ${viewModel.userInfo?.nickName}");
-
-                String result = await getChckUser(viewModel, '');
-                print("🔹 모델 result: ${result}");
-
-                if (widget.onLoginSuccess != null) {
-                  print("🔹 넘기나????");
-                  viewModel.userInfo?.tempClerkNo = '72091587';
-                  // ✅ 기존 result 대신 viewModel을 전달
-                  widget.onLoginSuccess!(viewModel);
-                }
-
-                // 팝업창 닫기
-                Navigator.of(context).pop();
-              } else {
-                // 로그인 실패 시 에러 메시지를 표시
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('로그인에 실패했습니다.')),
-                );
-              }
-            },
-            child: Image.asset(
-              'assets/home/naver_login_large.png',
-              width: 200,
-              height: 48,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

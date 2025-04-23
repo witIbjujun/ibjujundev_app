@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/home/login/wit_user_loginStep2.dart';
 import 'package:witibju/screens/home/login/wit_user_loginStep3.dart';
 
+import '../wit_home_theme.dart';
+
 class WitUserLoginStep1 extends StatefulWidget {
   @override
   _WitUserLoginStep1State createState() => _WitUserLoginStep1State();
@@ -45,13 +47,13 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep1> {
             // Custom Horizontal Stepper
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(3, (index) {
+              children: List.generate(2, (index) {
                 return Expanded(
                   child: Column(
                     children: [
                       CircleAvatar(
                         radius: 18.0,
-                        backgroundColor: _currentStep >= index ? Colors.blue : Colors.grey,
+                        backgroundColor: _currentStep >= index ? WitHomeTheme.wit_lightGreen : Colors.grey,
                         child: Text(
                           '${index + 1}',
                           style: const TextStyle(color: Colors.white),
@@ -87,7 +89,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep1> {
                 width: MediaQuery.of(context).size.width * 0.9, // 버튼 너비 조정
                 height: 50.0, // 버튼 높이 설정
                 decoration: BoxDecoration(
-                  color: Colors.blue, // 버튼 배경색 설정
+                  color: WitHomeTheme.wit_lightGreen, // 버튼 배경색 설정
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: ElevatedButton(

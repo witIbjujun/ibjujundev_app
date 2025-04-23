@@ -45,7 +45,10 @@ class _PopularCourseListHorizontalViewState extends State<PopularCourseListHoriz
 
     setState(() {
       categoryList = Category().parseCategoryList(_categoryList)!;
-      selectedList = List<bool>.filled(categoryList.length, false);
+
+      // 2025-04-15: 기본 모든 카테고리 선택 상태로 초기화
+      selectedList = List<bool>.filled(categoryList.length, true);
+
       isLoading = false;
     });
   }
@@ -147,7 +150,7 @@ class CategoryView extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 4),
-                    Row(
+                    /*Row(
                       children: [
                         Text(
                           '참여업체', // 참여업체 텍스트
@@ -169,11 +172,11 @@ class CategoryView extends StatelessWidget {
                           ),
                         ),
                       ],
-                    ),
+                    ),*/
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: Colors.grey), // ">" 아이콘 추가
+             // Icon(Icons.chevron_right, color: Colors.grey), // ">" 아이콘 추가
             ],
           ),
         ),

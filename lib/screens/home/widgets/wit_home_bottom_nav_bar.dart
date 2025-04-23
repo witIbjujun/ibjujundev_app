@@ -47,49 +47,36 @@ class BottomNavBar extends StatelessWidget {
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.white,
       currentIndex: selectedIndex,
-      onTap: (index) => _onItemTapped(context, index), // ✅ 내부에서 화면 이동 처리
+      onTap: (index) => _onItemTapped(context, index),
       items: [
         BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/home/checkList_Bottom.png', // 이미지 경로
-            width: 30, // 아이콘 크기 조절
-            height: 30,
-          ),
+          icon: Image.asset('assets/home/checkList_Bottom.png', width: 30, height: 30),
           label: '체크리스트',
         ),
-
         BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/home/info_Bottom.png', // 이미지 경로
-            width: 30, // 아이콘 크기 조절
-            height: 30,
-          ),
+          icon: Image.asset('assets/home/info_Bottom.png', width: 30, height: 30),
           label: '견적정보',
         ),
         BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/home/home_BottomNew.png', // 이미지 경로
-            width: 30, // 아이콘 크기 조절
-            height: 30,
-          ),
+          icon: Image.asset('assets/home/home_BottomNew.png', width: 30, height: 30),
           label: '홈',
         ),
         BottomNavigationBarItem(
-          icon: Image.asset(
-            'assets/home/myInfo_Bottom.png', // 이미지 경로
-            width: 30, // 아이콘 크기 조절
-            height: 30,
-          ),
+          icon: Image.asset('assets/home/myInfo_Bottom.png', width: 30, height: 30),
           label: '내정보',
         ),
       ],
-      selectedItemColor: Color(0xFFAFCB54),
+      selectedItemColor: Colors.black, // 선택된 아이콘 색상도 검정으로 변경
       unselectedItemColor: Color(0xFF8D8D8D),
-      selectedLabelStyle: TextStyle(color: Color(0xFFAFCB54)), // 선택된 라벨 색상
-      unselectedLabelStyle: TextStyle(color: Color(0xFF8D8D8D)), // 선택되지 않은 라벨 색상
-
-      showSelectedLabels: true,  // 선택된 아이템의 라벨 숨기기
-      showUnselectedLabels: true,  // 선택되지 않은 아이템의 라벨 숨기기
+      selectedLabelStyle: const TextStyle(
+        color: Colors.black,
+      //  fontWeight: FontWeight.bold,
+      ),
+      unselectedLabelStyle: const TextStyle(
+        color: Color(0xFF8D8D8D),
+      ),
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
       elevation: 5.0,
     );
   }

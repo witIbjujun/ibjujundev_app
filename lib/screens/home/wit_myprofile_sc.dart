@@ -15,6 +15,8 @@ import '../board/wit_board_main_sc.dart';
 import '../checkList/wit_checkList_main_sc.dart';
 import '../common/wit_tableCalendar_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
+import '../question/wit_question_main_sc.dart';
+import '../seller/wit_seller_profile_insert_name_sc.dart';
 
 class MyProfile extends StatefulWidget  {
   const MyProfile({super.key});
@@ -246,8 +248,8 @@ class _MyProfileState extends State<MyProfile> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                _buildListTile(Icons.attach_money, '캐시'),
+      /*          const SizedBox(height: 16),
+                _buildListTile(Icons.attach_money, '캐시'),*/
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -255,7 +257,16 @@ class _MyProfileState extends State<MyProfile> {
                       MaterialPageRoute(builder: (context) => EstimateScreen()),
                     );
                   },
-                  child: _buildListTile(Icons.assignment, '견적내역'),
+                  child: _buildListTile(Icons.receipt_long, '거래내역'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Question(qustCd: 'Q10001')),
+                    );
+                  },
+                  child: _buildListTile(Icons.design_services, '가이드'),
                 ),
                 GestureDetector(
                   onTap: () {
@@ -265,23 +276,48 @@ class _MyProfileState extends State<MyProfile> {
                       ),
                     );
                   },
-                  child: _buildListTile(Icons.group, 'MY 체크리스트'),
+                  child: _buildListTile(Icons.checklist, 'MY 체크리스트'),
                 ),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Board(1, 'B1')),
+                      MaterialPageRoute(builder: (context) => Board(1, 'B1', bordTitle: "커뮤니티", appBarFlag: true)),
                     );
                   },
-                  child: _buildListTile(Icons.group, '커뮤니티'),
+                  child: _buildListTile(Icons.forum, '커뮤니티'),
                 ),
-                _buildListTile(Icons.notifications, '공지사항'),
+
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Board(1, 'B1', bordTitle: "공지사항", appBarFlag: true)),
+                    );
+                  },
+                  child:_buildListTile(Icons.campaign, '공지사항'),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => SellerProfileInsertName(),
+                      ),
+                    );
+                  },
+                  child: _buildListTile(Icons.business_center, '파트너 등록'),
+                ),
                 GestureDetector(
                   onTap: () async {
                     logOut(context);
                   },
-                  child: _buildListTile(Icons.group, '로그아웃'),
+                  child: _buildListTile(Icons.logout, '로그인(이)'),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    logOut(context);
+                  },
+                  child: _buildListTile(Icons.logout, '로그아웃'),
                 ),
               ],
             ),
