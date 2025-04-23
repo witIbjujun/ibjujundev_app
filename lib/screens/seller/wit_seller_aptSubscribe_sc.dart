@@ -56,6 +56,33 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
     }
   }
 
+  // 아파트 구독
+  Future<void> insertSubscribeApt(dynamic aptNo) async {
+    String restId = "insertSubscribeApt";
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": widget.sllrNo,
+      "aptNo": aptNo,
+    });
+
+    // API 호출
+    final response = await sendPostRequest(restId, param);
+
+    if (response != null) {
+      // 성공 후 리스트 다시 가져오기
+      getSubscribeAptList();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("아파트 구독이 성공하였습니다.")),
+      );
+    } else {
+      // 오류 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("아파트 구독이 실패하였습니다.")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -125,6 +152,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
           item['splSize'] + ' 세대',
           item['aptName'],
           item['stat'],
+          item['aptNo'], // aptNo 추가
         ))
             .toList(),
         SizedBox(height: 16), // 그룹 간 간격
@@ -133,7 +161,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
   }
 
   Widget _buildCardItem(
-      String month, String unit, String description, String action) {
+      String month, String unit, String description, String action, dynamic aptNo) { // aptNo 파라미터 추가
     return Card(
       elevation: 0,
       // 그림자 없앰
@@ -165,6 +193,9 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
             TextButton(
               onPressed: () {
                 // 버튼 클릭 시 행동 정의
+                if (action == '구독하기') {
+                  insertSubscribeApt(aptNo); // aptNo를 넘겨줌
+                }
               },
               style: TextButton.styleFrom(
                 backgroundColor: action == '구독하기' ? WitHomeTheme.wit_lightGreen : WitHomeTheme.wit_lightgray,

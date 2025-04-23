@@ -452,9 +452,9 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                         SizedBox(width: 5), // 텍스트와 아이콘 간격
                         if (asGbn.isNotEmpty)
                           Image.asset(
-                            'assets/images/인증 아이콘.png', // 이미지 경로
-                            height: 18, // 아이콘 높이를 설정 (필요에 따라 조정)
-                            width: 18, // 아이콘 너비를 설정 (필요에 따라 조정)
+                            'assets/images/인증, 베스트 마크.png', // 이미지 경로
+                            height: 50, // 아이콘 높이를 설정 (필요에 따라 조정)
+                            width: 50, // 아이콘 너비를 설정 (필요에 따라 조정)
                           ),
                       ],
                     ),
