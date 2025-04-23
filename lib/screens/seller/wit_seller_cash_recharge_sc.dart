@@ -216,12 +216,13 @@ class CashRechargeState extends State<CashRecharge> {
                   //onPressed: createTossPayment,
                   onPressed: () {
                     // 토스 API 호출
-                    Navigator.push(
-                      context,
+                    /*Navigator.push(
+                      *//*context,
                       MaterialPageRoute(
-                          builder: (context) => Home(selectedAmount, storeName, sellerInfo['email'])),
+                          builder: (context) => Home(selectedAmount, storeName, sellerInfo['email'])
+                      ),*//*
                           //builder: (context) => tossPaymentsWebview("https://example.com/payment?orderId=12345&amount=50000")),
-                    );
+                    );*/
 
                     // 토스 API 호출값 받아서 이상없으면 아래 update 로직 타도록 수정 필요함
                     /*if (selectedCash != null) {

@@ -6,20 +6,22 @@ import 'package:tosspayments_widget_sdk_flutter/model/paymentData.dart';
 
 /// [Home] 위젯은 사용자에게 결제 수단 및 주문 관련 정보를 입력받아
 /// 결제를 시작하는 화면을 제공합니다.
-class Home extends StatefulWidget {
+class TossHome extends StatefulWidget {
   /// 기본 생성자입니다.
-  const Home(this.selectedCash, this.storeName, this.email, {super.key});
+  const TossHome({Key? key, this.selectedCash, this.storeName, this.email, this.aptNo, this.sllrNo}) : super(key: key);
 
   final dynamic selectedCash; //
   final String? storeName; //
   final String? email; //
+  final dynamic sllrNo;
+  final dynamic aptNo;
 
   @override
-  State<Home> createState() => _HomeState();
+  State<TossHome> createState() => _HomeState();
 }
 
 /// [_HomeState]는 [Home] 위젯의 상태를 관리하는 클래스입니다.
-class _HomeState extends State<Home> {
+class _HomeState extends State<TossHome> {
   final _form = GlobalKey<FormState>();
   late String payMethod = '카드'; // 결제수단
   late String orderId; // 주문번호
@@ -27,6 +29,8 @@ class _HomeState extends State<Home> {
   late String amount; // 결제금액
   late String customerName; // 주문자명
   late String customerEmail; // 구매자 이메일
+  late dynamic sllrNo; // 구매자 이메일
+  late dynamic aptNo; // 구매자 이메일
 
   @override
   void initState() {
@@ -34,6 +38,8 @@ class _HomeState extends State<Home> {
     amount = widget.selectedCash?.split('.')[0] ?? '0'; // 기본값으로 '0' 설정
     customerName = widget.storeName!;
     customerEmail = widget.email!;
+    sllrNo = widget.sllrNo;
+    aptNo = widget.aptNo;
   }
 
   /// 이 메소드는 [Home] 위젯을 빌드합니다.
@@ -61,7 +67,8 @@ class _HomeState extends State<Home> {
                 onChanged: (String? newValue) {
                   payMethod = newValue ?? '카드';
                 },
-                items: ['카드', '가상계좌', '계좌이체', '휴대폰', '상품권']
+                //items: ['카드', '가상계좌', '계좌이체', '휴대폰', '상품권']
+              items: ['카드', '계좌이체']
                     .map<DropdownMenuItem<String>>((String i) {
                   return DropdownMenuItem<String>(
                     value: i,
@@ -138,6 +145,8 @@ class _HomeState extends State<Home> {
                       customerEmail: customerEmail,
                       successUrl: Constants.success,
                       failUrl: Constants.fail,
+                      //sllrNo : sllrNo,
+                      //aptNo : aptNo,
                     );
                     var result = await Get.to(
                           () => const Payment(),

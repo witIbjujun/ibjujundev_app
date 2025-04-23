@@ -221,25 +221,34 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
               ),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 // 버튼 클릭 시 행동 정의
                 if (action == '구독하기') {
-
-                  // 토스 API 호출
-                  Navigator.push(
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => Home('50000', storeName, sellerInfo['email'])),
-                    //builder: (context) => tossPaymentsWebview("https://example.com/payment?orderId=12345&amount=50000")),
+                      builder: (context) => TossHome(
+                        selectedCash: '50000',
+                        storeName: storeName,
+                        email: sellerInfo['email'],
+                        sllrNo: widget.sllrNo,
+                        aptNo: aptNo,
+                      ),
+                    ),
                   );
 
                   // 토스 API 호출값 받아서 이상없으면 아래 update 로직 타도록 수정 필요함
-                  if (selectedCash != null) {
-                      insertSubscribeApt(aptNo); // aptNo를 넘겨줌                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("결재가 완료되었습니다.")),
-                      );
-                    }
+                  if (result == true) {
+                    print("aptNoaptNoaptNoaptNo:" + aptNo);
+                    insertSubscribeApt(aptNo);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("결제가 완료되었습니다.")),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("결제가 취소되었거나 실패했습니다.")),
+                    );
+                  }
                 }
               },
               style: TextButton.styleFrom(

@@ -5,8 +5,9 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 class PaymentSuccessPage extends StatelessWidget {
   final String paymentAmount;
   final String itemName; // 품목명 추가
+  final dynamic sllrNo; // 품목명 추가
 
-  PaymentSuccessPage({required this.paymentAmount, required this.itemName});
+  PaymentSuccessPage({required this.paymentAmount, required this.itemName, this.sllrNo});
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +75,12 @@ class PaymentSuccessPage extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.pop(context, true); // 성공 결과 전달
+                  /*Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: '17')),
-                  );
+
+                  );*/
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue, // 버튼 배경색 파란색
