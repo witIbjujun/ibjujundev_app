@@ -331,7 +331,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
       // 이미지 등록 성공
       } else {
         setState(() {
-          widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(checkDate);
+          widget.checkInfoLv3["checkDate"] = formatDateYYYYMMDD(DateTime.now());
           widget.checkInfoLv3["reprDate"] = formatDateYYYYMMDD(reprDate);
           widget.checkInfoLv3["checkComt"] = _checkComtController.text;
           widget.checkInfoLv3["checkImg1"] = imageFile1 == null ? imageUrl1 : "/WIT/" + imageFile1!.path.split('/').last ;

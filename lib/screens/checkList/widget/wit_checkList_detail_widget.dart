@@ -252,7 +252,7 @@ class ExpandableItem extends StatelessWidget {
                         onTap: () {
                           onSwitchChanged(checkInfoLv3["checkYn"] == "Y"); // Y일 경우 false, 나머지 경우 true
 
-                          if (checkInfoLv3["checkYn"] == "Y") {
+                          if (checkInfoLv3["checkYn"] == "Y" && checkInfoLv3["checkDate"] == null) {
                             showModalBottomSheet(
                               context: context,
                               isDismissible: true, // 바깥을 클릭해도 닫히지 않도록 설정
