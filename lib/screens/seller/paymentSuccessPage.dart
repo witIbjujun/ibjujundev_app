@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 
 class PaymentSuccessPage extends StatelessWidget {
   final String paymentAmount;
@@ -75,7 +76,7 @@ class PaymentSuccessPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => CashRecharge(sllrNo: '17')),
+                    MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: '17')),
                   );
                 },
                 style: ElevatedButton.styleFrom(

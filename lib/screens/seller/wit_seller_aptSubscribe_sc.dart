@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import '../../util/wit_api_ut.dart';
 import '../home/wit_home_theme.dart';
+import '../tosspayments/home.dart';
 
 class SellerAptSubscribe extends StatefulWidget {
   final dynamic sllrNo;
@@ -20,6 +21,7 @@ class SellerAptSubscribe extends StatefulWidget {
 class SellerAptSubscribeState extends State<SellerAptSubscribe> {
   dynamic sellerInfo;
   String storeName = "";
+  String? selectedCash; // 선택된 캐시 금액을 저장할 변수
 
   // 아파트구독 리스트
   List<dynamic> subscribeAptList = [];
@@ -27,8 +29,36 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
   @override
   void initState() {
     super.initState();
-    // getSellerInfo(widget.sllrNo);
+    getSellerInfo(widget.sllrNo);
     getSubscribeAptList();
+  }
+
+  Future<void> getSellerInfo(dynamic sllrNo) async {
+
+    String restId = "getSellerInfo";
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": sllrNo,
+    });
+
+    print("sllrNo :" + sllrNo.toString());
+
+    // API 호출
+    final response = await sendPostRequest(restId, param);
+
+    if (response != null) {
+      setState(() {
+        sellerInfo = response;
+        storeName = sellerInfo['storeName'];
+        print('Store Name: $storeName');
+      });
+    } else {
+      // 오류 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("사업자 프로필 조회가 실패하였습니다.")),
+      );
+    }
+
   }
 
   // 아파트 구독 리스트
@@ -194,7 +224,22 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
               onPressed: () {
                 // 버튼 클릭 시 행동 정의
                 if (action == '구독하기') {
-                  insertSubscribeApt(aptNo); // aptNo를 넘겨줌
+
+                  // 토스 API 호출
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Home('50000', storeName, sellerInfo['email'])),
+                    //builder: (context) => tossPaymentsWebview("https://example.com/payment?orderId=12345&amount=50000")),
+                  );
+
+                  // 토스 API 호출값 받아서 이상없으면 아래 update 로직 타도록 수정 필요함
+                  if (selectedCash != null) {
+                      insertSubscribeApt(aptNo); // aptNo를 넘겨줌                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("결재가 완료되었습니다.")),
+                      );
+                    }
                 }
               },
               style: TextButton.styleFrom(

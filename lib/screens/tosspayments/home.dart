@@ -83,7 +83,7 @@ class _HomeState extends State<Home> {
                 decoration: const InputDecoration(
                   labelText: '주문명(orderName)',
                 ),
-                initialValue: '입주캐시 구매',
+                initialValue: '아파트 구독',
                 onSaved: (String? value) {
                   orderName = value!;
                 },

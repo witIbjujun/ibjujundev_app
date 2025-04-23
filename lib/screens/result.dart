@@ -111,7 +111,7 @@ class ResultPage extends StatelessWidget {
       message = '인증 성공! 결제승인API를 호출해 결제를 완료하세요!';
       paymentAmount = result.amount.toString(); // int를 String으로 변환
       print("paymentAmount : " + paymentAmount);
-      updateCashInfo(context, paymentAmount);
+      insertSubscribeApt(context, paymentAmount);
     } else {
       message = '결제에 실패하였습니다';
     }
@@ -161,15 +161,15 @@ class ResultPage extends StatelessWidget {
         ));
   }
 
-  Future<void> updateCashInfo(BuildContext context, String paymentAmount) async {
+  Future<void> insertSubscribeApt(BuildContext context, String paymentAmount) async {
     print('여기 왔냐?');
-    String restId = "updateCashInfo";
+    String restId = "insertSubscribeApt";
 
     // PARAM
     final param = jsonEncode({
       "sllrNo": "17",
-      "cash": paymentAmount,
-      "cashGbn": "01", // 01 : 포인트 충전, 02 : 견적서비스
+      "aptNo": "7",
+      // "cashGbn": "01", // 01 : 포인트 충전, 02 : 견적서비스
     });
 
     // API 호출
@@ -179,7 +179,7 @@ class ResultPage extends StatelessWidget {
       //await getCashInfo(); // 캐시 정보 갱신
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("캐시가 성공적으로 충전되었습니다.")),
+        SnackBar(content: Text("아파트 구독이 성공하였습니다.")),
       );
 
       Navigator.pushReplacement(
@@ -187,7 +187,7 @@ class ResultPage extends StatelessWidget {
         MaterialPageRoute(
           builder: (context) => PaymentSuccessPage(
             paymentAmount: paymentAmount,
-            itemName: "입주 캐시 구매", // 품목명은 적절히 수정
+            itemName: "아파트 구독", // 품목명은 적절히 수정
           ),
         ),
       );
@@ -202,14 +202,14 @@ class ResultPage extends StatelessWidget {
 
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("캐시 충전에 실패했습니다.")),
+        SnackBar(content: Text("아파트 구독이 실패했습니다.")),
       );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => PaymentFailPage(
             paymentAmount: paymentAmount,
-            itemName: "입주 캐시 구매", // 품목명은 적절히 수정
+            itemName: "아파트 구독", // 품목명은 적절히 수정
           ),
         ),
       );
