@@ -210,7 +210,7 @@ class ExpandableItem extends StatelessWidget {
                       WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold) : WitHomeTheme.subtitle,
                     ),
                   ),
-                  if (checkInfoLv3["checkYn"] == 'Y') // 'Y'일 때 연필 아이콘 추가
+                  if (checkInfoLv3["checkYn"] == 'Y' || checkInfoLv3["checkDate"] != null) // 'Y'일 때 연필 아이콘 추가
                     GestureDetector(
                       onTap: () {
                         showModalBottomSheet(
@@ -233,8 +233,8 @@ class ExpandableItem extends StatelessWidget {
                       },
                       child: Image.network(
                         apiUrl + "/WIT/checkList/글쓰기.png",
-                        width: 30,
-                        height: 30,
+                        width: 28,
+                        height: 28,
                         fit: BoxFit.cover,
                         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
                           return Image.network(
@@ -246,11 +246,33 @@ class ExpandableItem extends StatelessWidget {
                         },
                       ),
                     ),
-                    SizedBox(width: 16),
+                    SizedBox(width: 20),
                     Container(
                       child: GestureDetector(
                         onTap: () {
                           onSwitchChanged(checkInfoLv3["checkYn"] == "Y"); // Y일 경우 false, 나머지 경우 true
+
+                          if (checkInfoLv3["checkYn"] == "Y") {
+                            showModalBottomSheet(
+                              context: context,
+                              isDismissible: true, // 바깥을 클릭해도 닫히지 않도록 설정
+                              isScrollControlled: true, // 스크롤 가능하게 설정
+                              builder: (context) {
+                                return Padding(
+                                  padding: MediaQuery
+                                      .of(context)
+                                      .viewInsets,
+                                  child: Container(
+                                    height: 510,
+                                    child: ExamplePhotoPopup(
+                                      checkInfoLv3: checkInfoLv3,
+                                      onSwitchChanged: onSwitchChanged,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          }
                         },
                         child: Image.network(
                                 checkInfoLv3["checkYn"] == "D"
@@ -262,8 +284,8 @@ class ExpandableItem extends StatelessWidget {
                               : checkInfoLv3["checkYn"] == "N" && checkInfoLv3["checkDate"] != null
                               ? apiUrl + "/WIT/checkList/정상버튼.png"
                               : apiUrl + "/WIT/checkList/정상버튼.png",
-                          width: 20,
-                          height: 20,
+                          width: 37,
+                          height: 37,
                           fit: BoxFit.cover,
                         ),
                       ),

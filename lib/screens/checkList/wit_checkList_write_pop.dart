@@ -255,6 +255,10 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                                 setState(() {
                                   isLoading = true;
                                 });
+
+                                // UI가 즉시 업데이트 되도록 잠깐 지연
+                                await Future.delayed(Duration(milliseconds: 500));
+
                                 // 하자등록
                                 await save(false);
 

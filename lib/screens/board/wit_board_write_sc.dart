@@ -221,6 +221,10 @@ class _BoardWriteState extends State<BoardWrite> {
                 );
               },
             );
+
+            // UI가 즉시 업데이트 되도록 잠깐 지연
+            await Future.delayed(Duration(milliseconds: 500));
+
             await saveImages();
             Navigator.of(context).pop(); // 프로그래스 바 닫기
           },
