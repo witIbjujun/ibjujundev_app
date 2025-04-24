@@ -246,6 +246,40 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                           Expanded(
                             child: TextButton(
                               style: TextButton.styleFrom(
+                                backgroundColor: WitHomeTheme.wit_gray,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              onPressed: () async {
+                                /*setState(() {
+                                  isLoading = true;
+                                });
+
+                                // UI가 즉시 업데이트 되도록 잠깐 지연
+                                await Future.delayed(Duration(milliseconds: 500));
+
+                                // 하자등록
+                                await save(true);
+
+                                setState(() {
+                                  isLoading = false;
+                                });*/
+
+                                Navigator.of(context).pop();
+                              },
+                              child: Text("하자 취소",
+                                style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
+                              ),
+                            ),
+                          ),
+
+                          Container(width: 20),
+
+                          // 하자등록 버튼
+                          Expanded(
+                            child: TextButton(
+                              style: TextButton.styleFrom(
                                 backgroundColor: WitHomeTheme.wit_lightCoral,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -268,11 +302,45 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
 
                                 Navigator.of(context).pop();
                               },
-                              child: Text("하자 등록",
+                              child: Text(widget.checkInfoLv3["checkDate"] == null ? "하자 등록" : "하자 수정",
                                 style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
                               ),
                             ),
                           ),
+                          if (widget.checkInfoLv3["checkDate"] != null)...[
+                            Container(width: 20),
+                            // 하자완료 버튼
+                            Expanded(
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  backgroundColor: WitHomeTheme.wit_lightBlue,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+
+                                  // UI가 즉시 업데이트 되도록 잠깐 지연
+                                  await Future.delayed(Duration(milliseconds: 500));
+
+                                  // 하자등록
+                                  await save(true);
+
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("하자 완료",
+                                  style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
+                                ),
+                              ),
+                            ),
+                          ]
                         ],
                       ),
                     ],
