@@ -22,6 +22,7 @@ class _ResultPageState extends State<ResultPage> {
   @override
   void initState() {
     super.initState();
+    print("123212131213213212123");
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       handleResult();
@@ -32,7 +33,9 @@ class _ResultPageState extends State<ResultPage> {
     final result = Get.arguments;
     dynamic paymentAmount = result.amount.toString(); // int를 String으로 변환
 
+    print("AAAAAAAAAAAAAAAAAAAAAA111111");
     if (result is Success) {
+      print("AAAAAAAAAAAAAAAAAAAAAA11112222222211");
       final resultFromSuccessPage = await Navigator.push(
         context,
         MaterialPageRoute(
@@ -44,6 +47,7 @@ class _ResultPageState extends State<ResultPage> {
       );
 
       // PaymentSuccessPage에서 결과 받아서 첫 페이지로 pop
+      print("AAAAAAAAAAAAA");
       Navigator.pop(context, resultFromSuccessPage);
     } else {
       Navigator.pop(context, false);

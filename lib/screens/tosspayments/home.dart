@@ -154,8 +154,14 @@ class _HomeState extends State<TossHome> {
                       arguments: data,
                     );
                     if (result != null) {
-                      Get.toNamed("/result", arguments: result);
+                      print("AAAAAAAAAAA12312312132AA");
+                      final resultFromResultPage = await Get.toNamed("/result", arguments: result);
+
+                      if (resultFromResultPage != null) {
+                        Navigator.pop(context, resultFromResultPage); // ✅ 초기화면으로 전달!
+                      }
                     }
+                    // Navigator.pop(context, result); // 👉 결과를 초기화면으로 전달
                   },
                   child: const Text(
                     '결제하기',

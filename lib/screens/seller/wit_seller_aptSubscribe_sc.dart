@@ -182,7 +182,9 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
           item['splSize'] + ' 세대',
           item['aptName'],
           item['stat'],
-          item['aptNo'], // aptNo 추가
+          item['aptNo'], // aptNo 추
+          item['sscAmt'], // aptNo 추
+          item['saleAmt'], // aptNo 추
         ))
             .toList(),
         SizedBox(height: 16), // 그룹 간 간격
@@ -191,44 +193,81 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
   }
 
   Widget _buildCardItem(
-      String month, String unit, String description, String action, dynamic aptNo) { // aptNo 파라미터 추가
+      String month, String unit, String description, String action, dynamic aptNo, dynamic sscAmt, dynamic saleAmt) {
     return Card(
       elevation: 0,
-      // 그림자 없앰
       color: Colors.grey[100],
-      // 카드 배경색
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0), // 원하는 radius 값으로 조절
+        borderRadius: BorderRadius.circular(12.0),
       ),
       margin: EdgeInsets.symmetric(vertical: 4.0),
-      // 아이템 간 간격 줄임
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            Icon(Icons.apartment, size: 24, color: Colors.grey[600]), // 아파트 아이콘 추가
-            SizedBox(width: 16), // 아이콘과 텍스트 간 간격
+            Icon(Icons.apartment, size: 24, color: Colors.grey[600]),
+            SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(unit, style: WitHomeTheme.title.copyWith(fontSize: 14)),
-                  Text(
-                    description,
-                    style: WitHomeTheme.title.copyWith(fontSize: 14),
+                  Text(description, style: WitHomeTheme.title.copyWith(fontSize: 14)),
+                  Row(
+                    children: [
+                      Text(
+                        sscAmt.toString() + '원',
+                        style: TextStyle(
+                          color: WitHomeTheme.wit_gray,
+                          decoration: TextDecoration.lineThrough,
+                          decorationColor: Colors.red,
+                          fontSize: 13,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        ' -> ' + saleAmt.toString().split('.')[0] + '원',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(width: 6),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.local_offer, size: 14, color: Colors.white), // 🎯 세일 아이콘
+                            SizedBox(width: 2),
+                            Text(
+                              'SALE',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
             TextButton(
               onPressed: () async {
-                // 버튼 클릭 시 행동 정의
                 if (action == '구독하기') {
                   final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => TossHome(
-                        selectedCash: '50000',
+                        selectedCash: saleAmt.toString().split('.')[0],
                         storeName: storeName,
                         email: sellerInfo['email'],
                         sllrNo: widget.sllrNo,
@@ -237,27 +276,25 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
                     ),
                   );
 
-                  // 토스 API 호출값 받아서 이상없으면 아래 update 로직 타도록 수정 필요함
-                  if (result == true) {
-                    print("aptNoaptNoaptNoaptNo:" + aptNo);
-                    insertSubscribeApt(aptNo);
+                  if (result == 'success') {
+                    insertSubscribeApt(aptNo); // ✅ 결제 성공 후 구독 처리
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("결제가 완료되었습니다.")),
+                      SnackBar(content: Text("구독이 완료되었습니다.")),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("결제가 취소되었거나 실패했습니다.")),
+                      SnackBar(content: Text("구독이 취소되었거나 실패했습니다.")),
                     );
                   }
                 }
               },
+
               style: TextButton.styleFrom(
                 backgroundColor: action == '구독하기' ? WitHomeTheme.wit_lightGreen : WitHomeTheme.wit_lightgray,
-                // 조건에 따라 배경색 변경
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0), // 최소 패딩 보장
-                minimumSize: Size(80.0, 36.0), // 최소 크기 설정 (필요에 따라 조정)
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                minimumSize: Size(80.0, 36.0),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0), // 필요에 따라 둥근 모서리 조정
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
               child: Text(
@@ -270,4 +307,5 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
       ),
     );
   }
+
 }
