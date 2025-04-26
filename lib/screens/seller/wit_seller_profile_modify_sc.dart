@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:portone_flutter/model/certification_data.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
@@ -20,6 +21,8 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:image/image.dart' as img;
 
 import '../home/wit_home_theme.dart';
+import 'package:portone_flutter/iamport_certification.dart';
+
 
 
 class SellerProfileModify extends StatefulWidget {
@@ -34,7 +37,7 @@ class SellerProfileModify extends StatefulWidget {
 }
 
 class SellerProfileModifyState extends State<SellerProfileModify> {
-
+  bool isCertified = false; // 휴대폰 인증 완료 여부
 
   dynamic sellerInfo;
   String storeName = "";
@@ -503,6 +506,44 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     // 인증 코드 요청 후 결과 처리
     // 성공 시 사용자에게 알림 표시
   }*/
+
+  // 본인 인증 시작
+  void _startCertification() {
+    if (hp1Controller.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('휴대폰 번호를 입력해주세요.')),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            IamportCertification(
+              userCode: 'imp47341432', // 네 실제 포트원 userCode로 교체
+              data: CertificationData(
+                merchantUid: 'mid_${DateTime
+                    .now()
+                    .millisecondsSinceEpoch}',
+                phone: hp1Controller.text,
+                company: '포트원', // 또는 원하는 이름
+              ),
+              callback: (Map<String, String> result) {
+                if (result['success'] == 'true') {
+                  print('인증 성공: $result');
+                  setState(() {
+                    isCertified = true;
+                  });
+                } else {
+                  print('인증 실패: ${result['error_msg']}');
+                }
+                Navigator.pop(context);
+              },
+            ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1204,6 +1245,28 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     controller: hp1Controller,
                   ),
                   ElevatedButton(
+                    onPressed: _startCertification,
+                    child: Text(
+                      isCertified ? '인증 완료' : '본인인증 하기',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isCertified ? WitHomeTheme.wit_gray : WitHomeTheme.wit_lightCoral,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  // 본인 인증 설명 텍스트
+                  Text(
+                    '본인인증을 통해 고객님의 신원을 확인합니다.',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  /*ElevatedButton(
                     onPressed: _verifyPhone,
                     child: Text('인증 코드 요청',
                       style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
@@ -1240,7 +1303,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
 

@@ -91,6 +91,9 @@ dependencies:
   # Firebase SMS
   firebase_auth: ^5.3.4
   sms_autofill: ^2.0.0
+  
+  # portone 휴대폰 인증 연동
+  portone_flutter: ^0.12.0
 
   # 아이콘 설정
 flutter_icons:
