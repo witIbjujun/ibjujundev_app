@@ -215,7 +215,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               ),
 
                               child: Text(
-                                '작업요청예상일 : $formattedDate',
+                                estimateRequestInfoForSend['stat'] ?? '상태 없음', // 상태
                                 style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
                               ),
                             ),
