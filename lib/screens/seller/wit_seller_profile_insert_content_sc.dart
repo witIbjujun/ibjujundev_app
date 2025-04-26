@@ -98,20 +98,40 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(3, (index) {
+                  return Expanded(
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 18.0,
+                          backgroundColor: 1 == index ? WitHomeTheme.wit_lightGreen : WitHomeTheme.wit_gray,
+                          child: Text(
+                            '${index + 1}',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+              const Divider(height: 32.0),
               Container(
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
                   color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 child: Text(
-                  '파트너님의 업체를 잘 알릴 수 있는\n내용을 입력해보세요.',
+                  '파트너님의 업체 설명과 사진을 등록해주세요.',
                   style: WitHomeTheme.title.copyWith(fontSize: 16),
                 ),
               ),
-
               SizedBox(height: 8), // 레이블과 카드 사이의 간격
               Container(
                 decoration: BoxDecoration(
@@ -206,7 +226,7 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
                 ],
               ),
               SizedBox(height: 16),
-              Container(
+              /*Container(
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
@@ -218,7 +238,7 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
                   '사업자정보 등록 후\n견적서비스 이용이 가능합니다..',
                   style: WitHomeTheme.title.copyWith(fontSize: 16),
                 ),
-              ),
+              ),*/
 
               Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
                 child: ElevatedButton(

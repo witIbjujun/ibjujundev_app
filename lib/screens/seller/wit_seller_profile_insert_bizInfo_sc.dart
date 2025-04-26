@@ -311,12 +311,46 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(3, (index) {
+                  return Expanded(
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 18.0,
+                          backgroundColor: 2 == index ? WitHomeTheme.wit_lightGreen : WitHomeTheme.wit_gray,
+                          child: Text(
+                            '${index + 1}',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+              const Divider(height: 32.0),
+              /*Container(
+                width: double.infinity, // 넓이를 최대로 설정
+                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
+                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                child: Text(
+                  '입주전에서 사용할 판매자 정보를 입력해주세요.',
+                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                ),
+              ),*/
               Container(
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
                   color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 child: Text(

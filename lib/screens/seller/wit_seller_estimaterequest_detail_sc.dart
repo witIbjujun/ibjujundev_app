@@ -16,6 +16,7 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 
 import '../../util/wit_code_ut.dart';
 import '../board/wit_board_detail_sc.dart';
+import '../chat/CustomChatScreen.dart';
 import '../chat/chatMain.dart';
 import '../common/wit_ImageViewer_sc.dart';
 import '../home/wit_home_theme.dart';
@@ -574,7 +575,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         } else if (reqState == "02") {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ChatPage()),
+                            MaterialPageRoute(builder: (context) =>  CustomChatScreen('1', '1','sellerView')),
                           );
                           // 작업 진행 로직
 /*                          updateEstimateInfo(
@@ -589,7 +590,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         } else if (reqState == "03") {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ChatPage()),
+                            MaterialPageRoute(builder: (context) =>  CustomChatScreen('1', '1','sellerView'))
                           );
                         // 작업 진행 로직
                           /*updateEstimateInfo(
