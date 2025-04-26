@@ -23,6 +23,7 @@ import 'package:witibju/screens/seller/wit_seller_estimaterequest_list_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_modify_sc.dart';
 
 // import '../../main_toss.dart';
+import '../../main.dart';
 import '../board/wit_board_main_sc.dart';
 import '../common/wit_tableCalendar_sc.dart';
 import '../common/wit_tableCalendar_widget.dart';
@@ -43,7 +44,7 @@ class SellerProfileDetail extends StatefulWidget {
   }
 }
 
-class SellerProfileDetailState extends State<SellerProfileDetail> {
+class SellerProfileDetailState extends State<SellerProfileDetail> with RouteAware {
   dynamic sellerInfo;
   String storeName = "";
   Map cashInfo = {};
@@ -71,6 +72,24 @@ class SellerProfileDetailState extends State<SellerProfileDetail> {
       getSubscribeAptList(sllrNo);
       // getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!); // Route 감시 시작
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this); // Route 감시 해제
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    // 이 화면으로 다시 돌아왔을 때 실행됨
+    fetchData();
   }
 
   Future<void> getSellerInfo(dynamic sllrNo) async {

@@ -101,7 +101,9 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
 
     if (response != null) {
       // 성공 후 리스트 다시 가져오기
-      getSubscribeAptList();
+      setState(() {
+        getSubscribeAptList();
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("아파트 구독이 성공하였습니다.")),
       );

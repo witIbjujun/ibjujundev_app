@@ -23,8 +23,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
+
+// 화면 재조회 설정 // RouteObserver 선언 (전역)
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+
 
   // Firebase 초기화 추가
   await Firebase.initializeApp(); // Firebase 서비스를 사용하기 전에 반드시 초기화해야 함
@@ -79,12 +85,15 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   final String? token;
 
+
   MyApp({this.token});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+
+      navigatorObservers: [routeObserver],
 
       // 앱 언어 설정
       localizationsDelegates: [
