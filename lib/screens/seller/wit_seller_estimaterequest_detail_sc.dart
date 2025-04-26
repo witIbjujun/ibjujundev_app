@@ -115,6 +115,13 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     String reqState = estimateRequestInfoForSend['reqState'] ??
         "reqState 정보 없음";
 
+    // 이건 위젯 함수 안 어딘가 (예: build 메서드 안)에 위치
+    String rawDate = estimateRequestInfoForSend['estimateDate'] ?? '';
+    String formattedDate = '없음';
+    if (rawDate.length == 8) {
+      formattedDate = '${rawDate.substring(0, 4)}/${rawDate.substring(4, 6)}/${rawDate.substring(6, 8)}';
+    }
+
     // 입력 필드에 초기값 설정
     if (reqState != "01") {
       itemPrice1Controller.text = itemPrice1; // reqState가 01이 아닐 때 기존 값 표시
@@ -194,6 +201,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               ),
                             ),
                             SizedBox(width: 10), // 상태 텍스트와의 간격
+
                             TextButton(
                               onPressed: () {
                                 // 버튼 클릭 시 동작
@@ -204,8 +212,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                   borderRadius: BorderRadius.circular(0), // 테두리 없애기
                                 ),
                               ),
+
                               child: Text(
-                                estimateRequestInfoForSend['stat'] ?? '상태 없음', // 상태
+                                '작업요청예상일 : $formattedDate',
                                 style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
                               ),
                             ),
@@ -231,8 +240,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               ),
                               SizedBox(height: 15), // 내용과 작업 요청 예상일 사이의 간격
                               Text(
-                                "작업요청예상일 : 2025/02/10", // 작업 요청 예상일
-                                style: WitHomeTheme.title.copyWith(fontSize: 16), // 스타일 적용
+                                '작업요청예상일 : $formattedDate',
+                                style: WitHomeTheme.title.copyWith(fontSize: 16),
                               ),
                             ],
                           ),
@@ -684,8 +693,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     // 결과 셋팅
     setState(() {
       estimateRequestInfoForSend = _estimateRequestInfoForSend;
-      print("estNo : " + estimateRequestInfoForSend["estNo"]);
-      print("seq : " + estimateRequestInfoForSend["seq"]);
     });
 
     getSellerDetailImageList();
