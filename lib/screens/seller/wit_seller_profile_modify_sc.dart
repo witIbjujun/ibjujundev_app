@@ -148,6 +148,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         serviceArea = sellerInfo['serviceArea'] ?? '';
         serviceItem = sellerInfo['serviceItem'] ?? '';
         asGbn = sellerInfo['asGbn'] ?? '';
+        if(sellerInfo['certificationYn'] == 'Y') {
+          isCertified = true;
+        }
 
         print("serviceItem : " + serviceItem);
         print("asGbn : " + asGbn);
@@ -485,6 +488,34 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     getSellerInfo(widget.sllrNo);
   }
 
+  // [서비스] 공통코드 조회
+  Future<void> updateCertificationYn() async {
+    // REST ID
+    String restId = "updateCertificationYn";
+
+    // PARAM
+    final param = jsonEncode({
+        "sllrNo" : widget.sllrNo,
+    });
+
+    // API 호출 (바로견적 설정 정보 조회)
+    final _certificationYn = await sendPostRequest(restId, param);
+
+    // 결과 셋팅
+    // 결과 셋팅
+    if (_certificationYn != null) {
+      setState(() {
+        isCertified = true;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("본인인증여부 수정이 실패했습니다.")),
+      );
+    }
+
+    getSellerInfo(widget.sllrNo);
+  }
+
   void _addServiceWithAsPeriod() {
     if (selectedServiceType != null && selectedAsPeriod != null) {
       String combinedService = '$selectedServiceType / $selectedAsPeriod';
@@ -528,12 +559,15 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     .millisecondsSinceEpoch}',
                 phone: hp1Controller.text,
                 company: '포트원', // 또는 원하는 이름
+                mRedirectUrl : 'http://123.com'
               ),
               callback: (Map<String, String> result) {
                 if (result['success'] == 'true') {
                   print('인증 성공: $result');
                   setState(() {
-                    isCertified = true;
+                    //isCertified = true;
+                    // 인증완료로 데이터 값 수정
+                    updateCertificationYn();
                   });
                 } else {
                   print('인증 실패: ${result['error_msg']}');
@@ -1245,16 +1279,17 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     controller: hp1Controller,
                   ),
                   ElevatedButton(
-                    onPressed: _startCertification,
+                    onPressed: isCertified ? null : _startCertification,
                     child: Text(
                       isCertified ? '인증 완료' : '본인인증 하기',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.white,
+                        color: WitHomeTheme.wit_white,
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isCertified ? WitHomeTheme.wit_gray : WitHomeTheme.wit_lightCoral,
+                      backgroundColor: WitHomeTheme.wit_lightCoral,
+                      disabledBackgroundColor: WitHomeTheme.wit_gray, // <-- 추가!
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
