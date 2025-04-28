@@ -5,6 +5,8 @@ import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/screens/board/wit_board_write_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
+import '../wit_board_report_sc.dart';
+
 // 타이틀 및 수정/삭제 영역
 class TitleAndMenu extends StatelessWidget {
   final Map<String, dynamic> boardDetailInfo;
@@ -34,35 +36,40 @@ class TitleAndMenu extends StatelessWidget {
             style: WitHomeTheme.title,
           ),
         ),
-        if (boardDetailInfo["creUser"] == loginClerkNo)...[
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
-            color: WitHomeTheme.wit_white,
-            onSelected: (value) async {
-              if (value == 'edit') {
-                await Navigator.push(
-                  context,
-                  SlideRoute(page: BoardWrite(
-                    boardInfo: boardDetailInfo,
-                    imageList: boardDetailImageList,
-                    bordNo: boardDetailInfo["bordNo"],
-                    bordType: boardDetailInfo["bordType"],
-                  )),
-                ).then((_) {
-                  callBack();
-                });
-              } else if (value == 'delete') {
-                ConfimDialog.show(context,
-                    "삭제",
-                    "삭제하시겠습니까?",
-                    () async {
-                      endBoardInfo();
-                    }
-                );
-              }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
+        PopupMenuButton<String>(
+          icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
+          color: WitHomeTheme.wit_white,
+          onSelected: (value) async {
+            if (value == 'edit') {
+              await Navigator.push(
+                context,
+                SlideRoute(page: BoardWrite(
+                  boardInfo: boardDetailInfo,
+                  imageList: boardDetailImageList,
+                  bordNo: boardDetailInfo["bordNo"],
+                  bordType: boardDetailInfo["bordType"],
+                )),
+              ).then((_) {
+                callBack();
+              });
+            } else if (value == 'delete') {
+              ConfimDialog.show(context,
+                  "삭제",
+                  "삭제하시겠습니까?",
+                  () async {
+                    endBoardInfo();
+                  }
+              );
+            } else if (value == 'report') {
+              await Navigator.push(
+                context,
+                SlideRoute(page: BoardReport(boardInfo: boardDetailInfo)),
+              );
+            }
+          },
+          itemBuilder: (BuildContext context) {
+            return [
+              if (boardDetailInfo["creUser"] == loginClerkNo)...[
                 PopupMenuItem<String>(
                   value: 'edit',
                   child: Text('수정하기',
@@ -75,10 +82,18 @@ class TitleAndMenu extends StatelessWidget {
                     style: WitHomeTheme.subtitle,
                   ),
                 ),
-              ];
-            },
-          ),
-        ]
+              ]
+              else ...[
+                PopupMenuItem<String>(
+                  value: 'report',
+                  child: Text('신고하기',
+                    style: WitHomeTheme.subtitle,
+                  ),
+                ),
+              ]
+            ];
+          },
+        ),
       ],
     );
   }
