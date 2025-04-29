@@ -163,6 +163,10 @@ class BoardDetailState extends State<BoardDetail> {
 
   // [서비스] 게시판 상세 조회
   Future<void> getBoardDetailList() async {
+
+    // 로그인 사번
+    loginClerkNo = (await secureStorage.read(key: 'clerkNo'))!;
+
     // REST ID
     String restId = "getBoardDetailInfo";
 
@@ -171,6 +175,7 @@ class BoardDetailState extends State<BoardDetail> {
       "bordNo": boardDetailInfo["bordNo"],
       "bordType": boardDetailInfo["bordType"],
       "bordSeq": boardDetailInfo["bordSeq"],
+      "creUser": loginClerkNo,
     });
 
     // API 호출 (게시판 상세 조회)

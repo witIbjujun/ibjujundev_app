@@ -167,6 +167,7 @@ class BoardReportState extends State<BoardReport> {
     }
 
     var restId = "boardSendReport";
+
     var param = jsonEncode({
       "bordType": widget.boardInfo["bordType"],
       "bordNo": widget.boardInfo["bordNo"],
@@ -176,8 +177,6 @@ class BoardReportState extends State<BoardReport> {
     });
 
     final result = await sendPostRequest(restId, param);
-
-    print(result);
 
     if (result == 1) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("신고 성공")));

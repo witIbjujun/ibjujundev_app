@@ -61,6 +61,12 @@ class TitleAndMenu extends StatelessWidget {
                   }
               );
             } else if (value == 'report') {
+
+              if (boardDetailInfo["reportYn"] == "Y") {
+                alertDialog.show(context, "이미 신고한 게시글입니다.");
+                return;
+              }
+
               await Navigator.push(
                 context,
                 SlideRoute(page: BoardReport(boardInfo: boardDetailInfo)),
