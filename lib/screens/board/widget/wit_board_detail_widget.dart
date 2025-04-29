@@ -70,7 +70,9 @@ class TitleAndMenu extends StatelessWidget {
               await Navigator.push(
                 context,
                 SlideRoute(page: BoardReport(boardInfo: boardDetailInfo)),
-              );
+              ).then((_) {
+                callBack();
+              });
             }
           },
           itemBuilder: (BuildContext context) {
