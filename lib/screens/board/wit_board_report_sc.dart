@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 // import 'package:witibju/screens/board/widget/wit_board_report_widget.dart'; // 현재 사용되지 않음
 
+import '../../util/wit_api_ut.dart';
+import '../common/wit_common_widget.dart';
 import '../home/wit_home_theme.dart'; // WitHomeTheme 정의가 필요합니다.
 
 class BoardReport extends StatefulWidget {
@@ -14,6 +19,8 @@ class BoardReport extends StatefulWidget {
 }
 
 class BoardReportState extends State<BoardReport> {
+
+  final secureStorage = FlutterSecureStorage();
 
   final List<String> _reportReasons = [
     '스팸홍보/도배입니다.',
@@ -93,13 +100,13 @@ class BoardReportState extends State<BoardReport> {
                       }).toList(),
                       SizedBox(height: 10),
                       Text(
-                        '상세 사유 (선택)',
+                        '상세 사유',
                         style: WitHomeTheme.title,
                       ),
                       SizedBox(height: 10),
                       TextField(
                         controller: _detailController,
-                        maxLines: 4,
+                        maxLines: 3,
                         decoration: InputDecoration(
                           hintText: '신고 내용을 자세히 입력해 주세요.',
                           border: OutlineInputBorder(),
@@ -143,20 +150,45 @@ class BoardReportState extends State<BoardReport> {
   // 신고하기
   Future<void> submitReport() async {
 
-    // 사유 선택 체크
-    if (_selectedReason == null) {
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+    String? reason = _selectedReason;
+    String details = _detailController.text;
 
+    // 사유 선택 체크
+    if (reason == null || reason == "") {
+      alertDialog.show(context, "신고 사유를 선택해주세요.");
       return;
     }
 
-    String reason = _selectedReason!;
-    String details = _detailController.text;
+    if (reason == "기타" && details == "") {
+      alertDialog.show(context, "기타 선택시 상세 사유를 입력해주세요");
+      return;
+    }
 
+    var restId = "boardSendReport";
+    var param = jsonEncode({
+      "bordType": widget.boardInfo["bordType"],
+      "bordNo": widget.boardInfo["bordNo"],
+      "reportReason": reason,
+      "reportCont": details,
+      "creUser": loginClerkNo
+    });
 
+    final result = await sendPostRequest(restId, param);
 
-    print("reason ::: " + reason);
-    print("reason ::: " + details);
+    print(result);
 
+    if (result == 1) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("신고 성공")));
+      Navigator.pop(context);
+    } else if (result == -2) {
+      alertDialog.show(context, "이미 신고한 게시글입니다.");
+      return;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("신고 실패")));
+      Navigator.pop(context);
+    }
   }
 
 }
