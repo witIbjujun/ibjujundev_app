@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 
 // [위젯] 좌측 라디오박스 리스트 메세지
 class RadioOptionColumn extends StatefulWidget {
@@ -41,16 +42,16 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: _opacity,
-      duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
+      duration: Duration(milliseconds: 300),
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.of(context).size.width * 0.85,
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
-          color: Colors.grey[300],
+          color: WitHomeTheme.wit_extraLightGrey,
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: WitHomeTheme.wit_gray.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 5,
               offset: Offset(0, 3),
@@ -65,7 +66,7 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
                   widget.data['qustTitle']!,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: WitHomeTheme.title,
                 ),
               ),
             if (widget.data['qustSubTitle'] != null)
@@ -73,7 +74,7 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
                   widget.data['qustSubTitle']!,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                  style: WitHomeTheme.subtitle,
                 ),
               ),
             ...List.generate(widget.options.length, (optionIndex) {
@@ -81,10 +82,10 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
                 margin: const EdgeInsets.symmetric(vertical: 2.0),
                 padding: const EdgeInsets.all(0.0),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: WitHomeTheme.wit_white,
                   borderRadius: BorderRadius.circular(10.0),
                   border: Border.all(
-                    color: widget.groupValue == optionIndex + 1 ? Colors.blue : Colors.white,
+                    color: widget.groupValue == optionIndex + 1 ? WitHomeTheme.wit_lightSteelBlue : WitHomeTheme.wit_white,
                     width: 2.0,
                   ),
                 ),
@@ -95,12 +96,12 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
                       value: optionIndex + 1,
                       groupValue: widget.groupValue,
                       onChanged: widget.onChanged,
-                      activeColor: Colors.blue,
+                      activeColor: WitHomeTheme.wit_lightSteelBlue,
                     ),
                     Expanded(
                       child: Text(
                         widget.options[optionIndex]['opTitle']!,
-                        style: TextStyle(fontSize: 14, color: Colors.black),
+                        style: WitHomeTheme.subtitle,
                       ),
                     ),
                   ],
@@ -116,20 +117,13 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
                 child: TextButton(
                   onPressed: (widget.isEnabled?.every((enabled) => enabled) ?? false) ? widget.onComplete : null,
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.green[300], // 옅은 녹색 배경
+                    backgroundColor: WitHomeTheme.wit_lightGreen, // 옅은 녹색 배경
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
                     ),
-                    minimumSize: Size(double.infinity, 50), // 버튼 높이 설정
+                    minimumSize: Size(double.infinity, 40), // 버튼 높이 설정
                   ),
-                  child: Text(
-                    '확인',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16, // 텍스트 크기 조정
-                      fontWeight: FontWeight.bold, // 텍스트 굵기 조정
-                    ),
-                  ),
+                  child: Text('확인', style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
                 ),
               ),
             )
@@ -181,16 +175,16 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: _opacity,
-      duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
+      duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.8, // 화면의 80% 너비
+        width: MediaQuery.of(context).size.width * 0.85,
         padding: const EdgeInsets.all(10.0), // 바깥쪽 여백
         decoration: BoxDecoration(
-          color: Colors.grey[300], // 바깥 박스 배경색
+          color: WitHomeTheme.wit_extraLightGrey, // 바깥 박스 배경색
           borderRadius: BorderRadius.circular(10.0), // 둥근 모서리
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2), // 그림자 색상
+              color: WitHomeTheme.wit_gray.withOpacity(0.2), // 그림자 색상
               spreadRadius: 2,
               blurRadius: 5,
               offset: Offset(0, 3), // 그림자의 위치
@@ -205,7 +199,7 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
                 padding: const EdgeInsets.only(bottom: 10.0), // 제목과 옵션 간격
                 child: Text(
                   widget.data['qustTitle']!,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // 제목 스타일
+                  style: WitHomeTheme.title, // 제목 스타일
                 ),
               ),
             if (widget.data['qustSubTitle'] != null)
@@ -213,7 +207,7 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
                 padding: const EdgeInsets.only(bottom: 10.0), // 제목과 옵션 간격
                 child: Text(
                   widget.data['qustSubTitle']!,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal), // 제목 스타일
+                  style: WitHomeTheme.subtitle, // 제목 스타일
                 ),
               ),
             ...List.generate(widget.options.length, (optionIndex) {
@@ -221,7 +215,7 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
                 margin: const EdgeInsets.symmetric(vertical: 3.0), // 위아래 여백
                 padding: const EdgeInsets.all(0.0), // 내부 여백
                 decoration: BoxDecoration(
-                  color: Colors.white, // 배경색
+                  color: WitHomeTheme.wit_white, // 배경색
                   borderRadius: BorderRadius.circular(10.0), // 둥근 모서리
                 ),
                 child: Row(
@@ -241,12 +235,12 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
                           }
                         }
                       },
-                      activeColor: Colors.blue, // 체크박스 선택 시 색상
+                      activeColor: WitHomeTheme.wit_lightSteelBlue, // 체크박스 선택 시 색상
                     ),
                     Expanded(
                       child: Text(
                         widget.options[optionIndex]['opTitle']!, // 옵션 이름 표시
-                        style: TextStyle(fontSize: 14, color: Colors.black), // 텍스트 스타일
+                        style: WitHomeTheme.subtitle, // 텍스트 스타일
                       ),
                     ),
                   ],
@@ -262,20 +256,13 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
                 child: TextButton(
                   onPressed: (widget.isEnabled?.every((enabled) => enabled) ?? false) ? widget.onComplete : null,
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.green[300], // 옅은 녹색 배경
+                    backgroundColor: WitHomeTheme.wit_lightGreen, // 옅은 녹색 배경
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
                     ),
-                    minimumSize: Size(double.infinity, 50), // 버튼 높이 설정
+                    minimumSize: Size(double.infinity, 40), // 버튼 높이 설정
                   ),
-                  child: Text(
-                    '확인',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16, // 텍스트 크기 조정
-                      fontWeight: FontWeight.bold, // 텍스트 굵기 조정
-                    ),
-                  ),
+                  child: Text('확인', style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
                 ),
               ),
             ),
@@ -322,16 +309,16 @@ class _TextColumnState extends State<TextColumn> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: _opacity,
-      duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
+      duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
+        width: MediaQuery.of(context).size.width * 0.85,
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
-          color: Colors.grey[300],
+          color: WitHomeTheme.wit_extraLightGrey,
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: WitHomeTheme.wit_gray.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 5,
               offset: Offset(0, 3),
@@ -345,28 +332,28 @@ class _TextColumnState extends State<TextColumn> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  widget.data['qustTitle']!,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  widget.data['qustSubTitle']!,
+                  style: WitHomeTheme.title,
                 ),
               ),
-            if (widget.data['qustSubTitle'] != null)
+            /*if (widget.data['qustSubTitle'] != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
                   widget.data['qustSubTitle']!,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+                  style: WitHomeTheme.subtitle,
                 ),
-              ),
+              ),*/
             // 여기에서 선택된 옵션의 텍스트를 출력합니다.
             if (widget.options.isNotEmpty)
               Container(
                 padding: EdgeInsets.all(10.0), // 텍스트 주변 여백
                 decoration: BoxDecoration(
-                  color: Colors.white, // 하얀 배경
+                  color: WitHomeTheme.wit_white, // 하얀 배경
                   borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: WitHomeTheme.wit_gray.withOpacity(0.2),
                       spreadRadius: 1,
                       blurRadius: 3,
                       offset: Offset(0, 2),
@@ -382,7 +369,7 @@ class _TextColumnState extends State<TextColumn> {
                     padding: const EdgeInsets.symmetric(horizontal: 0.0), // 좌우 패딩
                     child: Text(
                       widget.options[0]['opTitle'] ?? '옵션이 없습니다.', // 옵션 제목이 없을 경우 기본 텍스트
-                      style: TextStyle(fontSize: 14, color: Colors.black),
+                      style: WitHomeTheme.subtitle,
                     ),
                   ),
                 ),
@@ -396,20 +383,13 @@ class _TextColumnState extends State<TextColumn> {
                 child: TextButton(
                   onPressed: (widget.isEnabled?.every((enabled) => enabled) ?? false) ? widget.onComplete : null,
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.green[300], // 옅은 녹색 배경
+                    backgroundColor: WitHomeTheme.wit_lightGreen, // 옅은 녹색 배경
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
                     ),
-                    minimumSize: Size(double.infinity, 50), // 버튼 높이 설정
+                    minimumSize: Size(double.infinity, 40), // 버튼 높이 설정
                   ),
-                  child: Text(
-                    '다음',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16, // 텍스트 크기 조정
-                      fontWeight: FontWeight.bold, // 텍스트 굵기 조정
-                    ),
-                  ),
+                  child: Text('다음', style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
                 ),
               ),
             )
@@ -451,12 +431,12 @@ class _EtcOptionColumnState extends State<EtcOptionColumn> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: _opacity,
-      duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
+      duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.7, // 화면의 70% 너비
+        width: MediaQuery.of(context).size.width * 0.85,
         padding: const EdgeInsets.all(10.0), // 바깥쪽 여백
         decoration: BoxDecoration(
-          color: Colors.grey[300], // 바깥 박스 배경색
+          color: WitHomeTheme.wit_extraLightGrey, // 바깥 박스 배경색
           borderRadius: BorderRadius.circular(10.0), // 둥근 모서리
           boxShadow: [
             BoxShadow(
@@ -475,7 +455,7 @@ class _EtcOptionColumnState extends State<EtcOptionColumn> {
                 padding: const EdgeInsets.only(bottom: 10.0), // 제목과 옵션 간격
                 child: Text(
                   widget.data['qustTitle']!,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // 제목 스타일
+                  style: WitHomeTheme.title, // 제목 스타일
                 ),
               ),
             if (widget.data['qustSubTitle'] != null)
@@ -483,7 +463,7 @@ class _EtcOptionColumnState extends State<EtcOptionColumn> {
                 padding: const EdgeInsets.only(bottom: 10.0), // 제목과 옵션 간격
                 child: Text(
                   widget.data['qustSubTitle']!,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal), // 제목 스타일
+                  style: WitHomeTheme.subtitle, // 제목 스타일
                 ),
               ),
           ],
@@ -527,21 +507,21 @@ class _SelectedOptionsRowState extends State<SelectedOptionsRow> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       opacity: _opacity,
-      duration: Duration(milliseconds: 500), // 애니메이션 지속 시간
+      duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end, // 오른쪽 정렬
         children: [
           Container(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.8, // 최대 너비 80%
+              maxWidth: MediaQuery.of(context).size.width * 0.85, // 최대 너비 80%
             ),
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
             decoration: BoxDecoration(
-              color: Colors.white, // 바깥 박스 배경색
+              color: WitHomeTheme.wit_white, // 바깥 박스 배경색
               borderRadius: BorderRadius.circular(10.0), // 둥근 모서리
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.2), // 그림자 색상
+                  color: WitHomeTheme.wit_gray.withOpacity(0.2), // 그림자 색상
                   spreadRadius: 2,
                   blurRadius: 5,
                   offset: Offset(0, 3), // 그림자의 위치
@@ -554,7 +534,7 @@ class _SelectedOptionsRowState extends State<SelectedOptionsRow> {
               children: [
                 Text(
                   "[ " + widget.selectedOptionsText + " ]을 선택하셨습니다.",
-                  style: TextStyle(fontSize: 16, color: Colors.black), // 글자 색을 검정색으로 설정
+                  style: WitHomeTheme.subtitle, // 글자 색을 검정색으로 설정
                   textAlign: TextAlign.left, // 텍스트를 왼쪽 정렬
                   softWrap: true, // 줄바꿈 가능
                 ),
@@ -563,8 +543,8 @@ class _SelectedOptionsRowState extends State<SelectedOptionsRow> {
                   onTap: widget.onReselect, // 아이콘 클릭 시 호출
                   child: Icon(
                     Icons.replay,
-                    color: Colors.red,
-                    size: 16, // 아이콘 크기 조정
+                    color: WitHomeTheme.wit_red,
+                    size: 20, // 아이콘 크기 조정
                   ),
                 ),
               ],
