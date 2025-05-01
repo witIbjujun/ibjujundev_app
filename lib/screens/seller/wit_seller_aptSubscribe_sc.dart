@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:witibju/screens/seller/wit_seller_card_confirm_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_card_register_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -6,6 +8,89 @@ import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 import '../../util/wit_api_ut.dart';
 import '../home/wit_home_theme.dart';
 import '../tosspayments/home.dart';
+import 'package:http/http.dart' as http;
+
+Future<String?> getAccessToken() async {
+  final url = Uri.parse('https://api.iamport.kr/users/getToken');  // Iamport 토큰 발급 엔드포인트
+
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    body: {
+      // 'imp_key': '3440475312241762',  // Iamport에서 발급받은 imp_key
+      // 'imp_secret': 'V8bhdgFkjH6q92j0Gvq65MXdLMrC317tnmR0RikUkuzIp3hek75FZ2moJQZlCKqly6qGkF8ClXBrm6yZ',  // Iamport에서 발급받은 imp_secret
+      'imp_key': '3440475312241762', // REST API 키
+      'imp_secret': 'V8bhdgFkjH6q92j0Gvq65MXdLMrC317tnmR0RikUkuzIp3hek75FZ2moJQZlCKqly6qGkF8ClXBrm6yZ', // REST API Secret
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final responseData = jsonDecode(response.body);
+    return responseData['response']['access_token'];  // 발급받은 액세스 토큰 반환
+  } else {
+    print('토큰 발급 실패: ${response.statusCode}');
+    print('응답 본문: ${response.body}');  // 응답 본문을 출력하여 실패 원인 파악
+    return null;
+  }
+}
+
+
+// 카드 등록 여부 확인 함수
+Future<Map<String, dynamic>?> checkCardRegistration(String customerUid) async {
+  final accessToken = await getAccessToken();
+
+  if (accessToken == null) {
+    print("엑세스 토큰 발급 실패");
+    return null;
+  } else {
+    print("엑세스 토큰 발급 성공 : $accessToken");
+  }
+
+  customerUid = 'user_1234';
+
+  final url = Uri.parse('https://api.iamport.kr/subscribe/customers/$customerUid');
+
+  final headers = {
+    'Authorization': 'Bearer $accessToken',
+    'Content-Type': 'application/json',
+  };
+
+  try {
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      print('API 호출 성공: ${response.statusCode}');
+      final responseData = jsonDecode(response.body);
+      final data = responseData['response'];
+
+      if (data == null) {
+        print('카드 등록 정보 없음');
+        return null;
+      }
+      else {
+        print('카드 등록 정보 있음');
+      }
+
+      // 등록된 정보
+      final getCustomer_uid = data['customer_uid'];
+      bool isRegistered = getCustomer_uid != null && getCustomer_uid.isNotEmpty;
+
+      return {
+        'isRegistered': data['customer_uid'] != null && data['customer_uid'].toString().isNotEmpty,
+        'cardName': data['card_name'],
+        'cardNumber': data['card_number'],  // 마스킹된 카드번호
+      };
+    } else {
+      print('API 호출 오류: ${response.statusCode}');
+      print('응답 본문: ${response.body}');
+      return null;
+    }
+  } catch (e) {
+    print('API 호출 실패: $e');
+    return null;
+  }
+}
+
 
 class SellerAptSubscribe extends StatefulWidget {
   final dynamic sllrNo;
@@ -25,6 +110,8 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
 
   // 아파트구독 리스트
   List<dynamic> subscribeAptList = [];
+
+  dynamic saleAmt = "";
 
   @override
   void initState() {
@@ -114,6 +201,143 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
       );
     }
   }
+
+  // 카드 등록 여부 확인 후 결제 또는 카드 등록
+  Future<void> checkAndProceedWithPayment(dynamic aptNo, dynamic saleAmt) async {
+    final cardData = await checkCardRegistration(widget.sllrNo);
+
+    final isRegistered = cardData?['isRegistered'] ?? false;
+    final cardName = cardData?['cardName'] ?? '';
+    final maskedCardNumber = cardData?['cardNumber'] ?? '';
+
+    if (isRegistered) {
+      final result = await showModalBottomSheet<Map<String, dynamic>>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        isDismissible: true, // 바깥 영역을 눌러도 닫히게 설정
+        builder: (_) => DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.308,
+          maxChildSize: 0.9,
+          minChildSize: 0.308,
+          builder: (_, controller) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: CardInfoConfirmPage(
+                customerUid: 'user_1234',
+                amount: saleAmt,
+                storeName: storeName,
+                cardName: cardName,
+                maskedCardNumber: maskedCardNumber,
+                onPaymentSuccess: () {
+                  // 결제 성공 시 팝업만 닫고 proceedWithAutoPayment 호출
+                  Navigator.of(context).pop(); // 팝업 닫기
+                  proceedWithAutoPayment(aptNo, saleAmt); // 결제 진행
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+    } else {
+      proceedWithCardRegistration(aptNo, saleAmt);
+    }
+  }
+
+
+  // 자동 결제 처리
+  Future<void> proceedWithAutoPayment(dynamic aptNo, dynamic saleAmt) async {
+    final accessToken = await getAccessToken();
+    if (accessToken == null) {
+      print('자동결제 실패: 액세스 토큰 없음');
+      return;
+    }
+    else {
+      print('자동결제 진행: 액세스 토큰 있음');
+    }
+
+    final url = Uri.parse('https://api.iamport.kr/subscribe/payments/again');
+
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      'customer_uid': 'user_1234',
+      'merchant_uid': 'mid_${DateTime.now().millisecondsSinceEpoch}',
+      'amount': saleAmt,
+      'name': '아파트 구독 결제',
+      'buyer_email': 'dravenn@naver.com',
+      'buyer_name': '범석 방충망',
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['code'] == 0) {
+          print('자동결제 성공 ✅');
+          // 결제 성공 후 로직 (ex. 구독 처리)
+          insertSubscribeApt(aptNo);
+        } else {
+          print('자동결제 실패 ❌: ${data['message']}');
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('자동결제 실패: ${data['message']}')),
+          );
+
+        }
+      } else {
+        print('자동결제 실패: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('자동결제 실패: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      print('자동결제 예외 발생: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('자동결제 예외: $e')),
+      );
+    }
+  }
+
+
+  // 카드 등록 후 결제 처리
+  void proceedWithCardRegistration(dynamic aptNo, dynamic saleAmt) async {
+    int amount = 0;
+    if (saleAmt != null && saleAmt.toString().isNotEmpty) {
+      amount = int.tryParse(saleAmt.toString().split('.')[0]) ?? 0;  // 잘못된 형식일 경우 0으로 처리
+    }
+
+    // 카드 등록 화면 띄우기 (카드 등록을 진행)
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CardRegisterWebView(customerUid: 'user_1234',
+          amount: amount, // 💰 실제 금액 전달
+          storeName: storeName,),
+      ),
+    );
+
+    if (result != null && result['success'] == true) {
+      // 카드 등록 후 결제 진행
+      proceedWithAutoPayment(aptNo, amount);
+    } else {
+      // 카드 등록 실패 또는 취소 시
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("카드 등록이 실패하거나 취소되었습니다.")),
+      );
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -265,32 +489,9 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
             TextButton(
               onPressed: () async {
                 if (action == '구독하기') {
-                  final result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TossHome(
-                        selectedCash: saleAmt.toString().split('.')[0],
-                        storeName: storeName,
-                        email: sellerInfo['email'],
-                        sllrNo: widget.sllrNo,
-                        aptNo: aptNo,
-                      ),
-                    ),
-                  );
-
-                  if (result == 'success') {
-                    insertSubscribeApt(aptNo); // ✅ 결제 성공 후 구독 처리
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("구독이 완료되었습니다.")),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("구독이 취소되었거나 실패했습니다.")),
-                    );
-                  }
+                  checkAndProceedWithPayment(aptNo, int.tryParse(saleAmt.toString().split('.')[0]) ?? 0);
                 }
               },
-
               style: TextButton.styleFrom(
                 backgroundColor: action == '구독하기' ? WitHomeTheme.wit_lightGreen : WitHomeTheme.wit_lightgray,
                 padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
@@ -304,6 +505,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
                 style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_black),
               ),
             ),
+
           ],
         ),
       ),

@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tosspayments_widget_sdk_flutter/model/agreement_status.dart';
@@ -230,3 +231,4 @@ void _showNumberInputDialog(
     },
   );
 }
+*/

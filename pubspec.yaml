@@ -69,7 +69,7 @@ dependencies:
   flutter_chat_ui: ^1.6.15 #채팅 애플리케이션 UI
 
   #토스결재 위젯
-  tosspayments_widget_sdk_flutter: 2.0.0
+  #tosspayments_widget_sdk_flutter: 2.0.0
   #우편번호
   kpostal: ^1.0.0
 
@@ -94,6 +94,7 @@ dependencies:
   
   # portone 휴대폰 인증 연동
   portone_flutter: ^0.12.0
+  webview_flutter: ^4.2.2 # 최신 버전 확인
 
   # 아이콘 설정
 flutter_icons:

@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 
 //import 'package:witibju/screens/tosspayments/payment.dart';
@@ -221,3 +222,4 @@ class UIState {
       this.variantKeyAgreement,
       this.redirectUrl});
 }
+*/

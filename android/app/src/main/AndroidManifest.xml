@@ -29,7 +29,8 @@
         android:label="ibjujun"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config">
         <!-- 토스 설정 -->
 
         <!-- FCM 기본 알림 채널 설정 -->

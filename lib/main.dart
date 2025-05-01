@@ -108,9 +108,9 @@ class MyApp extends StatelessWidget {
       home: HomeScreen(), //현재 메인
       ///home: TableCalenderMain() , //네이버 로그인
       // 토스 결재 후 처리
-      getPages: [
+      /*getPages: [
         GetPage(name: '/result', page: () => ResultPage()), // 결과 화면 등록
-      ],
+      ],*/
 
           );
   }

@@ -1,6 +1,7 @@
 import 'dart:math';
-import 'package:witibju/screens/seller/wit_seller_%20grouppurchase_list_sc.dart';
-import 'package:witibju/screens/seller/wit_seller_%20schedule_list_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_card_register_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_grouppurchase_list_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_schedule_list_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_aptSubscribe_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_card_info_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
@@ -788,7 +789,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail> with RouteAwar
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      CardInfo(sllrNo: sllrNo.toString())),
+                                      CardRegisterWebView(customerUid: sllrNo, amount: 0, storeName: sellerInfo['storeName'],),
+                              ),
                             );
                           },
                           style: TextButton.styleFrom(

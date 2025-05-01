@@ -1,4 +1,6 @@
+/*
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/seller/wit_seller_card_info_sc2.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
 
 import '../home/wit_home_theme.dart';
@@ -25,9 +27,11 @@ class CardInfoState extends State<CardInfo> {
     return Scaffold(
       backgroundColor: WitHomeTheme.wit_white,
 
-      /*appBar: SellerAppBar(
+      */
+/*appBar: SellerAppBar(
         sllrNo: widget.sllrNo,
-      ),*/
+      ),*//*
+
       appBar: AppBar(
         backgroundColor: WitHomeTheme.wit_black,
         iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
@@ -43,10 +47,12 @@ class CardInfoState extends State<CardInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /*Text(
+              */
+/*Text(
                 '결재정보등록',
                 style: WitHomeTheme.title.copyWith(fontSize: 24),
-              ),*/
+              ),*//*
+
               SizedBox(height: 20),
               Row(
                 children: [
@@ -125,12 +131,29 @@ class CardInfoState extends State<CardInfo> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {
+                  */
+/*onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       // 등록 로직 추가
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('카드가 등록되었습니다.')),
                       );
+                    }
+                  },*//*
+
+                  onPressed: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CardRegisterWebView(customerUid: "user_1234"),
+                      ),
+                    );
+
+                    if (result != null && result['success'] == true) {
+                      // 서버에 result['imp_uid']와 result['customer_uid'] 보내서 빌링키 저장
+                      print("등록 성공: ${result}");
+                    } else {
+                      print("등록 실패 또는 취소됨");
                     }
                   },
                   child: Text('등록하기',
@@ -145,3 +168,4 @@ class CardInfoState extends State<CardInfo> {
     );
   }
 }
+*/
