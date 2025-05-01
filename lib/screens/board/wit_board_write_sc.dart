@@ -78,9 +78,8 @@ class _BoardWriteState extends State<BoardWrite> {
                   style: WitHomeTheme.subtitle,
                   maxLines: 1,
                 ),
-                SizedBox(height: 10),
                 Divider(),
-                SizedBox(height: 10),
+                SizedBox(height: 5),
                 Text("내용", style: WitHomeTheme.title),
                 TextField(
                     controller: _contentController,
@@ -93,9 +92,8 @@ class _BoardWriteState extends State<BoardWrite> {
                     maxLines: null, // 자동 조절
                     keyboardType: TextInputType.multiline,
                 ),
-                SizedBox(height: 10),
                 Divider(),
-                SizedBox(height: 10),
+                SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
                   children: [
@@ -113,7 +111,7 @@ class _BoardWriteState extends State<BoardWrite> {
                         alignment: Alignment.center,
                       ),
                     ),
-                    SizedBox(width: 16), // GestureDetector와 이미지 리스트 간격 추가
+                    SizedBox(width: 15), // GestureDetector와 이미지 리스트 간격 추가
                     Expanded(
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
