@@ -26,7 +26,7 @@
     <uses-permission android:name="android.permission.READ_SMS"/>
 
     <application
-        android:label="ibjujun"
+        android:label="입주전"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"

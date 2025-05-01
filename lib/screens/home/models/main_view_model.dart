@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:witibju/screens/home/models/userInfo.dart';
 import 'package:witibju/screens/home/wit_social_login_sc.dart';
+
+import '../login/wit_user_login.dart';
 
 class MainViewModel extends ChangeNotifier {
   final SocialLogin _socialLogin;
@@ -120,9 +123,11 @@ class MainViewModel extends ChangeNotifier {
           '\n이미지: ${userInfo?.profileImageUrl}'
           '\n이메일: ${userInfo?.email}');
     }
-
+    final secureStorage = FlutterSecureStorage(); //
     // 사용자 정보를 변수에 저장
     String id = userInfo?.id ?? '정보 없음';
+    secureStorage.write(key: 'kakaoId', value: userInfo!.id);
+    secureStorage.write(key: 'profileImageUrl', value: userInfo!.profileImageUrl);
     String nickName = userInfo?.nickName ?? '정보 없음';
     String profileImageUrl = userInfo?.profileImageUrl ?? '정보 없음';
     String email = userInfo?.email ?? '정보 없음';
@@ -217,6 +222,15 @@ class MainViewModel extends ChangeNotifier {
     notifyListeners();  // 로그아웃 상태 변경 알림
   }
 
+  // 👇 여기부터 추가!
+  Future<void> getUserInfoProxy(BuildContext context, String tempClerkNo ,String gubun) async {
+    await getUserInfo(this, tempClerkNo,gubun);
+  }
+
+  Future<String> getCreateUserProxy(String clerkNo) async {
+    return await getCreateUser(this, clerkNo);
+  }
+
   void _showErrorDialog(BuildContext context, String title, String message) {
     showDialog(
       context: context,
@@ -233,3 +247,4 @@ class MainViewModel extends ChangeNotifier {
     );
   }
 }
+
