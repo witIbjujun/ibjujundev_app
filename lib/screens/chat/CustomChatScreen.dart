@@ -1,21 +1,23 @@
 // 2025-03-27 (질문 버튼 + 입력창 자동입력)
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
+import 'package:image_picker/image_picker.dart';
 import '../../util/wit_api_ut.dart';
+import '../../util/wit_code_ut.dart';
 import '../common/wit_calendarDialog.dart';
 import '../home/wit_home_theme.dart';
 import 'models/message_info.dart';
 
 // 대화하기
 class CustomChatScreen extends StatefulWidget {
-  final String? chatId;
-  final String? clerkNo;
+  final String? reqNo;
+  final String seq;
   final String? target;
 
-  const CustomChatScreen(this.chatId, this.clerkNo, this.target,{super.key});
+  const CustomChatScreen(this.reqNo, this.seq, this.target,{super.key});
 
   @override
   State<CustomChatScreen> createState() => _CustomChatScreenState();
@@ -29,7 +31,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  final String chatId = '1'; // 이건 실제 상황에 맞게 바꿔줘
+  final String chatId = ''; // 이건 실제 상황에 맞게 바꿔줘
   String _currentText = '';
   String _selectedDate = ''; // ✅ 추가된 부분: 선택된 날짜 저장용
   final secureStorage = FlutterSecureStorage();
@@ -44,6 +46,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   @override
   void initState() {
     super.initState();
+    //채팅내용 조회
     getChatMessages();
 
     _focusNode.addListener(() {
@@ -70,31 +73,43 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   }
 
   /// 채팅 메시지를 서버에 저장하는 함수
-  Future<void> _saveMessageToServer(String text, {String? anwCode}) async {
+  // 2025-04-30: gubun이 null이면 'user', messageId는 명확히 표시
+  Future<void> _saveMessageToServer(
+      String text, {
+        String? anwCode,
+        String? gubun,
+        String? messageId,
+      }) async {
     const String restId = "saveChatMessage";
-    final String? chatId = widget.chatId;
+    final String? chatId = _chatMessages.isNotEmpty ? _chatMessages.first['chatId']?.toString() : null;
+    final String? clerkNo = _chatMessages.isNotEmpty ? _chatMessages.first['clerkNo']?.toString() : null;
 
-    String? clerkNo = widget.clerkNo;
-
+    if (chatId == null || clerkNo == null) {
+      print("❌ chatId 또는 clerkNo가 없습니다. 메시지 저장 중단");
+      return;
+    }
     final now = DateTime.now().toIso8601String();
-    print('✅ 메시지 저장 성공+=== ${anwCode ?? ''}');
+
+    print('✅ 메시지 저장 (anwCode: ${anwCode ?? 'null'}, gubun: ${gubun ?? 'null'}, messageId: ${messageId ?? 'null'})');
 
     final param = jsonEncode({
       "chatId": chatId,
       "clerkNo": clerkNo,
       "createdAt": now,
       "text": text,
+      "systemGubun": gubun ?? "user", // default fallback
       "chatgubun": "user",
+      "messageId": messageId,
       "anwCode": anwCode,
-      "type": "text", // 지금은 텍스트 메시지로 고정
-      "metadata": {} // 없으면 빈 객체
+      "type": "text",
+      "metadata": {},
     });
 
     try {
       final response = await sendPostRequest(restId, param) ?? '';
       if (response > 0) {
         print('✅ 메시지 저장 성공');
-        getChatMessages(); // 다시 목록 불러오기
+        getChatMessages();
       } else {
         print("❌ 메시지 저장 실패: $response");
       }
@@ -103,6 +118,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     }
   }
 
+
   /**
    * 채팅내용 조회
    */
@@ -110,13 +126,13 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   // ✅ 2025-04-10: 채팅내용 조회 함수 전체
   Future<void> getChatMessages() async {
     const String restId = "getChatList";
-    String? clerkNo = widget.clerkNo;
+    String? reqNo = widget.reqNo;
+    String? seq = widget.seq;
     String? target = widget.target;
-    print('✅ 메시지 조회 clerkNo: $clerkNo');
+    print('✅ 메시지 조회 reqNo: $reqNo');
 
     final param = jsonEncode({
-      "clerkNo": clerkNo,
-      "chatId": chatId,
+      "reqNo": reqNo,
       "target": target,
       "chatgubun": "user",
     });
@@ -183,6 +199,15 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: Row(
               children: [
+                // ✅ + 버튼
+                IconButton(
+                  icon: const Icon(Icons.add_circle_outline, size: 28, color: Colors.black54),
+                  onPressed: () {
+                    _showImagePickerDialog(context);
+                  },
+                ),
+
+                // ✅ 메시지 입력창
                 Expanded(
                   child: TextField(
                     focusNode: _focusNode,
@@ -198,6 +223,8 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                     ),
                   ),
                 ),
+
+                // ✅ 전송 버튼
                 IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: () {
@@ -255,6 +282,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           date: msg['date'] ?? '',
           storeName: msg['storeName'],
           profileImage: msg['profileImage'],
+          type: msg['type'] ?? 'text', // ✅ type 전달
         )));
       }
 
@@ -266,13 +294,13 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
 
   // 2025-04-16: CAL은 달력 버튼, BTN1은 진행하기 버튼으로 처리
+  // 2025-04-30: messageId가 비어 있는 문제 해결 - 빈 문자열이 아닌 null로 유지
   Widget _buildQuestionButtons(List<Map<String, dynamic>> questionsGroup) {
     final questions = questionsGroup.map((msg) {
-      final anwCode = msg['anwCode']?.toString() ?? '';
-      final text = msg['text'] as String;
       return {
-        'text': text,
-        'anwCode': anwCode,
+        'text': msg['text'],
+        'anwCode': msg['anwCode'],
+        'messageId': msg['messageId'], // null이면 그대로 null로 전달
       };
     }).toList();
 
@@ -293,31 +321,49 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   }
 
 
-  // 2025-04-14: CAL 버튼 클릭 시 선택된 날짜가 없으면 달력 열고, 있으면 서버로 전송하는 로직 추가
-  // 2025-04-16: 질문 1개에 대해 버튼 위젯 생성 (CAL → 달력 / BTN1 → 진행 버튼)
-  Widget _buildQuestionButton(Map<String, String> q) {
-    final text = q['text']!;
+  // 2025-04-30: messageId 전달 안되던 문제 수정 - Map<String, dynamic> 사용 및 로그 확인 추가
+  // 2025-04-30: CAL, BTN1 버튼 중 BTN1(진행하기)에 견적 요청 스타일 적용
+  Widget _buildQuestionButton(Map<String, dynamic> q) {
+    final text = q['text'] ?? '';
     final anwCode = q['anwCode'];
+    final messageId = q['messageId'];
     final isCalendarButton = text.contains('CAL');
     final isActionButton = text.contains('BTN1');
     final cleanedText = text.replaceAll('CAL', '').replaceAll('BTN1', '').trim();
 
     return GestureDetector(
       onTap: () async {
+        print('🟡 버튼 클릭됨 → messageId: $messageId');
+
         if (isCalendarButton) {
           if (_selectedDate.isEmpty) {
-            await _selectDate(context, anwCode: anwCode, cleanedText: cleanedText);
+            await _selectDate(
+              context,
+              anwCode: anwCode,
+              cleanedText: cleanedText,
+              messageId: messageId,
+            );
           } else {
             final messageToSend = '$_selectedDate $cleanedText';
-            _saveMessageToServer(messageToSend, anwCode: anwCode);
+            _saveMessageToServer(
+              messageToSend,
+              anwCode: anwCode,
+              gubun: 'system',
+              messageId: messageId,
+            );
             _textController.clear();
             _currentText = '';
             _focusNode.unfocus();
           }
         } else if (isActionButton) {
-          _showProceedDialog(anwCode); // 진행하기 다이얼로그
+          _showProceedDialog(anwCode, messageId: messageId);
         } else {
-          _saveMessageToServer(text, anwCode: anwCode);
+          _saveMessageToServer(
+            text,
+            anwCode: anwCode,
+            gubun: 'system',
+            messageId: messageId,
+          );
           _textController.clear();
           _currentText = '';
           _focusNode.unfocus();
@@ -325,9 +371,9 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 6),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: isActionButton ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: const Color(0xFFF2F2F2),
+          color: isActionButton ? Colors.transparent : const Color(0xFFF2F2F2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: isCalendarButton
@@ -352,21 +398,32 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           ],
         )
             : isActionButton
-            ? Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.play_circle_fill, size: 20, color: Colors.black87),
-            SizedBox(width: 6),
-            Text('진행하기', style: TextStyle(fontSize: 14, color: Colors.black87)),
-          ],
+            ? Container(
+          width: 160.0,
+          height: 40.0,
+          decoration: BoxDecoration(
+            color: WitHomeTheme.wit_lightGreen,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: const Center(
+            child: Text(
+              '작업 진행하기',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         )
             : Text(text, style: const TextStyle(fontSize: 14, color: Colors.black87)),
       ),
     );
   }
 
+
   // 2025-04-16: BTN1 버튼 클릭 시 확인 다이얼로그 후 서버 전송
-  void _showProceedDialog(String? anwCode) {
+  void _showProceedDialog(String? anwCode, {String? messageId}) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -382,23 +439,49 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
-              _saveMessageToServer('작업을 진행합니다.', anwCode: anwCode);
+              _saveMessageToServer(
+                '작업을 진행합니다.',
+                anwCode: anwCode,
+                gubun: 'system',      // 진행하기도 system으로 보내는거 맞지?
+                messageId: messageId, // 여기 같이 넘겨줌
+              );
               _textController.clear();
               _currentText = '';
               _focusNode.unfocus();
             },
-            child: const Text('진행하기'),
+            child: Container(
+              width: double.infinity,
+              height: 50.0,
+              decoration: BoxDecoration(
+                color: WitHomeTheme.wit_lightGreen,
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Center(
+                child: Text(
+                  '작업 진행하기',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-
   /**
    * 달력
    */
-  Future<void> _selectDate(BuildContext context, {String? anwCode, String? cleanedText}) async {
+  // 2025-04-30: messageId를 _selectDate로 전달받아 서버 저장 시 함께 전송
+  Future<void> _selectDate(
+      BuildContext context, {
+        String? anwCode,
+        String? cleanedText,
+        String? messageId, // ✅ 추가
+      }) async {
     DateTime? selectedDate = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -410,20 +493,26 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
     if (selectedDate != null) {
       setState(() {
-        _selectedDate = "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}";
+        _selectedDate =
+        "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}";
       });
 
-      // ✅ 선택한 날짜 저장 후 바로 서버 전송
+      // ✅ 선택한 날짜 저장 후 서버 전송 시 messageId 포함
       if (anwCode != null && cleanedText != null) {
         final messageToSend = '$_selectedDate $cleanedText';
-        _saveMessageToServer(messageToSend, anwCode: anwCode);
+        print('📩 달력 선택 완료 후 전송 → messageId: $messageId');
+        _saveMessageToServer(
+          messageToSend,
+          anwCode: anwCode,
+          gubun: 'system',
+          messageId: messageId, // ✅ 넘겨줌
+        );
         _textController.clear();
         _currentText = '';
         _focusNode.unfocus();
       }
     }
   }
-
 
   /**
    * 계약서
@@ -470,30 +559,115 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     );
   }
 
+  // 2025-04-30: + 버튼 클릭 시 이미지 선택 옵션 보여주는 다이얼로그
+  void _showImagePickerDialog(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('사진 촬영'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('갤러리에서 선택'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // 2025-05-01: BoardWrite 방식처럼 간단하게 변경 – 권한은 ImagePicker에 맡김
+  // 2025-05-01: 이미지 선택 → 서버 업로드 → 이미지 메시지 전송까지 처리
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+
+    try {
+      final pickedFile = await picker.pickImage(source: source);
+      if (pickedFile == null) return;
+
+      print('✅ 이미지 선택됨: ${pickedFile.path}');
+
+      // 서버로 이미지 업로드
+      final fileInfo = await sendFilePostRequest("fileUpload", [File(pickedFile.path)]);
+      if (fileInfo == "FAIL") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("이미지 업로드 실패")),
+        );
+        return;
+      }
+
+      final String? chatId = _chatMessages.isNotEmpty ? _chatMessages.first['chatId']?.toString() : null;
+      final String? clerkNo = _chatMessages.isNotEmpty ? _chatMessages.first['clerkNo']?.toString() : null;
+
+      if (chatId == null || clerkNo == null) {
+        print("❌ chatId 또는 clerkNo가 없습니다. 메시지 저장 중단");
+        return;
+      }
+
+      final param = jsonEncode({
+        "chatId": chatId,
+        "clerkNo": clerkNo,
+        "createdAt": DateTime.now().toIso8601String(),
+        "text": "[이미지]",  // 텍스트는 간단한 표시
+        "systemGubun": "user",
+        "chatgubun": "user",
+        "type": "image",
+        "fileInfo": fileInfo
+      });
+
+      final response = await sendPostRequest("saveChatMessage", param);
+      if (response > 0) {
+        getChatMessages(); // 채팅 새로고침
+      } else {
+        print("❌ 이미지 메시지 저장 실패: $response");
+      }
+    } catch (e) {
+      print('❌ 이미지 처리 중 오류: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('이미지를 전송할 수 없습니다.')),
+      );
+    }
+  }
+
   /**
    * 채팅 글자
    */
   // 2025-03-29: isMe → messageType (me, system, other)
+  // 2025-05-01: 이미지 메시지(type == image)일 경우 네트워크 이미지로 출력
   Widget _chatBubble({
     required String text,
     required String chatgubun, // me, system, other
     required String date,
     String? profileImage,
     String? storeName,
+    String type = 'text',        // ✅ type 추가
   }) {
     final radius = Radius.circular(18);
 
-    // 말풍선 색상 설정
-    final Color bubbleColor;
-    if (chatgubun == 'me') {
-      bubbleColor = const Color(0xFFFFFF66);
-    } else if (chatgubun == 'system') {
-      bubbleColor = Colors.grey.shade400;
-    } else {
-      bubbleColor = const Color(0xFFBFD4E4);
-    }
+    final Color bubbleColor = switch (chatgubun) {
+      'me' => const Color(0xFFFFFF66),
+      'system' => Colors.grey.shade400,
+      _ => const Color(0xFFBFD4E4),
+    };
 
-    // 정렬 설정
     final alignment = chatgubun == 'me'
         ? Alignment.centerRight
         : Alignment.centerLeft;
@@ -512,8 +686,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                 children: [
                   CircleAvatar(
                     radius: 16,
-                   // backgroundImage: NetworkImage(profileImage),
-                    backgroundImage:NetworkImage('https://picsum.photos/200'),
+                    backgroundImage: NetworkImage(profileImage),
                   ),
                   const SizedBox(width: 6),
                   if (storeName != null)
@@ -542,12 +715,24 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                         : CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: bubbleColor,
                           borderRadius: BorderRadius.all(radius),
                         ),
-                        child: Text(
+                        child: type == 'image'
+                            ? ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            apiUrl + text, // ✅ 서버 이미지 URL 조합
+                            width: 200,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Text('❌ 이미지 로딩 실패');
+                            },
+                          ),
+                        )
+                            : Text(
                           text,
                           style: const TextStyle(fontSize: 15),
                         ),

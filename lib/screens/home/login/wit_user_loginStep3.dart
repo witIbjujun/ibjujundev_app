@@ -258,7 +258,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
                       String selectedPyungNo = pyungOptions.contains(selectedPyung) ? selectedPyung.replaceAll('평', '') : "";
                       viewModel.userInfo?.mainAptNo = selectedAptNo;
                       viewModel.userInfo?.mainAptPyoung = selectedPyungNo;
-                      await getUserInfo(context, viewModel, '72091587');
+                      await getUserInfo(viewModel, '72091587','D');
 
                       await DialogUtils.showCustomDialog(
                         context: context,
@@ -293,7 +293,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        await getUserInfo(context, viewModel, '72091587');
+                        await getUserInfo(viewModel, '72091587','D');
                         await DialogUtils.showCustomDialog(
                           context: context,
                           title: '알림',
@@ -311,7 +311,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        await getUserInfo(context, viewModel, '72091584');
+                        await getUserInfo(viewModel, '72091584','D');
                         await DialogUtils.showCustomDialog(
                           context: context,
                           title: '알림',
@@ -329,7 +329,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        await getUserInfo(context, viewModel, '72091586');
+                        await getUserInfo(viewModel, '72091586','D');
                         await DialogUtils.showCustomDialog(
                           context: context,
                           title: '알림',
@@ -347,7 +347,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        await getUserInfo(context, viewModel, '72091588');
+                        await getUserInfo(viewModel, '72091588','D');
                         await DialogUtils.showCustomDialog(
                           context: context,
                           title: '알림',

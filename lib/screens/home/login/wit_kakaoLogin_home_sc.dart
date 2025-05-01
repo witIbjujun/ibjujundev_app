@@ -4,12 +4,12 @@ import 'package:witibju/screens/home/models/main_view_model.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/login/wit_kakaoLogin.dart';
 
-class kakoLoingHome extends StatefulWidget {
+class kakoLoingHome1111 extends StatefulWidget {
   @override
-  State<kakoLoingHome> createState() => _kakoLoingHomeState();
+  State<kakoLoingHome1111> createState() => _kakoLoingHomeState();
 }
 
-class _kakoLoingHomeState extends State<kakoLoingHome> {
+class _kakoLoingHomeState extends State<kakoLoingHome1111> {
   final viewModel = MainViewModel(KaKaoLogin());
 
   @override

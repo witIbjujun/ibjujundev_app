@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:witibju/screens/home/models/main_view_model.dart';
 import 'package:witibju/screens/home/login/wit_user_login.dart';
@@ -23,11 +24,13 @@ class loingPopHome extends StatefulWidget {
 }
 
 class _loingPopHomeState extends State<loingPopHome> {
-  final viewModel = MainViewModel(KaKaoLogin());
+  ///final viewModel = MainViewModel(KaKaoLogin());
+
   final TextEditingController _idController = TextEditingController(); // 아이디 입력 컨트롤러
 
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<MainViewModel>(context); // ✅ 전역 인스턴스 사용
     return Center(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
@@ -41,74 +44,19 @@ class _loingPopHomeState extends State<loingPopHome> {
                 fit: BoxFit.cover,
               ),
             ),
-            // 2025-04-22: Column → SingleChildScrollView + Column으로 변경
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  /*Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          String result = await getChckUser(viewModel, '72091587');
-                          if (widget.onLoginSuccess != null) {
-                            viewModel.userInfo = UserInfo(tempClerkNo: '72091587');
-                            widget.onLoginSuccess!(viewModel);
-                          }
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('이'),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () async {
-                          String result = await getChckUser(viewModel, '72091586');
-                          if (widget.onLoginSuccess != null) {
-                            viewModel.userInfo = UserInfo(tempClerkNo: '72091586');
-                            widget.onLoginSuccess!(viewModel);
-                          }
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('백'),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () async {
-                          String result = await getChckUser(viewModel, '72091588');
-                          if (widget.onLoginSuccess != null) {
-                            viewModel.userInfo = UserInfo(tempClerkNo: '72091588');
-                            widget.onLoginSuccess!(viewModel);
-                          }
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('조'),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () async {
-                          String result = await getChckUser(viewModel, '72091584');
-                          if (widget.onLoginSuccess != null) {
-                            viewModel.userInfo = UserInfo(tempClerkNo: '72091584');
-                            widget.onLoginSuccess!(viewModel);
-                          }
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('우'),
-                      ),
-                    ],
-                  ),*/
-                  const SizedBox(height: 120),
+                  const SizedBox(height: 160),
                   // 2025-04-22: 로그인 성공 시 사용자 정보를 팝업으로 보여주고, 이후 로그인 팝업 닫기
                   GestureDetector(
                     onTap: () async {
                       final ok = await viewModel.login(context);
 
                       if (ok) {
-                        await getChckUser(viewModel, '');
-                      //  viewModel.userInfo?.tempClerkNo = '72091587';
+                        await viewModel.getUserInfoProxy(context, '','K');
                         widget.onLoginSuccess?.call(viewModel);
-
 
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -133,9 +81,10 @@ class _loingPopHomeState extends State<loingPopHome> {
                     onTap: () async {
                       final ok = await viewModel.loginWithNaver(context);
                       if (ok) {
-                        await getChckUser(viewModel, '');
+                        await viewModel.getUserInfoProxy(context, '','K');
+                     //   await getChckUser(viewModel, '');
                         ///viewModel.userInfo?.tempClerkNo = '72091587';
-                        viewModel.userInfo?.tempClerkNo = '72091587';
+                      //  viewModel.userInfo?.tempClerkNo = '72091587';
                         widget.onLoginSuccess?.call(viewModel);
                         Navigator.pop(context);
                       } else {

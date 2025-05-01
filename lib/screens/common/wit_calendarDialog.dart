@@ -40,6 +40,7 @@ class _CustomCalendarBottomSheetState extends State<CustomCalendarBottomSheet> {
           TableCalendar(
             firstDay: DateTime.utc(2023, 1, 1),
             lastDay: DateTime.utc(2030, 12, 31),
+            locale: 'ko_KR', // 2025-04-26: 한글로 년/월/요일 나오게 수정
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             onDaySelected: (selectedDay, focusedDay) {

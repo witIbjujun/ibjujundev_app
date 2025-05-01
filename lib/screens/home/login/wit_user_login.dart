@@ -9,7 +9,7 @@ import '../models/main_view_model.dart';
 import '../models/userInfo.dart';
 import '../wit_home_sc.dart';
 
-Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String tempClerkNo) async {
+Future<void> getUserInfo(MainViewModel viewModel,String tempClerkNo,String gubun) async {
 
   String? kakaoId = viewModel.userInfo?.id; // Kakao ID
   String? nickName = viewModel.userInfo?.nickName; // Kakao ID
@@ -37,6 +37,7 @@ Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String tem
     "aptNo": mainAptNo,
     "pyoung": mainAptPyoung,
     "clerkNo":tempClerkNo,
+    "loginGubun":gubun,
      "token":token});
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
@@ -64,7 +65,9 @@ Future<void> getUserInfo(BuildContext context,MainViewModel viewModel,String tem
     // 사용자 정보를 Flutter Secure Storage에 저장
     bool isLogined =false;
     secureStorage.write(key: 'isLogined', value: "login");
+    secureStorage.write(key: 'kakaoId', value: userInfo!.id);
     secureStorage.write(key: 'clerkNo', value: userInfo!.clerkNo);
+    secureStorage.write(key: 'profileImageUrl', value: userInfo!.profileImageUrl);
     secureStorage.write(key: 'nickName', value: userInfo!.nickName);
     secureStorage.write(key: 'mainAptNo', value: userInfo!.mainAptNo);
     secureStorage.write(key: 'mainAptNm', value: userInfo!.mainAptNm);

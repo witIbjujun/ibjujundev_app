@@ -220,6 +220,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ],
           ),
           backgroundColor: Colors.transparent,
+          //backgroundColor: Colors.red,
           body: SafeArea(
             child: Column(
               children: [
@@ -233,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         ),
                         const SizedBox(height: 6.0),
                         Container(
-                          height: 80,
+                          height: 98,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8.0),
@@ -401,32 +402,62 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildIconWithLabel({required String imagePath, required String label, VoidCallback? onTap}) {
+/*  /// 홈 상단 버튼 (평면도, 가이드 등)의 UI를 구성하는 함수
+  /// RenderFlex overflow를 방지하기 위해 전체 높이를 제한하고, 텍스트 크기 조절 처리
+  /// 홈 상단 버튼 (평면도, 가이드 등)의 UI를 구성하는 함수
+  /// 아이콘 이미지가 버튼처럼 보이도록 시각 효과 강화 (그림자, 테두리, 눌림 효과 포함)*/
+  Widget _buildIconWithLabel({
+    required String imagePath,
+    required String label,
+    VoidCallback? onTap,
+  }) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        GestureDetector(
-          onTap: onTap,
-          child: Container(
-            width: 35,
-            height: 35,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8.0),
-              image: DecorationImage(
-                image: AssetImage(imagePath),
-                fit: BoxFit.contain,
+        // ✅ 이미지 버튼 영역
+        Material(
+          color: Colors.white,
+          elevation: 1, // 그림자 효과
+          borderRadius: BorderRadius.circular(12),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(12),
+            splashColor: Colors.green.withOpacity(0.2), // 눌림 효과
+            child: Container(
+              width: 55,
+              height: 55,
+              /*decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300), // 테두리 강조
+              ),*/
+              child: Center(
+                child: Image.asset(
+                  imagePath,
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 4.0), // 이미지와 텍스트 간격 조정
+        const SizedBox(height: 6.0),
+
+        // ✅ 기존 라벨 유지
         Text(
           label,
-         // style: WitHomeTheme.title.copyWith(fontSize: 12.0, fontWeight: FontWeight.bold, color: Colors.black),
-          style: WitHomeTheme.subtitle.copyWith(fontSize: 12.0,color: Colors.black, fontWeight: FontWeight.bold),
-    ),
+          style: WitHomeTheme.subtitle.copyWith(
+            fontSize: 12.0,
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }
+
+
+
 
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
@@ -496,10 +527,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 return UnconstrainedBox( // ⭐ 핵심 변경: 높이 제한 해제
                   child: Container(
                     width: MediaQuery.of(parentContext).size.width * 0.9,
-                    height: 230,
+                    height: 300,
                     child: loingPopHome(
                       width: MediaQuery.of(parentContext).size.width * 0.9,
-                      height: 230,
+                      height: 300,
                         onLoginSuccess: (MainViewModel updatedViewModel) async {
                           final info = updatedViewModel.userInfo;
 
@@ -507,7 +538,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           print("🔹 로그인 후 userInfo.tempClerkNo: ${info?.tempClerkNo}");
 
                           // 2025-04-22: tempClerkNo 기준으로 등록 여부 판단
-                          if (info == null || info.tempClerkNo == null || info.tempClerkNo!.isEmpty) {
+                          if (info == null ) {
                             // 👉 첫 등록 사용자
                             if (mounted) {
                               Navigator.of(dialogContext).pop();
@@ -521,7 +552,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             // 👉 등록된 사용자
                             if (mounted) {
                               Navigator.of(dialogContext).pop();
-                              await getUserInfo(context, viewModel, info.tempClerkNo!);
+                              await getUserInfo(viewModel, info.tempClerkNo!,'C');
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 Navigator.of(parentContext).push(
                                   MaterialPageRoute(builder: (context) => HomeScreen()),

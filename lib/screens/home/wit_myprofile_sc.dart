@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
@@ -11,12 +12,18 @@ import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
 import '../../util/wit_api_ut.dart';
+import '../board/widget/wit_board_detail_widget.dart';
 import '../board/wit_board_main_sc.dart';
 import '../checkList/wit_checkList_main_sc.dart';
 import '../common/wit_tableCalendar_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
+import 'package:witibju/screens/home/models/userInfo.dart' as model;
+
+
 import '../question/wit_question_main_sc.dart';
 import '../seller/wit_seller_profile_insert_name_sc.dart';
+import 'login/wit_kakaoLogin.dart';
+import 'models/main_view_model.dart';
 
 class MyProfile extends StatefulWidget  {
   const MyProfile({super.key});
@@ -309,10 +316,74 @@ class _MyProfileState extends State<MyProfile> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    logOut(context);
+                    final viewModel = Provider.of<MainViewModel>(context, listen: false); // 2025-04-26: 기존 Provider에서 가져옴
+                    await viewModel.getUserInfoProxy(context, '72091587', 'C');
+
+                    // 팝업 등 필요한 추가 동작이 있다면 여기에 작성 가능
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('로그인되었습니다.')),
+                    );
+                    // ✅ 로그인 성공 후 HomeScreen으로 이동
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
                   },
                   child: _buildListTile(Icons.logout, '로그인(이)'),
                 ),
+                GestureDetector(
+                  onTap: () async {
+                    final viewModel = Provider.of<MainViewModel>(context, listen: false); // 2025-04-26: 기존 Provider에서 가져옴
+                    await viewModel.getUserInfoProxy(context, '72091584', 'C');
+
+                    // 팝업 등 필요한 추가 동작이 있다면 여기에 작성 가능
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('로그인되었습니다.')),
+                    );
+                    // ✅ 로그인 성공 후 HomeScreen으로 이동
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
+                  child: _buildListTile(Icons.logout, '로그인(우)'),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    final viewModel = Provider.of<MainViewModel>(context, listen: false); // 2025-04-26: 기존 Provider에서 가져옴
+                    await viewModel.getUserInfoProxy(context, '72091586', 'C');
+
+                    // 팝업 등 필요한 추가 동작이 있다면 여기에 작성 가능
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('로그인되었습니다.')),
+                    );
+                    // ✅ 로그인 성공 후 HomeScreen으로 이동
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
+                  child: _buildListTile(Icons.logout, '로그인(백)'),
+                ),
+                GestureDetector(
+                  onTap: () async {
+                    final viewModel = Provider.of<MainViewModel>(context, listen: false); // 2025-04-26: 기존 Provider에서 가져옴
+                    await viewModel.getUserInfoProxy(context, '72091588', 'C');
+
+                    // 팝업 등 필요한 추가 동작이 있다면 여기에 작성 가능
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('로그인되었습니다.')),
+                    );
+                    // ✅ 로그인 성공 후 HomeScreen으로 이동
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
+                  child: _buildListTile(Icons.logout, '로그인(조)'),
+                ),
+
+
                 GestureDetector(
                   onTap: () async {
                     logOut(context);

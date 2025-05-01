@@ -1,15 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:intl/intl.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
-import 'package:witibju/screens/home/wit_estimate_detail.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
-import '../../util/wit_code_ut.dart';
 import '../chat/CustomChatScreen.dart';
-import '../chat/chatMain.dart';
 import 'models/requestInfo.dart';
 
 /**
@@ -18,11 +13,13 @@ import 'models/requestInfo.dart';
 class RequestDetailScreen extends StatefulWidget {
   final String categoryId;
   final String reqNo;
+  final String companyCnt;
 
   const RequestDetailScreen({
     Key? key,
     required this.categoryId,
     required this.reqNo,
+    required this.companyCnt,
   }) : super(key: key);
 
   @override
@@ -66,7 +63,6 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       print('신청 목록 조회 중 오류 발생: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -484,8 +480,6 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     );
   }
 
-  // 2025.04.16: 진행 요청 시 updateRequestState 호출 후 EstimateScreen 이동 처리
-  // 2025.04.16: 진행 요청 시 updateRequestState 호출 후 CustomChatScreen 이동 처리
   // 2025.04.16: 진행 요청 시 updateRequestState 호출 후 CustomChatScreen 이동 처리
   void _handleRequestAction(RequestInfo request) async {
     String? clerkNo = await secureStorage.read(key: 'clerkNo'); // 🔹 스토리지에서 clerkNo 읽기
@@ -526,8 +520,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => CustomChatScreen(
-                      '1',                    // chatId
-                      clerkNo ?? '',          // clerkNo (스토리지에서 가져옴)
+                      request.reqNo,
+                      request.seq,// chatId
                       request.companyNm,      // 세 번째 인자 예: 업체 이름
                     ),
                   ),

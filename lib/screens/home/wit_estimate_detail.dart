@@ -175,6 +175,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                       companyNm: entry.value.first.companyNm,
                       time: entry.value.first.reqDate ?? '',
                       rate: entry.value.first.rate,
+                      companyCnt: entry.value.first.companyCnt, // 🔥 여기 꼭 추가해야 해!
                       estimateContents: entry.value.first.estimateContents,
                       reqDateInfo: entry.value.first.reqDateInfo,
                       reqState: entry.value.first.reqState,
@@ -202,7 +203,6 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
 
     return sectionWidgets;
   }
-
 
   Future<void> updateRequestState(String reqNo, String seq, String reqUser) async {
     String restId = "updateRequestState";
@@ -290,6 +290,7 @@ class SectionWidget extends StatelessWidget {
               builder: (context) => RequestDetailScreen(
                 categoryId: items.first.categoryId,
                 reqNo: items.first.reqNo,
+                companyCnt: items.first.companyCnt
               ),
             ),
           );
@@ -297,7 +298,7 @@ class SectionWidget extends StatelessWidget {
       },
       child: Container(
         width: width,
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0), // 🔥 패딩 수정 (위아래 넓힘)
         margin: EdgeInsets.symmetric(vertical: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.0),
@@ -309,78 +310,95 @@ class SectionWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
             for (var item in items) ...[
-              SizedBox(height: 8.0),
-
-              // 요청 내용 요약 박스
-              Container(
-                child: Text(
-                  '${item.reqContents}',
-                  style: TextStyle(
-                      color: Colors.black,             // 텍스트 색상
-                      fontSize: 15.0,                  // 폰트 크기
-                     // fontWeight: FontWeight.bold,     // 굵기
-                      fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-
-              SizedBox(height: 8.0),
-
               // 실제 받은 견적이 존재할 경우 테이블로 출력
               if (item.receivedEstimates.isNotEmpty) ...[
-                SizedBox(height: 8.0),
-
+                SizedBox(height: 5.0),
                 // 2025-03-22 수정: 총 견적 수 텍스트 클릭 시 상세화면 이동
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => RequestDetailScreen(
-                          categoryId: item.categoryId,
-                          reqNo: item.reqNo,
+                    print('SectionWidget tapped');
+                    if (items.isNotEmpty && items.first.companyCnt != "0") {
+                      // 🔥 companyCnt가 "0"이 아니어야 이동
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RequestDetailScreen(
+                            categoryId: items.first.categoryId,
+                            reqNo: items.first.reqNo,
+                            companyCnt: items.first.companyCnt,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    } else {
+                      // 이동은 막고 아무것도 안함 (또는 토스트만 띄워도 됨)
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('받은 견적이 없습니다.')),
+                      );
+                    }
                   },
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Container(
-                        padding: EdgeInsets.all(4.0), // 텍스트와 배경 간 여백
-                        decoration: BoxDecoration(
-                          image: DecorationImage( // 📆 2025.04.01 - 배경 이미지 추가
-                            image: AssetImage('assets/home/estimateback_detail1.png'), // 이미지 경로 수정 가능
-                            fit: BoxFit.cover,
-                            //opacity: 0.2, // Flutter 3.10 이상일 경우만 사용 가능
-                          ),
-                          borderRadius: BorderRadius.circular(4.0),
-                        ),
-                        child: Text(
-                          '# 총 ${item.receivedEstimates.length}건 견적 도착',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'NotoSansKR',
-                            color: Colors.grey[800],
-                           // decoration: TextDecoration.underline,
-                          ),
-                        ),
+                  child: Container(
+                    width: width,
+                    padding: EdgeInsets.all(8.0),
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      image: DecorationImage(
+                        image: AssetImage('assets/home/estimateback2.png'),
+                        fit: BoxFit.cover,
                       ),
                     ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 16.0),
+                        Text(
+                          items.first.reqContents,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15.0,
+                            fontFamily: 'NotoSansKR',
+                          ),
+                          maxLines: 2,
+                          softWrap: true,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 16.0),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            padding: EdgeInsets.all(6.0),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/home/estimateback_detail1.png'),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                            child: Text(
+                              items.first.estimateContents == "견적대기중"
+                                  ? '견적대기중'
+                                  : '# 총 ${items.first.estimateContents}건 견적 도착',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'NotoSansKR',
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                )
               ],
             ],
           ],
@@ -403,6 +421,8 @@ class ListItem {
   final String reqStateNm;
   final String estimateAmount;
   final String reqContents;
+  final String companyCnt;
+
   final List<EstimateItem> receivedEstimates; // 받은 견적 리스트 추가
   ListItem({
     required this.companyId,
@@ -411,6 +431,7 @@ class ListItem {
     required this.reqNo,
     required this.time,
     required this.rate,
+    required this.companyCnt,
     required this.estimateContents,
     required this.reqDateInfo,
     required this.reqState,

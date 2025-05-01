@@ -289,11 +289,15 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep2> {
                       return; // 더 이상 진행하지 않음
                     }
                     String? nickname = await secureStorage.read(key: 'nickName');
+                    String? kakaoId = await secureStorage.read(key: 'kakaoId');
+                    String? profileImageUrl = await secureStorage.read(key: 'profileImageUrl');
                     String selectedAptNo = options[selectedApt] ?? "";
                     String selectedPyungNo = pyungOptions.contains(selectedPyung) ? selectedPyung.replaceAll('평', '') : "";
 
                     mainViewModel.userInfo = UserInfo(
                       nickName: nickname,
+                      id: kakaoId,
+                      profileImageUrl: profileImageUrl,
                       mainAptNo: selectedAptNo,
                       mainAptPyoung: selectedPyungNo,
                     );

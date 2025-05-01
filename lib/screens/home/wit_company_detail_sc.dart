@@ -34,6 +34,8 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   bool isAllSelected = true;
   TextEditingController _additionalRequirementsController = TextEditingController();
   String? _selectedDate; // ✅ 선택한 날짜 저장 변수
+  bool _isExpanded = true;  //상품정보 접고 펄치기
+
   @override
   void initState() {
     super.initState();
@@ -197,7 +199,6 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                   controller: _tabController,
                   children: [
                     getCategoryDetailInfo(),
-                    //getEstimateService(),
                     getReviewBoard(),
                   ],
                 ),
@@ -218,7 +219,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   Widget getCategoryDetailInfo() {
     double initialHeight = 250.0;
     double? fullHeight; // 이미지 로딩 후 계산된 높이 저장
-    bool _isExpanded = true;
+
     bool imageLoaded = false; // 이미지 중복 처리 방지
 
     return StatefulBuilder(
@@ -365,6 +366,18 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
                 contentPadding:
                 EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                focusedBorder: OutlineInputBorder( // 2025-04-26: 포커스 테두리 색 지정
+                  borderSide: BorderSide(
+                    color: Colors.green, // ✅ 원하는 색으로 변경 (예: 초록색)
+                    width: 2.0,
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder( // 2025-04-26: 포커스 안됐을 때 테두리 색도 지정
+                  borderSide: BorderSide(
+                    color: Colors.grey, // ✅ 평소에는 회색
+                    width: 1.0,
+                  ),
+                ),
               ),
             ),
             SizedBox(height: 14.0),
@@ -407,183 +420,6 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     );
   }
 
-
-  Widget buildBottomNavigationBar1() {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "추가조건/요구사항",
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 8.0),
-          TextField(
-            controller: _additionalRequirementsController,
-            maxLines: 3,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
-              contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            ),
-          ),
-          SizedBox(height: 14.0),
-          GestureDetector(
-            onTap: () async {
-              bool isConfirmed = await DialogUtils.showConfirmationDialog(
-                context: context,
-                title: '견적 요청 확인',
-                content: '견적 요청을 진행하시겠습니까?',
-                confirmButtonText: '진행',
-                cancelButtonText: '취소',
-              );
-
-              if (isConfirmed) {
-                sendRequestInfo();
-              }
-            },
-            child: Container(
-              width: double.infinity,
-              height: 50.0,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Center(
-                child: Text(
-                  '견적 요청하기',
-                  style: TextStyle(
-                    color: Color(0xFFAFCB54),
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Widget getEstimateService() {
-    return ListView(
-      primary: true,
-      shrinkWrap: true,
-      physics: AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.all(6.0),
-      children: [
-        /// ✅ 작업요청 예상일 UI 수정 (입력창 대신 버튼 사용)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            children: [
-              // "작업요청 예상일" 라벨
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_lightGreen,
-                  borderRadius: BorderRadius.circular(6.0),
-                ),
-                child: Text(
-                  "작업요청 예상일",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(width: 12.0),
-
-              // ✅ 날짜 선택 버튼
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => _selectDate(context),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(6.0),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          _selectedDate ?? "날짜 선택", // 선택한 날짜가 없으면 빈 값
-                          style: TextStyle(fontSize: 16.0),
-                        ),
-                        Icon(Icons.keyboard_arrow_down, color: Colors.grey), // ▼ 아이콘 추가
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(height: 16.0),
-
-        /// ✅ 추가조건/요구사항
-        Text("추가조건/요구사항", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-        SizedBox(height: 8.0),
-        TextField(
-          controller: _additionalRequirementsController,
-          maxLines: 3,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
-            contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-          ),
-        ),
-        SizedBox(height: 14.0),
-
-        /// ✅ 견적 요청 버튼
-        GestureDetector(
-          onTap: () async {
-            bool isConfirmed = await DialogUtils.showConfirmationDialog(
-              context: context,
-              title: '견적 요청 확인',
-              content: '견적 요청을 진행하시겠습니까?',
-              confirmButtonText: '진행',
-              cancelButtonText: '취소',
-            );
-
-            if (isConfirmed) {
-              sendRequestInfo();
-            }
-          },
-          child: Container(
-            width: double.infinity,
-            height: 50.0,
-            decoration: BoxDecoration(
-              color: WitHomeTheme.wit_lightGreen,
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Center(
-              child: Text(
-                '견적 요청하기',
-                style: TextStyle(color: Colors.white, fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        ),
-
-        SizedBox(height: 400),
-      ],
-    );
-  }
-
-
-
   Widget getCommunityTabs() {
     // '업체후기' 탭을 선택하면 즉시 Board(1, 'C1')로 이동
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -622,7 +458,6 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
       "reqUser": clerkNo,
       "aptNo": aptNo,
       "categoryId": widget.categoryId,
-    // "companyIds": selectedItems,
       "reqContents": reqContents,
       "expectedDate": _selectedDate, // ✅ 작업요청예정일 추가
     });

@@ -35,6 +35,9 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
 
     try {
       final _noticeList = await sendPostRequest(restId, param);
+
+      print('✅ getNoticeList 가져온 데이터: $_noticeList');
+
       setState(() {
         estimateList = RequestInfo().parseRequestList(_noticeList) ?? [];
         groupEstimatesByDate();
@@ -103,16 +106,16 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
                     final estimate = todayEstimates[index];
                     return GestureDetector(
                       onTap: () {
-                        /*Navigator.push(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => RequestDetailScreen(
-                              requests: todayEstimates,
-                              selectedRequest: estimate,
-                              categoryName: estimate.categoryNm,
+                              categoryId: estimate.categoryId,
+                              reqNo: estimate.reqNo,
+                              companyCnt: estimate.companyCnt,
                             ),
                           ),
-                        );*/
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -175,16 +178,16 @@ class _WitEstimateNoticeScreenState extends State<WitEstimateNoticeScreen> {
                     final estimate = previousEstimates[index];
                     return GestureDetector(
                       onTap: () {
-                        /*Navigator.push(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => RequestDetailScreen(
-                              requests: previousEstimates,
-                              selectedRequest: estimate,
-                              categoryName: estimate.categoryNm,
+                              categoryId: estimate.categoryId,
+                              reqNo: estimate.reqNo,
+                              companyCnt: estimate.companyCnt,
                             ),
                           ),
-                        );*/
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),

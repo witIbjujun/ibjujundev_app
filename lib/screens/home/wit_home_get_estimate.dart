@@ -199,6 +199,20 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
+                          contentPadding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                          focusedBorder: OutlineInputBorder( // 2025-04-26: 포커스 테두리 색 지정
+                            borderSide: BorderSide(
+                              color: Colors.green, // ✅ 원하는 색으로 변경 (예: 초록색)
+                              width: 2.0,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder( // 2025-04-26: 포커스 안됐을 때 테두리 색도 지정
+                            borderSide: BorderSide(
+                              color: Colors.grey, // ✅ 평소에는 회색
+                              width: 1.0,
+                            ),
+                          ),
                         ),
                         style: TextStyle(fontSize: 14.0),
                       ),
@@ -286,6 +300,18 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
   Future<void> sendRequestInfo() async {
     String restId = "saveTotalRequestInfo";
 
+    if (_selectedDate == null) {
+      // 사용자가 날짜를 선택하지 않았을 경우 알림
+      await DialogUtils.showCustomDialog(
+        context: context,
+        title: '날짜 선택 필요',
+        content: '작업 요청 예정일을 선택해 주세요.',
+        confirmButtonText: '확인',
+      );
+      return;
+    }
+
+
     String? aptNo = await secureStorage.read(key: 'mainAptNo'); // 아파트 번호
     String? clerkNo = await secureStorage.read(key: 'clerkNo');
     String reqContents = _additionalRequirementsController.text.replaceAll("\n", " ");
@@ -298,10 +324,12 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     aptNo = aptNo ?? '1'; // aptNo가 null일 경우 기본값 1을 할당
     final param = jsonEncode({
       "reqGubun": 'T',
+      "type": widget.type,
       "aptNo": aptNo,
       "reqUser": clerkNo,
       "categoryIds": selectedItems,
       "reqContents": reqContents,
+      "expectedDate": _selectedDate, // ✅ 작업요청예정일 추가
     });
 
     try {
