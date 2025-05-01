@@ -61,22 +61,22 @@ class _RadioOptionColumnState extends State<RadioOptionColumn> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (widget.data['qustTitle'] != null)
+            if (widget.data['qustSubTitle'] != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
-                  widget.data['qustTitle']!,
+                  widget.data['qustSubTitle']!,
                   style: WitHomeTheme.title,
                 ),
               ),
-            if (widget.data['qustSubTitle'] != null)
+            /*if (widget.data['qustSubTitle'] != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
                 child: Text(
                   widget.data['qustSubTitle']!,
                   style: WitHomeTheme.subtitle,
                 ),
-              ),
+              ),*/
             ...List.generate(widget.options.length, (optionIndex) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 2.0),
@@ -194,22 +194,22 @@ class _CheckOptionColumnState extends State<CheckOptionColumn> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
           children: [
-            if (widget.data['qustTitle'] != null)
+            if (widget.data['qustSubTitle'] != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0), // 제목과 옵션 간격
                 child: Text(
-                  widget.data['qustTitle']!,
+                  widget.data['qustSubTitle']!,
                   style: WitHomeTheme.title, // 제목 스타일
                 ),
               ),
-            if (widget.data['qustSubTitle'] != null)
+            /*if (widget.data['qustSubTitle'] != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0), // 제목과 옵션 간격
                 child: Text(
                   widget.data['qustSubTitle']!,
                   style: WitHomeTheme.subtitle, // 제목 스타일
                 ),
-              ),
+              ),*/
             ...List.generate(widget.options.length, (optionIndex) {
               return Container(
                 margin: const EdgeInsets.symmetric(vertical: 3.0), // 위아래 여백

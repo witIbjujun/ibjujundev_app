@@ -6,8 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 
+import '../home/wit_home_theme.dart';
+
 class Question extends StatelessWidget {
   final String qustCd; // 최초 질문 코드
+  final _storage = const FlutterSecureStorage();
 
   Question({required this.qustCd});
 
@@ -16,11 +19,61 @@ class Question extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "가이드",
+            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+          ),
+          iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
+          backgroundColor: WitHomeTheme.wit_black,
+          actions: [ // 여기에 actions 위젯들을 추가합니다.
+            IconButton(
+              icon: Icon(Icons.refresh), // 초기화 기능을 나타내는 아이콘
+              color: WitHomeTheme.wit_white, // 아이콘 색상 설정 (AppBar iconTheme과 일관되게)
+              tooltip: '초기화', // 길게 눌렀을 때 표시되는 텍스트
+              onPressed: () {
+                ConfimDialog.show(context,
+                    "초기화",
+                    "선택한 가이드 정보를 초기화 하시겠습니까?",
+                    () async {
+                      deleteQuestionInfoByAll();
+                    }
+                );
+              },
+            ),
+            // 필요한 경우 다른 actions 위젯을 여기에 추가할 수 있습니다.
+          ],
+        ),
         body: SafeArea(
-            child: QuestionList(qustCd: qustCd),
+            child: QuestionList(qustCd: "Q000000"),
         ),
       ),
     );
+  }
+
+  // [서비스] 질문 전체 삭제
+  Future<void> deleteQuestionInfoByAll() async {
+
+    String? userId = await _storage.read(key: 'clerkNo');
+
+    // REST ID
+    String restId = "deleteQuestionInfoByAll";
+
+    // PARAM
+    var param = jsonEncode({
+      "userId" : userId,      // 사용자 ID
+    });
+
+    // API 호출 (질문 조회)
+    final delResult = await sendPostRequest(restId, param);
+
+    // 전체 삭제 결과 확인
+    if (delResult["delResult"] == "OK") {
+      // 첫 질문 진행
+      //getNextQuestionInfo(widget.qustCd, 0);
+    } else {
+      print("전체 삭제 오류");
+    }
   }
 }
 
