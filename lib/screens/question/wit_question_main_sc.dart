@@ -486,6 +486,7 @@ class _QuestionState extends State<QuestionList> {
           for (var optionInfo in questionList["optionList"]) {
             List<Map<String, String>> optionList = [];
             for (var option in optionInfo) {
+
               optionList.add({
                 'opCd': option["opCd"],
                 'opSeq': option["opSeq"].toString(),
@@ -494,11 +495,15 @@ class _QuestionState extends State<QuestionList> {
                 'opContents': option["opContents"] ?? '',
                 'lowQustCd': option["lowQustCd"],
               });
-              lastQustCd = option["lowQustCd"];
+
+              if (questionList["saveData"][saveIdx-1]["opCd"] == option["opCd"] &&
+                  questionList["saveData"][saveIdx-1]["opSeq"] == option["opSeq"]) {
+                lastQustCd = option["lowQustCd"];
+              }
+
             }
             qustOptionList.add(optionList);
           }
-
           // 다음 질문 진행
           getNextQuestionInfo(lastQustCd, (saveIdx-1));
         });
@@ -524,6 +529,11 @@ class _QuestionState extends State<QuestionList> {
 
   // [서비스] 다음 질문 조회
   Future<void> getNextQuestionInfo(String qustCd, int index) async {
+
+    print(qustCd);
+    print(qustCd);
+    print(index);
+    print(index);
 
     // REST ID
     String restId = "getNextQuestionInfo";
