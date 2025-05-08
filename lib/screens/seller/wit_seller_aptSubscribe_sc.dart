@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:witibju/screens/seller/wit_seller_card_confirm_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_card_register_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_cash_history_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -46,7 +47,9 @@ Future<Map<String, dynamic>?> checkCardRegistration(String customerUid) async {
     print("엑세스 토큰 발급 성공 : $accessToken");
   }
 
-  customerUid = 'user_1234';
+  customerUid = 'user_' + sllrNo;
+
+  print("13123211231321233:" + customerUid);
 
   final url = Uri.parse('https://api.iamport.kr/subscribe/customers/$customerUid');
 

@@ -156,7 +156,7 @@ class EstimateItem extends StatelessWidget {
                     children: [
                       // 날짜를 이름 위로 배치
                       Text(
-                        request['estDt'], // 날짜
+                        request['estDt'] ?? '', // 날짜
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                       ),
                       SizedBox(height: 4), // 날짜와 이름 사이의 간격
@@ -166,7 +166,7 @@ class EstimateItem extends StatelessWidget {
                       ),
                       SizedBox(height: 1), // 이름과 아파트명 사이의 간격
                       Text(
-                        request['aptName'], // 아파트명
+                        request['aptName'] ?? '', // 아파트명
                         style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -194,7 +194,7 @@ class EstimateItem extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    request['stat'], // 상태
+                    request['stat'] ?? '', // 상태
                     style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
                   ),
                 ),
