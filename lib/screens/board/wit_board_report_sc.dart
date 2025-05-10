@@ -168,8 +168,9 @@ class BoardReportState extends State<BoardReport> {
 
     var restId = "boardSendReport";
 
+    print(widget.boardInfo["bordNo"]);
+
     var param = jsonEncode({
-      "bordType": widget.boardInfo["bordType"],
       "bordNo": widget.boardInfo["bordNo"],
       "reportReason": reason,
       "reportCont": details,

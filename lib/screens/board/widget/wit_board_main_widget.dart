@@ -110,11 +110,13 @@ class BoardListView extends StatelessWidget {
   final List<dynamic> boardList;
   final Function refreshBoardList;
   final ScrollController scrollController;
+  final String bordTitle;
 
   BoardListView({
     required this.boardList,
     required this.refreshBoardList,
     required this.scrollController,
+    required this.bordTitle,
   });
 
   @override
@@ -267,7 +269,7 @@ class BoardListView extends StatelessWidget {
                               onTap: () async {
                                 await Navigator.push(
                                   context,
-                                  SlideRoute(page: BoardDetail(param: boardInfo)),
+                                  SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle)),
                                 );
                                 await refreshBoardList();
                               },

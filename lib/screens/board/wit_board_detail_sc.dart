@@ -6,6 +6,7 @@ import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
 dynamic boardDetailInfo = {};
+String boardTitle = "";
 
 List<dynamic> boardDetailImageList = [];
 
@@ -14,12 +15,14 @@ List<dynamic> commentList = [];
 class BoardDetail extends StatefulWidget {
 
   final dynamic param;
+  final String bordTitle;
 
-  const BoardDetail({super.key, required this.param});
+  const BoardDetail({super.key, required this.param, required this.bordTitle});
 
   @override
   State<StatefulWidget> createState() {
     boardDetailInfo = this.param;
+    boardTitle = this.bordTitle;
     return BoardDetailState();
   }
 }
@@ -64,7 +67,7 @@ class BoardDetailState extends State<BoardDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("자유게시판", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
+        title: Text(boardTitle, style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
         iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
         backgroundColor: WitHomeTheme.wit_black,
       ),
@@ -148,8 +151,6 @@ class BoardDetailState extends State<BoardDetail> {
     // PARAM
     final param = jsonEncode({
       "bordNo": boardDetailInfo["bordNo"],
-      "bordType": boardDetailInfo["bordType"],
-      "bordSeq": boardDetailInfo["bordSeq"],
     });
 
     // API 호출 (게시판 상세 조회)
@@ -173,8 +174,6 @@ class BoardDetailState extends State<BoardDetail> {
     // PARAM
     final param = jsonEncode({
       "bordNo": boardDetailInfo["bordNo"],
-      "bordType": boardDetailInfo["bordType"],
-      "bordSeq": boardDetailInfo["bordSeq"],
       "creUser": loginClerkNo,
     });
 
@@ -218,7 +217,6 @@ class BoardDetailState extends State<BoardDetail> {
     final param = jsonEncode({
       "bordNo": boardDetailInfo["bordNo"],
       "bordType": boardDetailInfo["bordType"],
-      "bordSeq": boardDetailInfo["bordSeq"],
     });
 
     // API 호출 (게시판 상세 조회)
@@ -247,7 +245,6 @@ class BoardDetailState extends State<BoardDetail> {
       final param = jsonEncode({
         "bordNo": boardDetailInfo["bordNo"],
         "bordType": boardDetailInfo["bordType"],
-        "bordSeq": boardDetailInfo["bordSeq"],
         "cmmtContent": cmmtContent,
         "creUser": loginClerkNo,
       });
@@ -271,8 +268,6 @@ class BoardDetailState extends State<BoardDetail> {
     // PARAM
     final param = jsonEncode({
       "bordNo": boardDetailInfo["bordNo"],
-      "bordType": boardDetailInfo["bordType"],
-      "bordSeq": boardDetailInfo["bordSeq"],
       "updUser": loginClerkNo,
     });
 
@@ -301,9 +296,7 @@ class BoardDetailState extends State<BoardDetail> {
     // PARAM
     final param = jsonEncode({
       "bordNo": boardDetailInfo["bordNo"],
-      "bordType": boardDetailInfo["bordType"],
       "cmmtNo": data["cmmtNo"],
-      "cmmtSeq": data["cmmtSeq"],
       "updUser" : loginClerkNo,
     });
 

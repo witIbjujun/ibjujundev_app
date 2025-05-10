@@ -14,10 +14,11 @@ class BoardWrite extends StatefulWidget {
 
   final dynamic? boardInfo;
   final List<dynamic>? imageList;
-  final int? bordNo;
+  final String? bordNo;
   final String? bordType;
+  final String? bordKey;
 
-  const BoardWrite({super.key, this.boardInfo, this.imageList, this.bordNo, this.bordType});
+  const BoardWrite({super.key, this.boardInfo, this.imageList, this.bordNo, this.bordType, this.bordKey});
 
   @override
   _BoardWriteState createState() => _BoardWriteState();
@@ -90,6 +91,7 @@ class _BoardWriteState extends State<BoardWrite> {
                     ),
                     style: WitHomeTheme.subtitle,
                     maxLines: null, // 자동 조절
+                    minLines: 20,
                     keyboardType: TextInputType.multiline,
                 ),
                 Divider(),
@@ -284,7 +286,6 @@ class _BoardWriteState extends State<BoardWrite> {
       });
 
     } else {
-
       restId = "updateBoardInfo";
       param = jsonEncode({
         "bordTitle": _titleController.text,

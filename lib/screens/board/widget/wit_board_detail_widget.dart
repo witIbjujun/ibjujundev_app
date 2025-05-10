@@ -48,6 +48,7 @@ class TitleAndMenu extends StatelessWidget {
                   imageList: boardDetailImageList,
                   bordNo: boardDetailInfo["bordNo"],
                   bordType: boardDetailInfo["bordType"],
+                  bordKey: boardDetailInfo["bordKey"],
                 )),
               ).then((_) {
                 callBack();

@@ -9,12 +9,12 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 // 게시판 메인
 class Board extends StatefulWidget {
 
-  final dynamic bordNo;
-  final String? bordType;
+  final String? bordType;   // C00X : 커뮤니티, U00X : 업체후기, J00X : 자유게시판, G00X : 공지사항
+  final String? bordKey;    // 아파트 번호, 판매자 번호등 고유 번호
   final String bordTitle;
   final bool appBarFlag;
 
-  const Board(this.bordNo, this.bordType, {this.bordTitle = "", this.appBarFlag = true, super.key});
+  const Board(this.bordType, this.bordKey, {this.bordTitle = "", this.appBarFlag = true, super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -73,6 +73,7 @@ class BoardState extends State<Board> {
             boardList: boardList,
             refreshBoardList: refreshBoardList,
             scrollController: _scrollController,  // ScrollController 연결
+            bordTitle: widget.bordTitle,
           ),
         ),
       ),
@@ -83,7 +84,7 @@ class BoardState extends State<Board> {
           onPressed: () async {
             await Navigator.push(
               context,
-              SlideRoute(page: BoardWrite(bordNo: widget.bordNo, bordType: widget.bordType)),
+              SlideRoute(page: BoardWrite(bordNo: "", bordType: widget.bordType, bordKey: widget.bordKey)),
             );
             await refreshBoardList();
           },
@@ -118,8 +119,8 @@ class BoardState extends State<Board> {
 
     // PARAM
     final param = jsonEncode({
-      "bordNo": widget.bordNo,
       "bordType": widget.bordType,
+      "bordKey": widget.bordKey,
       "searchText" : _searchController.text.trim(),
       "currentPage": (currentPage - 1) * pageSize,
       "pageSize": pageSize,
@@ -148,8 +149,8 @@ class BoardState extends State<Board> {
 
     // PARAM
     final param = jsonEncode({
-      "bordNo": widget.bordNo,
       "bordType": widget.bordType,
+      "bordKey": widget.bordKey,
       "searchText" : _searchController.text.trim(),
       "currentPage": (currentPage - 1) * pageSize,
       "pageSize": pageSize,

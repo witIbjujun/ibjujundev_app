@@ -44,6 +44,7 @@ class Question extends StatelessWidget {
             // 필요한 경우 다른 actions 위젯을 여기에 추가할 수 있습니다.
           ],
         ),
+        backgroundColor: WitHomeTheme.wit_white, // Scaffold의 배경색을 흰색으로 설정
         body: SafeArea(
             child: QuestionList(qustCd: "Q000000"),
         ),
@@ -460,6 +461,9 @@ class _QuestionState extends State<QuestionList> {
           int saveIdx = 0;
           String lastQustCd = "";
           currentIndex = -1;
+          print("***********************************");
+          print(questionList["saveData"]);
+          print("***********************************");
 
           // 저장 질문 리스트
           for (var questionInfo in questionList["questionList"]) {
@@ -486,6 +490,10 @@ class _QuestionState extends State<QuestionList> {
           for (var optionInfo in questionList["optionList"]) {
             List<Map<String, String>> optionList = [];
             for (var option in optionInfo) {
+
+              print("111*************************************");
+              print(option);
+              print("111*************************************");
 
               optionList.add({
                 'opCd': option["opCd"],
@@ -529,11 +537,6 @@ class _QuestionState extends State<QuestionList> {
 
   // [서비스] 다음 질문 조회
   Future<void> getNextQuestionInfo(String qustCd, int index) async {
-
-    print(qustCd);
-    print(qustCd);
-    print(index);
-    print(index);
 
     // REST ID
     String restId = "getNextQuestionInfo";
