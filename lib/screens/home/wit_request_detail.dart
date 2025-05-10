@@ -39,6 +39,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   }
 
   Future<void> fetchRequestDetailList() async {
+    print("📡 데이터 조회 시작");
     String restId = "getRequesDetailtList";
     String? clerkNo = await secureStorage.read(key: 'clerkNo');
 
@@ -50,19 +51,22 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
     try {
       final response = await sendPostRequest(restId, param);
-      final parsed = RequestInfo().parseRequestList(response) ?? [];
+      print("📡 응답 받음: ${jsonEncode(response)}");
 
+      final parsed = RequestInfo().parseRequestList(response) ?? [];
       setState(() {
         requests = parsed;
         _selectedRequest = parsed.isNotEmpty ? parsed.first : null;
-        isLoading = false; // 2025-03-24: 로딩 완료
+        isLoading = false;
+        print("🔎 UI 업데이트 완료");
       });
 
-      print('📡 상세 조회 응답: ${jsonEncode(response)}');
+      print("📡 requests 업데이트됨, 길이: ${requests.length}");
     } catch (e) {
-      print('신청 목록 조회 중 오류 발생: $e');
+      print("❌ 신청 목록 조회 중 오류 발생: $e");
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -127,32 +131,68 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 SizedBox(height: 8),
 
                 // 설명 + 더보기
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isExpanded = !isExpanded;
-                    });
-                  },
-                  child: RichText(
-                    maxLines: isExpanded ? null : 2,
-                    overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                    text: TextSpan(
-                      text: '${requests[0].reqContents}',
+              // 2025-05-08: 개행 문자 처리 및 [더보기] / <<<접기 조건 수정
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // 🔹 줄 수 측정
+                    final span = TextSpan(
+                      text: requests[0].reqContents,
                       style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                      children: [
-                        TextSpan(
-                          text: isExpanded ? ' [더보기]' : '<<<접기',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                    );
 
-                SizedBox(height: 12),
+                    final tp = TextPainter(
+                      text: span,
+                      maxLines: 2,
+                      textDirection: TextDirection.ltr,
+                    )..layout(maxWidth: constraints.maxWidth);
+
+                    // 🔹 총 줄 수 계산
+                    final lineCount = tp.computeLineMetrics().length;
+
+                    return RichText(
+                      maxLines: isExpanded ? null : 2,
+                      overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                      text: TextSpan(
+                        style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                        children: [
+                          // 🔹 기본 텍스트 표시
+                          TextSpan(
+                            text: requests[0].reqContents,
+                          ),
+                          // 🔹 2줄 초과 시 [더보기] 또는 [접기] 표시
+                          if ((lineCount > 2 && !isExpanded) || isExpanded)
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.baseline,
+                              baseline: TextBaseline.alphabetic,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isExpanded = !isExpanded;
+                                  });
+                                },
+                                child: Text(
+                                  isExpanded ? ' [접기]' : ' [더보기]',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   children: [
@@ -196,7 +236,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                   },
                   child: Container(
                     height: MediaQuery.of(context).size.width * 0.35,
-                    width: MediaQuery.of(context).size.width * 0.35,
+                    width: MediaQuery.of(context).size.width * 0.38,
                     margin: const EdgeInsets.symmetric(horizontal: 8.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12.0),
@@ -319,7 +359,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 9,
+          fontSize: 13,
           color: Colors.black,
           fontWeight: FontWeight.normal,
           shadows: [
@@ -338,6 +378,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
    * 최하단 상세보기
    */
   Widget _buildRequestDetail(RequestInfo request) {
+    // 🔹 companyNm과 estimateContents 값 확인 로그 추가
+    print("🔹 Company Name: ${request.companyNm}");
+    print("🔹 Estimate Contents: ${request.estimateContents}");
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
       padding: EdgeInsets.all(16),
@@ -369,7 +413,6 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                   ),
                 ],
               ),
-
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
@@ -386,94 +429,65 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             ],
           ),
 
+          /// 🔹 밑에 estimateContents 표시
+          SizedBox(height: 10),
+          Text(
+            '${request.estimateContents}',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[700],
+            ),
+          ),
+
           SizedBox(height: 10),
 
-          /// 🔹 견적 설명 제목 + 내용 + 더보기
-          Text(
-            '견적 설명',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 6),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final textSpan = TextSpan(
-                text: request.estimateContents,
-                style: TextStyle(fontSize: 14, color: Colors.black87),
-              );
-
-              final textPainter = TextPainter(
-                text: textSpan,
-                maxLines: 2,
-                textDirection: Directionality.of(context), // ✅ 현재 앱의 방향 가져오기
-              )..layout(maxWidth: constraints.maxWidth);
-
-              final isOverflowing = textPainter.didExceedMaxLines;
-
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isExpanded = !isExpanded;
-                  });
-                },
-                child: Text(
-                      () {
-                    final content = request.estimateContents;
-                    if (isExpanded) {
-                      return '$content [접기]';
-                    } else if (content.length > 20) {
-                      return '${content.substring(0, 20)}... [더보기]';
-                    } else {
-                      return content;
-                    }
-                  }(),
-                  style: TextStyle(fontSize: 14, color: Colors.black87),
-                ),
-              );
-            },
-          ),
-
-          SizedBox(height: 20),
-
           /// 🔹 진행 요청 버튼 + 메시지 버튼
-          Row(
-            children: [
-              // 왼쪽: 진행 요청 버튼
-              Expanded(
-                child: SizedBox(
-                  height: 48,
-                  child: ElevatedButton(
-                    onPressed: request.reqState == '02'
-                        ? () => _handleRequestAction(request)
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+          SizedBox(
+            width: 400,
+            height: 48,
+            child: ElevatedButton(
+              onPressed: request.reqState == '02'
+                  ? () => _handleRequestAction(request)
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 48.0),
+                    child: Text(
+                      '메시지로 진행하기',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    child: Text(
-                      '진행 요청',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 16.0),
+                    width: 36,
+                    height: 27,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/home/message.png',
+                        width: 36,
+                        height: 27,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-
-              SizedBox(width: 8),
-
-              // 오른쪽: 메시지 아이콘 박스
-              Container(
-                width: 42,
-                height: 42,
-                child: Center(
-                  child: Image.asset(
-                    'assets/home/message.png',
-                    width: 40,
-                    height: 40,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ],
       ),
@@ -483,7 +497,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   // 2025.04.16: 진행 요청 시 updateRequestState 호출 후 CustomChatScreen 이동 처리
   void _handleRequestAction(RequestInfo request) async {
     String? clerkNo = await secureStorage.read(key: 'clerkNo'); // 🔹 스토리지에서 clerkNo 읽기
-
+    print('🧪 선택된 request.seq: ${request.seq}');
     showDialog(
       context: context,
       builder: (context) {
@@ -522,7 +536,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                     builder: (context) => CustomChatScreen(
                       request.reqNo,
                       request.seq,// chatId
-                      request.companyNm,      // 세 번째 인자 예: 업체 이름
+                      "userView",      // 세 번째 인자 예: 업체 이름
                     ),
                   ),
                 );

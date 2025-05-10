@@ -46,8 +46,13 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   @override
   void initState() {
     super.initState();
-    //채팅내용 조회
-    getChatMessages();
+
+    print('🧪 initState - reqNo: ${widget.reqNo}, seq: ${widget.seq}, target: ${widget.target}');
+
+    // 2025-05-04: 채팅정보 먼저 가져오고 → 그다음 채팅내용 조회
+    getChatInfo().then((_) {
+      getChatMessages();
+    });
 
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
@@ -82,7 +87,9 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
       }) async {
     const String restId = "saveChatMessage";
     final String? chatId = _chatMessages.isNotEmpty ? _chatMessages.first['chatId']?.toString() : null;
-    final String? clerkNo = _chatMessages.isNotEmpty ? _chatMessages.first['clerkNo']?.toString() : null;
+    final String? clerkNo = await secureStorage.read(key: 'clerkNo');
+
+    print("🧾 chatId: $chatId, clerkNo: $clerkNo"); // ✅ 여기서 출력
 
     if (chatId == null || clerkNo == null) {
       print("❌ chatId 또는 clerkNo가 없습니다. 메시지 저장 중단");
@@ -118,6 +125,44 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     }
   }
 
+  /**
+   * 채팅메인 정보
+   */
+  // 2025-05-04: getChatInfo 결과를 상태로 저장하여 estimateCard에 사용
+  String _reqName = '';
+  String _categoryNm = '';
+  String _estimateAmount = '';
+
+  Future<void> getChatInfo() async {
+    const String restId = "getChatInfo";
+
+    String? reqNo = widget.reqNo;
+    String? seq = widget.seq;
+    print('✅ getChatInfo 호출 - seq: $seq');
+
+    final param = jsonEncode({
+      "reqNo": reqNo,
+      "seq": seq,
+    });
+
+    try {
+      final result = await sendPostRequest(restId, param);
+
+      if (result != null && result is Map<String, dynamic>) {
+        print('🟢 getChatInfo 결과: $result');
+
+        setState(() {
+          _reqName = result['reqName']?.toString() ?? '';
+          _categoryNm = result['categoryNm']?.toString() ?? '';
+          _estimateAmount = result['estimateAmount']?.toString() ?? '0';
+        });
+      }
+    } catch (e) {
+      print('❌ getChatInfo 오류: $e');
+    }
+  }
+
+
 
   /**
    * 채팅내용 조회
@@ -126,13 +171,17 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   // ✅ 2025-04-10: 채팅내용 조회 함수 전체
   Future<void> getChatMessages() async {
     const String restId = "getChatList";
+
+    String clerkNo = (await secureStorage.read(key: 'clerkNo'))!;
     String? reqNo = widget.reqNo;
     String? seq = widget.seq;
     String? target = widget.target;
-    print('✅ 메시지 조회 reqNo: $reqNo');
+    print('✅ 메시지 조회 seq: $seq');
 
     final param = jsonEncode({
       "reqNo": reqNo,
+      "seq": seq,
+      "clerkNo": clerkNo,
       "target": target,
       "chatgubun": "user",
     });
@@ -140,6 +189,12 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     try {
       final _chatList = await sendPostRequest(restId, param);
       final List<MessageInfo> parsedList = MessageInfo().parseMessageList(_chatList) ?? [];
+
+      print('🧾 파싱된 메시지 리스트:');
+      for (var msg in parsedList) {
+        final json = msg.toJson();
+        print('👉 ${json['text']} | chatgubun: ${json['chatgubun']} | keys: ${json.keys}');
+      }
 
       setState(() {
         // ✅ 전체 메시지 저장
@@ -291,7 +346,6 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
     return widgets;
   }
-
 
   // 2025-04-16: CAL은 달력 버튼, BTN1은 진행하기 버튼으로 처리
   // 2025-04-30: messageId가 비어 있는 문제 해결 - 빈 문자열이 아닌 null로 유지
@@ -517,6 +571,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   /**
    * 계약서
    */
+  // 2025-05-04: getChatInfo 결과를 기반으로 견적 정보 출력
   Widget _estimateCard() {
     return Container(
       decoration: BoxDecoration(
@@ -535,22 +590,22 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          const Text('이재명 고객님 안녕하세요. 요청서에 따른 예상금액입니다.'),
+          Text('${_reqName} 고객님 안녕하세요. 요청서에 따른 예상금액입니다.'),
           const SizedBox(height: 16),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text('서비스', style: TextStyle(color: Colors.grey)),
-              Text('미세방충망 설치'),
+            children: [
+              const Text('서비스', style: TextStyle(color: Colors.grey)),
+              Text(_categoryNm),
             ],
           ),
           const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text('견적금액', style: TextStyle(color: Colors.grey)),
-              Text('135,000 원', style: TextStyle(fontWeight: FontWeight.bold)),
+            children: [
+              const Text('견적금액', style: TextStyle(color: Colors.grey)),
+              Text('${_estimateAmount} 원', style: const TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
           const Divider(height: 24),
@@ -650,8 +705,8 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   /**
    * 채팅 글자
    */
-  // 2025-03-29: isMe → messageType (me, system, other)
-  // 2025-05-01: 이미지 메시지(type == image)일 경우 네트워크 이미지로 출력
+  // 2025-05-04: chatgubun이 me인 경우 프로필 이미지 숨김, profileImage 없을 시 기본 이미지로 대체
+  // 2025-05-04: chatgubun == 'me'일 경우 date 오른쪽, 'other'일 경우 왼쪽에 표시
   Widget _chatBubble({
     required String text,
     required String chatgubun, // me, system, other
@@ -672,6 +727,10 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
         ? Alignment.centerRight
         : Alignment.centerLeft;
 
+    final String resolvedProfileImage = (profileImage == null || profileImage.isEmpty)
+        ? 'https://picsum.photos/200'
+        : profileImage;
+
     return Align(
       alignment: alignment,
       child: Padding(
@@ -681,12 +740,12 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
               ? CrossAxisAlignment.end
               : CrossAxisAlignment.start,
           children: [
-            if (chatgubun == 'other' && profileImage != null)
+            if (chatgubun == 'other')
               Row(
                 children: [
                   CircleAvatar(
                     radius: 16,
-                    backgroundImage: NetworkImage(profileImage),
+                    backgroundImage: NetworkImage(resolvedProfileImage),
                   ),
                   const SizedBox(width: 6),
                   if (storeName != null)
@@ -724,7 +783,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                             ? ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.network(
-                            apiUrl + text, // ✅ 서버 이미지 URL 조합
+                            apiUrl + text,
                             width: 200,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
@@ -738,9 +797,22 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                         ),
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        date,
-                        style: const TextStyle(fontSize: 11, color: Colors.black54),
+
+                      // ✅ 날짜 위치 반전
+                      Row(
+                        mainAxisAlignment: chatgubun == 'me'
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
+                        children: [
+                          if (chatgubun == 'me') const SizedBox(width: 4),
+                          Text(
+                            date,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

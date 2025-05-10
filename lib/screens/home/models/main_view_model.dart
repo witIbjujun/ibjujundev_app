@@ -55,12 +55,12 @@ class MainViewModel extends ChangeNotifier {
   /// 네이버 로그인
   Future<bool> loginWithNaver(BuildContext context) async {
     try {
-     /// 임시주석  final result = await FlutterNaverLogin.logIn();
+      final result = await FlutterNaverLogin.logIn();
       bool aaa = true;
-      /// 임시주석   _naverLoginResult = result;
+      _naverLoginResult = result;
 
-      if (aaa) {
-     /// if (result.status == NaverLoginStatus.loggedIn) {
+     /// if (result) {
+     if (result.status == NaverLoginStatus.loggedIn) {
 
         await naverUserInfo(context);  // userInfo 초기화
 
@@ -74,12 +74,12 @@ class MainViewModel extends ChangeNotifier {
         isLogined = true;
 
       } else {
-        ///_showErrorDialog(context, '네이버 로그인 실패', '네이버 로그인에 실패하였습니다. 상태: ${_naverLoginResult?.status}');
+        _showErrorDialog(context, '네이버 로그인 실패', '네이버 로그인에 실패하였습니다. 상태: ${_naverLoginResult?.status}');
         return false;
         isLogined = false;
       }
     } catch (e) {
-     /// _showErrorDialog(context, '네이버 로그인 오류', e.toString());
+      _showErrorDialog(context, '네이버 로그인 오류', e.toString());
       isLogined = false;
     }
     return isLogined;
@@ -136,21 +136,21 @@ class MainViewModel extends ChangeNotifier {
   }
 
   Future<void> naverUserInfo(BuildContext context) async {
-  ///  final account = _naverLoginResult?.account; // 네이버 계정 정보 가져오기
+    final account = _naverLoginResult?.account; // 네이버 계정 정보 가져오기
 
-    final account = "222"; // 네이버 계정 정보 가져오기
+    //final account = "222"; // 네이버 계정 정보 가져오기
 
     if (account != null) {
       userInfo = UserInfo(
-        /*id: account.id,
+        id: account.id,
         nickName: account.name,
         profileImageUrl: account.profileImage,
-        email: account.email,*/
+        email: account.email,
 
-        id : "BjtldO4ZSWZ8Aw7Gm2GXk2IU1zp7BPiKcCq9YWELm_g",
+      /*  id : "BjtldO4ZSWZ8Aw7Gm2GXk2IU1zp7BPiKcCq9YWELm_g",
         nickName: "재나바로",
         profileImageUrl: "",
-        email: "1004963@naver.com",
+        email: "1004963@naver.com",*/
       );
 
       String id = userInfo?.id ?? '정보 없음';
@@ -158,7 +158,7 @@ class MainViewModel extends ChangeNotifier {
       String profileImageUrl = userInfo?.profileImageUrl ?? '정보 없음';
       String email = userInfo?.email ?? '정보 없음';
 
-      print('사용자 정보 요청 성공'
+      print('네이버 사용자 정보 요청 성공'
           '\n회원번호: ${userInfo?.id}'
           '\n닉네임: ${userInfo?.nickName}'
           '\n이미지: ${userInfo?.profileImageUrl}'

@@ -64,18 +64,21 @@ Future<void> getUserInfo(MainViewModel viewModel,String tempClerkNo,String gubun
     print('userInfo aptName 이름: ${userInfo!.aptName?.join(', ') ?? ''}');
     // 사용자 정보를 Flutter Secure Storage에 저장
     bool isLogined =false;
-    secureStorage.write(key: 'isLogined', value: "login");
-    secureStorage.write(key: 'kakaoId', value: userInfo!.id);
-    secureStorage.write(key: 'clerkNo', value: userInfo!.clerkNo);
-    secureStorage.write(key: 'profileImageUrl', value: userInfo!.profileImageUrl);
-    secureStorage.write(key: 'nickName', value: userInfo!.nickName);
-    secureStorage.write(key: 'mainAptNo', value: userInfo!.mainAptNo);
-    secureStorage.write(key: 'mainAptNm', value: userInfo!.mainAptNm);
-    secureStorage.write(key: 'role', value: userInfo!.role);
-    secureStorage.write(key: 'authToken', value: "11111");
-    secureStorage.write(key: 'aptNo', value: userInfo!.aptNo?.join(',') ?? '');
-    secureStorage.write(key: 'aptName', value: userInfo!.aptName?.join(',') ?? '');
+    await secureStorage.write(key: 'isLogined', value: "login");
+    await secureStorage.write(key: 'kakaoId', value: userInfo!.id);
+    await secureStorage.write(key: 'clerkNo', value: userInfo!.clerkNo);
+    await secureStorage.write(key: 'profileImageUrl', value: userInfo!.profileImageUrl);
+    await secureStorage.write(key: 'nickName', value: userInfo!.nickName);
+    await secureStorage.write(key: 'mainAptNo', value: userInfo!.mainAptNo);
+    await secureStorage.write(key: 'mainAptNm', value: userInfo!.mainAptNm);
+    await secureStorage.write(key: 'role', value: userInfo!.role);
+    await secureStorage.write(key: 'authToken', value: "11111");
+    await secureStorage.write(key: 'aptNo', value: userInfo!.aptNo?.join(',') ?? '');
+    await secureStorage.write(key: 'aptName', value: userInfo!.aptName?.join(',') ?? '');
 
+    // ✅ 저장 후 바로 읽어서 확인해보기
+    String? savedClerkNo = await secureStorage.read(key: 'clerkNo');
+    print('📝 SecureStorage에 방금 저장된 clerkNo: $savedClerkNo');
   } catch (e) {
     print('사용자 정보 조회 중 오류 발생2222: $e');
   }
@@ -91,12 +94,12 @@ Future<String> getCreateUser(MainViewModel viewModel,String clerkNo) async {
 
   // 토큰 가져오기
   String? token = await FirebaseMessaging.instance.getToken();
-  print("나의 초기 등록 kakaoId은???====$kakaoId");
-  print("나의 초기 등록 clerkNo???====$clerkNo");
-  print("나의 초기 등록토큰은???====$token");
-  print("나의 초기 등록nickName은???====$nickName");
-  print("나의 초기 등록mainAptNo은???====$mainAptNo");
-  print("나의 초기 등록 mainAptPyoung은???====$mainAptPyoung");
+  print("나의 초기 등록 getCreateUser kakaoId은???====$kakaoId");
+  print("나의 초기 등록 getCreateUser clerkNo???====$clerkNo");
+  print("나의 초기 getCreateUser 등록토큰은???====$token");
+  print("나의 초기 getCreateUser 등록nickName은???====$nickName");
+  print("나의 초기 getCreateUser 등록mainAptNo은???====$mainAptNo");
+  print("나의 초기 getCreateUser 등록 mainAptPyoung은???====$mainAptPyoung");
 
   String restId = "getCreateUser";
   final param = jsonEncode({
@@ -124,13 +127,13 @@ Future<String> getCreateUser(MainViewModel viewModel,String clerkNo) async {
       userInfo = UserInfo.fromJson(jsonDecode(response));
     }
 
-    print('초기 등록 userInfo 고객 번호: ' + (userInfo!.clerkNo ?? 'Unknown'));
-    print('초기 등록 userInfo 닉네임: '+(userInfo!.nickName??''));
-    print('초기 등록 userInfo 역할: '+(userInfo!.role??''));
-    print('초기 등록 userInfo Main아파트 번호: '+(userInfo!.mainAptNo??''));
-    print('초기 등록 userInfo Main아파트 이름: '+(userInfo!.mainAptNm??''));
-    print('초기 등록 userInfo aptNo 이름: ${userInfo!.aptNo?.join(', ') ?? ''}');
-    print('초기 등록 userInfo aptName 이름: ${userInfo!.aptName?.join(', ') ?? ''}');
+    print('초기 등록 getCreateUser userInfo 고객 번호: ' + (userInfo!.clerkNo ?? 'Unknown'));
+    print('초기 등록 getCreateUser userInfo 닉네임: '+(userInfo!.nickName??''));
+    print('초기 등록 getCreateUser userInfo 역할: '+(userInfo!.role??''));
+    print('초기 등록 getCreateUser userInfo Main아파트 번호: '+(userInfo!.mainAptNo??''));
+    print('초기 등록 getCreateUser userInfo Main아파트 이름: '+(userInfo!.mainAptNm??''));
+    print('초기 등록 getCreateUser userInfo aptNo 이름: ${userInfo!.aptNo?.join(', ') ?? ''}');
+    print('초기 등록 getCreateUser userInfo aptName 이름: ${userInfo!.aptName?.join(', ') ?? ''}');
     // 사용자 정보를 Flutter Secure Storage에 저장
     bool isLogined =false;
     secureStorage.write(key: 'isLogined', value: "login");

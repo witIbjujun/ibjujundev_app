@@ -1,137 +1,156 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/home/login/wit_user_loginStep2.dart';
-import 'package:witibju/screens/home/login/wit_user_loginStep3.dart';
-
 import '../wit_home_theme.dart';
 
 class WitUserLoginStep1 extends StatefulWidget {
+  final String nickName; // 🔹 전달받은 닉네임
+
+  const WitUserLoginStep1(this.nickName, {Key? key}) : super(key: key);
+
   @override
   _WitUserLoginStep1State createState() => _WitUserLoginStep1State();
 }
 
 class _WitUserLoginStep1State extends State<WitUserLoginStep1> {
-  final TextEditingController _nicknameController = TextEditingController(); // 닉네임 입력 컨트롤러
-  final FlutterSecureStorage secureStorage = FlutterSecureStorage(); // SecureStorage 인스턴스
-  int _currentStep = 0; // 현재 스텝 인덱스
+  bool _allChecked = false;
+  final Map<String, bool> _agreementList = {
+    "만 14세 이상입니다.(필수)": false,
+    "서비스 이용약관 동의(필수)": false,
+    "전자금융거래 기본약관 동의(필수)": false,
+    "개인정보 수집 및 이용 동의(필수)": false,
+    "위치정보 이용동의(필수)": false,
+    "개인정보 제3자 제공 동의(필수)": false,
+    "SMS 이벤트등 마케팅 수신 동의(선택)": false,
+    "이메일 이벤트등 마케팅 수신 동의(선택)": false,
+  };
 
-  @override
-  void initState() {
-    super.initState();
-    _loadNickname(); // 저장된 닉네임 로드
+  /// 🔹 모두 동의 체크 시 모든 항목 업데이트
+  void _toggleAll(bool? value) {
+    setState(() {
+      _allChecked = value ?? false;
+      _agreementList.updateAll((key, value) => _allChecked);
+    });
   }
 
-  Future<void> _loadNickname() async {
-    String? nickname = await secureStorage.read(key: 'nickName');
-    print("MY 11111111111: $nickname");
+  /// 🔹 개별 체크 시 상태 업데이트
+  void _toggleSingle(String key, bool? value) {
     setState(() {
-      _nicknameController.text = nickname ?? ''; // 닉네임 기본값 설정
+      _agreementList[key] = value ?? false;
+      _allChecked = _agreementList.values.every((checked) => checked);
     });
+  }
+
+  /// 🔹 모든 필수 항목이 체크되었는지 확인
+  bool _isAllRequiredChecked() {
+    return _agreementList.entries
+        .where((entry) => entry.key.contains('(필수)'))
+        .every((entry) => entry.value == true);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // ✅ 기본 배경을 흰색으로 설정
       appBar: AppBar(
-        title: const Text("사용자 등록"),
-        backgroundColor: Colors.white,
-        centerTitle: true,
+        title: const Text(
+          "약관에 동의해주세요.",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // ✅ 글씨 색상 흰색으로 설정
+          ),
+        ),
+        backgroundColor: Colors.black,
         elevation: 1,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
-      body: Container(
-        color: Colors.white, // 배경색 설정
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Custom Horizontal Stepper
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(2, (index) {
-                return Expanded(
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 18.0,
-                        backgroundColor: _currentStep >= index ? WitHomeTheme.wit_lightGreen : Colors.grey,
-                        child: Text(
-                          '${index + 1}',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      const SizedBox(height: 8.0),
-                    ],
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+
+          // ✅ "아래 약관에 모두 동의합니다." 영역
+          Container(
+            color: Colors.black, // ✅ 배경을 검정색으로 설정
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    "아래 약관에 모두 동의합니다.",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
-                );
-              }),
-            ),
-            const Divider(height: 32.0),
-            const Text(
-              "입주전에서 사용 할 닉네임을 입력해주세요.",
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _nicknameController,
-              decoration: InputDecoration(
-                labelText: _nicknameController.text.isNotEmpty
-                    ? _nicknameController.text
-                    : "닉네임 입력",
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9, // 버튼 너비 조정
-                height: 50.0, // 버튼 높이 설정
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_lightGreen, // 버튼 배경색 설정
-                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    final nickname = _nicknameController.text.trim();
-                    if (nickname.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('닉네임을 입력해주세요.')),
-                      );
-                      return;
-                    }
-                    // 닉네임 저장
-                    await secureStorage.write(key: 'nickName', value: nickname);
-                    print("닉네임 저장됨: $nickname");
+                Checkbox(
+                  value: _allChecked,
+                  onChanged: _toggleAll,
+                  activeColor: WitHomeTheme.wit_lightGreen, // ✅ 체크 시 녹색
+                  checkColor: Colors.white, // ✅ 체크 표시 흰색
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // ✅ 간격 줄이기
+                ),
+              ],
+            ),
+          ),
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('닉네임 "$nickname"이 저장되었습니다.')),
-                    );
+          const SizedBox(height: 10),
 
-                    // 다음 단계로 이동
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => WitUserLoginStep2()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent, // 버튼 자체는 투명
-                    shadowColor: Colors.transparent,
+          // ✅ 약관 목록
+          Expanded(
+            child: ListView(
+              children: _agreementList.keys.map((key) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  title: Text(
+                    key,
+                    style: WitHomeTheme.title.copyWith(fontSize: 16), // ✅ 폰트 스타일 적용
                   ),
-                  child: const Text(
-                    "저장",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                  trailing: SizedBox(
+                    width: 40, // ✅ 공간을 제한함으로써 오류 해결
+                    child: Checkbox(
+                      value: _agreementList[key],
+                      onChanged: (value) {
+                        _toggleSingle(key, value);
+                      },
+                      activeColor: WitHomeTheme.wit_lightGreen, // ✅ 체크 시 녹색
+                      checkColor: Colors.white, // ✅ 체크 표시 흰색
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // ✅ 간격 줄이기
                     ),
                   ),
+                );
+              }).toList(),
+            ),
+          ),
+
+          // ✅ 다음 버튼
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size(double.infinity, 50),
+                backgroundColor:
+                _isAllRequiredChecked() ? WitHomeTheme.wit_lightGreen : Colors.grey[400],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
+              onPressed: _isAllRequiredChecked()
+                  ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WitUserLoginStep2(widget.nickName)),
+                );
+              }
+                  : null,
+              child: const Text(
+                "다음",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

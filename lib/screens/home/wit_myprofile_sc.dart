@@ -33,8 +33,7 @@ class MyProfile extends StatefulWidget  {
 }
 
 class _MyProfileState extends State<MyProfile> {
-  String selectedOption = ''; // 기본 선택 값
-  List<String> options = [];
+  String? aptName; // 🔹 클래스 필드로 선언
   int _selectedIndex = 3; // ✅ "내정보" 탭이 기본 선택
   // 컨설리더 설정
   final _storage = const FlutterSecureStorage();
@@ -47,43 +46,37 @@ class _MyProfileState extends State<MyProfile> {
   @override
   void initState() {
     super.initState();
-    _loadOptions();
-    if (options.isNotEmpty) {
-      selectedOption = options.first;
-    }
-
-    _loadNickName();
+    _loadUserInfo();
   }
 
-  Future<void> _loadNickName() async {
-    String? nickName = await _storage.read(key: 'nickName');
+  Future<void> _loadUserInfo() async {
+    try {
+      // SecureStorage에서 정보 읽기
+      String? loadedNickName = await _storage.read(key: 'nickName');
+      String? loadedAptName = await _storage.read(key: 'mainAptNm');
+      String? clerkNo = await _storage.read(key: 'clerkNo');
+      String? role = await _storage.read(key: 'role');
+      String? mainAptNo = await _storage.read(key: 'mainAptNo');
 
-    if (nickName != null) {
+      print('myprofile 고객 번호: $clerkNo');
+      print('myprofile 닉네임: $loadedNickName');
+      print('myprofile 역할: $role');
+      print('myprofile Main아파트 번호: $mainAptNo');
+      print('myprofile Main아파트 이름: $loadedAptName');
+
+      // 상태 업데이트
       setState(() {
-        _controller.text = nickName;
+        if (loadedNickName != null) {
+          _controller.text = loadedNickName;
+        }
+        aptName = loadedAptName ?? 'APT 선택';
       });
+
+    } catch (e) {
+      print("UserInfo 로딩 중 오류 발생: $e");
     }
   }
 
-  Future<void> _loadOptions() async {
-    String? aptName = await _storage.read(key: 'aptName');
-    String? clerkNo = await _storage.read(key: 'clerkNo');
-    String? nickName = await _storage.read(key: 'nickName');
-    String? role = await _storage.read(key: 'role');
-    String? mainAptNo = await _storage.read(key: 'mainAptNo');
-
-    print('myprofile 고객 번호: $clerkNo');
-    print('myprofile 닉네임: $nickName');
-    print('myprofile 역할: $role');
-    print('myprofile Main아파트 번호: $mainAptNo');
-    print('myprofile Main아파트 이름: $aptName');
-
-    if (aptName != null) {
-      setState(() {
-        options = aptName.split(',');
-      });
-    }
-  }
 
   // MY 닉네임 저장 메서드
   Future<void> updateMyInfo() async {
@@ -122,6 +115,7 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     print("Rendering MyProfile...");
 
@@ -140,13 +134,13 @@ class _MyProfileState extends State<MyProfile> {
           title: Text(
             'My Profile',
             style: TextStyle(
-              color: Colors.white,             // 텍스트 색상
-              fontSize: 20.0,                  // 폰트 크기
-              fontWeight: FontWeight.bold,     // 굵기
-              fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+              color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'NotoSansKR',
             ),
           ),
-          iconTheme: IconThemeData(color: Colors.white), // ← 아이콘 색상도 검정으로 맞추려면 추가
+          iconTheme: IconThemeData(color: Colors.white),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -160,103 +154,106 @@ class _MyProfileState extends State<MyProfile> {
                   widthRatio: 0.85,
                 ),
                 const SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isEditable = true;
-                      _focusNode.requestFocus();
-                    });
-                  },
-                  child: AbsorbPointer(
-                    absorbing: !_isEditable,
-                    child: TextFormField(
-                      focusNode: _focusNode,
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        labelText: 'MY 닉네임',
-                        labelStyle: const TextStyle(
-                          color: Color(0xFFAFCB54),
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.blue,
-                            width: 1.0,
-                          ),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.lightBlue,
-                            width: 2.0,
-                          ),
-                        ),
-                      ),
-                      style: const TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.black,
-                      ),
-                      readOnly: !_isEditable,
-                    ),
+
+                /// 🔹 MY 닉네임, APT Name, 변경 버튼을 감싸는 컨테이너
+                Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey.shade400),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                ),
-                const SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () {
-                    String initialSelection = options.isNotEmpty ? options.first : '';
-                    WitHomeWidgets.showSelectBox(context, initialSelection, options,
-                            (option) {
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 🔹 MY 닉네임 표시 (수정 가능)
+                      GestureDetector(
+                        onTap: () {
                           setState(() {
-                            selectedOption = option;
+                            _isEditable = true;
+                            _focusNode.requestFocus();
                           });
-                        });
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 50.0,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: WitHomeTheme.grey),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Text(
-                            selectedOption.isNotEmpty
-                                ? selectedOption
-                                : (options.isNotEmpty ? options.first : 'APT 선택'),
-                            style: WitHomeTheme.title,
+                        },
+                        child: AbsorbPointer(
+                          absorbing: !_isEditable,
+                          child: TextFormField(
+                            focusNode: _focusNode,
+                            controller: _controller,
+                            decoration: InputDecoration(
+                              labelText: 'MY 닉네임',
+                              labelStyle: const TextStyle(
+                                color: Color(0xFFAFCB54),
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.blue,
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.lightBlue,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.black,
+                            ),
+                            readOnly: !_isEditable,
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(right: 16.0),
-                          child: Icon(Icons.arrow_drop_down,
-                              color: WitHomeTheme.darkText),
+                      ),
+                      const SizedBox(height: 16),
+                      // 🔹 APT Name 표시 (SecureStorage에서 로드)
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: 50.0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            // 🔹 아이콘을 앞으로 위치시킴
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: Icon(Icons.home, color: WitHomeTheme.darkText),
+                            ),
+                            const SizedBox(width: 8),
+
+                            // 🔹 _loadUserInfo()에서 불러온 aptName을 직접 표시
+                            Text(
+                              aptName ?? 'APT 선택',
+                              style: WitHomeTheme.title,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // 🔹 변경 버튼
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            updateMyInfo();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size(200, 50),
+                            backgroundColor: const Color(0xFFAFCB54),
+                          ),
+                          child: Text(
+                            '변경',
+                            style: WitHomeTheme.body2.copyWith(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      updateMyInfo();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(200, 50),
-                      backgroundColor: Color(0xFFAFCB54),
-                    ),
-                    child: Text(
-                      '변경',
-                      style: WitHomeTheme.body2.copyWith(color: Colors.white),
-                    ),
-                  ),
-                ),
-      /*          const SizedBox(height: 16),
-                _buildListTile(Icons.attach_money, '캐시'),*/
+
+                /// 🔹 기존의 다른 메뉴들 (거래내역, 가이드, 체크리스트 등) 유지
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -289,17 +286,16 @@ class _MyProfileState extends State<MyProfile> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Board(1, 'B1', bordTitle: "커뮤니티", appBarFlag: true)),
+                      MaterialPageRoute(builder: (context) => Board('CM01', '', bordTitle: "커뮤니티", appBarFlag: true)),
                     );
                   },
                   child: _buildListTile(Icons.forum, '커뮤니티'),
                 ),
-
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Board(1, 'B1', bordTitle: "공지사항", appBarFlag: true)),
+                      MaterialPageRoute(builder: (context) => Board('GJ01','', bordTitle: "공지사항", appBarFlag: true)),
                     );
                   },
                   child:_buildListTile(Icons.campaign, '공지사항'),
@@ -382,7 +378,6 @@ class _MyProfileState extends State<MyProfile> {
                   },
                   child: _buildListTile(Icons.logout, '로그인(조)'),
                 ),
-
 
                 GestureDetector(
                   onTap: () async {

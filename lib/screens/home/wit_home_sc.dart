@@ -22,6 +22,7 @@ import '../checkList/wit_checkList_main_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
 import '../question/wit_question_main_sc.dart';
 import '../seller/wit_seller_profile_detail_sc.dart';
+import 'login/wit_user_loginStep.dart';
 import 'login/wit_user_loginStep1.dart';
 import 'models/main_view_model.dart';
 import 'login/wit_login_pop_home_sc.dart'; // 로그인 파송창 파일을 임포트
@@ -54,42 +55,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
       setState(() {});
-  }
-
-
-  // 데이터를 조회하는 비동기 함수
-  Future<void> getUserInfo1(String kakaoId,String Idnum) async {
-    String restId = "getUserInfo";
-    final param = jsonEncode({"kakaoId": kakaoId,
-      "clerkNo": Idnum});
-
-    try {
-      final response = await sendPostRequest(restId, param);
-      setState(() {
-        if (response is Map<String, dynamic>) {
-          userInfo = UserInfo.fromJson(response);
-        } else {
-          userInfo = UserInfo.fromJson(jsonDecode(response));
-        }
-
-        print('고객 번호: ' + (userInfo!.clerkNo ?? 'Unknown'));
-        print('닉네임: '+(userInfo!.nickName??''));
-        print('역할: '+(userInfo!.role??''));
-        print('Main아파트 번호: '+(userInfo!.mainAptNo??''));
-        print('Main아파트 이름: '+(userInfo!.mainAptNm??''));
-        // 사용자 정보를 Flutter Secure Storage에 저장
-        secureStorage.write(key: 'clerkNo', value: userInfo!.clerkNo);
-        secureStorage.write(key: 'nickName', value: userInfo!.nickName);
-        secureStorage.write(key: 'mainAptNo', value: userInfo!.mainAptNo);
-        secureStorage.write(key: 'mainAptNm', value: userInfo!.mainAptNm);
-        secureStorage.write(key: 'role', value: userInfo!.role);
-        secureStorage.write(key: 'aptNo', value: userInfo!.aptNo?.join(',') ?? '');
-        secureStorage.write(key: 'aptName', value: userInfo!.aptName?.join(',') ?? '');
-
-      });
-    } catch (e) {
-      print('사용자 정보 조회 중 오류 발생1111: $e');
-    }
   }
 
   @override
@@ -230,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       children: [
                         APTStatusWidget(
                           width: MediaQuery.of(context).size.width * 0.9,
-                          height: MediaQuery.of(context).size.height * 0.20,
+                          height: MediaQuery.of(context).size.height * 0.23,
                         ),
                         const SizedBox(height: 6.0),
                         Container(
@@ -261,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              CustomChatScreen('1', '72091587','userView')),
+                                              CustomChatScreen('S2025042600002', '3','userView')),
                                     );
                                   },
                                 ),
@@ -272,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              CustomChatScreen('1', '1','sellerView')),
+                                              CustomChatScreen('S2025042600002', '3','sellerView')),
                                     );
                                   },
                                 ),
@@ -350,7 +315,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (context) => GonguRequest()),
-
                                     );
                                   },
                                 ),
@@ -501,73 +465,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget getCommunityTabs() {
     // 2025-01-16: TabBar 제거, Board 직접 호출
-    return Board(1, 'C1'); // '업체후기' 화면만 표시
+    return Board('UH01',''); // '업체후기' 화면만 표시
   }
 
 
+  // 🔹 로그인 후 사용자 정보를 AlertDialog로 표시
+  void _showAlertDialog({
+    required BuildContext context,
+    required String title,
+    required String content,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("확인"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   /**
-   * 로그인 팝업
+   * 로그인 화면이동
    */
   // 2025-04-22: Dialog 내부 높이 제한 문제 해결을 위해 UnconstrainedBox 적용
   void _showLoginDialog(BuildContext parentContext) async {
     bool isLoggedIn = await checkLoginStatus();
     if (!isLoggedIn) {
-      showDialog(
-        context: parentContext,
-        barrierDismissible: true,
-        builder: (BuildContext dialogContext) {
-          return Dialog(
-            insetPadding: EdgeInsets.zero,
-            backgroundColor: Colors.transparent,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24.0),
-            ),
-            child: Consumer<MainViewModel>(
-              builder: (context, viewModel, child) {
-                return UnconstrainedBox( // ⭐ 핵심 변경: 높이 제한 해제
-                  child: Container(
-                    width: MediaQuery.of(parentContext).size.width * 0.9,
-                    height: 300,
-                    child: loingPopHome(
-                      width: MediaQuery.of(parentContext).size.width * 0.9,
-                      height: 300,
-                        onLoginSuccess: (MainViewModel updatedViewModel) async {
-                          final info = updatedViewModel.userInfo;
-
-                          print("🔹 로그인 후 userInfo.id: ${info?.id}");
-                          print("🔹 로그인 후 userInfo.tempClerkNo: ${info?.tempClerkNo}");
-
-                          // 2025-04-22: tempClerkNo 기준으로 등록 여부 판단
-                          if (info == null ) {
-                            // 👉 첫 등록 사용자
-                            if (mounted) {
-                              Navigator.of(dialogContext).pop();
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                Navigator.of(parentContext).push(
-                                  MaterialPageRoute(builder: (context) => WitUserLoginStep1()),
-                                );
-                              });
-                            }
-                          } else {
-                            // 👉 등록된 사용자
-                            if (mounted) {
-                              Navigator.of(dialogContext).pop();
-                              await getUserInfo(viewModel, info.tempClerkNo!,'C');
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                Navigator.of(parentContext).push(
-                                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                                );
-                              });
-                            }
-                          }
-                        }
-                    ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
+      // ✅ 기존의 Dialog를 띄우는 방식 삭제하고 직접 페이지 이동
+      Navigator.push(
+        parentContext,
+        MaterialPageRoute(
+          builder: (context) => WitUserLoginStep(),
+        ),
       );
     }
   }

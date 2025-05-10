@@ -28,7 +28,7 @@ class BottomNavBar extends StatelessWidget {
         nextScreen = MyProfile();
         break;
       case 4:
-        nextScreen = Board(1, 'C1');
+        nextScreen = Board('CM01','1');
         break;
       default:
         nextScreen = HomeScreen();

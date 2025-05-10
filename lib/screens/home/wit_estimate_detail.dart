@@ -103,7 +103,10 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  SingleChildScrollView(
+                  // 📌 견적탭
+                  requestList.isEmpty
+                      ? showEmptyImage()   // 🔥 조회 결과가 없을 때
+                      : SingleChildScrollView(
                     child: Column(
                       children: [
                         SizedBox(height: 8.0),
@@ -111,10 +114,11 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                       ],
                     ),
                   ),
+                  // 📌 알림탭
                   WitEstimateNoticeScreen(),
                 ],
               ),
-            ),
+            )
           ],
         ),
         bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
@@ -234,9 +238,11 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
     String? clerkNo = await secureStorage.read(key: 'clerkNo');
 
     final param = jsonEncode({"reqUser": clerkNo});
-    print('📡 상세 조회 응답:등러간다!!!!!!!!! ');
+    print('📡 상세 조회 응답: 실행 중...');
+
     try {
       final _requestList = await sendPostRequest(restId, param);
+
       setState(() {
         requestList = RequestInfo().parseRequestList(_requestList) ?? [];
         print('📡 상세 조회 응답: ${requestList.length}');
@@ -245,6 +251,23 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
       print('신청 목록 조회 중 오류 발생: $e');
     }
   }
+
+  /// 빈 화면 이미지 보여주기 (견적탭 아래 중앙 정렬)
+  Widget showEmptyImage({double width = 200, double height = 200}) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/home/emptyInfo.png',
+            width: width,
+            height: height,
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Future<void> getRequesDetailtList(RequestInfo request) async {
     String restId = "getRequesDetailtList";

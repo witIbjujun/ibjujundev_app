@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/login/wit_kakaoLogin.dart';
 import 'package:witibju/screens/home/login/wit_user_login.dart';
+import 'package:witibju/screens/home/login/wit_user_loginStep3.dart';
 
 import '../../../util/wit_api_ut.dart';
 import '../models/main_view_model.dart';
@@ -13,14 +16,14 @@ import '../wit_home_theme.dart';
 
 class WitUserLoginStep3 extends StatefulWidget {
   @override
-  _WitUserLoginStep1State createState() => _WitUserLoginStep1State();
+  _WitUserLoginStep3State createState() => _WitUserLoginStep3State();
 }
 
-class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
+class _WitUserLoginStep3State extends State<WitUserLoginStep3> {
+  final TextEditingController _nicknameController = TextEditingController(); // 닉네임 입력 컨트롤러
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage(); // SecureStorage 인스턴스
+  int _currentStep = 1; // 현재 스텝 인덱스
 
-  final viewModel = MainViewModel(KaKaoLogin());
-  final TextEditingController _idController = TextEditingController(); // 아이디 입력 컨트롤러
-  int _currentStep = 1; // Stepper의 현재 단계 (0부터 시작, 1은 두 번째 단계)
   String selectedApt = "선택"; // 초기값 "선택"
   String selectedPyung = "선택"; // 평수 초기값
   Map<String, String> options = {}; // aptName과 aptNo를 매핑한 데이터
@@ -30,7 +33,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
   @override
   void initState() {
     super.initState();
-    getAptList();
+    getAptList(); // APT 조회
   }
 
   /**
@@ -121,7 +124,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
                         decoration: BoxDecoration(
                           border: option == (title == '내 APT' ? selectedApt : selectedPyung)
                               ? Border.all(
-                            color: Colors.blue,
+                            color: WitHomeTheme.wit_lightGreen,
                             width: 2.0,
                           )
                               : null,
@@ -151,20 +154,97 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
 
   @override
   Widget build(BuildContext context) {
+    final mainViewModel = Provider.of<MainViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("사용자 등록"),
-        backgroundColor: Colors.white,
+        title: const Text(
+          "사용자 등록",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white, // ✅ 글씨 색상 흰색으로 설정
+          ),
+        ),
+        backgroundColor: Colors.black,
+        elevation: 1,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Container(
         color: Colors.white, // 배경색 설정
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Custom Horizontal Stepper
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(2, (index) {
+                return Expanded(
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 18.0,
+                        backgroundColor: _currentStep >= index ? WitHomeTheme.wit_lightGreen : Colors.grey,
+                        child: Text(
+                          '${index + 1}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                    ],
+                  ),
+                );
+              }),
+            ),
+            const Divider(height: 32.0),
+            const Text(
+              "내APT를 등록해서 좋은 파트너에 도움을 받으세요~",
+              style: TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            GestureDetector(
+              onTap: () {
+                _showSelectBox(context, ["선택", ...options.keys], '내 APT', (String selected) {
+                  setState(() {
+                    selectedApt = selected;
+                    if (selected != "선택") {
+                      String aptNo = options[selected] ?? "";
+                      getAptPyoung(aptNo); // 평수 데이터 조회
+                    }
+                    pyungOptions = [];
+                    selectedPyung = "선택";
+                  });
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      selectedApt.isEmpty ? "아파트 선택" : selectedApt,
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                    const Icon(Icons.arrow_drop_down),
+                  ],
+                ),
+              ),
+            ),
+            if (selectedApt != "선택") ...[
+              const SizedBox(height: 16.0),
               const Text(
-                "입주할 아파트를 선택해 주세요",
+                "평수를 선택해 주세요",
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
@@ -173,15 +253,9 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
               const SizedBox(height: 16.0),
               GestureDetector(
                 onTap: () {
-                  _showSelectBox(context, ["선택", ...options.keys], '내 APT', (String selected) {
+                  _showSelectBox(context, ["선택", ...pyungOptions], '평수', (String selected) {
                     setState(() {
-                      selectedApt = selected;
-                      if (selected != "선택") {
-                        String aptNo = options[selected] ?? "";
-                        getAptPyoung(aptNo); // 평수 데이터 조회
-                      }
-                      pyungOptions = [];
-                      selectedPyung = "선택";
+                      selectedPyung = selected;
                     });
                   });
                 },
@@ -195,7 +269,7 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        selectedApt.isEmpty ? "아파트 선택" : selectedApt,
+                        selectedPyung.isEmpty ? "평수 선택" : selectedPyung,
                         style: const TextStyle(fontSize: 16.0),
                       ),
                       const Icon(Icons.arrow_drop_down),
@@ -203,171 +277,74 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep3> {
                   ),
                 ),
               ),
-              if (selectedApt != "선택") ...[
-                const SizedBox(height: 16.0),
-                const Text(
-                  "평수를 선택해 주세요",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+            ],
+            SizedBox(height: 20.0),
+            Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.9, // 버튼 너비 조정
+                height: 50.0, // 버튼 높이 설정
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_lightGreen, // 버튼 배경색 설정
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
-                const SizedBox(height: 16.0),
-                GestureDetector(
-                  onTap: () {
-                    _showSelectBox(context, ["선택", ...pyungOptions], '평수', (String selected) {
-                      setState(() {
-                        selectedPyung = selected;
-                      });
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          selectedPyung.isEmpty ? "평수 선택" : selectedPyung,
-                          style: const TextStyle(fontSize: 16.0),
-                        ),
-                        const Icon(Icons.arrow_drop_down),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-              if (selectedPyung != "선택") ...[
-                const SizedBox(height: 20.0),
-                const Text(
-                  "소셜 로그인",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20.0),
-                GestureDetector(
-                  onTap: () async {
-                    bool isLoginSuccessful = await viewModel.login(context);
-                    if (isLoginSuccessful) {
-                      String selectedAptNo = options[selectedApt] ?? "";
-                      String selectedPyungNo = pyungOptions.contains(selectedPyung) ? selectedPyung.replaceAll('평', '') : "";
-                      viewModel.userInfo?.mainAptNo = selectedAptNo;
-                      viewModel.userInfo?.mainAptPyoung = selectedPyungNo;
-                      await getUserInfo(viewModel, '72091587','D');
-
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (selectedApt == "선택" || selectedPyung == "선택") {
+                      // 2025-04-22: 아파트 또는 평수 미선택 시 경고 팝업
                       await DialogUtils.showCustomDialog(
                         context: context,
                         title: '알림',
-                        content: '로그인 되었습니다.',
+                        content: '아파트와 평수를 모두 선택해 주세요.',
                         confirmButtonText: '확인',
-                        onConfirm: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => HomeScreen()),
-                          );
-                        },
                       );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('로그인에 실패했습니다.')),
-                      );
+                      return; // 더 이상 진행하지 않음
                     }
+                    String? nickname = await secureStorage.read(key: 'nickName');
+                    String? kakaoId = await secureStorage.read(key: 'kakaoId');
+                    String? profileImageUrl = await secureStorage.read(key: 'profileImageUrl');
+                    String selectedAptNo = options[selectedApt] ?? "";
+                    String selectedPyungNo = pyungOptions.contains(selectedPyung) ? selectedPyung.replaceAll('평', '') : "";
+
+                    mainViewModel.userInfo = UserInfo(
+                      nickName: nickname,
+                      id: kakaoId,
+                      profileImageUrl: profileImageUrl,
+                      mainAptNo: selectedAptNo,
+                      mainAptPyoung: selectedPyungNo,
+                    );
+                    await getCreateUser(mainViewModel, '');
+                    // SecureStorage에 authToken 저장
+                    await secureStorage.write(key: 'authToken', value: "11111");
+
+                    await DialogUtils.showCustomDialog(
+                      context: context,
+                      title: '알림',
+                      content: '로그인 되었습니다.',
+                      confirmButtonText: '확인',
+                      onConfirm: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                        );
+                      },
+                    );
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: 50.0,
-                    child: Image.asset(
-                      'assets/home/kakao_login_large_narrow.png',
-                      fit: BoxFit.contain,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent, // 버튼 자체는 투명
+                    shadowColor: Colors.transparent,
+                  ),
+                  child: const Text(
+                    "저장",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await getUserInfo(viewModel, '72091587','D');
-                        await DialogUtils.showCustomDialog(
-                          context: context,
-                          title: '알림',
-                          content: '로그인 되었습니다.',
-                          confirmButtonText: '확인',
-                          onConfirm: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomeScreen()),
-                            );
-                          },
-                        );
-                      },
-                      child: const Text("이"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        await getUserInfo(viewModel, '72091584','D');
-                        await DialogUtils.showCustomDialog(
-                          context: context,
-                          title: '알림',
-                          content: '로그인 되었습니다.',
-                          confirmButtonText: '확인',
-                          onConfirm: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomeScreen()),
-                            );
-                          },
-                        );
-                      },
-                      child: const Text("우"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        await getUserInfo(viewModel, '72091586','D');
-                        await DialogUtils.showCustomDialog(
-                          context: context,
-                          title: '알림',
-                          content: '로그인 되었습니다.',
-                          confirmButtonText: '확인',
-                          onConfirm: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomeScreen()),
-                            );
-                          },
-                        );
-                      },
-                      child: const Text("백"),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        await getUserInfo(viewModel, '72091588','D');
-                        await DialogUtils.showCustomDialog(
-                          context: context,
-                          title: '알림',
-                          content: '로그인 되었습니다.',
-                          confirmButtonText: '확인',
-                          onConfirm: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => HomeScreen()),
-                            );
-                          },
-                        );
-                      },
-                      child: const Text("조"),
-                    ),
-                  ],
-                ),
-              ]
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
