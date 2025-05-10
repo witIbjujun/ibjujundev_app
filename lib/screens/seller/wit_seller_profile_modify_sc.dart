@@ -614,10 +614,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
               SizedBox(height: 16), // 제목과 아래 요소 간격
               // 대표자명 레이블
-              Text(
-                '판매자명 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
-
+              Row(
+                children: [
+                  Text(
+                    '판매자명 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8), // 레이블과 카드 사이의 간격
               // 대표자명 입력 필드
@@ -639,9 +647,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),
               ),
               SizedBox(height: 10),
-              Text(
-                '서비스지역 선택',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '서비스지역 선택 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8),
 // 서비스 지역 선택 위젯
@@ -720,9 +737,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               ),
 
               SizedBox(height: 10),
-              Text(
-                '서비스품목 선택',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '서비스품목 선택 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8),
               Row(
@@ -1041,10 +1067,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               ),
 
               SizedBox(height: 10),
-              Text(
-                '사업자명 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
-
+              Row(
+                children: [
+                  Text(
+                    '사업자명 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8),
               TextField(
@@ -1053,10 +1087,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
-              Text(
-                '대표자명 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
-
+              Row(
+                children: [
+                  Text(
+                    '대표자명 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               TextField(
                 controller: ceoNameController,
@@ -1065,9 +1107,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),
               ),
               SizedBox(height: 10),
-              Text(
-                '대표 이메일 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '대표 이메일 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               TextField(
                 controller: emailController,
@@ -1076,9 +1127,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ),
               ),
               SizedBox(height: 10),
-              Text(
-                '개업일자 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '개업일자 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               TextField(
                 controller: openDateController,
@@ -1269,9 +1329,18 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
               // 담당자 연락처 입력란 수정
               SizedBox(height: 16),
-              Text(
-                '담당자 연락처',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '담당자 연락처 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               Column(
                 children: [
@@ -1304,6 +1373,19 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ],
               ),
 
+              Row(
+                children: [
+                  Text(
+                    '사업장 주소 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
+              ),
               receiverZipTextField(),
               receiverAddress1TextField(),
               receiverAddress2TextField(),

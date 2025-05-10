@@ -158,8 +158,7 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
-                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
+                  color: WitHomeTheme.wit_lightGreen, //Colors.lightGreen[100], // 연한 녹색 배경
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 child: Text(
@@ -167,6 +166,7 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
                   style: WitHomeTheme.title.copyWith(fontSize: 16),
                 ),
               ),
+
               SizedBox(height: 8), // 레이블과 카드 사이의 간격
               Container(
                 decoration: BoxDecoration(

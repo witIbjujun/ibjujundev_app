@@ -79,6 +79,15 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
         hp = sellerInfo['hp'] ?? '';
         hp1Controller.text = hp;
 
+        zipCode = sellerInfo['zipCode'] ?? '';
+        receiverZipController.text = zipCode;
+
+        address1 = sellerInfo['address1'] ?? '';
+        receiverAddress1Controller.text = address1;
+
+        address2 = sellerInfo['address2'] ?? '';
+        receiverAddress2Controller.text = address2;
+
       });
     } else {
       // 오류 처리
@@ -252,20 +261,30 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
-                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
+                  color: WitHomeTheme.wit_lightGreen, //Colors.lightGreen[100], // 연한 녹색 배경
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 child: Text(
-                  '사업자정보를 입력해주세요~\n견적요청시 사장님 회사를 돋보이게\n뱃지도 달아드려요~',
+                  '담당자 휴대폰 본인인증 처리를 해주세요.',
                   style: WitHomeTheme.title.copyWith(fontSize: 16),
                 ),
               ),
+
               SizedBox(height: 10),
-              Text(
-                '담당자 연락처',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '담당자 연락처 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
+
               Column(
                 children: [
                   TextField(
@@ -292,11 +311,20 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
 
                 ],
               ),
-
-              Text(
-                '사업장 주소 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '사업장 주소 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
+
               SizedBox(height: 8),
               receiverZipTextField(),
               if (zipCodeErrorMessage.isNotEmpty)

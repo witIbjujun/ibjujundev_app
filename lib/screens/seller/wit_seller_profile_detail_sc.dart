@@ -786,7 +786,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "파트너 프로필",
+                    "내 프로필",
                     style: WitHomeTheme.subtitle
                         .copyWith(fontSize: 14, color: WitHomeTheme.wit_black),
                   ),

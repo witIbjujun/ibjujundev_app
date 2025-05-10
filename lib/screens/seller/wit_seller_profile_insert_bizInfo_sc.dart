@@ -102,6 +102,28 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
       setState(() {
         sellerInfo = response;
 
+        name = sellerInfo['name'] ?? '';
+        nameController.text = name;
+
+        ceoName = sellerInfo['ceoName'] ?? '';
+        ceoNameController.text = ceoName;
+
+        email = sellerInfo['email'] ?? '';
+        emailController.text = email;
+
+        openDate = sellerInfo['openDate'] ?? '';
+        openDateController.text = openDate;
+
+        storeCode = sellerInfo['storeCode'] ?? '';
+        storeCodeController.text = storeCode;
+
+        buttonText = sellerInfo['bizCertificationNm'] != null && sellerInfo['bizCertificationNm'].isNotEmpty
+            ? sellerInfo['bizCertificationNm']
+            : '인증요청';
+
+        // 사업자 등록증 가져오기
+        getSellerDetailImageList("SR02");
+
       });
     } else {
       // 오류 처리
@@ -111,107 +133,46 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
     }
   }
 
-  /* 이미지추가 S */
-  List<File> _images = [];
-  final ImagePicker _picker = ImagePicker();
+  // [서비스] 판매자 상세 이미지 조회
+  Future<void> getSellerDetailImageList(dynamic bizCd) async {
+    // REST ID
+    String restId = "getSellerDetailImageList";
 
-  /*Future<void> _pickImages(ImageSource source) async {
-    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
-    if (pickedFiles != null) {
+    // PARAM
+    final param = jsonEncode({
+      "bizCd": bizCd,
+      "bizKey": sellerInfo["sllrNo"],
+    });
+
+    if(bizCd == "SR02") {
+      // API 호출 (게시판 상세 조회)
+      final _bizImageList = await sendPostRequest(restId, param);
+
+      if (bizImageList.isNotEmpty) {
+        // 값이 있을 때 수행할 작업
+        print("보드 상세 이미지 리스트에 값이 있습니다: ${bizImageList.length}개");
+      } else {
+        // 값이 없을 때 수행할 작업
+        print("보드 상세 이미지 리스트가 비어 있습니다.");
+      }
+
+      // 결과 셋팅
       setState(() {
-        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
+        bizImageList = _bizImageList;
       });
     }
-  }*/
+  }
+
+  /* 이미지추가 S */
+  List<File> _images2 = [];
+  final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _images.add(File(pickedFile.path));
+        _images2.add(File(pickedFile.path));
       });
-    }
-  }
-
-  void _startListeningForSms() async {
-    await SmsAutoFill().listenForCode;
-  }
-
-  // firebase
-  void _verifyPhone() async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: hp1Controller.text,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        await _auth.signInWithCredential(credential);
-        _showAlertDialog('인증 완료', '로그인에 성공했습니다.');
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        print('인증 실패: ${e.message}');
-        _showAlertDialog('인증 실패', e.message ?? '알 수 없는 오류입니다.');
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        setState(() {
-          _verificationId = verificationId;
-          print("verificationId : " + verificationId);
-          print("resendToken : " + resendToken.toString());
-          _smsController.text = ""; // 입력란 초기화
-        });
-        print('코드가 전송되었습니다.');
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        setState(() {
-          _verificationId = verificationId;
-        });
-      },
-    );
-  }
-
-  void _signInWithPhoneNumber() async {
-    try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: _verificationId!,
-        smsCode: _smsController.text,
-      );
-
-      await _auth.signInWithCredential(credential);
-      _showAlertDialog('로그인 성공', '전화번호 인증에 성공했습니다.');
-    } catch (e) {
-      print('로그인 실패: $e');
-      _showAlertDialog('로그인 실패', '인증 코드가 잘못되었습니다.');
-    }
-  }
-
-  void _showAlertDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-  // firebase
-
-  Future<List<String>> fetchAddresses(String postalCode) async {
-    final response = await http
-        .get(Uri.parse('https://api.example.com/postalcode/$postalCode'));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      // 예시: 주소 목록을 반환
-      return List<String>.from(data['addresses']);
-    } else {
-      throw Exception('주소를 가져오는 데 실패했습니다.');
     }
   }
 
@@ -219,11 +180,11 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
   Future<void> saveSellerBizImage() async {
 
     // 이미지 확인
-    if (_images.isEmpty) {
+    if (_images2.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("사업자등록증을 첨부해주세요.")));
 
     } else {
-      final fileInfo = await sendFilePostRequest("fileUpload", _images);
+      final fileInfo = await sendFilePostRequest("fileUpload", _images2);
       if (fileInfo == "FAIL") {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("사업자등록증 업로드 실패")));
       } else {
@@ -347,24 +308,33 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                 ),
               ),*/
               Container(
-                width: double.infinity, // 넓이를 최대로 설정
-                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
-                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                child: Text(
-                  '사업자정보를 입력해주세요~\n견적요청시 사장님 회사를 돋보이게\n뱃지도 달아드려요~',
-                  style: WitHomeTheme.title.copyWith(fontSize: 16),
-                ),
+                  width: double.infinity, // 넓이를 최대로 설정
+                  padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
+                  decoration: BoxDecoration(
+                    color: WitHomeTheme.wit_lightGreen, //Colors.lightGreen[100], // 연한 녹색 배경
+                    borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                  ),
+                  child: Text(
+                    '사업자정보를 입력해주세요~\n견적요청시 사장님 회사를 돋보이게\n뱃지도 달아드려요~',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
               ),
-              SizedBox(height: 8),
-              Text(
-                '사업자명 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
 
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    '사업자명 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
+
               SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
@@ -397,10 +367,18 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
               SizedBox(height: 10),
-              Text(
-                '대표자명 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
-
+              Row(
+                children: [
+                  Text(
+                    '대표자명 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8),
               Container(
@@ -434,9 +412,18 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
               SizedBox(height: 10),
-              Text(
-                '대표 이메일 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '대표 이메일 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8),
               Container(
@@ -470,9 +457,18 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
               SizedBox(height: 10),
-              Text(
-                '개업일자 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '개업일자 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8),
               Container(
@@ -559,64 +555,94 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                 ],
               ),
               SizedBox(height: 10,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
-                children: [
-                  GestureDetector(
-                    onTap: () => _showImagePickerOptions(),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: WitHomeTheme.wit_white,
-                        border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
-                        borderRadius: BorderRadius.circular(12),
+              Container(
+                height: 120, // 높이 설정
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      // 카메라 아이콘
+                      GestureDetector(
+                        onTap: () => _showImagePickerOptions2(),
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: EdgeInsets.only(right: 8), // 이미지 간격
+                          decoration: BoxDecoration(
+                            color: WitHomeTheme.wit_white,
+                            border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
+                          alignment: Alignment.center,
+                        ),
                       ),
-                      child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
-                      alignment: Alignment.center,
-                    ),
-                  ),
-                  SizedBox(width: 16), // GestureDetector와 이미지 리스트 간격 추가
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: _images.asMap().entries.map((entry) {
-                          int index = entry.key;
-                          var image = entry.value;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
-                            child: Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
-                                  child: Image.file(
-                                    image,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover, // 이미지 비율 유지
-                                  ),
+                      // 등록된 이미지 리스트
+                      ...bizImageList.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        return GestureDetector(
+                          onTap: () {
+                            // 클릭 시 ImageViewer로 이동
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageViewer(
+                                  imageUrls: bizImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                                  initialIndex: index, // 클릭한 이미지 인덱스 전달
                                 ),
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  child: IconButton(
-                                    icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
-                                    onPressed: () {
-                                      setState(() {
-                                        _images.removeAt(index); // 이미지 삭제
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 120,
+                            height: 120,
+                            margin: EdgeInsets.only(right: 8), // 이미지 간격
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12), // 둥글게 처리
+                              image: DecorationImage(
+                                image: NetworkImage(apiUrl + bizImageList[index]["imagePath"]),
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                          ),
+                        );
+                      }).toList(),
+                      // 선택한 이미지 리스트
+                      ..._images2.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        var image = entry.value;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
+                                child: Image.file(
+                                  image,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover, // 이미지 비율 유지
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
+                                  onPressed: () {
+                                    setState(() {
+                                      _images2.removeAt(index); // 이미지 삭제
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ],
                   ),
-                ],
+                ),
               ),
 
               /*Container(
@@ -784,7 +810,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
   }
 
   // [팝업] 갤러리, 카메라 팝업 호출
-  void _showImagePickerOptions() {
+  void _showImagePickerOptions2() {
     showModalBottomSheet(
       context: context,
       backgroundColor: WitHomeTheme.wit_white,
