@@ -7,6 +7,7 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_insert_bizInfo_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_insert_content_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_insert_hpInfo_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_insert_name_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_view_sc.dart';
@@ -56,7 +57,7 @@ class SellerAppBarState extends State<SellerAppBar> {
     sllrNo = widget.sllrNo.toString(); // 초기값 설정
     print("상세 sllrNo : " + sllrNo.toString());
     getSellerInfo(sllrNo);
-    getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵니다.
+    // getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵니다.
   }
 
   Future<void> getSellerInfo(dynamic sllrNo) async {
@@ -75,7 +76,6 @@ class SellerAppBarState extends State<SellerAppBar> {
         sellerInfo = response;
         storeName = sellerInfo['storeName'];
         sllrNo = sellerInfo['sllrNo'];
-        print("12331223131323123132312123 : " + sllrNo.toString());
       });
     } else {
       // 오류 처리
@@ -85,7 +85,7 @@ class SellerAppBarState extends State<SellerAppBar> {
     }
   }
 
-  Future<void> getCashInfo(dynamic sllrNo) async {
+  /*Future<void> getCashInfo(dynamic sllrNo) async {
     // REST ID
     String restId = "getCashInfo";
 
@@ -114,11 +114,11 @@ class SellerAppBarState extends State<SellerAppBar> {
       setState(() {
         cashInfo = {}; // 오류 발생 시 빈 맵으로 초기화
       });
-      /*ScaffoldMessenger.of(context).showSnackBar(
+      *//*ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("서버와의 통신 중 오류가 발생했습니다.")),
-      );*/
+      );*//*
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +172,7 @@ class SellerAppBarState extends State<SellerAppBar> {
                 sllrNo = int.tryParse(newSllrNo); // sllrNo 업데이트
                 widget.onSllrNoChanged(sllrNo); // 부모 위젯에 sllrNo 변경 알림
                 getSellerInfo(sllrNo); // 화면 재조회
-                getCashInfo(sllrNo); // 화면 재조회
+                // getCashInfo(sllrNo); // 화면 재조회
               });
             }
           },
@@ -194,12 +194,30 @@ class SellerAppBarState extends State<SellerAppBar> {
         IconButton(
           padding: const EdgeInsets.only(right: 20.0),
           onPressed: () {
+            final regiLevel = sellerInfo['regiLevel'];
+
+            Widget targetScreen;
+            
+            // 로그인 단계별 화면 이동
+            if (regiLevel == null) {
+              targetScreen = SellerProfileInsertName();
+            } else if (regiLevel == '01') {
+              targetScreen = SellerProfileInsertContents(sllrNo: '234');
+            } else if (regiLevel == '02') {
+              targetScreen = SellerProfileInsertBizInfo(sllrNo: '234');
+            } else if (regiLevel == '03') {
+              targetScreen = SellerProfileInsertHpInfo(sllrNo: '234');
+            } else if (regiLevel == '04') {
+              // fallback (예: 기본 화면)
+              targetScreen = SellerProfileDetail(sllrNo: '234');
+            } else {
+              // fallback (예: 기본 화면)
+              targetScreen = SellerProfileInsertName();
+            }
+
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      SellerProfileInsertName()
-              ), // HomeScreen으로 이동
+              MaterialPageRoute(builder: (context) => targetScreen),
             );
           },
           icon: Image.asset(
@@ -208,6 +226,7 @@ class SellerAppBarState extends State<SellerAppBar> {
             height: 30,
           ),
         ),
+
         // 아이콘 색상 하얀색으로 설정
         /*IconButton(
           onPressed: () {

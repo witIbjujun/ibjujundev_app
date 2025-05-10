@@ -1270,7 +1270,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               // 담당자 연락처 입력란 수정
               SizedBox(height: 16),
               Text(
-                '휴대폰 번호',
+                '담당자 연락처',
                 style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
               Column(
@@ -1297,47 +1297,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ),
                   SizedBox(height: 16),
                   // 본인 인증 설명 텍스트
-                  Text(
+                  /*Text(
                     '본인인증을 통해 고객님의 신원을 확인합니다.',
                     style: TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                  /*ElevatedButton(
-                    onPressed: _verifyPhone,
-                    child: Text('인증 코드 요청',
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_lightCoral,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft, // 우측 정렬
-                    child: Text(
-                      '인증 코드 입력',
-                      style: WitHomeTheme.title.copyWith(fontSize: 16),
-                    ),
-                  ),
-                  TextField(
-                    controller: _smsController,
-                    readOnly: false, // 사용자 입력을 방지
-                    onTap: () async {
-                      await SmsAutoFill().listenForCode; // SMS 코드 수신 시작
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: _signInWithPhoneNumber,
-                    child: Text('인증 코드 확인',
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_lightCoral,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
                   ),*/
                 ],
               ),

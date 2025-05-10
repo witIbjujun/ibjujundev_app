@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_insert_hpInfo_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
@@ -313,7 +314,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(3, (index) {
+                children: List.generate(4, (index) {
                   return Expanded(
                     child: Column(
                       children: [
@@ -668,108 +669,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                 ),
               ),
               SizedBox(height: 20),
-              // 담당자 연락처 입력란 수정
-              SizedBox(height: 16),
-              Text(
-                '담당자 연락처 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
-              ),
-              SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                padding: const EdgeInsets.all(0), // 내부 여백
-                child: TextField(
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                  controller: hp1Controller,
-                  decoration: InputDecoration(
-                    border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '담당자 연락처를 입력하세요', // 힌트 텍스트
-                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      // 텍스트가 변경될 때마다 오류 메시지 초기화
-                      hpErrorMessage = '';
-                    });
-                  },
-                ),
 
-              ),
-              // 오류 메시지 표시
-              if (hpErrorMessage.isNotEmpty)
-                Text(
-                  hpErrorMessage,
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                ),
-              SizedBox(height: 10),
-              /*Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: _verifyPhone,
-                    child: Text('인증 코드 요청',
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_lightCoral,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft, // 우측 정렬
-                    child: Text(
-                      '인증 코드 입력',
-                      style: WitHomeTheme.title.copyWith(fontSize: 16),
-                    ),
-                  ),
-                  TextField(
-                    controller: _smsController,
-                    readOnly: false, // 사용자 입력을 방지
-                    onTap: () async {
-                      await SmsAutoFill().listenForCode; // SMS 코드 수신 시작
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: _signInWithPhoneNumber,
-                    child: Text('인증 코드 확인',
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_lightCoral,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ],
-              ),*/
-              Text(
-                '사업장 주소 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
-              ),
-              SizedBox(height: 8),
-              receiverZipTextField(),
-              if (zipCodeErrorMessage.isNotEmpty)
-                Text(
-                  zipCodeErrorMessage,
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                ),
-              SizedBox(height: 10),
-              receiverAddress1TextField(),
-              SizedBox(height: 6),
-              receiverAddress2TextField(),
-              if (address2ErrorMessage.isNotEmpty)
-                Text(
-                  address2ErrorMessage,
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                ),
-
-              SizedBox(height: 10),
               Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
                 child: ElevatedButton(
                   onPressed: () async {
@@ -778,19 +678,11 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                       ceoErrorMessage = '';
                       emailErrorMessage = '';
                       openDateErrorMessage = '';
-                      hpErrorMessage = '';
-                      zipCodeErrorMessage = '';
-                      address2ErrorMessage = '';
 
                       bool isNameValid = nameController.text.isNotEmpty;
                       bool isCeoName = ceoNameController.text.isNotEmpty;
                       bool isEmail = emailController.text.isNotEmpty;
                       bool isOpenDate = openDateController.text.isNotEmpty;
-                      // bool isStoreCode = storeCodeController.text.isNotEmpty;
-                      bool isHp1 = hp1Controller.text.isNotEmpty;
-                      bool isZipCode = receiverZipController.text.isNotEmpty;
-                      // bool isAddress1 = receiverAddress1Controller.text.isNotEmpty;
-                      bool isAddress2 = receiverAddress2Controller.text.isNotEmpty;
 
                       if (!isNameValid) {
                         nameErrorMessage = '사업자명을 입력해주세요.'; // 오류 메시지 설정
@@ -804,20 +696,11 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                       if (!isOpenDate) {
                         openDateErrorMessage = '개업일자를 입력해주세요.'; // 오류 메시지 설정
                       }
-                      if (!isHp1) {
-                        hpErrorMessage = '휴대폰 번호를 입력해주세요.'; // 오류 메시지 설정
-                      }
-                      if (!isZipCode) {
-                        zipCodeErrorMessage = '우편번호를 입력해주세요.'; // 오류 메시지 설정
-                      }
-                      if (!isAddress2) {
-                        address2ErrorMessage = '상세주소를 입력해주세요.'; // 오류 메시지 설정
-                      }
+
                     });
 
                     if (nameErrorMessage.isEmpty && ceoErrorMessage.isEmpty && emailErrorMessage.isEmpty
-                    && openDateErrorMessage.isEmpty & hpErrorMessage.isEmpty & zipCodeErrorMessage.isEmpty
-                    && address2ErrorMessage.isEmpty)
+                    && openDateErrorMessage.isEmpty)
                     {
                       // 사업자 프로필 변경 로직
                       String name = nameController.text;
@@ -825,16 +708,12 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                       String email = emailController.text;
                       String openDate = openDateController.text;
                       String storeCode = storeCodeController.text;
-                      String hp1 = hp1Controller.text;
-                      String zipCode = receiverZipController.text;
-                      String address1 = receiverAddress1Controller.text;
-                      String address2 = receiverAddress2Controller.text;
 
                       // 이미지 저장 후 프로필 업데이트
-                      await updateSellerProfile(name, ceoName, email, storeCode, hp1, zipCode, address1, address2, openDate);
+                      await updateSellerProfile(name, ceoName, email, storeCode, openDate);
                     }
                    },
-                  child: Text('사업자등록 완료',
+                  child: Text('다음',
                     style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -859,10 +738,6 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
       dynamic ceoName,
       dynamic email,
       dynamic storeCode,
-      dynamic hp1,
-      dynamic zipCode,
-      dynamic address1,
-      dynamic address2,
       dynamic openDate,
       // dynamic categoryContent,
   ) async {
@@ -877,11 +752,8 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
       "ceoName": ceoName,
       "email": email,
       "storeCode": storeCode,
-      "hp": hp1,
-      "zipCode": zipCode,
-      "address1": address1,
-      "address2": address2,
       "openDate": openDate,
+      "regiLevel": "03"
 //      "categoryContent" : categoryContent,
     });
 
@@ -896,10 +768,11 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
       );
 
       // 상세 화면으로 이동
+      // 상세 화면으로 이동
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SellerProfileDetail(sllrNo: widget.sllrNo),
+          builder: (context) => SellerProfileInsertHpInfo(sllrNo: widget.sllrNo),
         ),
       );
     } else {
@@ -908,89 +781,6 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
         SnackBar(content: Text("파트너 프로필 저장에 실패했습니다.")),
       );
     }
-  }
-
-  Widget receiverZipTextField() {
-    return Padding(
-      padding: const EdgeInsets.all(0),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              readOnly: true,
-              controller: receiverZipController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0), // 원하는 둥근 정도를 설정
-                ), // 원하는 둥근 정도를 설정
-                hintText: "우편번호",
-              ),
-            ),
-          ),
-          // 오류 메시지 표시
-          const SizedBox(width: 15),
-          FilledButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) {
-                  return KpostalView(
-                    callback: (Kpostal result) {
-                      receiverZipController.text = result.postCode;
-
-                      receiverAddress1Controller.text = result.address;
-                    },
-                  );
-                },
-              ));
-            },
-            style: FilledButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              backgroundColor: WitHomeTheme.wit_lightBlue,
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              child: Text(
-                "우편 번호 찾기",
-                style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-              ),
-            ),
-
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget receiverAddress1TextField() {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: TextFormField(
-        controller: receiverAddress1Controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0), // 원하는 둥근 정도를 설정
-          ),
-          hintText: "기본 주소",
-        ),
-      ),
-    );
-  }
-
-  Widget receiverAddress2TextField() {
-    return Padding(
-      padding: const EdgeInsets.all(0.0),
-      child: TextFormField(
-        controller: receiverAddress2Controller,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10.0), // 원하는 둥근 정도를 설정
-          ),
-          hintText: "상세 주소",
-        ),
-      ),
-    );
   }
 
   // [팝업] 갤러리, 카메라 팝업 호출

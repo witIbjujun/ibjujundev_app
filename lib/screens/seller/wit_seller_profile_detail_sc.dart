@@ -296,7 +296,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
             ),*/
 
             // 내 구독 APT
-            SizedBox(height: 12),
+            SizedBox(height: 26),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               child: Row(
@@ -462,7 +462,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                     ),
                   ),
 
-            SizedBox(height: 20), // 레이블과 카드 사이의 간격
+            SizedBox(height: 26), // 레이블과 카드 사이의 간격
             Container(
               padding: EdgeInsets.only(left: 20.0), // 전체 패딩 20
               alignment: Alignment.centerLeft, // 왼쪽 정렬
@@ -471,7 +471,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                 style: WitHomeTheme.title.copyWith(fontSize: 20),
               ),
             ),
-            SizedBox(height: 12), // 레이블과 카드 사이의 간격
+            // SizedBox(height: 12), // 레이블과 카드 사이의 간격
             // 스케쥴 관리
             TextButton(
               onPressed: () {

@@ -334,7 +334,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(3, (index) {
+                children: List.generate(4, (index) {
                   return Expanded(
                     child: Column(
                       children: [
@@ -624,12 +624,20 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                 ),
 
               SizedBox(height: 3),
-              Text(
-                '* AS 무상 보증 기간을 등록하면 AS 보증 뱃지가 표시됩니다.',
-                style: WitHomeTheme.title.copyWith(fontSize: 14,color: WitHomeTheme.nearlysYellow),
+              Container(
+                width: double.infinity, // 넓이를 최대로 설정
+                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
+                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                child: Text(
+                  '* AS 무상 보증 기간을 등록하면 AS 보증 뱃지가 표시됩니다.',
+                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                ),
               ),
               SizedBox(height: 16),
-
 
               Center(
                 child: ElevatedButton(
@@ -723,6 +731,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
       "serviceArea": saveServiceAreaCd,
       "serviceItem": saveServiceItemCd,
       "asGbn":saveAsGbn,
+      "regiLevel":"01",
     });
 
     // API 호출

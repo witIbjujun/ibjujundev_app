@@ -71,7 +71,7 @@ dependencies:
   #토스결재 위젯
   #tosspayments_widget_sdk_flutter: 2.0.0
   #우편번호
-  kpostal: ^1.0.0
+  kpostal: ^0.5.1
 
   #웹소켓
   web_socket_channel: ^2.1.0
