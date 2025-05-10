@@ -72,7 +72,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                               Icon(Icons.notification_important, color: WitHomeTheme.wit_red,), // 알림 아이콘
                               SizedBox(width: 4), // 아이콘과 텍스트 사이 간격 (선택 사항)
                               Text(
-                                'AS 1년/2년 무상 선택시',
+                                'AS 무상 동의서',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -357,8 +357,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
-                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
+                  color: WitHomeTheme.wit_lightGreen, //Colors.lightGreen[100], // 연한 녹색 배경
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 child: Text(
@@ -367,10 +366,18 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                 ),
               ),
               const SizedBox(height: 16.0),
-              Text(
-                '판매자명 (필수)',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
-
+              Row(
+                children: [
+                  Text(
+                    '판매자명 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8), // 레이블과 카드 사이의 간격
               // 대표자명 입력 필드
@@ -405,9 +412,18 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
               SizedBox(height: 10),
-              Text(
-                '서비스지역 선택',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '서비스지역 선택 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8),
 // 서비스 지역 선택 위젯
@@ -497,9 +513,18 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                 ),
 
               SizedBox(height: 10),
-              Text(
-                '서비스품목 선택',
-                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              Row(
+                children: [
+                  Text(
+                    '서비스품목 선택 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
               ),
               SizedBox(height: 8),
               Row(
@@ -623,20 +648,21 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
 
-              SizedBox(height: 3),
+              SizedBox(height: 16),
               Container(
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
                   color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
-                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 3), // 회색 테두리
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 child: Text(
-                  '* AS 무상 보증 기간을 등록하면 AS 보증 뱃지가 표시됩니다.',
-                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  '*AS 무상보증 기간을 선택하면 AS보증 뱃지가 표시됩니다.',
+                  style: WitHomeTheme.title.copyWith(fontSize: 14),
                 ),
               ),
+
               SizedBox(height: 16),
 
               Center(

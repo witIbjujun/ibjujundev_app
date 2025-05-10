@@ -550,12 +550,146 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     ),
                   //],
                   SizedBox(height: 20),
-                  Center(
-                    child: reqState == "05"
-                        ? Container()
-                        : Column(
-                      children: [
-                        ElevatedButton(
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            TextEditingController reasonController = TextEditingController();
+
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                final width = MediaQuery.of(context).size.width;
+
+                                return Dialog(
+                                  backgroundColor: WitHomeTheme.wit_white,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                  child: Container(
+                                    width: width * 0.9, // ✅ 화면 너비의 90%
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          '작업중지 사유 입력',
+                                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        TextField(
+                                          controller: reasonController,
+                                          maxLines: 3,
+                                          decoration: const InputDecoration(
+                                            hintText: '작업 중지 사유를 입력하세요',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () => Navigator.of(context).pop(),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.grey[300], // 회색 배경
+                                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20), // 더 둥글게
+                                                ),
+                                                elevation: 0,
+                                              ),
+                                              child: const Text(
+                                                '취소',
+                                                style: TextStyle(color: Colors.black),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                String reason = reasonController.text.trim();
+                                                if (reason.isNotEmpty) {
+                                                  updateEstimateInfo(
+                                                    estimateRequestInfoForSend['companyId'] ?? "",
+                                                    estimateRequestInfoForSend['sllrClerkNo'] ?? "",
+                                                    estimateRequestInfoForSend['estNo'] ?? "",
+                                                    estimateRequestInfoForSend['seq'] ?? "",
+                                                    reason,
+                                                    itemPrice1Controller.text,
+                                                    '06',
+                                                  );
+                                                  Navigator.of(context).pop();
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: WitHomeTheme.wit_lightGreen, // 초록색 배경
+                                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(20), // 더 둥글게
+                                                ),
+                                                elevation: 0,
+                                              ),
+                                              child: const Text(
+                                                '확인',
+                                                style: TextStyle(color: Colors.white),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+
+                          },
+                          child: Text(
+                            '작업중지 처리',
+                            style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_black),                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[300],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 1,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // 작업완료 처리 로직
+                            updateEstimateInfo(
+                              estimateRequestInfoForSend['companyId'] ?? "",
+                              estimateRequestInfoForSend['sllrClerkNo'] ?? "",
+                              estimateRequestInfoForSend['estNo'] ?? "",
+                              estimateRequestInfoForSend['seq'] ?? "",
+                              estimateContentController.text,
+                              itemPrice1Controller.text,
+                              '07', // 예: '07'이 작업완료 상태라면
+                            );
+                          },
+                          child: Text(
+                            '작업완료 처리',
+                            style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 2,
+                        child: ElevatedButton(
                           onPressed: (reqState == "04") ? null : () {
                             String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";
                             String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";
@@ -599,163 +733,24 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                             }
                           },
                           child: Text(
-                            reqState == "01" ? '견적보내기' :
-                            reqState == "02" || reqState == "03" || reqState == "04" ? '메시지 대화하기' :
-                            '취소',
-                            style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_white),
+                            reqState == "01"
+                                ? '견적보내기'
+                                : reqState == "02" || reqState == "03" || reqState == "04"
+                                ? '메시지 대화하기'
+                                : '취소',
+                            style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: WitHomeTheme.wit_lightGreen,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  TextEditingController reasonController = TextEditingController();
-
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      final width = MediaQuery.of(context).size.width;
-
-                                      return Dialog(
-                                        backgroundColor: WitHomeTheme.wit_white,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                        child: Container(
-                                          width: width * 0.9, // ✅ 화면 너비의 90%
-                                          padding: const EdgeInsets.all(20),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                '작업중지 사유 입력',
-                                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                              ),
-                                              const SizedBox(height: 16),
-                                              TextField(
-                                                controller: reasonController,
-                                                maxLines: 3,
-                                                decoration: const InputDecoration(
-                                                  hintText: '작업 중지 사유를 입력하세요',
-                                                  border: OutlineInputBorder(),
-                                                ),
-                                              ),
-                                              const SizedBox(height: 20),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                  ElevatedButton(
-                                                    onPressed: () => Navigator.of(context).pop(),
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: Colors.grey[300], // 회색 배경
-                                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(20), // 더 둥글게
-                                                      ),
-                                                      elevation: 0,
-                                                    ),
-                                                    child: const Text(
-                                                      '취소',
-                                                      style: TextStyle(color: Colors.black),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      String reason = reasonController.text.trim();
-                                                      if (reason.isNotEmpty) {
-                                                        updateEstimateInfo(
-                                                          estimateRequestInfoForSend['companyId'] ?? "",
-                                                          estimateRequestInfoForSend['sllrClerkNo'] ?? "",
-                                                          estimateRequestInfoForSend['estNo'] ?? "",
-                                                          estimateRequestInfoForSend['seq'] ?? "",
-                                                          reason,
-                                                          itemPrice1Controller.text,
-                                                          '06',
-                                                        );
-                                                        Navigator.of(context).pop();
-                                                      }
-                                                    },
-                                                    style: ElevatedButton.styleFrom(
-                                                      backgroundColor: WitHomeTheme.wit_lightGreen, // 초록색 배경
-                                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(20), // 더 둥글게
-                                                      ),
-                                                      elevation: 0,
-                                                    ),
-                                                    child: const Text(
-                                                      '확인',
-                                                      style: TextStyle(color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-
-                                },
-                                child: const Text(
-                                  '작업중지 처리',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.grey[300],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // 작업완료 처리 로직
-                                  updateEstimateInfo(
-                                    estimateRequestInfoForSend['companyId'] ?? "",
-                                    estimateRequestInfoForSend['sllrClerkNo'] ?? "",
-                                    estimateRequestInfoForSend['estNo'] ?? "",
-                                    estimateRequestInfoForSend['seq'] ?? "",
-                                    estimateContentController.text,
-                                    itemPrice1Controller.text,
-                                    '07', // 예: '07'이 작업완료 상태라면
-                                  );
-                                },
-                                child: const Text(
-                                  '작업완료 처리',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-
-
                 ],
               ),
             ),
