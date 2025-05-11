@@ -31,6 +31,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
   String? selectedLocation;
   String? selectedServiceType;
   String? selectedAsPeriod;
+  String? selectedYear;
 
   List<dynamic> areaList = []; // 지역 정보를 담을 리스트
   List<dynamic> areaCd = [];
@@ -85,7 +86,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                           SizedBox(height: 16),
                           Text(
                             '1. AS 보증기간\n'
-                                '• 본 제품은 구매일로부터 [XX년] 동안 서비스제공 업체의 AS 보증을 받습니다.\n'
+                                '• 본 제품은 구매일로부터 [$selectedYear년] 동안 서비스제공 업체의 AS 보증을 받습니다.\n'
                                 '• AS 보증 기간 내 제품에 문제가 발생한 경우, 무료 수리가 가능합니다.\n'
                                 '• 이 보증은 구매자 본인에 한해 적용되며, 타인에게 양도되지 않습니다.\n\n'
                                 '2. 보증 범위와 제외사항\n'
@@ -584,6 +585,15 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                         onChanged: (String? newValue) {
                           setState(() {
                             selectedAsPeriod = newValue; // AS 기간 선택
+
+                            // 선택된 코드에 따라 selectedYear 값 설정
+                            if (newValue == "01") {
+                              selectedYear = '1';
+                            } else if (newValue == "02") {
+                              selectedYear = '2';
+                            } else {
+                              selectedYear = '0'; // 예외 또는 미선택 상태
+                            }
                           });
                         },
                         items: asList.map<DropdownMenuItem<String>>((item) {
@@ -653,8 +663,8 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  color: Colors.grey[200], // 배경색을 하얀색으로
+                  // border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
                   borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                 ),
                 child: Text(

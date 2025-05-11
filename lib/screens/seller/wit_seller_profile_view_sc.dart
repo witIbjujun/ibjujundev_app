@@ -326,7 +326,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
           backgroundColor: WitHomeTheme.wit_black,
           iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
           title: Text(
-            '파트너 프로필',
+            '내 프로필',
             style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
           ),
         )

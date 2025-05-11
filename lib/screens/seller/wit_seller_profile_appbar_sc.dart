@@ -76,6 +76,7 @@ class SellerAppBarState extends State<SellerAppBar> {
         sellerInfo = response;
         storeName = sellerInfo['storeName'];
         sllrNo = sellerInfo['sllrNo'];
+        print("여기 : " + sellerInfo['sllrNo'].toString());
       });
     } else {
       // 오류 처리
@@ -202,14 +203,14 @@ class SellerAppBarState extends State<SellerAppBar> {
             if (regiLevel == null) {
               targetScreen = SellerProfileInsertName();
             } else if (regiLevel == '01') {
-              targetScreen = SellerProfileInsertContents(sllrNo: '234');
+              targetScreen = SellerProfileInsertContents(sllrNo: sellerInfo['sllrNo'].toString());
             } else if (regiLevel == '02') {
-              targetScreen = SellerProfileInsertBizInfo(sllrNo: '234');
+              targetScreen = SellerProfileInsertBizInfo(sllrNo: sellerInfo['sllrNo'].toString());
             } else if (regiLevel == '03') {
-              targetScreen = SellerProfileInsertHpInfo(sllrNo: '234');
+              targetScreen = SellerProfileInsertHpInfo(sllrNo: sellerInfo['sllrNo'].toString());
             } else if (regiLevel == '04') {
               // fallback (예: 기본 화면)
-              targetScreen = SellerProfileDetail(sllrNo: '234');
+              targetScreen = SellerProfileDetail(sllrNo: sellerInfo['sllrNo'].toString());
             } else {
               // fallback (예: 기본 화면)
               targetScreen = SellerProfileInsertName();
@@ -218,7 +219,10 @@ class SellerAppBarState extends State<SellerAppBar> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => targetScreen),
-            );
+            ).then((_) {
+              // 화면에서 돌아왔을 때 판매자 정보 재조회
+              getSellerInfo(sllrNo);
+            });
           },
           icon: Image.asset(
             'assets/home/message.png',

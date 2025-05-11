@@ -201,48 +201,28 @@ class EstimateItem extends StatelessWidget {
               ],
             ),
             SizedBox(height: 10), // 텍스트와 내용 사이의 간격
-            Container(
-              padding: EdgeInsets.all(12), // 내용의 내부 여백
-              decoration: BoxDecoration(
-                color: Colors.grey[300], // 회색 배경
-                borderRadius: BorderRadius.circular(8), // 둥근 모서리
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft, // 왼쪽 정렬
-                child: Text(
-                  reqContents, // 내용
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                  textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
-                  maxLines: isExpanded ? null : 3, // 기본 3줄 표시
-                  overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
+            GestureDetector(
+              onTap: () {
+                onExpandToggle(!isExpanded); // 텍스트 영역을 클릭하면 상세보기/접기 토글
+              },
+              child: Container(
+                padding: EdgeInsets.all(12), // 내용의 내부 여백
+                decoration: BoxDecoration(
+                  color: Colors.grey[300], // 회색 배경
+                  borderRadius: BorderRadius.circular(8), // 둥근 모서리
                 ),
-              ),
-            ),
-            // 내용이 비어있지 않고 3줄 이상일 경우에만 버튼 표시
-            if (hasMoreThanThreeLines) ...[
-              SizedBox(height: 10), // 버튼과 내용 사이의 간격
-              Center( // 버튼을 가운데 정렬
-                child: Container(
-                  width: 150, // 버튼 너비 설정 (조정 가능)
-                  child: TextButton(
-                    onPressed: () {
-                      onExpandToggle(!isExpanded); // 상세보기 상태 토글
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_lightGreen, // 연두색 배경
-                      padding: EdgeInsets.symmetric(vertical: 8), // 패딩 추가
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20), // 둥근 모서리
-                      ),
-                    ),
-                    child: Text(
-                      isExpanded ? '접기' : '상세보기', // 버튼 텍스트 변경
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-                    ),
+                child: Align(
+                  alignment: Alignment.centerLeft, // 왼쪽 정렬
+                  child: Text(
+                    reqContents, // 내용
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                    textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
+                    maxLines: isExpanded ? null : 3, // 기본 3줄 표시
+                    overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
                   ),
                 ),
               ),
-            ],
+            ),
           ],
         ),
       ),

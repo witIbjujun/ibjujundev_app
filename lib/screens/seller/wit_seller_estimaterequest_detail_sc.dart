@@ -44,6 +44,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   TextEditingController itemPrice1Controller = TextEditingController();
   TextEditingController estimateContentController = TextEditingController();
 
+  String? contentError;
+  String? priceError;
+
   Future<void> _pickImages(ImageSource source) async {
     final List<XFile>? pickedFiles = await _picker.pickMultiImage();
     if (pickedFiles != null) {
@@ -68,6 +71,22 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     super.initState();
     // 견적 상세 조회
     getEstimateRequestInfoForSend(widget.estNo, widget.seq);
+
+    estimateContentController.addListener(() {
+      if (contentError != null && estimateContentController.text.trim().isNotEmpty) {
+        setState(() {
+          contentError = null;
+        });
+      }
+    });
+
+    itemPrice1Controller.addListener(() {
+      if (priceError != null && itemPrice1Controller.text.trim().isNotEmpty) {
+        setState(() {
+          priceError = null;
+        });
+      }
+    });
   }
 
   @override
@@ -284,54 +303,69 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100], // 배경색을 회색으로 설정
-                      borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "견적금액",
-                          style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
-                        ),
-                        SizedBox(width: 5), // 텍스트와 입력란 사이의 간격
-                        Expanded( // Expanded 사용하여 공간을 차지하도록 설정
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Expanded( // 금액 입력란을 꽉 채우도록 설정
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300], // 배경색을 회색으로 설정
-                                    borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
+                        Row(
+                          children: [
+                            Text(
+                              "견적 금액 ",
+                              style: WitHomeTheme.title.copyWith(
+                                fontSize: 16,
+                                color: WitHomeTheme.wit_lightSteelBlue,
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: TextField(
+                                  controller: itemPrice1Controller,
+                                  keyboardType: TextInputType.number,
+                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                                  textAlign: TextAlign.right,
+                                  decoration: InputDecoration(
+                                    hintText: "금액을 입력하세요",
+                                    hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                   ),
-                                  child: TextField(
-                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                                    textAlign: TextAlign.right, // 텍스트 오른쪽 정렬
-                                    controller: itemPrice1Controller,
-                                    decoration: InputDecoration(
-                                      hintText: "금액을 입력하세요",
-                                      hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                                      border: InputBorder.none, // 테두리 없애기
-                                      filled: true, // 배경색을 적용하기 위해 filled 속성 추가
-                                      fillColor: Colors.transparent, // 배경색을 투명으로 설정
-                                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10), // 패딩 설정
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                    enabled: reqState == "01", // reqState가 01일 때만 활성화
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly, // 숫자만 입력 가능
-                                    ],
-                                  ),
+                                  enabled: reqState == "01",
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  onChanged: (value) {
+                                    // 값이 변경될 때 에러 메시지 삭제
+                                    if (value.isNotEmpty && priceError != null) {
+                                      setState(() {
+                                        priceError = null; // 에러 메시지 삭제
+                                      });
+                                    }
+                                  },
                                 ),
                               ),
-                              SizedBox(width: 8),
-                              Text(
-                                "원",
-                                style: WitHomeTheme.title.copyWith(fontSize: 16),
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              "원",
+                              style: WitHomeTheme.title.copyWith(fontSize: 16),
+                            ),
+                          ],
                         ),
+                        if (priceError != null && priceError!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              priceError!,
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -341,41 +375,57 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100], // 배경색을 회색으로 설정
-                      borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
+                      color: Colors.grey[100],
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "견적 추가 설명",
-                          style: WitHomeTheme.title.copyWith(fontSize: 16, color: WitHomeTheme.wit_lightSteelBlue),
+                          style: WitHomeTheme.title.copyWith(
+                            fontSize: 16,
+                            color: WitHomeTheme.wit_lightSteelBlue,
+                          ),
                         ),
                         SizedBox(height: 10),
                         Container(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[300], // 배경색을 회색으로 설정
-                              borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: TextField(
+                            controller: estimateContentController,
+                            style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                            minLines: 3,
+                            maxLines: null,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: '여기에 추가 설명을 입력하세요',
+                              hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                              contentPadding: EdgeInsets.all(8),
                             ),
-                            child: TextField(
-                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                              controller: estimateContentController,
-                              minLines: 3, // 최소 3줄
-                              maxLines: null, // 내용에 따라 자동으로 늘어남
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: '여기에 추가 설명을 입력하세요',
-                                hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                                contentPadding: EdgeInsets.all(8),
-                                enabled: reqState == "01", // reqState가 01일 때만 활성화
-                              ),
-                            ),
+                            enabled: reqState == "01",
+                            onChanged: (value) {
+                              if (value.trim().isNotEmpty && contentError != null) {
+                                setState(() {
+                                  contentError = null;
+                                });
+                              }
+                            },
                           ),
                         ),
+                        if (contentError != null && contentError!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              contentError!,
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),                            ),
+                          ),
                       ],
                     ),
                   ),
+
                   SizedBox(height: 5),
                   Text(
                     "* 업체 전화번호나 위치 설명 금지",
@@ -646,7 +696,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
                           },
                           child: Text(
-                            '작업중지 처리',
+                            '작업중지',
                             style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_black),                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[300],
@@ -662,19 +712,25 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         flex: 1,
                         child: ElevatedButton(
                           onPressed: () {
-                            // 작업완료 처리 로직
-                            updateEstimateInfo(
-                              estimateRequestInfoForSend['companyId'] ?? "",
-                              estimateRequestInfoForSend['sllrClerkNo'] ?? "",
-                              estimateRequestInfoForSend['estNo'] ?? "",
-                              estimateRequestInfoForSend['seq'] ?? "",
-                              estimateContentController.text,
-                              itemPrice1Controller.text,
-                              '07', // 예: '07'이 작업완료 상태라면
-                            );
+                            setState(() {
+                              contentError = estimateContentController.text.trim().isEmpty ? '견적 내용을 입력해주세요.' : null;
+                              priceError = itemPrice1Controller.text.trim().isEmpty ? '견적 금액을 입력해주세요.' : null;
+                            });
+
+                            if (contentError == null && priceError == null) {
+                              updateEstimateInfo(
+                                estimateRequestInfoForSend['companyId'] ?? "",
+                                estimateRequestInfoForSend['sllrClerkNo'] ?? "",
+                                estimateRequestInfoForSend['estNo'] ?? "",
+                                estimateRequestInfoForSend['seq'] ?? "",
+                                estimateContentController.text,
+                                itemPrice1Controller.text,
+                                '07',
+                              );
+                            }
                           },
                           child: Text(
-                            '작업완료 처리',
+                            '작업완료',
                             style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                           ),
                           style: ElevatedButton.styleFrom(
@@ -698,38 +754,45 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                             String estimateContent = estimateContentController.text;
                             String inputItemPrice1 = itemPrice1Controller.text;
 
-                            if (reqState == "01") {
-                              // 견적 보내기 로직
-                              updateEstimateInfo(
-                                sllrNo,
-                                sllrClerkNo,
-                                estNo,
-                                seq,
-                                estimateContent,
-                                inputItemPrice1,
-                                '02', // 상태를 '02'로 변경
-                              );
-                            } else if (reqState == "02") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => CustomChatScreen('1', '1', 'sellerView')),
-                              );
-                            } else if (reqState == "03") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => CustomChatScreen('1', '1', 'sellerView')),
-                              );
-                            } else {
-                              // 견적 취소 로직
-                              updateEstimateInfo(
-                                sllrNo,
-                                sllrClerkNo,
-                                estNo,
-                                seq,
-                                estimateContent,
-                                inputItemPrice1,
-                                '05', // 상태를 '05'로 변경
-                              );
+                            setState(() {
+                              contentError = estimateContentController.text.trim().isEmpty ? '견적 내용을 입력해주세요.' : null;
+                              priceError = itemPrice1Controller.text.trim().isEmpty ? '견적 금액을 입력해주세요.' : null;
+                            });
+
+                            if (contentError == null && priceError == null) {
+                              if (reqState == "01") {
+                                // 견적 보내기 로직
+                                updateEstimateInfo(
+                                  sllrNo,
+                                  sllrClerkNo,
+                                  estNo,
+                                  seq,
+                                  estimateContent,
+                                  inputItemPrice1,
+                                  '02', // 상태를 '02'로 변경
+                                );
+                              } else if (reqState == "02") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => CustomChatScreen('1', '1', 'sellerView')),
+                                );
+                              } else if (reqState == "03") {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => CustomChatScreen('1', '1', 'sellerView')),
+                                );
+                              } else {
+                                // 견적 취소 로직
+                                updateEstimateInfo(
+                                  sllrNo,
+                                  sllrClerkNo,
+                                  estNo,
+                                  seq,
+                                  estimateContent,
+                                  inputItemPrice1,
+                                  '05', // 상태를 '05'로 변경
+                                );
+                              }
                             }
                           },
                           child: Text(
