@@ -280,6 +280,7 @@ class _BoardWriteState extends State<BoardWrite> {
       param = jsonEncode({
         "bordTitle": _titleController.text,
         "bordContent": _contentController.text,
+        "bordKey": widget.bordKey,
         "bordType": widget.bordType,
         "creUser": loginClerkNo,
         "fileInfo": fileInfo
@@ -291,6 +292,7 @@ class _BoardWriteState extends State<BoardWrite> {
         "bordTitle": _titleController.text,
         "bordContent": _contentController.text,
         "bordNo" : widget.boardInfo["bordNo"],
+        "bordKey": widget.bordKey,
         "bordType": widget.boardInfo["bordType"],
         "creUser": loginClerkNo,
         "updUser": loginClerkNo,
