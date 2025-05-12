@@ -64,6 +64,9 @@ class SellerProfileViewState extends State<SellerProfileView> {
   // 처음에는 3건만 표시
   int displayCount = 3;
 
+  Set<int> expandedIndexes = {};
+
+
   /* 이미지추가 S */
   List<File> _images = [];
   final ImagePicker _picker = ImagePicker();
@@ -618,9 +621,19 @@ class SellerProfileViewState extends State<SellerProfileView> {
 
                       const SizedBox(height: 12),
 
+                      // 현재 표시할 개수만큼만 표시
                       ...boardList
-                          .take(displayCount) // 현재 표시할 개수만큼만 표시
-                          .map((item) {
+                          .take(displayCount)
+                          .toList()
+                          .asMap()
+                          .entries
+                          .map((entry) {
+                        final int index = entry.key;
+                        final item = entry.value;
+
+                        final int gdCnt = int.tryParse(item['bordGdCnt']?.toString() ?? '0') ?? 0;
+                        final bool isExpanded = expandedIndexes.contains(index);
+
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: Container(
@@ -633,22 +646,87 @@ class SellerProfileViewState extends State<SellerProfileView> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                /// ✅ 사용자 정보 영역
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: WitHomeTheme.wit_lightGrey,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      /// 프로필 이미지
+                                      Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: AssetImage('assets/images/profile1.png'),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+
+                                      /// 사용자 이름
+                                      Text(
+                                        item['creUserNm'] ?? '사용자', // 닉네임 컬럼명에 맞게 수정
+                                        style: WitHomeTheme.title.copyWith(fontSize: 16),
+                                      ),
+
+                                      const Spacer(),
+
+                                      /// 별점
+                                      Row(
+                                        children: List.generate(5, (i) {
+                                          return Icon(
+                                            i < gdCnt ? Icons.star : Icons.star_border,
+                                            color: Colors.amber,
+                                            size: 20,
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                /// ✅ 게시글 제목
                                 Text(
                                   item['bordTitle'] ?? '제목 없음',
                                   style: WitHomeTheme.subtitle.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+
                                 const SizedBox(height: 8),
-                                Text(
-                                  item['bordContent'] ?? '',
-                                  style: const TextStyle(fontSize: 14),
+
+                                /// ✅ 게시글 내용 (펼치기/접기)
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      if (isExpanded) {
+                                        expandedIndexes.remove(index);
+                                      } else {
+                                        expandedIndexes.add(index);
+                                      }
+                                    });
+                                  },
+                                  child: Text(
+                                    item['bordContent'] ?? '',
+                                    style: const TextStyle(fontSize: 14),
+                                    maxLines: isExpanded ? null : 2,
+                                    overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         );
                       }).toList(),
+
 
                       if (isLoading)
                         const Center(child: CircularProgressIndicator()),
