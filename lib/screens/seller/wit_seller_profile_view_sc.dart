@@ -52,6 +52,18 @@ class SellerProfileViewState extends State<SellerProfileView> {
   List<dynamic> storeImageList = [];
   String buttonText = "인증요청";
 
+  // 게시판 리스트
+  List<dynamic> boardList = [];
+  // 페이징 로딩 여부
+  bool isLoading = false;
+  bool isLastPage = false;
+  // 페이징 시작 번호
+  int currentPage = 1;
+  // 페이징 1회 건수
+  final int pageSize = 10;
+  // 처음에는 3건만 표시
+  int displayCount = 3;
+
   /* 이미지추가 S */
   List<File> _images = [];
   final ImagePicker _picker = ImagePicker();
@@ -85,6 +97,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
     });*/
     super.initState();
     getSellerInfo(widget.sllrNo);
+    getBoardList();
   }
 
   @override
@@ -93,29 +106,38 @@ class SellerProfileViewState extends State<SellerProfileView> {
     super.dispose();
   }
 
-  /*Future<void> getSellerInfo(dynamic sllrNo) async {
-    // API 호출 로직 (여기서는 가상의 데이터 사용)
+  // [서비스] 게시판 리스트 조회
+  Future<void> getBoardList() async {
+    if (isLoading || isLastPage) return;
+
     setState(() {
-      sellerInfo = {
-        'storeName': '친절한 사장',
-        'businessImage': 'https://via.placeholder.com/150', // 사업자 이미지
-        'businessCertification': '사업자 인증중',
-        'bestRecommendation': 'Best 추천',
-        'serviceItems': '미세방향망, 냉방 방충망, 고양이망',
-        'servicePeriod': '2년 무상 AS',
-        'location': '서울시 영동포구 / 경기도 일대',
-        'description': '12년 경력의 전문 업체입니다. 고객님께 최선을 다하겠습니다.',
-        'photos': [
-          '/WIT/8399af87-e59d-4e28-980f-255508c2f27e8655804894939968359.jpg',
-          */ /*'https://via.placeholder.com/100',
-          'https://via.placeholder.com/100'*/ /*
-        ],
-        'reviews': '소중한 리뷰 감사합니다! 모든 부분 꼼꼼하게 체크하여 이상 있는 부분은 꼭 저희한테 말씀해 주시는게 제일 좋은 방법입니다.',
-        'rating': '⭐ 3.5'
-      };
-      storeName = sellerInfo['storeName'];
+      isLoading = true;
     });
-  }*/
+
+    String restId = "getBoardList";
+
+    final param = jsonEncode({
+      "bordType": 'UH01',
+      "bordKey": widget.sllrNo.toString(),
+      "searchText": '',
+      "currentPage": (currentPage - 1) * pageSize,
+      "pageSize": pageSize,
+    });
+
+    final _boardList = await sendPostRequest(restId, param);
+
+    setState(() {
+      boardList.addAll(_boardList);
+      currentPage++;
+
+      if (_boardList.length < pageSize) {
+        isLastPage = true;
+      }
+
+      isLoading = false;
+    });
+  }
+
 
   Future<void> getSellerInfo(dynamic sllrNo) async {
     String restId = "getSellerInfo";
@@ -593,6 +615,60 @@ class SellerProfileViewState extends State<SellerProfileView> {
                         maxLines: null,
                         overflow: TextOverflow.visible,
                       ),
+
+                      const SizedBox(height: 12),
+
+                      ...boardList
+                          .take(displayCount) // 현재 표시할 개수만큼만 표시
+                          .map((item) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey[300]!),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item['bordTitle'] ?? '제목 없음',
+                                  style: WitHomeTheme.subtitle.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  item['bordContent'] ?? '',
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+
+                      if (isLoading)
+                        const Center(child: CircularProgressIndicator()),
+
+                      if (!isLoading && (displayCount < boardList.length || !isLastPage))
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                displayCount += 3;
+                              });
+
+                              // 화면에 보여줄 개수가 전체 데이터보다 많아졌고, 아직 마지막 페이지가 아니라면 API 호출
+                              if (displayCount > boardList.length && !isLastPage) {
+                                getBoardList();
+                              }
+                            },
+                            child: const Text("더 보기"),
+                          ),
+                        ),
                     ],
                   ),
                 ),
