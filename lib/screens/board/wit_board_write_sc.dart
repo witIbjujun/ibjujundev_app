@@ -14,11 +14,17 @@ class BoardWrite extends StatefulWidget {
 
   final dynamic? boardInfo;
   final List<dynamic>? imageList;
-  final String? bordNo;
-  final String? bordType;
-  final String? bordKey;
+  final String bordNo;
+  final String bordType;
+  final String bordKey;
+  final String aptNo;      // 아파트ID
+  final String sllrNo;     // 판매자ID
+  final String reqNo;      // 신청ID
+  final String ctgrId;     // 카테고리ID
+  final String creUserId;  // 생성유저ID
 
-  const BoardWrite({super.key, this.boardInfo, this.imageList, this.bordNo, this.bordType, this.bordKey});
+  const BoardWrite({super.key, this.boardInfo, this.imageList, required this.bordNo, required this.bordType, this.bordKey = ""
+                    , this.aptNo = "", this.sllrNo = "", this.reqNo = "", this.ctgrId = "", this.creUserId = ""});
 
   @override
   _BoardWriteState createState() => _BoardWriteState();
@@ -282,6 +288,10 @@ class _BoardWriteState extends State<BoardWrite> {
         "bordContent": _contentController.text,
         "bordKey": widget.bordKey,
         "bordType": widget.bordType,
+        "aptNo": widget.aptNo,
+        "sllrNo": widget.sllrNo,
+        "reqNo": widget.reqNo,
+        "ctgrId": widget.ctgrId,
         "creUser": loginClerkNo,
         "fileInfo": fileInfo
       });
@@ -306,7 +316,14 @@ class _BoardWriteState extends State<BoardWrite> {
     if (result != null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 성공!")));
       Navigator.pop(context,
-        SlideRoute(page: Board(widget.bordNo, widget.bordType)),
+
+        SlideRoute(page: Board(bordType: widget.bordType,
+                          bordKey: widget.bordKey,
+                          aptNo: widget.aptNo,
+                          sllrNo: widget.aptNo,
+                          reqNo: widget.aptNo,
+                          ctgrId: widget.aptNo,
+                          creUserId: widget.creUserId)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패!")));
