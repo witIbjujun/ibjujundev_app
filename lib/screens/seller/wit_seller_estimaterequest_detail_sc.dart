@@ -261,7 +261,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               SizedBox(height: 15), // 내용과 작업 요청 예상일 사이의 간격
                               Text(
                                 '작업요청예상일 : $formattedDate',
-                                style: WitHomeTheme.title.copyWith(fontSize: 16),
+                                style: WitHomeTheme.title.copyWith(fontSize: 14),
                               ),
                             ],
                           ),
@@ -269,8 +269,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ],
                     ),
                   ),
-                  if (reqState == "10") ...[ // 조건이 만족할 때만 해당 위젯을 추가
-                    Row(
+                  // if (reqState == "10") ...[ // 조건이 만족할 때만 해당 위젯을 추가
+                    /*Row(
                       children: [
                         Checkbox(
                           value: _isChecked,
@@ -286,20 +286,27 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                           style: WitHomeTheme.title.copyWith(fontSize: 16),
                         ),
                       ],
-                    ),
+                    ),*/
                     // 체크박스가 체크된 경우 SellerProfileView 표시
-                    if (_isChecked)
-                      Container(
+                    //if (_isChecked)
+                  SizedBox(height: 10),
+                    Text(
+                      "내 프로필",
+                      style: WitHomeTheme.title.copyWith(
+                        fontSize: 16,
+                        color: WitHomeTheme.wit_lightSteelBlue,
+                      ),
+                    ),
+                  SizedBox(height: 10),                      Container(
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.black), // 테두리 색상 설정
-                          borderRadius: BorderRadius.circular(2), // 둥근 모서리 설정
+                          borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
                         ),
                         child: SellerProfileChildView(sllrNo : widget.sllrNo, appbarYn: "N"),
                       ),
-                  ],
+                  //],
 
-                  SizedBox(height: 5),
-                  // 금액 입력란 카드
+                  SizedBox(height: 10),                  // 금액 입력란 카드
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
