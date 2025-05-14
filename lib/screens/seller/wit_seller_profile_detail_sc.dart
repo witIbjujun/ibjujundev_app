@@ -603,7 +603,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                         ),
                         body: Container(
                           child: EstimateRequestList(
-                              stat: '01', sllrNo: sllrNo.toString()), // 리스트를 추가
+                              stat: '10', sllrNo: sllrNo.toString()), // 리스트를 추가
                         ),
                       );
                     },

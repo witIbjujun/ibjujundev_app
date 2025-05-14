@@ -671,7 +671,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
 
                                       /// 사용자 이름
                                       Text(
-                                        item['creUserNm'] ?? '사용자', // 닉네임 컬럼명에 맞게 수정
+                                        item['creUserNm'] ?? '사용자',
                                         style: WitHomeTheme.title.copyWith(fontSize: 16),
                                       ),
 
@@ -703,7 +703,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
 
                                 const SizedBox(height: 8),
 
-                                /// ✅ 게시글 내용 (펼치기/접기)
+                                /// ✅ 내용 영역 전체를 클릭 가능하게 감쌈
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -714,11 +714,16 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                       }
                                     });
                                   },
-                                  child: Text(
-                                    item['bordContent'] ?? '',
-                                    style: const TextStyle(fontSize: 14),
-                                    maxLines: isExpanded ? null : 2,
-                                    overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                                  child: Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8),
+                                    color: Colors.transparent, // 터치 영역 확보용
+                                    child: Text(
+                                      item['bordContent'] ?? '',
+                                      style: const TextStyle(fontSize: 14),
+                                      maxLines: isExpanded ? null : 2,
+                                      overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -726,7 +731,6 @@ class SellerProfileViewState extends State<SellerProfileView> {
                           ),
                         );
                       }).toList(),
-
 
                       if (isLoading)
                         const Center(child: CircularProgressIndicator()),

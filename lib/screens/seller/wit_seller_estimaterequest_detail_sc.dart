@@ -143,7 +143,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     }
 
     // 입력 필드에 초기값 설정
-    if (reqState != "01") {
+    if (reqState != "10") {
       itemPrice1Controller.text = itemPrice1; // reqState가 01이 아닐 때 기존 값 표시
       estimateContentController.text = estimateContent; // 기존 설명 표시
     }
@@ -269,7 +269,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ],
                     ),
                   ),
-                  if (reqState == "01") ...[ // 조건이 만족할 때만 해당 위젯을 추가
+                  if (reqState == "10") ...[ // 조건이 만족할 때만 해당 위젯을 추가
                     Row(
                       children: [
                         Checkbox(
@@ -336,7 +336,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                     border: InputBorder.none,
                                     contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                                   ),
-                                  enabled: reqState == "01",
+                                  enabled: reqState == "10",
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
@@ -405,7 +405,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                               contentPadding: EdgeInsets.all(8),
                             ),
-                            enabled: reqState == "01",
+                            enabled: reqState == "10",
                             onChanged: (value) {
                               if (value.trim().isNotEmpty && contentError != null) {
                                 setState(() {
@@ -760,7 +760,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                             });
 
                             if (contentError == null && priceError == null) {
-                              if (reqState == "01") {
+                              if (reqState == "10") {
                                 // 견적 보내기 로직
                                 updateEstimateInfo(
                                   sllrNo,
@@ -769,14 +769,14 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                   seq,
                                   estimateContent,
                                   inputItemPrice1,
-                                  '02', // 상태를 '02'로 변경
+                                  '20', // 상태를 '02'로 변경
                                 );
-                              } else if (reqState == "02") {
+                              } else if (reqState == "20") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => CustomChatScreen('1', '1', 'sellerView')),
                                 );
-                              } else if (reqState == "03") {
+                              } else if (reqState == "30") {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => CustomChatScreen('1', '1', 'sellerView')),
@@ -790,15 +790,16 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                   seq,
                                   estimateContent,
                                   inputItemPrice1,
-                                  '05', // 상태를 '05'로 변경
+                                  '99', // 상태를 '05'로 변경
                                 );
                               }
                             }
                           },
                           child: Text(
-                            reqState == "01"
+                            reqState == "10"
                                 ? '견적보내기'
-                                : reqState == "02" || reqState == "03" || reqState == "04"
+                                : reqState == "20" || reqState == "30" || reqState == "40"
+                                 || reqState == "50" || reqState == "60" || reqState == "70"
                                 ? '메시지 대화하기'
                                 : '취소',
                             style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
@@ -891,7 +892,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       dynamic reqState, // 인자로 전달된 reqState를 그대로 사용
       ) async {
 
-    if (reqState != "02") {
+    if (reqState != "20") {
       // reqState가 02가 아닐 경우, 바로 updateEstimateInfo2 호출
       String cash = "1200"; // 필요한 경우 cash 값을 설정
       await updateEstimateInfo2(
