@@ -46,14 +46,14 @@ class TitleAndMenu extends StatelessWidget {
                 SlideRoute(page: BoardWrite(
                   boardInfo: boardDetailInfo,
                   imageList: boardDetailImageList,
-                  bordNo: boardDetailInfo["bordNo"],
+                  bordNo: boardDetailInfo["bordNo"] ?? "",
                   bordType: boardDetailInfo["bordType"],
-                  bordKey: boardDetailInfo["bordKey"],
-                  aptNo: boardDetailInfo["aptNo"],
-                  sllrNo: boardDetailInfo["sllrNo"],
-                  reqNo: boardDetailInfo["reqNo"],
-                  ctgrId: boardDetailInfo["ctgrId"],
-                  creUserId: boardDetailInfo["creUser"],
+                  bordKey: boardDetailInfo["bordKey"] ?? "",
+                  aptNo: boardDetailInfo["aptNo"] ?? "",
+                  sllrNo: boardDetailInfo["sllrNo"] ?? "",
+                  reqNo: boardDetailInfo["reqNo"] ?? "",
+                  ctgrId: boardDetailInfo["ctgrId"] ?? "",
+                  creUserId: boardDetailInfo["creUser"] ?? "",
                 )),
               ).then((_) {
                 callBack();
