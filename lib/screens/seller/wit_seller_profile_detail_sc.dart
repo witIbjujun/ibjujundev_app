@@ -900,7 +900,9 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                     builder: (BuildContext context) {
                       return Scaffold(
                         body: Container(
-                          child: Board("UH01", widget.sllrNo.toString()), // 리스트를 추가
+                          child: Board( bordType: "UH01"
+                                , bordKey: widget.sllrNo.toString()
+                                ),
                         ),
                       );
                     },
@@ -942,7 +944,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                     builder: (BuildContext context) {
                       return Scaffold(
                         body: Container(
-                          child: Board("GJ01", ""), // 리스트를 추가
+                          child:Board( bordType: "GJ01"
+                              ),
                         ),
                       );
                     },
