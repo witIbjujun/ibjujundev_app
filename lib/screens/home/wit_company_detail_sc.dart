@@ -211,7 +211,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   }
 
   Widget getReviewBoard() {
-    return Board( 'UH01',''); // 탭 안에서 '업체후기' 화면을 표시
+    return Board(bordType: "UH01"); // 탭 안에서 '업체후기' 화면을 표시
   }
 
 
@@ -425,7 +425,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Board('CM01','1')),
+        MaterialPageRoute(builder: (context) => Board(bordType: "CM01")),
       );
     });
 

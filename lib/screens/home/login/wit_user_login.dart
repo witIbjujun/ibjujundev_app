@@ -17,27 +17,32 @@ Future<void> getUserInfo(MainViewModel viewModel,String tempClerkNo,String gubun
   String? email = viewModel.userInfo?.email; // Kakao ID
   String? mainAptNo = viewModel.userInfo?.mainAptNo; // Kakao ID
   String? mainAptPyoung = viewModel.userInfo?.mainAptPyoung; // Kakao ID
+  String? loginSnsType = viewModel.userInfo?.loginSnsType; // Kakao ID
+
 
   // 토큰 가져오기
   String? token = await FirebaseMessaging.instance.getToken();
   print("나의 kakaoId은???====$kakaoId");
   print("나의 clerkNo???====$tempClerkNo");
+  print("나의 email???====$email");
   print("나의 토큰은???====$token");
   print("나의 토큰은???====$token");
   print("나의 nickName은???====$nickName");
   print("나의 mainAptNo은???====$mainAptNo");
   print("나의 mainAptPyoung은???====$mainAptPyoung");
+  print("나의 loginSnsType은???====$loginSnsType");
 
   String restId = "getUserInfo";
   final param = jsonEncode({
     "kakaoId": kakaoId,
     "nickName": nickName,
     "profileImageUrl": profileImageUrl,
+    "loginGubun": gubun,
     "email": email,
     "aptNo": mainAptNo,
     "pyoung": mainAptPyoung,
     "clerkNo":tempClerkNo,
-    "loginGubun":gubun,
+    "loginSnsType":loginSnsType,
      "token":token});
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
@@ -58,6 +63,7 @@ Future<void> getUserInfo(MainViewModel viewModel,String tempClerkNo,String gubun
     print('userInfo 고객 번호: ' + (userInfo!.clerkNo ?? 'Unknown'));
     print('userInfo 닉네임: '+(userInfo!.nickName??''));
     print('userInfo 역할: '+(userInfo!.role??''));
+    print('userInfo 역할: '+(userInfo!.email??''));
     print('userInfo Main아파트 번호: '+(userInfo!.mainAptNo??''));
     print('userInfo Main아파트 이름: '+(userInfo!.mainAptNm??''));
     print('userInfo aptNo 이름: ${userInfo!.aptNo?.join(', ') ?? ''}');
@@ -65,6 +71,7 @@ Future<void> getUserInfo(MainViewModel viewModel,String tempClerkNo,String gubun
     // 사용자 정보를 Flutter Secure Storage에 저장
     bool isLogined =false;
     await secureStorage.write(key: 'isLogined', value: "login");
+    await secureStorage.write(key: 'email', value: userInfo!.email);
     await secureStorage.write(key: 'kakaoId', value: userInfo!.id);
     await secureStorage.write(key: 'clerkNo', value: userInfo!.clerkNo);
     await secureStorage.write(key: 'profileImageUrl', value: userInfo!.profileImageUrl);
@@ -91,6 +98,7 @@ Future<String> getCreateUser(MainViewModel viewModel,String clerkNo) async {
   String? email = viewModel.userInfo?.email; // Kakao ID
   String? mainAptNo = viewModel.userInfo?.mainAptNo; // Kakao ID
   String? mainAptPyoung = viewModel.userInfo?.mainAptPyoung; // Kakao ID
+  String? loginSnsType = viewModel.userInfo?.loginSnsType; // Kakao ID
 
   // 토큰 가져오기
   String? token = await FirebaseMessaging.instance.getToken();
@@ -100,6 +108,8 @@ Future<String> getCreateUser(MainViewModel viewModel,String clerkNo) async {
   print("나의 초기 getCreateUser 등록nickName은???====$nickName");
   print("나의 초기 getCreateUser 등록mainAptNo은???====$mainAptNo");
   print("나의 초기 getCreateUser 등록 mainAptPyoung은???====$mainAptPyoung");
+  print("나의 초기 getCreateUser 등록 loginSnsType???====$loginSnsType");
+  print("나의 초기 getCreateUser 등록 email???====$email");
 
   String restId = "getCreateUser";
   final param = jsonEncode({
@@ -107,9 +117,11 @@ Future<String> getCreateUser(MainViewModel viewModel,String clerkNo) async {
     "nickName": nickName,
     "profileImageUrl": profileImageUrl,
     "email": email,
+    "loginSnsType": loginSnsType,
     "aptNo": mainAptNo,
     "pyoung": mainAptPyoung,
     "clerkNo":clerkNo,
+    "agreeGbn":"1,2",
     "token":token});
 
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
@@ -130,6 +142,7 @@ Future<String> getCreateUser(MainViewModel viewModel,String clerkNo) async {
     print('초기 등록 getCreateUser userInfo 고객 번호: ' + (userInfo!.clerkNo ?? 'Unknown'));
     print('초기 등록 getCreateUser userInfo 닉네임: '+(userInfo!.nickName??''));
     print('초기 등록 getCreateUser userInfo 역할: '+(userInfo!.role??''));
+    print('초기 등록 getCreateUser userInfo 역할 email: '+(userInfo!.email??''));
     print('초기 등록 getCreateUser userInfo Main아파트 번호: '+(userInfo!.mainAptNo??''));
     print('초기 등록 getCreateUser userInfo Main아파트 이름: '+(userInfo!.mainAptNm??''));
     print('초기 등록 getCreateUser userInfo aptNo 이름: ${userInfo!.aptNo?.join(', ') ?? ''}');
@@ -141,6 +154,7 @@ Future<String> getCreateUser(MainViewModel viewModel,String clerkNo) async {
     secureStorage.write(key: 'nickName', value: userInfo!.nickName);
     secureStorage.write(key: 'mainAptNo', value: userInfo!.mainAptNo);
     secureStorage.write(key: 'mainAptNm', value: userInfo!.mainAptNm);
+    secureStorage.write(key: 'email', value: userInfo!.email);
     secureStorage.write(key: 'role', value: userInfo!.role);
     secureStorage.write(key: 'authToken', value: "11111");
     secureStorage.write(key: 'aptNo', value: userInfo!.aptNo?.join(',') ?? '');

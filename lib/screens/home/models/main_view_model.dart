@@ -114,12 +114,14 @@ class MainViewModel extends ChangeNotifier {
         nickName: user!.kakaoAccount?.profile?.nickname,
         profileImageUrl: user!.kakaoAccount?.profile?.profileImageUrl,
         email: user!.kakaoAccount?.email,
+        loginSnsType: "KAKAO",
 
       );
 
       print('사용자 정보 요청 성공'
           '\n회원번호: ${userInfo?.id}'
           '\n닉네임: ${userInfo?.nickName}'
+          '\nSNS구분: ${userInfo?.loginSnsType}'
           '\n이미지: ${userInfo?.profileImageUrl}'
           '\n이메일: ${userInfo?.email}');
     }
@@ -146,12 +148,20 @@ class MainViewModel extends ChangeNotifier {
         nickName: account.name,
         profileImageUrl: account.profileImage,
         email: account.email,
+        loginSnsType: "NAVER",
 
       /*  id : "BjtldO4ZSWZ8Aw7Gm2GXk2IU1zp7BPiKcCq9YWELm_g",
         nickName: "재나바로",
         profileImageUrl: "",
         email: "1004963@naver.com",*/
       );
+
+      final secureStorage = FlutterSecureStorage(); //
+      // 사용자 정보를 변수에 저장
+      secureStorage.write(key: 'kakaoId', value: userInfo!.id);
+      secureStorage.write(key: 'nickName', value: userInfo!.nickName);
+      secureStorage.write(key: 'profileImageUrl', value: userInfo!.profileImageUrl);
+      secureStorage.write(key: 'email', value: userInfo!.email);
 
       String id = userInfo?.id ?? '정보 없음';
       String nickName = userInfo?.nickName ?? '정보 없음';
@@ -162,6 +172,7 @@ class MainViewModel extends ChangeNotifier {
           '\n회원번호: ${userInfo?.id}'
           '\n닉네임: ${userInfo?.nickName}'
           '\n이미지: ${userInfo?.profileImageUrl}'
+          '\nSNS구분: ${userInfo?.loginSnsType}'
           '\n이메일: ${userInfo?.email}');
     } else {
       print('네이버 사용자 정보를 가져올 수 없습니다.');

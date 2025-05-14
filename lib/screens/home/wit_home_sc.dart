@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              CustomChatScreen('S2025042600002', '3','userView')),
+                                              CustomChatScreen('S2025051200003', '3','userView')),
                                     );
                                   },
                                 ),
@@ -237,7 +237,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              CustomChatScreen('S2025042600002', '3','sellerView')),
+                                              CustomChatScreen('S2025051200003', '3','sellerView')),
                                     );
                                   },
                                 ),
@@ -420,9 +420,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-
-
-
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
 
@@ -465,7 +462,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget getCommunityTabs() {
     // 2025-01-16: TabBar 제거, Board 직접 호출
-    return Board('UH01',''); // '업체후기' 화면만 표시
+    return Board(bordType: "UH01");// '업체후기' 화면만 표시
   }
 
 

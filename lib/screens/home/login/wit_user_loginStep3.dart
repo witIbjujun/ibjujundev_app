@@ -154,7 +154,8 @@ class _WitUserLoginStep3State extends State<WitUserLoginStep3> {
 
   @override
   Widget build(BuildContext context) {
-    final mainViewModel = Provider.of<MainViewModel>(context, listen: false);
+    final mainViewModel = Provider.of<MainViewModel>(context); // ✅ 전역 인스턴스 사용
+    //final mainViewModel = Provider.of<MainViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -305,12 +306,18 @@ class _WitUserLoginStep3State extends State<WitUserLoginStep3> {
                     String selectedAptNo = options[selectedApt] ?? "";
                     String selectedPyungNo = pyungOptions.contains(selectedPyung) ? selectedPyung.replaceAll('평', '') : "";
 
+                    // 🔹 mainViewModel.userInfo의 email과 loginSnsType 출력
+                    print("🔎 Email: ${mainViewModel.userInfo?.email}");
+                    print("🔎 Login SNS Type: ${mainViewModel.userInfo?.loginSnsType}");
+
                     mainViewModel.userInfo = UserInfo(
                       nickName: nickname,
                       id: kakaoId,
                       profileImageUrl: profileImageUrl,
                       mainAptNo: selectedAptNo,
                       mainAptPyoung: selectedPyungNo,
+                      email: mainViewModel.userInfo?.email,
+                      loginSnsType: mainViewModel.userInfo?.loginSnsType,
                     );
                     await getCreateUser(mainViewModel, '');
                     // SecureStorage에 authToken 저장

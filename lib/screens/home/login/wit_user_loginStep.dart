@@ -58,12 +58,15 @@ class WitUserLoginStep extends StatelessWidget {
 
                 if (ok) {
                   print("✅ 카카오 로그인 성공");
-                  await viewModel.getUserInfoProxy(context, '', 'K');
+                  await viewModel.getUserInfoProxy(context, '', 'S');
                   final info = viewModel.userInfo;
                   print("🔹 로그인 후 userInfo.id: ${info?.id}");
                   print("🔹 로그인 후 userInfo.clerkNo: ${info?.clerkNo}");
+                  print("🔹 로그인 후 userInfo.email: ${info?.email}");
+                  print("🔹 로그인 후 userInfo.loginSnsType: ${info?.loginSnsType}");
 
                   String? storedClerkNo = await secureStorage.read(key: 'clerkNo');
+
                   print('📝 SecureStorage에 저장된 clerkN11111o: $storedClerkNo');
                   if (info != null) {
                     if (storedClerkNo == null || (storedClerkNo?.isEmpty ?? true)) {
@@ -112,12 +115,13 @@ class WitUserLoginStep extends StatelessWidget {
 
                 if (ok) {
                   print("✅ 네이버 로그인 성공");
-                  await viewModel.getUserInfoProxy(context, '', 'N');
+                  await viewModel.getUserInfoProxy(context, '', 'S');
                   final info = viewModel.userInfo;
                   print("🔹 로그인 후 userInfo.id: ${info?.id}");
                   print("🔹 로그인 후 userInfo.clerkNo: ${info?.clerkNo}");
 
                   String? storedClerkNo = await secureStorage.read(key: 'clerkNo');
+
                   print('📝 SecureStorage에 저장된 clerkNo: $storedClerkNo');
                   if (info != null) {
                     if (storedClerkNo == null || (storedClerkNo?.isEmpty ?? true)) {

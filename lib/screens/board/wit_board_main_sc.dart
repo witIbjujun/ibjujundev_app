@@ -20,9 +20,9 @@ class Board extends StatefulWidget {
   final String bordTitle;   // 게시판 타이틀
 
   const Board({super.key, required this.bordType, this.bordKey = ""
-        , this.aptNo = "", this.sllrNo = "", this.reqNo = ""
-        , this.ctgrId = "", this.creUserId = ""
-        , this.bordTitle = "", this.appBarFlag = true, });
+    , this.aptNo = "", this.sllrNo = "", this.reqNo = ""
+    , this.ctgrId = "", this.creUserId = ""
+    , this.bordTitle = "", this.appBarFlag = true, });
 
   @override
   State<StatefulWidget> createState() {
