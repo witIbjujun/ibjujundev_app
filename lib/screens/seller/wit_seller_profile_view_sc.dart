@@ -565,7 +565,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                         style: WitHomeTheme.title.copyWith(fontSize: 20),
                       ),
                       SizedBox(height: 10), // 제목과 사용자 정보 영역 간격
-                      Container(
+                      /*Container(
                         padding: EdgeInsets.all(10), // 사용자 정보 영역의 패딩
                         decoration: BoxDecoration(
                           color: WitHomeTheme.wit_lightGrey, // 사용자 닉네임 영역 배경색 (진한 회색)
@@ -619,7 +619,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                         overflow: TextOverflow.visible,
                       ),
 
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 12),*/
 
                       // 현재 표시할 개수만큼만 표시
                       ...boardList
@@ -748,7 +748,16 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                 getBoardList();
                               }
                             },
-                            child: const Text("더 보기"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: WitHomeTheme.wit_lightGreen, // ✅ 초록색 배경
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12), // 선택
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text("더 보기",
+                              style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                            ),
                           ),
                         ),
                     ],
