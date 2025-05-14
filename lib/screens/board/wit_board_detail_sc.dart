@@ -95,23 +95,26 @@ class BoardDetailState extends State<BoardDetail> {
                       UserInfo(
                         boardDetailInfo: boardDetailInfo,
                       ),
-                      SizedBox(height: 10),
-                      Divider(),
-                      SizedBox(height: 10),
+                      SizedBox(height: 20),
+                      Container(
+                        height: 1,
+                        color: WitHomeTheme.wit_extraLightGrey,
+                      ),
+                      SizedBox(height: 20),
                       ContentDisplay(
                         content: boardDetailInfo["bordContent"] ?? "",
                         imgCnt: boardDetailImageList.length,
                       ),
                       if (boardDetailImageList.length > 0)...[
-                        SizedBox(height: 10),
-                        Divider(),
-                        SizedBox(height: 10),
                         ImageListDisplay(
                           boardDetailImageList: boardDetailImageList,
                         ),
-                        SizedBox(height: 10),
-                        Divider(),
-                        SizedBox(height: 10),
+                        SizedBox(height: 20),
+                        Container(
+                          height: 1,
+                          color: WitHomeTheme.wit_extraLightGrey,
+                        ),
+                        SizedBox(height: 20),
                       ] else ...[],
                       CommentCount(
                         count: commentList.length,

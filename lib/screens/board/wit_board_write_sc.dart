@@ -110,7 +110,7 @@ class _BoardWriteState extends State<BoardWrite> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(10), // 패딩 10 설정
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10), // 패딩 10 설정
         child: Column( // 세로로 위젯을 배치하기 위해 Column 사용
           mainAxisSize: MainAxisSize.min, // Column의 크기를 자식들의 크기에 맞게 최소화
           crossAxisAlignment: CrossAxisAlignment.stretch, // 버튼이 가로로 꽉 차도록 스트레치

@@ -46,6 +46,8 @@ class BoardState extends State<Board> {
   int currentPage = 1;
   // 페이징 1회 건수
   final int pageSize = 10;
+  // 게시판 구분
+  String bordKeyGbn = "";
 
   /**
    * 초기로딩
@@ -53,6 +55,9 @@ class BoardState extends State<Board> {
   @override
   void initState() {
     super.initState();
+
+    // 게시판 타입 앞 2자리 추출
+    bordKeyGbn = widget.bordType.substring(0, 2);
 
     // 스크롤 이벤트 추가
     _scrollController.addListener(_onScroll);
@@ -82,10 +87,13 @@ class BoardState extends State<Board> {
             refreshBoardList: refreshBoardList,
             scrollController: _scrollController,  // ScrollController 연결
             bordTitle: widget.bordTitle,
+            bordKeyGbn: bordKeyGbn,
           ),
         ),
       ),
-      floatingActionButton: Container(
+      // FloatingActionButton을 조건에 따라 표시하는 부분
+      floatingActionButton: (bordKeyGbn != "UH" && bordKeyGbn != "GJ")
+        ? Container( // 조건이 참일 때 표시할 위젯
         width: 60, // 원하는 너비
         height: 60, // 원하는 높이
         child: FloatingActionButton(
@@ -116,7 +124,7 @@ class BoardState extends State<Board> {
             ],
           ),
         ),
-      ),
+      ) : null, // 조건이 거짓일 때 (버튼 숨김)
     );
   }
 

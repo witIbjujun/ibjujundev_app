@@ -111,12 +111,14 @@ class BoardListView extends StatelessWidget {
   final Function refreshBoardList;
   final ScrollController scrollController;
   final String bordTitle;
+  final String bordKeyGbn;
 
   BoardListView({
     required this.boardList,
     required this.refreshBoardList,
     required this.scrollController,
     required this.bordTitle,
+    required this.bordKeyGbn,
   });
 
   @override
@@ -233,37 +235,39 @@ class BoardListView extends StatelessWidget {
                                     ),
                                   ],
                                   SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
-                                  Container(
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: WitHomeTheme.wit_extraLightGrey,
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                                              child: Column(
-                                                children: [
-                                                  Center(
-                                                    child: Text("${boardInfo["commentCnt"]}",
-                                                      style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                                  if (bordKeyGbn != "UH" && bordKeyGbn != "GJ")...[
+                                    Container(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  color: WitHomeTheme.wit_extraLightGrey,
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                                child: Column(
+                                                  children: [
+                                                    Center(
+                                                      child: Text("${boardInfo["commentCnt"]}",
+                                                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  SizedBox(height: 4),
-                                                  Text("댓글",
-                                                    style: WitHomeTheme.caption,
-                                                  ),
-                                                ],
+                                                    SizedBox(height: 4),
+                                                    Text("댓글",
+                                                      style: WitHomeTheme.caption,
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
+                                  ]
                                 ],
                               ),
                               onTap: () async {
