@@ -720,7 +720,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                     color: Colors.transparent, // 터치 영역 확보용
                                     child: Text(
                                       item['bordContent'] ?? '',
-                                      style: const TextStyle(fontSize: 14),
+                                      style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                                       maxLines: isExpanded ? null : 2,
                                       overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
                                     ),
