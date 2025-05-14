@@ -902,6 +902,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                         body: Container(
                           child: Board( bordType: "UH01"
                                 , bordKey: widget.sllrNo.toString()
+                                , bordTitle: "업체후기",
                                 ),
                         ),
                       );
@@ -945,6 +946,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                       return Scaffold(
                         body: Container(
                           child:Board( bordType: "GJ01"
+                                     , bordTitle: "공지사항"
                               ),
                         ),
                       );

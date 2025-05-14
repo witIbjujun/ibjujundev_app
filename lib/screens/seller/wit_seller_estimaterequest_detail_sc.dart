@@ -667,7 +667,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                                     estimateRequestInfoForSend['seq'] ?? "",
                                                     reason,
                                                     itemPrice1Controller.text,
-                                                    '06',
+                                                    '99',
                                                   );
                                                   Navigator.of(context).pop();
                                                 }
@@ -725,7 +725,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                 estimateRequestInfoForSend['seq'] ?? "",
                                 estimateContentController.text,
                                 itemPrice1Controller.text,
-                                '07',
+                                '60',
                               );
                             }
                           },
