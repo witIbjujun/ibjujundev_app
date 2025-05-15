@@ -166,149 +166,152 @@ class BoardListView extends StatelessWidget {
                 )
               else
                 SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                      final boardInfo = boardList[index];
-                      int starCount = int.tryParse((boardInfo["stsfRate"]?.toString() ?? '0')) ?? 0;
-                      String starString = "  |  " + ("⭐" * starCount);
+                  delegate: SliverChildBuilderDelegate((context, index) {
 
-                      return Container(
-                          color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
-                          child: Column(
-                          children: [
-                            ListTile(
-                              contentPadding: EdgeInsets.fromLTRB(17, 7, 17, 7),
-                              title: Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        boardInfo["bordTitle"],
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
-                                                      ),
+                    final boardInfo = boardList[index];
+                    int starCount = int.tryParse((boardInfo["stsfRate"]?.toString() ?? '0')) ?? 0;
+                    String starString = "";
+                    if (starCount != 0) {
+                      starString = "  |  " + ("⭐" * starCount);
+                    }
+
+                    return Container(
+                        color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
+                        child: Column(
+                        children: [
+                          ListTile(
+                            contentPadding: EdgeInsets.fromLTRB(17, 7, 17, 7),
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      boardInfo["bordTitle"],
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                                                     ),
-                                                  ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            // bordKeyGbn 값이 "UH"인 경우
+                                            if (bordKeyGbn == "UH") ...[
+                                              Expanded(
+                                                child: Text(
+                                                  // 사용자 이름, 날짜, 조회수 뒤에 계산된 별 문자열 추가
+                                                  "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}" + starString,
+                                                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
+                                                ),
+                                              )
+                                            ]
+                                            // bordKeyGbn 값이 "UH"가 아닌 경우
+                                            else ...[
+                                              Expanded(
+                                                child: Text(
+                                                  // 사용자 이름, 날짜, 조회수만 표시 (별 문자열 없음)
+                                                  "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
+                                                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                                                 ),
                                               ),
                                             ],
-                                          ),
-                                          SizedBox(height: 10),
-                                          Row(
-                                            children: [
-                                              // bordKeyGbn 값이 "UH"인 경우
-                                              if (bordKeyGbn == "UH") ...[
-                                                Expanded(
-                                                  child: Text(
-                                                    // 사용자 이름, 날짜, 조회수 뒤에 계산된 별 문자열 추가
-                                                    "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}" + starString,
-                                                    style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
-                                                  ),
-                                                )
-                                              ]
-                                              // bordKeyGbn 값이 "UH"가 아닌 경우
-                                              else ...[
-                                                Expanded(
-                                                  child: Text(
-                                                    // 사용자 이름, 날짜, 조회수만 표시 (별 문자열 없음)
-                                                    "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
-                                                    style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
-                                                  ),
-                                                ),
-                                              ],
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
-                                    Row(
-                                      children: [
-                                        SizedBox(width: 10),
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(10),
-                                          child: Image.network(
-                                            apiUrl + boardInfo["imagePath"],
-                                            width: 55,
-                                            height: 55,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (context, error, stackTrace) {
-                                              return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
-                                            },
-                                          ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
-                                  if (bordKeyGbn != "UH" && bordKeyGbn != "GJ")...[
-                                    SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
-                                    Container(
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  color: WitHomeTheme.wit_extraLightGrey,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                                                child: Column(
-                                                  children: [
-                                                    Center(
-                                                      child: Text("${boardInfo["commentCnt"]}",
-                                                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 4),
-                                                    Text("댓글",
-                                                      style: WitHomeTheme.caption,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                  ),
+                                ),
+                                if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
+                                  Row(
+                                    children: [
+                                      SizedBox(width: 10),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Image.network(
+                                          apiUrl + boardInfo["imagePath"],
+                                          width: 55,
+                                          height: 55,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  ]
+                                    ],
+                                  ),
                                 ],
-                              ),
-                              onTap: () async {
-                                await Navigator.push(
-                                  context,
-                                  SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle, bordKeyGbn : bordKeyGbn)),
-                                );
-                                await refreshBoardList();
-                              },
+                                if (bordKeyGbn != "UH" && bordKeyGbn != "GJ")...[
+                                  SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
+                                  Container(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: WitHomeTheme.wit_extraLightGrey,
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                              child: Column(
+                                                children: [
+                                                  Center(
+                                                    child: Text("${boardInfo["commentCnt"]}",
+                                                      style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 4),
+                                                  Text("댓글",
+                                                    style: WitHomeTheme.caption,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ]
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                              child: Container(
-                                height: 1,
-                                color: WitHomeTheme.wit_extraLightGrey,
-                              ),
+                            onTap: () async {
+                              await Navigator.push(
+                                context,
+                                SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle, bordKeyGbn : bordKeyGbn)),
+                              );
+                              await refreshBoardList();
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                            child: Container(
+                              height: 1,
+                              color: WitHomeTheme.wit_extraLightGrey,
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                    childCount: boardList.length,
-                  ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  childCount: boardList.length,
                 ),
+              ),
             ],
           ),
         ),
