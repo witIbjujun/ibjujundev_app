@@ -24,6 +24,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
   List<String> options = [];
   final _storage = const FlutterSecureStorage();
   String _selectedApartment = '병점아이파크캐슬'; // 초기 선택 값
+  dynamic sellerInfo;
 
   @override
   void initState() {
@@ -32,7 +33,8 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
     if (options.isNotEmpty) {
       selectedOption = options.first;
     }
-    getSellerGroupPurchaseList(); // 신청 목록 조회
+    getSellerInfo();
+    // getSellerGroupPurchaseList(); // 신청 목록 조회
   }
 
   Future<void> _loadOptions() async {
@@ -54,6 +56,63 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
       });
     }
   }
+
+  Future<void> getSellerInfo() async {
+    String restId = "getSellerInfo";
+
+    // PARAM
+    final param = jsonEncode({
+      "sllrNo": widget.sllrNo,
+    });
+
+    // API 호출
+    final response = await sendPostRequest(restId, param);
+
+    if (response != null) {
+      setState(() {
+        sellerInfo = response;
+        // storeName = sellerInfo['storeName'];
+        // sllrNo = sellerInfo['sllrNo'];
+        print("여기 : " + sellerInfo['serviceItem'].toString());
+        getGPList();
+      });
+    } else {
+      // 오류 처리
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("사업자 프로필 조회가 실패하였습니다.")),
+      );
+    }
+  }
+
+  Future<void> getGPList() async {
+    String restId = "getGPList"; // API ID
+    String ctgrId = sellerInfo['serviceItem'] ?? '';
+    final param = jsonEncode({
+      //"stat": widget.stat,
+      "ctgrId":  ctgrId,
+    });
+
+    final response = await sendPostRequest(restId, param);
+    setState(() {
+      print("여기1231123");
+      applicationList = response; // 신청 목록 저장
+      getSellerGroupPurchaseList();
+    });
+  }
+
+  Future<void> getSellerGroupPurchaseList() async {
+    String restId = "getEstimateRequestList"; // API ID
+    final param = jsonEncode({
+      //"stat": widget.stat,
+      "sllrNo": widget.sllrNo,
+    });
+
+    final response = await sendPostRequest(restId, param);
+    setState(() {
+      applicationList = response; // 신청 목록 저장
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -330,18 +389,6 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
     );
   }
 
-  Future<void> getSellerGroupPurchaseList() async {
-    String restId = "getEstimateRequestList"; // API ID
-    final param = jsonEncode({
-      //"stat": widget.stat,
-      "sllrNo": widget.sllrNo,
-    });
-
-    final response = await sendPostRequest(restId, param);
-    setState(() {
-      applicationList = response; // 신청 목록 저장
-    });
-  }
 }
 
 
