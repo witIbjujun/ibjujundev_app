@@ -19,6 +19,7 @@ class DetailCompany extends StatefulWidget {
 
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
 
+
   DetailCompany({super.key, required this.title, required this.categoryId});
 
   @override
@@ -35,6 +36,9 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   TextEditingController _additionalRequirementsController = TextEditingController();
   String? _selectedDate; // ✅ 선택한 날짜 저장 변수
   bool _isExpanded = true;  //상품정보 접고 펄치기
+
+  // 텍스트 필드에 대한 FocusNode 추가
+  final FocusNode _additionalFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -360,6 +364,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
             SizedBox(height: 8.0),
             TextField(
               controller: _additionalRequirementsController,
+              focusNode: _additionalFocusNode, // ✅ 포커스 노드 연결
               maxLines: 3,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
@@ -382,8 +387,35 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
             ),
             SizedBox(height: 14.0),
 
+            // 2025-05-15: 날짜 체크 로직을 isConfirmed 이전으로 이동
             GestureDetector(
               onTap: () async {
+                // ✅ 날짜가 선택되지 않았을 경우 바로 다이얼로그 표시
+                if (_selectedDate == null) {
+                  await DialogUtils.showCustomDialog(
+                    context: context,
+                    title: '날짜 선택 필요',
+                    content: '작업 요청 예정일을 선택해 주세요.',
+                    confirmButtonText: '확인',
+                  );
+                  return; // 날짜가 없으면 아래 로직 실행하지 않음
+                }
+
+                // ✅ 요청사항이 비어있을 경우 안내 메시지와 포커스 처리
+                if (_additionalRequirementsController.text.isEmpty) {
+                  await DialogUtils.showCustomDialog(
+                    context: context,
+                    title: '요청사항 입력 필요',
+                    content: '추가 조건 또는 요구 사항을 입력해 주세요.',
+                    confirmButtonText: '확인',
+                  );
+
+                  // 텍스트 필드로 포커스 이동
+                  _additionalFocusNode.requestFocus();
+                  return;
+                }
+
+                // ✅ 날짜가 있을 경우에만 확인 다이얼로그 실행
                 bool isConfirmed = await DialogUtils.showConfirmationDialog(
                   context: context,
                   title: '견적 요청 확인',
@@ -436,21 +468,11 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
    * 견적 요청하기
    */
   Future<void> sendRequestInfo() async {
-    if (_selectedDate == null) {
-      // 사용자가 날짜를 선택하지 않았을 경우 알림
-      await DialogUtils.showCustomDialog(
-        context: context,
-        title: '날짜 선택 필요',
-        content: '작업 요청 예정일을 선택해 주세요.',
-        confirmButtonText: '확인',
-      );
-      return;
-    }
 
     String restId = "saveRequestInfo";
     String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
     String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
-    String reqContents = _additionalRequirementsController.text.replaceAll("\n", " ");
+    String reqContents = _additionalRequirementsController.text;
     aptNo = aptNo ?? '1';
 
     final param = jsonEncode({

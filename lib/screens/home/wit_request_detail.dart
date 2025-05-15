@@ -446,7 +446,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             width: 400,
             height: 48,
             child: ElevatedButton(
-              onPressed: request.reqState == '02'
+              onPressed: request.reqState == '20'
                   ? () => _handleRequestAction(request)
                   : null,
               style: ElevatedButton.styleFrom(

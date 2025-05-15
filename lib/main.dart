@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -28,6 +29,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 Future<void> main() async {
+
+  // ✅ Flutter Binding 초기화 및 Splash 유지
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
+
+  // ✅ 3초 후에 Splash 화면 제거
+  Future.delayed(Duration(seconds: 3), () {
+    FlutterNativeSplash.remove();
+  });
+
   WidgetsFlutterBinding.ensureInitialized();
 
 
@@ -104,8 +115,8 @@ class MyApp extends StatelessWidget {
       supportedLocales: const [
         Locale('ko'),
       ],
-
-      home: HomeScreen(), //현재 메인
+      home: SplashScreen(), //현재 메인
+     // home: HomeScreen(), //현재 메인
       ///home: TableCalenderMain() , //네이버 로그인
       // 토스 결재 후 처리
       /*getPages: [
@@ -113,5 +124,41 @@ class MyApp extends StatelessWidget {
       ],*/
 
           );
+  }
+}
+
+// ✅ 커스텀 스플래시 화면
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+
+// ✅ 커스텀 스플래시 화면
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ 3초 후에 HomeScreen으로 이동
+    Future.delayed(Duration(seconds: 3), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Container(
+          width: 150, // ✅ 기본 사이즈보다 살짝 크게 설정
+          height: 150,
+          child: Image.asset('assets/home/mainLogo.png', fit: BoxFit.contain),
+        ),
+      ),
+    );
   }
 }

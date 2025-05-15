@@ -48,7 +48,7 @@ dependencies:
   intl: ^0.19.0 # 금액표시 , 자동처리
   flutter_launcher_icons: ^0.13.1  # 앱 아이콘
   table_calendar: ^3.0.9    #테이블 캘린더
-
+  flutter_native_splash: ^2.0.5 #메인로딩화면
 
   #통신
   http: ^0.13.4 #HTTP 요청을 처리하기 위한 패키지
@@ -106,6 +106,15 @@ flutter_icons:
   image_path: "assets/home/icons/mainLogo.png"  # 앱 아이콘 이미지 경로
   adaptive_icon_foreground: "assets/home/icons/mainLogo.png"  # (선택) 안드로이드 adaptive 아이콘
 
+flutter_native_splash:
+  color: "#ffffff"                    # 배경 색상 (흰색)
+  image: assets/home/mainLogo.png  # 로딩 화면에 표시할 이미지
+  android: true                       # Android 적용
+  ios: true                           # iOS 적용
+  fullscreen: true                    # 전체 화면 설정
+  android_gravity: center             # Android에서 이미지 위치 설정
+  ios_content_mode: scaleAspectFit    # iOS에서 이미지 확장 방식
+  web: false                          # 웹에서는 사용하지 않음
 
 dev_dependencies:
   flutter_test:

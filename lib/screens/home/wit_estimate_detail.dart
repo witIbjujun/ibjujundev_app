@@ -407,9 +407,10 @@ class SectionWidget extends StatelessWidget {
                               borderRadius: BorderRadius.circular(4.0),
                             ),
                             child: Text(
-                              items.first.estimateContents == "견적대기중"
-                                  ? '견적대기중'
-                                  : '# 총 ${items.first.estimateContents}건 견적 도착',
+
+                              items.first.reqState == "10"
+                                  ? '# 견적대기중'
+                                  : '# 총 ${items.first.companyCnt}건 견적 도착',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontFamily: 'NotoSansKR',

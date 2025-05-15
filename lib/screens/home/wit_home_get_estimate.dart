@@ -37,6 +37,9 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
   TextEditingController _additionalRequirementsController = TextEditingController(); // 추가조건/요구사항 컨트롤러
   String? _selectedDate; // ✅ 선택한 날짜 저장 변수
 
+  // 텍스트 필드에 대한 FocusNode 추가
+  final FocusNode _additionalFocusNode = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -195,6 +198,7 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
                       SizedBox(height: 8.0),
                       TextField(
                         controller: _additionalRequirementsController,
+                        focusNode: _additionalFocusNode, // ✅ 포커스 노드 연결
                         maxLines: 4,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
@@ -219,6 +223,33 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
                       SizedBox(height: 8.0),
                       GestureDetector(
                         onTap: () async {
+
+                          // ✅ 날짜가 선택되지 않았을 경우 바로 다이얼로그 표시
+                          if (_selectedDate == null) {
+                            await DialogUtils.showCustomDialog(
+                              context: context,
+                              title: '날짜 선택 필요',
+                              content: '작업 요청 예정일을 선택해 주세요.',
+                              confirmButtonText: '확인',
+                            );
+                            return; // 날짜가 없으면 아래 로직 실행하지 않음
+                          }
+
+                          // ✅ 요청사항이 비어있을 경우 안내 메시지와 포커스 처리
+                          if (_additionalRequirementsController.text.isEmpty) {
+                            await DialogUtils.showCustomDialog(
+                              context: context,
+                              title: '요청사항 입력 필요',
+                              content: '추가 조건 또는 요구 사항을 입력해 주세요.',
+                              confirmButtonText: '확인',
+                            );
+
+                            // 텍스트 필드로 포커스 이동
+                            _additionalFocusNode.requestFocus();
+                            return;
+                          }
+
+
                           bool isConfirmed = await DialogUtils.showConfirmationDialog(
                             context: context,
                             title: '견적 요청 확인',
@@ -299,18 +330,6 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
 
   Future<void> sendRequestInfo() async {
     String restId = "saveTotalRequestInfo";
-
-    if (_selectedDate == null) {
-      // 사용자가 날짜를 선택하지 않았을 경우 알림
-      await DialogUtils.showCustomDialog(
-        context: context,
-        title: '날짜 선택 필요',
-        content: '작업 요청 예정일을 선택해 주세요.',
-        confirmButtonText: '확인',
-      );
-      return;
-    }
-
 
     String? aptNo = await secureStorage.read(key: 'mainAptNo'); // 아파트 번호
     String? clerkNo = await secureStorage.read(key: 'clerkNo');
