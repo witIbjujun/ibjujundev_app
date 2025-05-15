@@ -169,6 +169,9 @@ class BoardListView extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                         (context, index) {
                       final boardInfo = boardList[index];
+                      int starCount = int.tryParse((boardInfo["stsfRate"]?.toString() ?? '0')) ?? 0;
+                      String starString = "  |  " + ("⭐" * starCount);
+
                       return Container(
                           color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
                           child: Column(
@@ -203,12 +206,26 @@ class BoardListView extends StatelessWidget {
                                           SizedBox(height: 10),
                                           Row(
                                             children: [
-                                              Expanded(
-                                                child: Text(
-                                                  "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
-                                                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
+                                              // bordKeyGbn 값이 "UH"인 경우
+                                              if (bordKeyGbn == "UH") ...[
+                                                Expanded(
+                                                  child: Text(
+                                                    // 사용자 이름, 날짜, 조회수 뒤에 계산된 별 문자열 추가
+                                                    "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}" + starString,
+                                                    style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
+                                                  ),
+                                                )
+                                              ]
+                                              // bordKeyGbn 값이 "UH"가 아닌 경우
+                                              else ...[
+                                                Expanded(
+                                                  child: Text(
+                                                    // 사용자 이름, 날짜, 조회수만 표시 (별 문자열 없음)
+                                                    "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
+                                                    style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
+                                                  ),
                                                 ),
-                                              ),
+                                              ],
                                             ],
                                           ),
                                         ],
@@ -234,8 +251,8 @@ class BoardListView extends StatelessWidget {
                                       ],
                                     ),
                                   ],
-                                  SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
                                   if (bordKeyGbn != "UH" && bordKeyGbn != "GJ")...[
+                                    SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
                                     Container(
                                       child: Column(
                                         children: [
@@ -273,7 +290,7 @@ class BoardListView extends StatelessWidget {
                               onTap: () async {
                                 await Navigator.push(
                                   context,
-                                  SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle)),
+                                  SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle, bordKeyGbn : bordKeyGbn)),
                                 );
                                 await refreshBoardList();
                               },

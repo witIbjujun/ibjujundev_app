@@ -15,6 +15,7 @@ class TitleAndMenu extends StatelessWidget {
   final BuildContext context;
   final String loginClerkNo;
   final Function callBack;
+  final String bordKeyGbn;
 
   TitleAndMenu({
     required this.boardDetailInfo,
@@ -23,6 +24,7 @@ class TitleAndMenu extends StatelessWidget {
     required this.context,
     required String this.loginClerkNo,
     required this.callBack,
+    required this.bordKeyGbn,
   });
 
   @override
@@ -36,78 +38,86 @@ class TitleAndMenu extends StatelessWidget {
             style: WitHomeTheme.title,
           ),
         ),
-        PopupMenuButton<String>(
-          icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
-          color: WitHomeTheme.wit_white,
-          onSelected: (value) async {
-            if (value == 'edit') {
-              await Navigator.push(
-                context,
-                SlideRoute(page: BoardWrite(
-                  boardInfo: boardDetailInfo,
-                  imageList: boardDetailImageList,
-                  bordNo: boardDetailInfo["bordNo"] ?? "",
-                  bordType: boardDetailInfo["bordType"],
-                  bordKey: boardDetailInfo["bordKey"] ?? "",
-                  aptNo: boardDetailInfo["aptNo"] ?? "",
-                  sllrNo: boardDetailInfo["sllrNo"] ?? "",
-                  reqNo: boardDetailInfo["reqNo"] ?? "",
-                  ctgrId: boardDetailInfo["ctgrId"] ?? "",
-                  creUserId: boardDetailInfo["creUser"] ?? "",
-                )),
-              ).then((_) {
-                callBack();
-              });
-            } else if (value == 'delete') {
-              ConfimDialog.show(context,
-                  "삭제",
-                  "삭제하시겠습니까?",
-                  () async {
-                    endBoardInfo();
-                  }
-              );
-            } else if (value == 'report') {
+        if (bordKeyGbn != "GJ") ...[
+          PopupMenuButton<String>(
+            icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
+            color: WitHomeTheme.wit_white,
+            onSelected: (value) async {
+              if (value == 'edit') {
+                await Navigator.push(
+                  context,
+                  SlideRoute(page: BoardWrite(
+                    boardInfo: boardDetailInfo,
+                    imageList: boardDetailImageList,
+                    bordNo: boardDetailInfo["bordNo"] ?? "",
+                    bordType: boardDetailInfo["bordType"],
+                    bordKey: boardDetailInfo["bordKey"] ?? "",
+                    aptNo: boardDetailInfo["aptNo"] ?? "",
+                    sllrNo: boardDetailInfo["sllrNo"] ?? "",
+                    reqNo: boardDetailInfo["reqNo"] ?? "",
+                    ctgrId: boardDetailInfo["ctgrId"] ?? "",
+                    creUserId: boardDetailInfo["creUser"] ?? "",
+                  )),
+                ).then((_) {
+                  callBack();
+                });
+              } else if (value == 'delete') {
+                ConfimDialog.show(context,
+                    "삭제",
+                    "삭제하시겠습니까?",
+                    () async {
+                      endBoardInfo();
+                    }
+                );
+              } else if (value == 'report') {
 
-              if (boardDetailInfo["reportYn"] == "Y") {
-                alertDialog.show(context, "이미 신고한 게시글입니다.");
-                return;
+                if (boardDetailInfo["reportYn"] == "Y") {
+                  alertDialog.show(context, "이미 신고한 게시글입니다.");
+                  return;
+                }
+
+                await Navigator.push(
+                  context,
+                  SlideRoute(page: BoardReport(boardInfo: boardDetailInfo)),
+                ).then((_) {
+                  callBack();
+                });
               }
-
-              await Navigator.push(
-                context,
-                SlideRoute(page: BoardReport(boardInfo: boardDetailInfo)),
-              ).then((_) {
-                callBack();
-              });
-            }
-          },
-          itemBuilder: (BuildContext context) {
-            return [
-              if (boardDetailInfo["creUser"] == loginClerkNo)...[
-                PopupMenuItem<String>(
-                  value: 'edit',
-                  child: Text('수정하기',
-                    style: WitHomeTheme.subtitle,
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                if (boardDetailInfo["creUser"] == loginClerkNo && (bordKeyGbn != "UH" || bordKeyGbn != "GJ"))...[
+                  PopupMenuItem<String>(
+                    value: 'edit',
+                    child: Text('수정하기',
+                      style: WitHomeTheme.subtitle,
+                    ),
                   ),
-                ),
-                PopupMenuItem<String>(
-                  value: 'delete',
-                  child: Text('삭제하기',
-                    style: WitHomeTheme.subtitle,
+                  PopupMenuItem<String>(
+                    value: 'delete',
+                    child: Text('삭제하기',
+                      style: WitHomeTheme.subtitle,
+                    ),
                   ),
-                ),
-              ]
-              else ...[
-                PopupMenuItem<String>(
-                  value: 'report',
-                  child: Text('신고하기',
-                    style: WitHomeTheme.subtitle,
+                ],
+                if (boardDetailInfo["creUser"] != loginClerkNo) ...[
+                  PopupMenuItem<String>(
+                    value: 'report',
+                    child: Text('신고하기',
+                      style: WitHomeTheme.subtitle,
+                    ),
                   ),
-                ),
-              ]
-            ];
-          },
-        ),
+                ]
+              ];
+            },
+          ),
+        ] else ...[
+          Row(
+            children: [
+              SizedBox(width: 0.0, height: 50.0)
+            ],
+          )
+        ],
       ],
     );
   }

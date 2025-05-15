@@ -7,6 +7,7 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 
 dynamic boardDetailInfo = {};
 String boardTitle = "";
+String boardKeyGbn = "";
 
 List<dynamic> boardDetailImageList = [];
 
@@ -16,13 +17,15 @@ class BoardDetail extends StatefulWidget {
 
   final dynamic param;
   final String bordTitle;
+  final String bordKeyGbn;
 
-  const BoardDetail({super.key, required this.param, required this.bordTitle});
+  const BoardDetail({super.key, required this.param, required this.bordTitle, required this.bordKeyGbn});
 
   @override
   State<StatefulWidget> createState() {
     boardDetailInfo = this.param;
     boardTitle = this.bordTitle;
+    boardKeyGbn = this.bordKeyGbn;
     return BoardDetailState();
   }
 }
@@ -90,6 +93,7 @@ class BoardDetailState extends State<BoardDetail> {
                         context: context,
                         loginClerkNo : loginClerkNo,
                         callBack: reSearch,
+                        bordKeyGbn: boardKeyGbn,
                       ),
                       SizedBox(height: 20),
                       UserInfo(
@@ -110,27 +114,29 @@ class BoardDetailState extends State<BoardDetail> {
                           boardDetailImageList: boardDetailImageList,
                         ),
                         SizedBox(height: 20),
+                      ] else ...[],
+                      if (boardKeyGbn != "UH" && boardKeyGbn != "GJ")...[
                         Container(
                           height: 1,
                           color: WitHomeTheme.wit_extraLightGrey,
                         ),
                         SizedBox(height: 20),
-                      ] else ...[],
-                      CommentCount(
-                        count: commentList.length,
-                      ),
-                      SizedBox(height: 5),
-                      CommentList(
-                        commentList: commentList,
-                        loginClerkNo : loginClerkNo,
-                        endCommentInfo : endCommentInfo,
-                      ),
-                      CommentInput(
-                        commentController: commentController,
-                        saveCommentInfo: saveCommentInfo,
-                        isEmpty: commentList.isEmpty,
-                      ),
+                        CommentCount(
+                          count: commentList.length,
+                        ),
 
+                        SizedBox(height: 5),
+                        CommentList(
+                          commentList: commentList,
+                          loginClerkNo : loginClerkNo,
+                          endCommentInfo : endCommentInfo,
+                        ),
+                        CommentInput(
+                          commentController: commentController,
+                          saveCommentInfo: saveCommentInfo,
+                          isEmpty: commentList.isEmpty,
+                        ),
+                      ],
                     ],
                   ),
                 ),
