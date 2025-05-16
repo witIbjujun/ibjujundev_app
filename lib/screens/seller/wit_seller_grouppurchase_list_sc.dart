@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
+import '../chat/CustomChatScreen.dart';
 import '../common/wit_common_util.dart';
 import '../home/widgets/wit_home_widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,7 +10,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class SellerGroupPurchaseList extends StatefulWidget {
   final String sllrNo;
 
-  const SellerGroupPurchaseList({Key? key, required this.sllrNo}) : super(key: key);
+  const SellerGroupPurchaseList({Key? key, required this.sllrNo})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => SellerGroupPurchaseListState();
@@ -18,11 +20,12 @@ class SellerGroupPurchaseList extends StatefulWidget {
 class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
   List<dynamic> applicationList = [];
   String selectedOption = '';
-  List<String> options = [];
+  List<Map<String, String>> options = [];
   final _storage = const FlutterSecureStorage();
   String _selectedApartment = '';
+  String _selectedAptNo = "";
   dynamic sellerInfo;
-  List<dynamic> gpList = [];
+  List<Map<String, dynamic>> gpList = []; // 타입 명시적으로 변경
 
   @override
   void initState() {
@@ -60,33 +63,53 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
   }
 
   Future<void> getGPList() async {
-    String ctgrId = sellerInfo['serviceItem'] ?? '';
+    String prevAptNo = _selectedAptNo; // ✅ 이전 선택값 저장
+
     final param = jsonEncode({
       "sllrNo": widget.sllrNo
     });
     final response = await sendPostRequest("getGPList", param);
-    setState(() {
-      gpList = response;
-      print("12312321 : " + gpList.length.toString());
 
-      // 👇 여기서 options를 세팅
-      options = gpList.map<String>((gp) => gp['aptName'] as String).toSet().toList();
+    if (response is List) {
+      setState(() {
+        gpList = response.map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e)).toList();
+        options = gpList.map((gp) {
+          return {
+            'aptName': gp['aptName']?.toString() ?? '',
+            'aptNo': gp['aptNo']?.toString() ?? '',
+          };
+        }).toList();
 
-      // ✅ 첫 번째 값으로 초기 선택 설정
-      if (options.isNotEmpty) {
-        _selectedApartment = options.first;
-      }
+        // ✅ 이전 선택값이 여전히 존재하는지 확인
+        final found = options.firstWhere(
+                (opt) => opt['aptNo'] == prevAptNo,
+            orElse: () => options.isNotEmpty ? options.first : {'aptNo': '', 'aptName': ''}
+        );
 
-      getSellerGroupPurchaseList();
-    });
+        _selectedAptNo = found['aptNo']!;
+        _selectedApartment = found['aptName']!;
+
+        getSellerGroupPurchaseList();
+      });
+    } else {
+      print("getGPList 응답이 리스트가 아닙니다: $response");
+    }
   }
 
 
   Future<void> getSellerGroupPurchaseList() async {
-    final param = jsonEncode({
-      "sllrNo": widget.sllrNo,
-      "reqGubun": "G"
-    });
+    final selectedGP = getSelectedGP();
+    final aptNo = selectedGP != null ? selectedGP['aptNo'] ?? '' : '';
+
+    print("aptNo : " + aptNo);
+
+    final param =
+        jsonEncode({
+          "sllrNo": widget.sllrNo,
+          "reqGubun": "G",
+          "aptNo": aptNo
+        });
+
     final response = await sendPostRequest("getEstimateRequestList", param);
     setState(() {
       applicationList = response;
@@ -94,13 +117,38 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
     });
   }
 
-  dynamic getSelectedGP() {
-    return gpList.firstWhere(
-          (gp) => (gp['aptName'] ?? '').trim() == _selectedApartment.trim(),
-      orElse: () => null,
-    );
+  // 공동구매 상태 변경
+  Future<void> updateGPstat(dynamic ctgrId, String gpStat) async {
+    String restId = "updateGPstat";
+
+    // PARAM
+    final param = jsonEncode({
+      "ctgrId": ctgrId,
+      "gpStat": gpStat
+    });
+
+    // API 호출
+    final response = await sendPostRequest(restId, param);
+
+    if (response != null) {
+      // ✅ 공동구매 리스트 다시 불러오기 (상태 갱신 포함)
+      await getGPList(); // gpList, options, selected 값 자동 갱신
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("처리가 성공하였습니다.")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("처리가 실패하였습니다.")),
+      );
+    }
   }
 
+  dynamic getSelectedGP() {
+    return gpList.firstWhere(
+          (gp) => gp['aptNo'].toString() == _selectedAptNo,
+      orElse: () => <String, dynamic>{}, // ✅ 타입 일치
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,9 +171,11 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                         child: Stack(
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(left: 2, top: 0.0, bottom: 0),
+                              padding:
+                                  EdgeInsets.only(left: 2, top: 0.0, bottom: 0),
                               child: Container(
-                                height: MediaQuery.of(context).size.height * 0.25,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.92,
                                 child: Image.asset(
                                   'assets/images/공동구매 판매자 배너.png',
@@ -144,33 +194,49 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: PopupMenuButton<String>(
-                                  initialValue: _selectedApartment,
-                                  onSelected: (String item) {
+                                  initialValue: _selectedAptNo,
+                                  onSelected: (String aptNo) {
+                                    final selected = options.firstWhere(
+                                            (option) => option['aptNo'] == aptNo,
+                                        orElse: () => {'aptName': '', 'aptNo': ''}
+                                    );
+
                                     setState(() {
-                                      _selectedApartment = item;
+                                      _selectedAptNo = aptNo;
+                                      _selectedApartment = selected['aptName'] ?? '';
                                     });
+
+                                    getSellerGroupPurchaseList();
                                   },
+
                                   itemBuilder: (BuildContext context) {
-                                    return options.map((String value) {
+                                    return options.map((option) {
                                       return PopupMenuItem<String>(
-                                        value: value,
-                                        child: Text(value, style: WitHomeTheme.title.copyWith(fontSize: 14)),
+                                        value: option['aptNo'],
+                                        child: Text(option['aptName']!,
+                                            style: WitHomeTheme.title
+                                                .copyWith(fontSize: 14)),
                                       );
                                     }).toList();
                                   },
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 10.0),
+                                        padding:
+                                            const EdgeInsets.only(left: 10.0),
                                         child: Text(
                                           _selectedApartment,
-                                          style: WitHomeTheme.title.copyWith(fontSize: 14),
+                                          style: WitHomeTheme.title
+                                              .copyWith(fontSize: 14),
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 10.0),
-                                        child: Icon(Icons.arrow_drop_down, color: WitHomeTheme.wit_black),
+                                        padding:
+                                            const EdgeInsets.only(right: 10.0),
+                                        child: Icon(Icons.arrow_drop_down,
+                                            color: WitHomeTheme.wit_black),
                                       ),
                                     ],
                                   ),
@@ -187,10 +253,13 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                       left: constraints.maxWidth * 0.15,
                                       child: Text(
                                         selectedGP != null
-                                            ? '선착순모집 정원 ${selectedGP['limitCount']} / 신청 ${selectedGP['reqCount']}'
+                                            ? '선착순모집 정원 ${selectedGP['limitCount'] ?? '0'} / 신청 ${selectedGP['reqCount'] ?? '0'}'
                                             : '공동구매 정보 없음',
                                         style: WitHomeTheme.subtitle.copyWith(
-                                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.03,
                                           color: WitHomeTheme.wit_white,
                                         ),
                                       ),
@@ -200,10 +269,13 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                       left: constraints.maxWidth * 0.15,
                                       child: Text(
                                         selectedGP != null
-                                            ? '모집일자 ${formatDate(selectedGP['gpEndDate'])} 까지'
+                                            ? '모집일자 ${formatDate(selectedGP['gpEndDate'] ?? '')} 까지'
                                             : '',
                                         style: WitHomeTheme.subtitle.copyWith(
-                                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                                          fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.03,
                                           color: WitHomeTheme.wit_white,
                                         ),
                                       ),
@@ -226,7 +298,21 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                       Expanded(
                         flex: 2,
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            if (selectedGP == null) return;
+
+                            final gpStat = selectedGP['gpStat']?.toString() ?? '';
+
+                            if (gpStat == '30') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('이미 마감되었습니다.')),
+                              );
+                              return;
+                            }
+
+                            // 마감처리
+                            updateGPstat(selectedGP['ctgrId'], "30");
+                          },
                           child: Container(
                             padding: EdgeInsets.zero,
                             child: Center(
@@ -243,7 +329,21 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                       Expanded(
                         flex: 3,
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            if (selectedGP == null) return;
+
+                            final gpStat = selectedGP['gpStat']?.toString() ?? '';
+
+                            if (gpStat == '20' || gpStat == '30') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('이미 마감되었습니다.')),
+                              );
+                              return;
+                            }
+
+                            // 조기 마감처리
+                            updateGPstat(selectedGP['ctgrId'], "20");
+                          },
                           child: Container(
                             padding: EdgeInsets.zero,
                             child: Center(
@@ -305,7 +405,8 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top: 12.0, bottom: 27, left: 16, right: 16),
+        padding:
+            const EdgeInsets.only(top: 12.0, bottom: 27, left: 16, right: 16),
         child: Row(
           children: [
             Container(
@@ -326,7 +427,8 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                 children: [
                   Text(
                     application['estDt'] ?? '날짜 없음',
-                    style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+                    style: WitHomeTheme.title
+                        .copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                   ),
                   Text(
                     application['prsnName'] ?? '신청자명 없음',
@@ -335,16 +437,28 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                   SizedBox(height: 6),
                   Text(
                     application['aptName'] ?? '아파트명 없음',
-                    style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+                    style: WitHomeTheme.title
+                        .copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                   ),
                 ],
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  CustomChatScreen(
+                    application["estNo"],   // 첫 번째 인자: 요청 번호
+                    application["seq"],     // 두 번째 인자: 시퀀스 (chatId)
+                    "sellerView",      // 세 번째 인자: 뷰 타입
+                  ),
+                  ),
+                );
+              },
               style: TextButton.styleFrom(
                 padding: EdgeInsets.only(top: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(0)),
               ),
               child: Text(
                 '신청',

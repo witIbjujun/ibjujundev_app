@@ -568,7 +568,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                       ),
                       SizedBox(width: 5),
                       Text(
-                        '(5/10)',
+                        '(${sellerInfo != null && sellerInfo['gpCnt'] != null ? sellerInfo['gpCnt'].toString() : '0'})',
                         style: WitHomeTheme.subtitle.copyWith(
                             fontSize: 14, color: WitHomeTheme.wit_lightBlue),
                       ),
