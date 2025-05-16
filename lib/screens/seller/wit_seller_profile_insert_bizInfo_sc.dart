@@ -229,7 +229,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
     // PARAM
     final param = jsonEncode({
-      "sllrNo": widget.sllrNo,
+      "sllrNo": sellerInfo["sllrNo"],
       "bizCertification": "01",
     });
 
@@ -238,10 +238,9 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
     if (response != null) {
       print("API 호출 성공");
-      print("sellerInfo: $sellerInfo"); // sellerInfo의 상태 출력
-      setState(() {
-        buttonText = "요청중";
-      });
+      // 인증 요청 성공 후 정보 재조회
+      await getSellerInfo();
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("사업자 인증 요청이 성공하였습니다.")),
       );
@@ -513,43 +512,49 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
                   ElevatedButton(
-                    onPressed: () async {
-                      // 첨부 버튼 클릭 시 이미지 선택
-                      /*final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-
-                      if (image != null) {
-                        // 이미지가 선택된 경우
-                        print('선택된 이미지: ${image.path}');
-                        // 이미지 선택 후 추가
-                        if (image != null) {
-                          setState(() {
-                            bizImageList.add({'imagePath': image.path}); // XFile의 경로를 포함하는 맵으로 추가
-                          });
-                        }*/
-                        saveSellerBizImage();
-                        // 선택된 이미지 경로 출력
-                      /*} else {
-                        // 이미지 선택이 취소된 경우
-                        print('이미지 선택 취소됨');
-                      }*/
-                    },
-                    child: Text('첨부',
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    onPressed: (sellerInfo != null &&
+                        (sellerInfo['bizCertification'] == '04' ||
+                            sellerInfo['bizCertification'] == null ||
+                            sellerInfo['bizCertification'].toString().isEmpty))
+                        ? () async {
+                      // 이미지 저장 함수 호출
+                      saveSellerBizImage();
+                    }
+                        : null, // 비활성화
+                    child: Text(
+                      '첨부',
+                      style: WitHomeTheme.title.copyWith(
+                        fontSize: 14,
+                        color: WitHomeTheme.wit_white,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_gray,
+                      backgroundColor: WitHomeTheme.wit_lightBlue,
+                      disabledBackgroundColor: WitHomeTheme.wit_gray,
+                      disabledForegroundColor: WitHomeTheme.wit_white,
                     ),
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
                   ElevatedButton(
-                    onPressed: () {
-                      updateBizCertification(); // 인증 요청 버튼 클릭 시 로직 추가
-                    },
-                    child: Text(buttonText,
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    onPressed: (sellerInfo != null &&
+                        (sellerInfo['bizCertification'] == '04' ||
+                            sellerInfo['bizCertification'] == null ||
+                            sellerInfo['bizCertification'].toString().isEmpty))
+                        ? () {
+                      updateBizCertification(); // 인증 요청 로직
+                    }
+                        : null, // 비활성화 (회색 + 클릭 안됨)
+                    child: Text(
+                      buttonText,
+                      style: WitHomeTheme.title.copyWith(
+                        fontSize: 14,
+                        color: WitHomeTheme.wit_white,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_gray,
+                      backgroundColor: WitHomeTheme.wit_lightBlue,
+                      disabledBackgroundColor: WitHomeTheme.wit_gray, // 비활성화일 때 색상 지정
+                      disabledForegroundColor: WitHomeTheme.wit_white, // 비활성화 텍스트 색상
                     ),
                   ),
                 ],

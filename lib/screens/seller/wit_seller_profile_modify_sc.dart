@@ -124,15 +124,13 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     super.dispose();
   }
 
-  Future<void> getSellerInfo(dynamic sllrNo) async {
+  Future<void> getSellerInfo() async {
 
     String restId = "getSellerInfo";
     // PARAM
     final param = jsonEncode({
-      "sllrNo": sllrNo,
+      "sllrNo": widget.sllrNo,
     });
-
-    print("sllrNo :" + sllrNo.toString());
 
     // API 호출
     final response = await sendPostRequest(restId, param);
@@ -485,8 +483,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       );
     }
 
-    getSellerInfo(widget.sllrNo);
-  }
+    await getSellerInfo();  }
 
   // [서비스] 공통코드 조회
   Future<void> updateCertificationYn() async {
@@ -513,7 +510,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       );
     }
 
-    getSellerInfo(widget.sllrNo);
+    await getSellerInfo();
   }
 
   void _addServiceWithAsPeriod() {
@@ -1158,43 +1155,53 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
                   ElevatedButton(
-                    onPressed: () async {
-                      //print("12312312312");
-                      // 첨부 버튼 클릭 시 이미지 선택
-                      //final XFile? image = await _picker.pickImage(source: ImageSource.camera);
-
-                      /*if (image != null) {
-                        // 이미지가 선택된 경우
-                        print('선택된 이미지: ${image.path}');
-                        setState(() {
-                          bizImageList.add(image); // 선택된 이미지를 리스트에 추가
-                        });*/
-                        saveSellerBizImage();
-                        // 선택된 이미지 경로 출력
-                      /*} else {
-                        // 이미지 선택이 취소된 경우
-                        print('이미지 선택 취소됨');
-                      }*/
-                    },
-                    child: Text('첨부',
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    onPressed: (sellerInfo != null &&
+                        (sellerInfo['bizCertification'] == '04' ||
+                            sellerInfo['bizCertification'] == null ||
+                            sellerInfo['bizCertification'].toString().isEmpty))
+                        ? () async {
+                      // 이미지 저장 함수 호출
+                      saveSellerBizImage();
+                    }
+                        : null, // 비활성화
+                    child: Text(
+                      '첨부',
+                      style: WitHomeTheme.title.copyWith(
+                        fontSize: 14,
+                        color: WitHomeTheme.wit_white,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_gray,
+                      backgroundColor: WitHomeTheme.wit_lightBlue,
+                      disabledBackgroundColor: WitHomeTheme.wit_gray,
+                      disabledForegroundColor: WitHomeTheme.wit_white,
                     ),
                   ),
+
                   SizedBox(width: 16.0), // 버튼 간격
                   ElevatedButton(
-                    onPressed: () {
-                      updateBizCertification(); // 인증 요청 버튼 클릭 시 로직 추가
-                    },
-                    child: Text(buttonText,
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                    onPressed: (sellerInfo != null &&
+                        (sellerInfo['bizCertification'] == '04' ||
+                            sellerInfo['bizCertification'] == null ||
+                            sellerInfo['bizCertification'].toString().isEmpty))
+                        ? () {
+                      updateBizCertification(); // 인증 요청 로직
+                    }
+                        : null, // 비활성화 (회색 + 클릭 안됨)
+                    child: Text(
+                      buttonText,
+                      style: WitHomeTheme.title.copyWith(
+                        fontSize: 14,
+                        color: WitHomeTheme.wit_white,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_gray,
+                      backgroundColor: WitHomeTheme.wit_lightBlue,
+                      disabledBackgroundColor: WitHomeTheme.wit_gray, // 비활성화일 때 색상 지정
+                      disabledForegroundColor: WitHomeTheme.wit_white, // 비활성화 텍스트 색상
                     ),
                   ),
+
                 ],
               ),
               /*SingleChildScrollView(
@@ -1761,10 +1768,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
     if (response != null) {
       print("API 호출 성공");
-      print("sellerInfo: $sellerInfo"); // sellerInfo의 상태 출력
-      setState(() {
-        buttonText = "요청중";
-      });
+      // 인증 요청 성공 후 정보 재조회
+      await getSellerInfo();
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("사업자 인증 요청이 성공하였습니다.")),
       );
