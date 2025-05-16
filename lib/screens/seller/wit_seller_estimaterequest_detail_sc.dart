@@ -21,16 +21,18 @@ import '../chat/chatMain.dart';
 import '../common/wit_ImageViewer_sc.dart';
 import '../home/wit_home_theme.dart';
 
-
 /* 이미지추가 S */
 List<File> _images = [];
 final ImagePicker _picker = ImagePicker();
+
 class EstimateRequestDetail extends StatefulWidget {
   final String estNo;
   final String seq;
   final String sllrNo;
 
-  const EstimateRequestDetail({Key? key, required this.estNo, required this.seq, required this.sllrNo}) : super(key: key);
+  const EstimateRequestDetail(
+      {Key? key, required this.estNo, required this.seq, required this.sllrNo})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -51,7 +53,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     final List<XFile>? pickedFiles = await _picker.pickMultiImage();
     if (pickedFiles != null) {
       setState(() {
-        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
+        _images =
+            pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
       });
     }
   }
@@ -64,6 +67,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       });
     }
   }
+
   /* 이미지추가 E */
 
   @override
@@ -73,7 +77,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     getEstimateRequestInfoForSend(widget.estNo, widget.seq);
 
     estimateContentController.addListener(() {
-      if (contentError != null && estimateContentController.text.trim().isNotEmpty) {
+      if (contentError != null &&
+          estimateContentController.text.trim().isNotEmpty) {
         setState(() {
           contentError = null;
         });
@@ -120,26 +125,27 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     String estNo = estimateRequestInfoForSend['estNo'] ?? "";
     String seq = estimateRequestInfoForSend['seq'] ?? "";
     String aptName = estimateRequestInfoForSend['aptName'] ?? "고객 APT 정보 없음";
-    String reqContents = estimateRequestInfoForSend['reqContents'] ??
-        "content 정보 없음";
-    String itemImage = estimateRequestInfoForSend['itemImage'] ??
-        "itemImage 정보 없음";
-    String itemName = estimateRequestInfoForSend['itemName'] ??
-        "itemName 정보 없음";
-    String estimateContent = estimateRequestInfoForSend['estimateContent'] ??
-        "";
+    String reqContents =
+        estimateRequestInfoForSend['reqContents'] ?? "content 정보 없음";
+    String itemImage =
+        estimateRequestInfoForSend['itemImage'] ?? "itemImage 정보 없음";
+    String itemName =
+        estimateRequestInfoForSend['itemName'] ?? "itemName 정보 없음";
+    String estimateContent =
+        estimateRequestInfoForSend['estimateContent'] ?? "";
     String itemPrice1 = estimateRequestInfoForSend['itemPrice1'] ?? "";
     String sllrNo = estimateRequestInfoForSend['sllrNo'] ?? "sllrNo 정보 없음";
-    String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ??
-        "itemPrice1 정보 없음";
-    String reqState = estimateRequestInfoForSend['reqState'] ??
-        "reqState 정보 없음";
+    String sllrClerkNo =
+        estimateRequestInfoForSend['sllrClerkNo'] ?? "itemPrice1 정보 없음";
+    String reqState =
+        estimateRequestInfoForSend['reqState'] ?? "reqState 정보 없음";
 
     // 이건 위젯 함수 안 어딘가 (예: build 메서드 안)에 위치
     String rawDate = estimateRequestInfoForSend['estimateDate'] ?? '';
     String formattedDate = '없음';
     if (rawDate.length == 8) {
-      formattedDate = '${rawDate.substring(0, 4)}/${rawDate.substring(4, 6)}/${rawDate.substring(6, 8)}';
+      formattedDate =
+          '${rawDate.substring(0, 4)}/${rawDate.substring(4, 6)}/${rawDate.substring(6, 8)}';
     }
 
     // 입력 필드에 초기값 설정
@@ -148,129 +154,143 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       estimateContentController.text = estimateContent; // 기존 설명 표시
     }
 
-    return
-      Scaffold(
-        backgroundColor: WitHomeTheme.wit_white,
+    return Scaffold(
+      backgroundColor: WitHomeTheme.wit_white,
 
-        /*appBar: SellerAppBar(
+      /*appBar: SellerAppBar(
           sllrNo: widget.sllrNo,
         ),*/
-        appBar: AppBar(
-          backgroundColor: WitHomeTheme.wit_black,
-          iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
-          title: Text(
-            '견적 요청 상세',
-            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
-          ),
-          automaticallyImplyLeading: true,  // <<--- 뒤로가기 버튼 자동 추가
+      appBar: AppBar(
+        backgroundColor: WitHomeTheme.wit_black,
+        iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
+        title: Text(
+          '견적 요청 상세',
+          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100], // 배경색을 회색으로 설정
-                      borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
-                    ),
-                    padding: const EdgeInsets.all(12.0), // 여백 설정 (필요에 따라 조정)
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 첫 번째 Row: 프로필 사진과 요청 정보
-                        Row(
+        automaticallyImplyLeading: true, // <<--- 뒤로가기 버튼 자동 추가
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100], // 배경색을 회색으로 설정
+                    borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
+                  ),
+                  padding: const EdgeInsets.all(12.0), // 여백 설정 (필요에 따라 조정)
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 첫 번째 Row: 프로필 사진과 요청 정보
+                      Row(
+                        children: [
+                          // 왼쪽에 사진
+                          Container(
+                            width: 50,
+                            height: 50, // 이미지 높이 설정
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              // 둥근 프로필 사진
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/profile1.png'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10), // 이미지와 텍스트 사이의 간격 추가
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 날짜를 이름 위로 배치
+                                Text(
+                                  estimateRequestInfoForSend['estDt'] ??
+                                      '날짜 없음', // 날짜
+                                  style: WitHomeTheme.title.copyWith(
+                                      fontSize: 12,
+                                      color: WitHomeTheme.wit_gray),
+                                ),
+                                SizedBox(height: 4), // 날짜와 이름 사이의 간격
+                                Text(
+                                  estimateRequestInfoForSend['prsnName'] ??
+                                      '요청자명 없음', // 요청자명
+                                  style:
+                                      WitHomeTheme.title.copyWith(fontSize: 18),
+                                ),
+                                SizedBox(height: 1), // 이름과 아파트명 사이의 간격
+                                Text(
+                                  estimateRequestInfoForSend['aptName'] ??
+                                      '아파트명 없음', // 아파트명
+                                  style: WitHomeTheme.title.copyWith(
+                                      fontSize: 12,
+                                      color: WitHomeTheme.wit_gray),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 10), // 상태 텍스트와의 간격
+
+                          TextButton(
+                            onPressed: () {
+                              // 버튼 클릭 시 동작
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(0), // 테두리 없애기
+                              ),
+                            ),
+                            child: Text(
+                              estimateRequestInfoForSend['stat'] ?? '상태 없음',
+                              // 상태
+                              style: WitHomeTheme.title.copyWith(
+                                  fontSize: 14,
+                                  color: WitHomeTheme.wit_lightBlue),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10), // 텍스트와 내용 사이의 간격
+                      // 두 번째 Container: 작업 요청 내용
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300], // 배경색을 회색으로 설정
+                          borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
+                        ),
+                        padding: EdgeInsets.all(12), // 내부 여백
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          // 왼쪽 정렬
                           children: [
-                            // 왼쪽에 사진
-                            Container(
-                              width: 50,
-                              height: 50, // 이미지 높이 설정
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25), // 둥근 프로필 사진
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/profile1.png'),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10), // 이미지와 텍스트 사이의 간격 추가
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // 날짜를 이름 위로 배치
-                                  Text(
-                                    estimateRequestInfoForSend['estDt'] ?? '날짜 없음', // 날짜
-                                    style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
-                                  ),
-                                  SizedBox(height: 4), // 날짜와 이름 사이의 간격
-                                  Text(
-                                    estimateRequestInfoForSend['prsnName'] ?? '요청자명 없음', // 요청자명
-                                    style: WitHomeTheme.title.copyWith(fontSize: 18),
-                                  ),
-                                  SizedBox(height: 1), // 이름과 아파트명 사이의 간격
-                                  Text(
-                                    estimateRequestInfoForSend['aptName'] ?? '아파트명 없음', // 아파트명
-                                    style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 10), // 상태 텍스트와의 간격
-
-                            TextButton(
-                              onPressed: () {
-                                // 버튼 클릭 시 동작
-                              },
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0), // 테두리 없애기
-                                ),
-                              ),
-
+                            Align(
+                              alignment: Alignment.centerLeft, // 왼쪽 정렬
                               child: Text(
-                                estimateRequestInfoForSend['stat'] ?? '상태 없음', // 상태
-                                style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
+                                reqContents, // 내용
+                                style: WitHomeTheme.subtitle
+                                    .copyWith(fontSize: 14),
+                                textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
                               ),
+                            ),
+                            SizedBox(height: 15), // 내용과 작업 요청 예상일 사이의 간격
+                            Text(
+                              '작업요청예상일 : $formattedDate',
+                              style: WitHomeTheme.title.copyWith(fontSize: 14),
                             ),
                           ],
                         ),
-                        SizedBox(height: 10), // 텍스트와 내용 사이의 간격
-                        // 두 번째 Container: 작업 요청 내용
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300], // 배경색을 회색으로 설정
-                            borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 설정
-                          ),                          padding: EdgeInsets.all(12), // 내부 여백
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
-                            children: [
-                              Align(
-                                alignment: Alignment.centerLeft, // 왼쪽 정렬
-                                child: Text(
-                                  reqContents, // 내용
-                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                  textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
-                                ),
-                              ),
-                              SizedBox(height: 15), // 내용과 작업 요청 예상일 사이의 간격
-                              Text(
-                                '작업요청예상일 : $formattedDate',
-                                style: WitHomeTheme.title.copyWith(fontSize: 14),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  // if (reqState == "10") ...[ // 조건이 만족할 때만 해당 위젯을 추가
-                    /*Row(
+                ),
+                // if (reqState == "10") ...[ // 조건이 만족할 때만 해당 위젯을 추가
+                /*Row(
                       children: [
                         Checkbox(
                           value: _isChecked,
@@ -287,557 +307,567 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                         ),
                       ],
                     ),*/
-                    // 체크박스가 체크된 경우 SellerProfileView 표시
-                    //if (_isChecked)
-                  SizedBox(height: 10),
-                    Text(
-                      "내 프로필",
-                      style: WitHomeTheme.title.copyWith(
-                        fontSize: 16,
-                        color: WitHomeTheme.wit_lightSteelBlue,
-                      ),
-                    ),
-                  SizedBox(height: 10),                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black), // 테두리 색상 설정
-                          borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
-                        ),
-                        child: SellerProfileChildView(sllrNo : widget.sllrNo, appbarYn: "N"),
-                      ),
-                  //],
-
-                  SizedBox(height: 10),                  // 금액 입력란 카드
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "견적 금액 ",
-                              style: WitHomeTheme.title.copyWith(
-                                fontSize: 16,
-                                color: WitHomeTheme.wit_lightSteelBlue,
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: TextField(
-                                  controller: itemPrice1Controller,
-                                  keyboardType: TextInputType.number,
-                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                                  textAlign: TextAlign.right,
-                                  decoration: InputDecoration(
-                                    hintText: "금액을 입력하세요",
-                                    hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                                    border: InputBorder.none,
-                                    contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                  ),
-                                  enabled: reqState == "10",
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                  ],
-                                  onChanged: (value) {
-                                    // 값이 변경될 때 에러 메시지 삭제
-                                    if (value.isNotEmpty && priceError != null) {
-                                      setState(() {
-                                        priceError = null; // 에러 메시지 삭제
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              "원",
-                              style: WitHomeTheme.title.copyWith(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                        if (priceError != null && priceError!.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              priceError!,
-                              style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                            ),
-                          ),
-                      ],
-                    ),
+                // 체크박스가 체크된 경우 SellerProfileView 표시
+                //if (_isChecked)
+                SizedBox(height: 10),
+                Text(
+                  "내 프로필",
+                  style: WitHomeTheme.title.copyWith(
+                    fontSize: 16,
+                    color: WitHomeTheme.wit_lightSteelBlue,
                   ),
-
-                  SizedBox(height: 10),
-                  // 견적 내용 입력란 카드
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "견적 추가 설명",
-                          style: WitHomeTheme.title.copyWith(
-                            fontSize: 16,
-                            color: WitHomeTheme.wit_lightSteelBlue,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: TextField(
-                            controller: estimateContentController,
-                            style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                            minLines: 3,
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: '여기에 추가 설명을 입력하세요',
-                              hintStyle: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                              contentPadding: EdgeInsets.all(8),
-                            ),
-                            enabled: reqState == "10",
-                            onChanged: (value) {
-                              if (value.trim().isNotEmpty && contentError != null) {
-                                setState(() {
-                                  contentError = null;
-                                });
-                              }
-                            },
-                          ),
-                        ),
-                        if (contentError != null && contentError!.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              contentError!,
-                              style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),                            ),
-                          ),
-                      ],
-                    ),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black), // 테두리 색상 설정
+                    borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
                   ),
+                  child: SellerProfileChildView(
+                      sllrNo: widget.sllrNo, appbarYn: "N"),
+                ),
+                //],
 
-                  SizedBox(height: 5),
-                  Text(
-                    "* 업체 전화번호나 위치 설명 금지",
-                    style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                SizedBox(height: 10), // 금액 입력란 카드
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  SizedBox(height: 5),
-                  /*SingleChildScrollView(
-                    scrollDirection: Axis.horizontal, // 가로 스크롤 활성화
-                    child: Row(
-                      children: _images.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        var image = entry.value;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
-                          child: Stack(
-                            children: [
-                              ClipRRect( // 모서리 둥글게 만들기
-                                borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
-                                child: Image.file(
-                                  image,
-                                  width: 120,
-                                  height: 120,
-                                  fit: BoxFit.cover, // 이미지 비율 유지
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: IconButton(
-                                  icon: Icon(Icons.close, color: Colors.red), // X 아이콘
-                                  onPressed: () {
-                                    setState(() {
-                                      _images.removeAt(index); // 이미지 삭제
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),*/
-                  //SizedBox(height: 16),
-                  /*boardDetailImageList.isNotEmpty
-                      ? Container(
-                    height: 120, // 높이 설정
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: boardDetailImageList.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            // 클릭 시 ImageViewer로 이동
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ImageViewer(
-                                  imageUrls: boardDetailImageList.map((item) => apiUrl + item["imagePath"]).toList(),
-                                  initialIndex: index, // 클릭한 이미지 인덱스 전달
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            width: 120,
-                            height: 120,
-                            margin: EdgeInsets.only(right: 8), // 이미지 간격
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12), // 둥글게 처리
-                              image: DecorationImage(
-                                image: NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ):*/
-                  SizedBox(height: 16),
-                  //if (reqState == "01") ...[ // reqState가 "01"일 때만 이 부분이 렌더링됨
-                    Container(
-                      height: 120, // 높이 설정
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            // 카메라 아이콘
-                            GestureDetector(
-                              onTap: () => _showImagePickerOptions(),
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                margin: EdgeInsets.only(right: 8), // 이미지 간격
-                                decoration: BoxDecoration(
-                                  color: WitHomeTheme.wit_white,
-                                  border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
-                                alignment: Alignment.center,
-                              ),
-                            ),
-                            // 등록된 이미지 리스트
-                            ...boardDetailImageList.asMap().entries.map((entry) {
-                              int index = entry.key;
-                              return GestureDetector(
-                                onTap: () {
-                                  // 클릭 시 ImageViewer로 이동
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ImageViewer(
-                                        imageUrls: boardDetailImageList.map((item) => apiUrl + item["imagePath"]).toList(),
-                                        initialIndex: index, // 클릭한 이미지 인덱스 전달
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  width: 120,
-                                  height: 120,
-                                  margin: EdgeInsets.only(right: 8), // 이미지 간격
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12), // 둥글게 처리
-                                    image: DecorationImage(
-                                      image: NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            // 선택한 이미지 리스트
-                            ..._images.asMap().entries.map((entry) {
-                              int index = entry.key;
-                              var image = entry.value;
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
-                                      child: Image.file(
-                                        image,
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover, // 이미지 비율 유지
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: 0,
-                                      top: 0,
-                                      child: IconButton(
-                                        icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
-                                        onPressed: () {
-                                          setState(() {
-                                            _images.removeAt(index); // 이미지 삭제
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  //],
-                  SizedBox(height: 20),
-                  Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            TextEditingController reasonController = TextEditingController();
-
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                final width = MediaQuery.of(context).size.width;
-
-                                return Dialog(
-                                  backgroundColor: WitHomeTheme.wit_white,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                  child: Container(
-                                    width: width * 0.9, // ✅ 화면 너비의 90%
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          '작업중지 사유 입력',
-                                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 16),
-                                        TextField(
-                                          controller: reasonController,
-                                          maxLines: 3,
-                                          decoration: const InputDecoration(
-                                            hintText: '작업 중지 사유를 입력하세요',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 20),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            ElevatedButton(
-                                              onPressed: () => Navigator.of(context).pop(),
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.grey[300], // 회색 배경
-                                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20), // 더 둥글게
-                                                ),
-                                                elevation: 0,
-                                              ),
-                                              child: const Text(
-                                                '취소',
-                                                style: TextStyle(color: Colors.black),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 8),
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                String reason = reasonController.text.trim();
-                                                if (reason.isNotEmpty) {
-                                                  updateEstimateInfo(
-                                                    estimateRequestInfoForSend['companyId'] ?? "",
-                                                    estimateRequestInfoForSend['sllrClerkNo'] ?? "",
-                                                    estimateRequestInfoForSend['estNo'] ?? "",
-                                                    estimateRequestInfoForSend['seq'] ?? "",
-                                                    reason,
-                                                    itemPrice1Controller.text,
-                                                    '99',
-                                                  );
-                                                  Navigator.of(context).pop();
-                                                }
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: WitHomeTheme.wit_lightGreen, // 초록색 배경
-                                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20), // 더 둥글게
-                                                ),
-                                                elevation: 0,
-                                              ),
-                                              child: const Text(
-                                                '확인',
-                                                style: TextStyle(color: Colors.white),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-
-                          },
-                          child: Text(
-                            '작업중지',
-                            style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_black),                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[300],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                      Row(
+                        children: [
+                          Text(
+                            "견적 금액 ",
+                            style: WitHomeTheme.title.copyWith(
+                              fontSize: 16,
+                              color: WitHomeTheme.wit_lightSteelBlue,
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          SizedBox(height: 10),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: TextField(
+                                controller: itemPrice1Controller,
+                                keyboardType: TextInputType.number,
+                                style: WitHomeTheme.subtitle
+                                    .copyWith(fontSize: 16),
+                                textAlign: TextAlign.right,
+                                decoration: InputDecoration(
+                                  hintText: "금액을 입력하세요",
+                                  hintStyle: WitHomeTheme.subtitle
+                                      .copyWith(fontSize: 16),
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                ),
+                                enabled: reqState == "10",
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                ],
+                                onChanged: (value) {
+                                  // 값이 변경될 때 에러 메시지 삭제
+                                  if (value.isNotEmpty && priceError != null) {
+                                    setState(() {
+                                      priceError = null; // 에러 메시지 삭제
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            "원",
+                            style: WitHomeTheme.title.copyWith(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      if (priceError != null && priceError!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            priceError!,
+                            style: WitHomeTheme.subtitle.copyWith(
+                                fontSize: 14, color: WitHomeTheme.wit_red),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        flex: 1,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              contentError = estimateContentController.text.trim().isEmpty ? '견적 내용을 입력해주세요.' : null;
-                              priceError = itemPrice1Controller.text.trim().isEmpty ? '견적 금액을 입력해주세요.' : null;
-                            });
-
-                            if (contentError == null && priceError == null) {
-                              updateEstimateInfo(
-                                estimateRequestInfoForSend['companyId'] ?? "",
-                                estimateRequestInfoForSend['sllrClerkNo'] ?? "",
-                                estimateRequestInfoForSend['estNo'] ?? "",
-                                estimateRequestInfoForSend['seq'] ?? "",
-                                estimateContentController.text,
-                                itemPrice1Controller.text,
-                                '60',
-                              );
-                            }
-                          },
-                          child: Text(
-                            '작업완료',
-                            style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        flex: 2,
-                        child: ElevatedButton(
-                          onPressed: (reqState == "04") ? null : () {
-                            String sllrNo = estimateRequestInfoForSend['companyId'] ?? "";
-                            String sllrClerkNo = estimateRequestInfoForSend['sllrClerkNo'] ?? "";
-                            String estNo = estimateRequestInfoForSend['estNo'] ?? "";
-                            String seq = estimateRequestInfoForSend['seq'] ?? "";
-                            String estimateContent = estimateContentController.text;
-                            String inputItemPrice1 = itemPrice1Controller.text;
-
-                            setState(() {
-                              contentError = estimateContentController.text.trim().isEmpty ? '견적 내용을 입력해주세요.' : null;
-                              priceError = itemPrice1Controller.text.trim().isEmpty ? '견적 금액을 입력해주세요.' : null;
-                            });
-
-                            if (contentError == null && priceError == null) {
-                              if (reqState == "10") {
-                                // 견적 보내기 로직
-                                updateEstimateInfo(
-                                  sllrNo,
-                                  sllrClerkNo,
-                                  estNo,
-                                  seq,
-                                  estimateContent,
-                                  inputItemPrice1,
-                                  '20', // 상태를 '02'로 변경
-                                );
-                              } else if (reqState == "20") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>  CustomChatScreen(
-                                    estNo,   // 첫 번째 인자: 요청 번호
-                                    seq,     // 두 번째 인자: 시퀀스 (chatId)
-                                    "sellerView",      // 세 번째 인자: 뷰 타입
-                                    ),
-                                  ),
-                                );
-                              } else if (reqState == "30") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>  CustomChatScreen(
-                                    estNo,   // 첫 번째 인자: 요청 번호
-                                    seq,     // 두 번째 인자: 시퀀스 (chatId)
-                                    "sellerView",      // 세 번째 인자: 뷰 타입
-                                  ),
-                                  ),
-                                );
-                              } else {
-                                // 견적 취소 로직
-                                updateEstimateInfo(
-                                  sllrNo,
-                                  sllrClerkNo,
-                                  estNo,
-                                  seq,
-                                  estimateContent,
-                                  inputItemPrice1,
-                                  '99', // 상태를 '05'로 변경
-                                );
-                              }
-                            }
-                          },
-                          child: Text(
-                            reqState == "10"
-                                ? '견적보내기'
-                                : reqState == "20" || reqState == "30" || reqState == "40"
-                                 || reqState == "50" || reqState == "60" || reqState == "70"
-                                ? '메시지 대화하기'
-                                : '취소',
-                            style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: WitHomeTheme.wit_lightGreen,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
-                ],
-              ),
+                ),
+
+                SizedBox(height: 10),
+                // 견적 내용 입력란 카드
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "견적 추가 설명",
+                        style: WitHomeTheme.title.copyWith(
+                          fontSize: 16,
+                          color: WitHomeTheme.wit_lightSteelBlue,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: TextField(
+                          controller: estimateContentController,
+                          style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                          minLines: 3,
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: '여기에 추가 설명을 입력하세요',
+                            hintStyle:
+                                WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                            contentPadding: EdgeInsets.all(8),
+                          ),
+                          enabled: reqState == "10",
+                          onChanged: (value) {
+                            if (value.trim().isNotEmpty &&
+                                contentError != null) {
+                              setState(() {
+                                contentError = null;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      if (contentError != null && contentError!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            contentError!,
+                            style: WitHomeTheme.subtitle.copyWith(
+                                fontSize: 14, color: WitHomeTheme.wit_red),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 5),
+                Text(
+                  "* 업체 전화번호나 위치 설명 금지",
+                  style: WitHomeTheme.subtitle
+                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
+                SizedBox(height: 16),
+                //if (reqState == "01") ...[ // reqState가 "01"일 때만 이 부분이 렌더링됨
+                Container(
+                  height: 120,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        if (reqState == "01") // 조건부 렌더링
+                          GestureDetector(
+                            onTap: () => _showImagePickerOptions(),
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              margin: EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                color: WitHomeTheme.wit_white,
+                                border: Border.all(
+                                  width: 1,
+                                  color: WitHomeTheme.wit_lightgray,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(
+                                Icons.add_a_photo,
+                                size: 40,
+                                color: WitHomeTheme.wit_gray,
+                              ),
+                              alignment: Alignment.center,
+                            ),
+                          ),
+
+                        // 등록된 이미지 리스트
+                        ...boardDetailImageList.asMap().entries.map((entry) {
+                          int index = entry.key;
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ImageViewer(
+                                    imageUrls: boardDetailImageList
+                                        .map((item) => apiUrl + item["imagePath"])
+                                        .toList(),
+                                    initialIndex: index,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 120,
+                              height: 120,
+                              margin: EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                image: DecorationImage(
+                                  image:
+                                  NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+
+                        // 선택한 이미지 리스트
+                        ..._images.asMap().entries.map((entry) {
+                          int index = entry.key;
+                          var image = entry.value;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  child: Image.file(
+                                    image,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  child: IconButton(
+                                    icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                    onPressed: () {
+                                      setState(() {
+                                        _images.removeAt(index);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                  ),
+                ),
+
+                //],
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          TextEditingController reasonController =
+                              TextEditingController();
+
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              final width = MediaQuery.of(context).size.width;
+
+                              return Dialog(
+                                backgroundColor: WitHomeTheme.wit_white,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Container(
+                                  width: width * 0.9, // ✅ 화면 너비의 90%
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        '작업중지 사유 입력',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      TextField(
+                                        controller: reasonController,
+                                        maxLines: 3,
+                                        decoration: const InputDecoration(
+                                          hintText: '작업 중지 사유를 입력하세요',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.grey[300], // 회색 배경
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 12),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        20), // 더 둥글게
+                                              ),
+                                              elevation: 0,
+                                            ),
+                                            child: const Text(
+                                              '취소',
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              String reason =
+                                                  reasonController.text.trim();
+                                              if (reason.isNotEmpty) {
+                                                updateEstimateInfo(
+                                                  estimateRequestInfoForSend[
+                                                          'companyId'] ??
+                                                      "",
+                                                  estimateRequestInfoForSend[
+                                                          'sllrClerkNo'] ??
+                                                      "",
+                                                  estimateRequestInfoForSend[
+                                                          'estNo'] ??
+                                                      "",
+                                                  estimateRequestInfoForSend[
+                                                          'seq'] ??
+                                                      "",
+                                                  reason,
+                                                  itemPrice1Controller.text,
+                                                  '99',
+                                                );
+                                                Navigator.of(context).pop();
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: WitHomeTheme
+                                                  .wit_lightGreen, // 초록색 배경
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 12),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        20), // 더 둥글게
+                                              ),
+                                              elevation: 0,
+                                            ),
+                                            child: const Text(
+                                              '확인',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Text(
+                          '작업중지',
+                          style: WitHomeTheme.title.copyWith(
+                              fontSize: 14, color: WitHomeTheme.wit_black),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            contentError =
+                                estimateContentController.text.trim().isEmpty
+                                    ? '견적 내용을 입력해주세요.'
+                                    : null;
+                            priceError =
+                                itemPrice1Controller.text.trim().isEmpty
+                                    ? '견적 금액을 입력해주세요.'
+                                    : null;
+                          });
+
+                          if (contentError == null && priceError == null) {
+                            updateEstimateInfo(
+                              estimateRequestInfoForSend['companyId'] ?? "",
+                              estimateRequestInfoForSend['sllrClerkNo'] ?? "",
+                              estimateRequestInfoForSend['estNo'] ?? "",
+                              estimateRequestInfoForSend['seq'] ?? "",
+                              estimateContentController.text,
+                              itemPrice1Controller.text,
+                              '60',
+                            );
+                          }
+                        },
+                        child: Text(
+                          '작업완료',
+                          style: WitHomeTheme.title.copyWith(
+                              fontSize: 14, color: WitHomeTheme.wit_white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton(
+                        onPressed: (reqState == "04")
+                            ? null
+                            : () {
+                                String sllrNo =
+                                    estimateRequestInfoForSend['companyId'] ??
+                                        "";
+                                String sllrClerkNo =
+                                    estimateRequestInfoForSend['sllrClerkNo'] ??
+                                        "";
+                                String estNo =
+                                    estimateRequestInfoForSend['estNo'] ?? "";
+                                String seq =
+                                    estimateRequestInfoForSend['seq'] ?? "";
+                                String estimateContent =
+                                    estimateContentController.text;
+                                String inputItemPrice1 =
+                                    itemPrice1Controller.text;
+
+                                setState(() {
+                                  contentError = estimateContentController.text
+                                          .trim()
+                                          .isEmpty
+                                      ? '견적 내용을 입력해주세요.'
+                                      : null;
+                                  priceError =
+                                      itemPrice1Controller.text.trim().isEmpty
+                                          ? '견적 금액을 입력해주세요.'
+                                          : null;
+                                });
+
+                                if (contentError == null &&
+                                    priceError == null) {
+                                  if (reqState == "10") {
+                                    // 견적 보내기 로직
+                                    updateEstimateInfo(
+                                      sllrNo,
+                                      sllrClerkNo,
+                                      estNo,
+                                      seq,
+                                      estimateContent,
+                                      inputItemPrice1,
+                                      '20', // 상태를 '02'로 변경
+                                    );
+                                  } else if (reqState == "20") {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CustomChatScreen(
+                                          estNo, // 첫 번째 인자: 요청 번호
+                                          seq, // 두 번째 인자: 시퀀스 (chatId)
+                                          "sellerView", // 세 번째 인자: 뷰 타입
+                                        ),
+                                      ),
+                                    );
+                                  } else if (reqState == "30") {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CustomChatScreen(
+                                          estNo, // 첫 번째 인자: 요청 번호
+                                          seq, // 두 번째 인자: 시퀀스 (chatId)
+                                          "sellerView", // 세 번째 인자: 뷰 타입
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    // 견적 취소 로직
+                                    updateEstimateInfo(
+                                      sllrNo,
+                                      sllrClerkNo,
+                                      estNo,
+                                      seq,
+                                      estimateContent,
+                                      inputItemPrice1,
+                                      '99', // 상태를 '05'로 변경
+                                    );
+                                  }
+                                }
+                              },
+                        child: Text(
+                          reqState == "10"
+                              ? '견적보내기'
+                              : reqState == "20" ||
+                                      reqState == "30" ||
+                                      reqState == "40" ||
+                                      reqState == "50" ||
+                                      reqState == "60" ||
+                                      reqState == "70"
+                                  ? '메시지 대화하기'
+                                  : '취소',
+                          style: WitHomeTheme.title.copyWith(
+                              fontSize: 14, color: WitHomeTheme.wit_white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: WitHomeTheme.wit_lightGreen,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 
   // [팝업] 갤러리, 카메라 팝업 호출
@@ -852,8 +882,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             children: [
               ListTile(
                 leading: Icon(Icons.photo),
-                title: Text('갤러리에서 선택',
-                    style: WitHomeTheme.title),
+                title: Text('갤러리에서 선택', style: WitHomeTheme.title),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.pop(context);
@@ -861,8 +890,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
               ),
               ListTile(
                 leading: Icon(Icons.camera),
-                title: Text('사진 찍기',
-                    style: WitHomeTheme.title),
+                title: Text('사진 찍기', style: WitHomeTheme.title),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.pop(context);
@@ -900,15 +928,14 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
   // [서비스] 견적 정보 저장
   Future<void> updateEstimateInfo(
-      dynamic sllrNo,
-      dynamic sllrClerkNo,
-      dynamic estNo,
-      dynamic seq,
-      dynamic estimateContent,
-      dynamic inputItemPrice1,
-      dynamic reqState, // 인자로 전달된 reqState를 그대로 사용
-      ) async {
-
+    dynamic sllrNo,
+    dynamic sllrClerkNo,
+    dynamic estNo,
+    dynamic seq,
+    dynamic estimateContent,
+    dynamic inputItemPrice1,
+    dynamic reqState, // 인자로 전달된 reqState를 그대로 사용
+  ) async {
     if (reqState != "20") {
       // reqState가 02가 아닐 경우, 바로 updateEstimateInfo2 호출
       String cash = "1200"; // 필요한 경우 cash 값을 설정
@@ -927,8 +954,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       return; // 더 이상 진행하지 않음
     }
 
-    saveImages(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, null, reqState);
-
+    saveImages(context, sllrNo, sllrClerkNo, estNo, seq, estimateContent,
+        inputItemPrice1, null, reqState);
 
 /*    String restId = "getCashInfo";
     int sllrNoInt = int.tryParse(sllrNo.toString()) ?? 0;
@@ -948,7 +975,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
       int cashInt = int.tryParse(cash.toString()) ?? 0;
 
-      *//*if (cashInt == 0) {
+      */ /*if (cashInt == 0) {
         print("캐시가 부족합니다.");
         // 다이얼로그 표시
         WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -961,7 +988,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             );
           }
         });
-      }*//*
+      }*/ /*
       //else {
       //print("캐시가 충분합니다: " + cashInt.toString());
         // 이미지 저장
@@ -975,12 +1002,17 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     }*/
   }
 
-
   // [서비스] 이미지 저장
-  Future<void> saveImages(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
-      dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
-      , dynamic cash, dynamic reqState) async {
-
+  Future<void> saveImages(
+      BuildContext context,
+      dynamic sllrNo,
+      dynamic sllrClerkNo,
+      dynamic estNo,
+      dynamic seq,
+      dynamic estimateContent,
+      dynamic inputItemPrice1,
+      dynamic cash,
+      dynamic reqState) async {
     // 이미지 확인
     if (_images.isEmpty) {
       // 이미지가 없으면 프로필 업데이트 호출
@@ -994,9 +1026,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
           String estimateContent = estimateContentController.text;
           String inputItemPrice1 = itemPrice1Controller.text;
 
-          updateEstimateInfo2(
-              context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, null
-          );
+          updateEstimateInfo2(context, sllrNo, sllrClerkNo, estNo, seq,
+              estimateContent, inputItemPrice1, cash, reqState, null);
 
           /*showDialog(
             context: context,
@@ -1026,7 +1057,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       final fileInfo = await sendFilePostRequest("fileUpload", _images);
       if (fileInfo == "FAIL") {
         print("파일 실패");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
       } else {
         // 파일 업로드 성공
         print("파일 성공");
@@ -1040,9 +1072,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             String estimateContent = estimateContentController.text;
             String inputItemPrice1 = itemPrice1Controller.text;
 
-            updateEstimateInfo2(
-                context, sllrNo, sllrClerkNo, estNo, seq, estimateContent, inputItemPrice1, cash, reqState, fileInfo
-            );
+            updateEstimateInfo2(context, sllrNo, sllrClerkNo, estNo, seq,
+                estimateContent, inputItemPrice1, cash, reqState, fileInfo);
 
             // 다이얼로그 표시 후, 성공적인 이미지 저장 후 화면 이동
             /*showDialog(
@@ -1073,7 +1104,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     }
   }
 
-
   // [서비스] 판매자 상세 이미지 조회
   Future<void> getSellerDetailImageList() async {
     // REST ID
@@ -1098,16 +1128,23 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     });
   }
 
-  Future<void> updateEstimateInfo3(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
-      dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
-      , dynamic cash, dynamic reqState, dynamic fileInfo) async {
+  Future<void> updateEstimateInfo3(
+      BuildContext context,
+      dynamic sllrNo,
+      dynamic sllrClerkNo,
+      dynamic estNo,
+      dynamic seq,
+      dynamic estimateContent,
+      dynamic inputItemPrice1,
+      dynamic cash,
+      dynamic reqState,
+      dynamic fileInfo) async {
     // REST ID
     String restId = "updateEstimateInfo";
 
     print("sllrNo : " + sllrNo);
     print("inputItemPrice1 : " + inputItemPrice1);
     print("estimateContent : " + estimateContent);
-
 
     // PARAM
     final param = jsonEncode({
@@ -1130,7 +1167,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     if (response != null) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
+        MaterialPageRoute(
+            builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
       );
       // 성공적으로 저장된 경우 처리
       //_showSuccessDialog(context); // 다이얼로그 표시
@@ -1144,7 +1182,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       );
     }
   }
-
 }
 
 // PointOKDialog 클래스에 onSuccess 콜백 추가
@@ -1197,57 +1234,63 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     );
   }*/
 
+// [서비스]견적 정보 저장
+Future<void> updateEstimateInfo2(
+    BuildContext context,
+    dynamic sllrNo,
+    dynamic sllrClerkNo,
+    dynamic estNo,
+    dynamic seq,
+    dynamic estimateContent,
+    dynamic inputItemPrice1,
+    dynamic cash,
+    dynamic reqState,
+    dynamic fileInfo) async {
+  // REST ID
+  String restId = "updateEstimateInfo";
 
-  // [서비스]견적 정보 저장
-  Future<void> updateEstimateInfo2(BuildContext context, dynamic sllrNo, dynamic sllrClerkNo,
-      dynamic estNo, dynamic seq, dynamic estimateContent, dynamic inputItemPrice1
-      , dynamic cash, dynamic reqState, dynamic fileInfo) async {
-    // REST ID
-    String restId = "updateEstimateInfo";
+  print("sllrNo : " + sllrNo);
+  print("inputItemPrice1 : " + inputItemPrice1);
 
-    print("sllrNo : " + sllrNo);
-    print("inputItemPrice1 : " + inputItemPrice1);
+  // PARAM
+  final param = jsonEncode({
+    "sllrNo": sllrNo,
+    "sllrClerkNo": sllrClerkNo,
+    "estNo": estNo,
+    "seq": seq,
+    "estimateContent": estimateContent,
+    "itemPrice1": inputItemPrice1,
+    "stat": reqState, // 02 : 판매자가 견적발송
+    "cash": cash,
+    "cashGbn": "02", // 02 : 견적발송
+    "fileInfo": fileInfo
+  });
 
-    // PARAM
-    final param = jsonEncode({
-      "sllrNo": sllrNo,
-      "sllrClerkNo": sllrClerkNo,
-      "estNo": estNo,
-      "seq": seq,
-      "estimateContent": estimateContent,
-      "itemPrice1": inputItemPrice1,
-      "stat": reqState, // 02 : 판매자가 견적발송
-      "cash": cash,
-      "cashGbn": "02", // 02 : 견적발송
-      "fileInfo": fileInfo
-    });
+  // API 호출
+  final response = await sendPostRequest(restId, param);
 
-    // API 호출
-    final response = await sendPostRequest(restId, param);
-
-    // API 응답 처리
-    if (response != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
-      );
-      // 성공적으로 저장된 경우 처리
-      //_showSuccessDialog(context); // 다이얼로그 표시
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("견적이 성공적으로 발송되었습니다.")),
-      );
-    } else {
-      // 오류 처리
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("견적 저장에 실패했습니다.")),
-      );
-    }
+  // API 응답 처리
+  if (response != null) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
+    );
+    // 성공적으로 저장된 경우 처리
+    //_showSuccessDialog(context); // 다이얼로그 표시
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("견적이 성공적으로 발송되었습니다.")),
+    );
+  } else {
+    // 오류 처리
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("견적 저장에 실패했습니다.")),
+    );
   }
+}
 
-
-
-  // 성공 다이얼로그를 표시하는 메서드
-  /*void _showSuccessDialog(BuildContext context) {
+// 성공 다이얼로그를 표시하는 메서드
+/*void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1274,8 +1317,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     );
   }*/
 
-
-
 /*class PointNotOKDialog extends StatelessWidget {
   final String sllrNo; // sllrNo 변수를 추가합니다.
 
@@ -1299,11 +1340,11 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             // 충전 로직 추가
             //Navigator.of(context).pop(); // 다이얼로그 닫기
             // 충전 다이얼로그 띄우기
-            *//*showDialog(
+            */ /*showDialog(
               context: context,
               builder: (BuildContext context) {
                 return PointPurchaseDialog();
-              },*//*
+              },*/ /*
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CashRecharge(sllrNo: sllrNo)),
@@ -1387,10 +1428,10 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
             // 결제하기 로직 추가 및 Intro로 이동
             if (_selectedPoint != null) {
               Navigator.of(context).pop(); // 다이얼로그 닫기
-              *//*Navigator.push(
+              */ /*Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const TosspaymentsSampleApp()),
-              );*//*
+              );*/ /*
             } else {
               // 포인트가 선택되지 않은 경우 알림
               ScaffoldMessenger.of(context).showSnackBar(
