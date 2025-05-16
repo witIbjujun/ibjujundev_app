@@ -781,12 +781,22 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               } else if (reqState == "20") {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => CustomChatScreen('1', '1', 'sellerView')),
+                                  MaterialPageRoute(builder: (context) =>  CustomChatScreen(
+                                    estNo,   // 첫 번째 인자: 요청 번호
+                                    seq,     // 두 번째 인자: 시퀀스 (chatId)
+                                    "userView",      // 세 번째 인자: 뷰 타입
+                                    ),
+                                  ),
                                 );
                               } else if (reqState == "30") {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => CustomChatScreen('1', '1', 'sellerView')),
+                                  MaterialPageRoute(builder: (context) =>  CustomChatScreen(
+                                    estNo,   // 첫 번째 인자: 요청 번호
+                                    seq,     // 두 번째 인자: 시퀀스 (chatId)
+                                    "userView",      // 세 번째 인자: 뷰 타입
+                                  ),
+                                  ),
                                 );
                               } else {
                                 // 견적 취소 로직

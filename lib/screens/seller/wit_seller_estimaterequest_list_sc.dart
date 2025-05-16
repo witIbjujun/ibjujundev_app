@@ -88,6 +88,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
     final param = jsonEncode({
       "stat": widget.stat, // stat을 사용하여 API에 전달
       "sllrNo": widget.sllrNo,
+      // "reqGubun" : ""
     });
 
     // API 호출 (사전 점검 미완료 리스트 조회)

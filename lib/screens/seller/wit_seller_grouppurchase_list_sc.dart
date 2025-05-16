@@ -2,82 +2,57 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
-import '../home/widgets/wit_home_widgets.dart'; // WitHomeTheme 경로 확인
+import '../common/wit_common_util.dart';
+import '../home/widgets/wit_home_widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SellerGroupPurchaseList extends StatefulWidget {
-  final String sllrNo; // 판매자 번호
+  final String sllrNo;
 
-  const SellerGroupPurchaseList({Key? key, required this.sllrNo})
-      : super(key: key);
+  const SellerGroupPurchaseList({Key? key, required this.sllrNo}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    //sellerInfo = this.sellerId;
-    return SellerGroupPurchaseListState();
-  }
+  State<StatefulWidget> createState() => SellerGroupPurchaseListState();
 }
 
 class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
-  List<dynamic> applicationList = []; // 신청 목록
-  String selectedOption = ''; // 기본 선택 값
+  List<dynamic> applicationList = [];
+  String selectedOption = '';
   List<String> options = [];
   final _storage = const FlutterSecureStorage();
-  String _selectedApartment = '병점아이파크캐슬'; // 초기 선택 값
+  String _selectedApartment = '';
   dynamic sellerInfo;
+  List<dynamic> gpList = [];
 
   @override
   void initState() {
     super.initState();
-    _loadOptions();
-    if (options.isNotEmpty) {
-      selectedOption = options.first;
-    }
+    //_loadOptions();
     getSellerInfo();
-    // getSellerGroupPurchaseList(); // 신청 목록 조회
   }
 
-  Future<void> _loadOptions() async {
+  /*Future<void> _loadOptions() async {
     String? aptName = await _storage.read(key: 'aptName');
-    String? clerkNo = await _storage.read(key: 'clerkNo');
-    String? nickName = await _storage.read(key: 'nickName');
-    String? role = await _storage.read(key: 'role');
-    String? mainAptNo = await _storage.read(key: 'mainAptNo');
-
-    print('myprofile 고객 번호: $clerkNo');
-    print('myprofile 닉네임: $nickName');
-    print('myprofile 역할: $role');
-    print('myprofile Main아파트 번호: $mainAptNo');
-    print('myprofile Main아파트 이름: $aptName');
-
     if (aptName != null) {
       setState(() {
         options = aptName.split(',');
+        if (options.isNotEmpty) {
+          _selectedApartment = options.first;
+        }
       });
     }
-  }
+  }*/
 
   Future<void> getSellerInfo() async {
-    String restId = "getSellerInfo";
-
-    // PARAM
-    final param = jsonEncode({
-      "sllrNo": widget.sllrNo,
-    });
-
-    // API 호출
-    final response = await sendPostRequest(restId, param);
+    final param = jsonEncode({"sllrNo": widget.sllrNo});
+    final response = await sendPostRequest("getSellerInfo", param);
 
     if (response != null) {
       setState(() {
         sellerInfo = response;
-        // storeName = sellerInfo['storeName'];
-        // sllrNo = sellerInfo['sllrNo'];
-        print("여기 : " + sellerInfo['serviceItem'].toString());
         getGPList();
       });
     } else {
-      // 오류 처리
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("사업자 프로필 조회가 실패하였습니다.")),
       );
@@ -85,37 +60,52 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
   }
 
   Future<void> getGPList() async {
-    String restId = "getGPList"; // API ID
     String ctgrId = sellerInfo['serviceItem'] ?? '';
     final param = jsonEncode({
-      //"stat": widget.stat,
-      "ctgrId":  ctgrId,
+      "sllrNo": widget.sllrNo
     });
-
-    final response = await sendPostRequest(restId, param);
+    final response = await sendPostRequest("getGPList", param);
     setState(() {
-      print("여기1231123");
-      applicationList = response; // 신청 목록 저장
+      gpList = response;
+      print("12312321 : " + gpList.length.toString());
+
+      // 👇 여기서 options를 세팅
+      options = gpList.map<String>((gp) => gp['aptName'] as String).toSet().toList();
+
+      // ✅ 첫 번째 값으로 초기 선택 설정
+      if (options.isNotEmpty) {
+        _selectedApartment = options.first;
+      }
+
       getSellerGroupPurchaseList();
     });
   }
 
-  Future<void> getSellerGroupPurchaseList() async {
-    String restId = "getEstimateRequestList"; // API ID
-    final param = jsonEncode({
-      //"stat": widget.stat,
-      "sllrNo": widget.sllrNo,
-    });
 
-    final response = await sendPostRequest(restId, param);
-    setState(() {
-      applicationList = response; // 신청 목록 저장
+  Future<void> getSellerGroupPurchaseList() async {
+    final param = jsonEncode({
+      "sllrNo": widget.sllrNo,
+      "reqGubun": "G"
     });
+    final response = await sendPostRequest("getEstimateRequestList", param);
+    setState(() {
+      applicationList = response;
+      print("12213321212 : " + applicationList.length.toString());
+    });
+  }
+
+  dynamic getSelectedGP() {
+    return gpList.firstWhere(
+          (gp) => (gp['aptName'] ?? '').trim() == _selectedApartment.trim(),
+      orElse: () => null,
+    );
   }
 
 
   @override
   Widget build(BuildContext context) {
+    final selectedGP = getSelectedGP();
+
     return Scaffold(
       backgroundColor: WitHomeTheme.wit_white,
       body: Padding(
@@ -125,8 +115,8 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
           children: [
             Column(
               children: [
-                SizedBox( // Column에 높이 제한을 추가
-                  height: MediaQuery.of(context).size.height * 0.25, // 예시: 화면 높이의 50%
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.25,
                   child: Column(
                     children: [
                       Expanded(
@@ -161,13 +151,10 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                     });
                                   },
                                   itemBuilder: (BuildContext context) {
-                                    return <String>['병점아이파크캐슬', '기흥역푸르지오'].map((String value) {
+                                    return options.map((String value) {
                                       return PopupMenuItem<String>(
                                         value: value,
-                                        child: Text(
-                                          value,
-                                          style: WitHomeTheme.title.copyWith(fontSize: 14),
-                                        ),
+                                        child: Text(value, style: WitHomeTheme.title.copyWith(fontSize: 14)),
                                       );
                                     }).toList();
                                   },
@@ -177,7 +164,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                       Padding(
                                         padding: const EdgeInsets.only(left: 10.0),
                                         child: Text(
-                                          _selectedApartment ?? '아파트 선택',
+                                          _selectedApartment,
                                           style: WitHomeTheme.title.copyWith(fontSize: 14),
                                         ),
                                       ),
@@ -192,14 +179,16 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                               ),
                             ),
                             LayoutBuilder(
-                              builder: (BuildContext context, BoxConstraints constraints) {
+                              builder: (context, constraints) {
                                 return Stack(
                                   children: [
                                     Positioned(
                                       bottom: constraints.maxHeight * 0.31,
                                       left: constraints.maxWidth * 0.15,
                                       child: Text(
-                                        '선착순모집 정원 10 / 신청 5',
+                                        selectedGP != null
+                                            ? '선착순모집 정원 ${selectedGP['limitCount']} / 신청 ${selectedGP['reqCount']}'
+                                            : '공동구매 정보 없음',
                                         style: WitHomeTheme.subtitle.copyWith(
                                           fontSize: MediaQuery.of(context).size.width * 0.03,
                                           color: WitHomeTheme.wit_white,
@@ -210,7 +199,9 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                       bottom: constraints.maxHeight * 0.16,
                                       left: constraints.maxWidth * 0.15,
                                       child: Text(
-                                        '모집일자 2025/04/30 까지',
+                                        selectedGP != null
+                                            ? '모집일자 ${formatDate(selectedGP['gpEndDate'])} 까지'
+                                            : '',
                                         style: WitHomeTheme.subtitle.copyWith(
                                           fontSize: MediaQuery.of(context).size.width * 0.03,
                                           color: WitHomeTheme.wit_white,
@@ -227,21 +218,17 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                     ],
                   ),
                 ),
-
                 SizedBox(height: 10),
-                Padding( // Row 전체를 Padding으로 감싸서 여백 조정
-                  padding: EdgeInsets.only(left: 0, right: 0), // Stack의 Padding 값과 동일하게 설정
+                Padding(
+                  padding: EdgeInsets.zero,
                   child: Row(
                     children: [
                       Expanded(
                         flex: 2,
                         child: InkWell(
-                          onTap: () {
-                            // onTap 이벤트 추가
-                            // 마감 완료 로직 추가
-                          },
+                          onTap: () {},
                           child: Container(
-                            padding: EdgeInsets.all(0), // 모든 방향 패딩을 0으로 설정
+                            padding: EdgeInsets.zero,
                             child: Center(
                               child: Image.asset(
                                 'assets/images/마감완료.png',
@@ -256,12 +243,9 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                       Expanded(
                         flex: 3,
                         child: InkWell(
-                          onTap: () {
-                            // onTap 이벤트 추가
-                            // 마감 완료 로직 추가
-                          },
+                          onTap: () {},
                           child: Container(
-                            padding: EdgeInsets.all(0), // 모든 방향 패딩을 0으로 설정
+                            padding: EdgeInsets.zero,
                             child: Center(
                               child: Image.asset(
                                 'assets/images/조기마감.png',
@@ -276,12 +260,9 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                       Expanded(
                         flex: 1,
                         child: InkWell(
-                          onTap: () {
-                            // onTap 이벤트 추가
-                            // 마감 완료 로직 추가
-                          },
+                          onTap: () {},
                           child: Container(
-                            padding: EdgeInsets.all(0), // 모든 방향 패딩을 0으로 설정
+                            padding: EdgeInsets.zero,
                             child: Center(
                               child: Image.asset(
                                 'assets/images/메세지.png',
@@ -298,7 +279,6 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                 ),
               ],
             ),
-
             SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
@@ -314,27 +294,25 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
     );
   }
 
-
-
   Widget buildApplicationItem(dynamic application) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.0),
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/견적설명 (2).png'), // 배경 이미지 설정
-          fit: BoxFit.cover, // 배경 이미지를 꽉 채우도록 설정
+          image: AssetImage('assets/images/견적설명 (2).png'),
+          fit: BoxFit.cover,
         ),
-        borderRadius: BorderRadius.circular(8), // 모서리 둥글게
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top : 12.0, bottom: 27, left: 16, right: 16),
+        padding: const EdgeInsets.only(top: 12.0, bottom: 27, left: 16, right: 16),
         child: Row(
           children: [
             Container(
               width: 50,
-              height: 50, // 이미지 높이 설정
+              height: 50,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25), // 둥근 프로필 사진
+                borderRadius: BorderRadius.circular(25),
                 image: DecorationImage(
                   image: AssetImage('assets/images/profile1.png'),
                   fit: BoxFit.cover,
@@ -347,40 +325,30 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    application['estDt'] ?? '날짜 없음', // 신청 날짜
-                    style: WitHomeTheme.title
-                        .copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+                    application['estDt'] ?? '날짜 없음',
+                    style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                   ),
-                  //SizedBox(height: 4),
                   Text(
-                    application['prsnName'] ?? '신청자명 없음', // 신청자 이름
+                    application['prsnName'] ?? '신청자명 없음',
                     style: WitHomeTheme.title.copyWith(fontSize: 16),
                   ),
-                  SizedBox(height: 6), // 이름과 아파트명 사이의 간격
+                  SizedBox(height: 6),
                   Text(
-                    application['aptName'] ?? '아파트명 없음', // 아파트명
-                    style: WitHomeTheme.title
-                        .copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
+                    application['aptName'] ?? '아파트명 없음',
+                    style: WitHomeTheme.title.copyWith(fontSize: 12, color: WitHomeTheme.wit_gray),
                   ),
                 ],
               ),
             ),
             TextButton(
-              onPressed: () {
-                // 신청 버튼 클릭 시 로직 추가
-              },
+              onPressed: () {},
               style: TextButton.styleFrom(
-                //padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
-                padding: EdgeInsets.only(top:14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(0), // 테두리 없애기
-                ),
+                padding: EdgeInsets.only(top: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
               ),
               child: Text(
-                // application['stat'] ?? '상태 없음', // 상태
                 '신청',
-                style: WitHomeTheme.title
-                    .copyWith(fontSize: 14,),
+                style: WitHomeTheme.title.copyWith(fontSize: 14),
               ),
             ),
           ],
@@ -388,99 +356,9 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
       ),
     );
   }
-
 }
 
-
-/*Text(
-              '> 공동구매 진행 APT',
-              style: WitHomeTheme.title.copyWith(fontSize: 20, color: WitHomeTheme.wit_lightGreen),
-            ),
-            SizedBox(height: 8),
-            GestureDetector(
-              onTap: () {
-                String initialSelection = options.isNotEmpty ? options.first : ''; // 기본값을 options의 첫 번째 값으로 설정
-                WitHomeWidgets.showSelectBox(context, initialSelection, options, (option) {
-                  setState(() {
-                    selectedOption = option;
-                    /// _storage.write(key: 'aptName', value: option);
-                  });
-                });
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 50.0,
-                decoration: BoxDecoration(
-                  border: Border.all(color: WitHomeTheme.grey),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16.0),
-                      child: Text(
-                        selectedOption.isNotEmpty ? selectedOption : (options.isNotEmpty ? options.first : 'APT 선택'),
-                        style: WitHomeTheme.title,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(right: 16.0),
-                      child: Icon(Icons.arrow_drop_down, color: WitHomeTheme.darkText),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 16),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: '> 선착순 모집 정원 ',
-                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
-                  ),
-                  TextSpan(
-                    text: '10', //'${applicationList.length}', // 신청 수
-                    style: WitHomeTheme.title.copyWith(fontSize: 16), // 빨간색
-                  ),
-                  TextSpan(
-                    text: ' 명 ',
-                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
-                  ),
-                  TextSpan(
-                    text: '- 신청 ',
-                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
-                  ),
-                  TextSpan(
-                    text: '5',
-                    style: WitHomeTheme.title.copyWith(fontSize: 16), // 녹색
-                  ),
-                  TextSpan(
-                    text: ' 명',
-                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 8),
-            RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: '> 모집 일자 ',
-                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 녹색
-                  ),
-                  TextSpan(
-                    text: '25 / 03 / 31',
-                    style: WitHomeTheme.title.copyWith(fontSize: 16), // 빨간색
-                  ),
-                  TextSpan(
-                    text: ' 까지',
-                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16), // 빨간색
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 16),*/
+String formatDate(String yyyymmdd) {
+  if (yyyymmdd.length != 8) return yyyymmdd;
+  return '${yyyymmdd.substring(0, 4)}/${yyyymmdd.substring(4, 6)}/${yyyymmdd.substring(6, 8)}';
+}
