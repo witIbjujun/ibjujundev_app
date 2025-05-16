@@ -86,13 +86,15 @@ class TitleAndMenu extends StatelessWidget {
             },
             itemBuilder: (BuildContext context) {
               return [
-                if (boardDetailInfo["creUser"] == loginClerkNo && (bordKeyGbn != "UH" || bordKeyGbn != "GJ"))...[
+                if (boardDetailInfo["creUser"] == loginClerkNo && (bordKeyGbn == "UH" && bordKeyGbn != "GJ"))...[
                   PopupMenuItem<String>(
                     value: 'edit',
                     child: Text('수정하기',
                       style: WitHomeTheme.subtitle,
                     ),
                   ),
+                ],
+                if (boardDetailInfo["creUser"] == loginClerkNo) ...[
                   PopupMenuItem<String>(
                     value: 'delete',
                     child: Text('삭제하기',

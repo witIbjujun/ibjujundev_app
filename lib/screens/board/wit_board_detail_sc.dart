@@ -7,7 +7,7 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 
 dynamic boardDetailInfo = {};
 String boardTitle = "";
-String boardKeyGbn = "";
+
 
 List<dynamic> boardDetailImageList = [];
 
@@ -17,15 +17,13 @@ class BoardDetail extends StatefulWidget {
 
   final dynamic param;
   final String bordTitle;
-  final String bordKeyGbn;
 
-  const BoardDetail({super.key, required this.param, required this.bordTitle, required this.bordKeyGbn});
+  const BoardDetail({super.key, required this.param, required this.bordTitle});
 
   @override
   State<StatefulWidget> createState() {
     boardDetailInfo = this.param;
     boardTitle = this.bordTitle;
-    boardKeyGbn = this.bordKeyGbn;
     return BoardDetailState();
   }
 }
@@ -36,10 +34,15 @@ class BoardDetailState extends State<BoardDetail> {
   final secureStorage = FlutterSecureStorage();
 
   String loginClerkNo = "";
+  // 게시판 구분
+  String bordTypeGbn = "";
 
   @override
   void initState() {
     super.initState();
+
+    // 게시판 구분
+    bordTypeGbn = widget.param["bordType"].substring(0, 2);
 
     // 게시판 조회수 증가
     boardRdCntUp();
@@ -93,7 +96,7 @@ class BoardDetailState extends State<BoardDetail> {
                         context: context,
                         loginClerkNo : loginClerkNo,
                         callBack: reSearch,
-                        bordKeyGbn: boardKeyGbn,
+                        bordKeyGbn: bordTypeGbn,
                       ),
                       SizedBox(height: 20),
                       UserInfo(
@@ -115,7 +118,7 @@ class BoardDetailState extends State<BoardDetail> {
                         ),
                         SizedBox(height: 20),
                       ] else ...[],
-                      if (boardKeyGbn != "UH" && boardKeyGbn != "GJ")...[
+                      if (bordTypeGbn != "UH" && bordTypeGbn != "GJ")...[
                         Container(
                           height: 1,
                           color: WitHomeTheme.wit_extraLightGrey,

@@ -111,14 +111,14 @@ class BoardListView extends StatelessWidget {
   final Function refreshBoardList;
   final ScrollController scrollController;
   final String bordTitle;
-  final String bordKeyGbn;
+  final String bordTypeGbn;
 
   BoardListView({
     required this.boardList,
     required this.refreshBoardList,
     required this.scrollController,
     required this.bordTitle,
-    required this.bordKeyGbn,
+    required this.bordTypeGbn,
   });
 
   @override
@@ -209,8 +209,8 @@ class BoardListView extends StatelessWidget {
                                         SizedBox(height: 10),
                                         Row(
                                           children: [
-                                            // bordKeyGbn 값이 "UH"인 경우
-                                            if (bordKeyGbn == "UH") ...[
+                                            // bordTypeGbn 값이 "UH"인 경우
+                                            if (bordTypeGbn == "UH") ...[
                                               Expanded(
                                                 child: Text(
                                                   // 사용자 이름, 날짜, 조회수 뒤에 계산된 별 문자열 추가
@@ -219,7 +219,7 @@ class BoardListView extends StatelessWidget {
                                                 ),
                                               )
                                             ]
-                                            // bordKeyGbn 값이 "UH"가 아닌 경우
+                                            // bordTypeGbn 값이 "UH"가 아닌 경우
                                             else ...[
                                               Expanded(
                                                 child: Text(
@@ -254,7 +254,7 @@ class BoardListView extends StatelessWidget {
                                     ],
                                   ),
                                 ],
-                                if (bordKeyGbn != "UH" && bordKeyGbn != "GJ")...[
+                                if (bordTypeGbn != "UH" && bordTypeGbn != "GJ")...[
                                   SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
                                   Container(
                                     child: Column(
@@ -293,7 +293,7 @@ class BoardListView extends StatelessWidget {
                             onTap: () async {
                               await Navigator.push(
                                 context,
-                                SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle, bordKeyGbn : bordKeyGbn)),
+                                SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle)),
                               );
                               await refreshBoardList();
                             },

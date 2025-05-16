@@ -36,6 +36,8 @@ class _BoardWriteState extends State<BoardWrite> {
 
   List<File> _images = [];
   List<String> fileDelInfo = [];
+  // 게시판 구분
+  String bordTypeGbn = "";
 
   // 제목
   final TextEditingController _titleController = TextEditingController();
@@ -43,16 +45,37 @@ class _BoardWriteState extends State<BoardWrite> {
   final TextEditingController _contentController = TextEditingController();
   // 이미지 picker
   final ImagePicker _picker = ImagePicker();
+  // 별점 상태 변수 (0: 선택 안됨, 1~5: 선택된 별점)
+  int starRating = 0;
 
   @override
   void initState() {
     super.initState();
+
+    // 게시판 구분
+    bordTypeGbn = widget.bordType.substring(0, 2);
 
     // boardInfo가 있을 경우 제목과 내용 설정
     if (widget.boardInfo != null) {
       _titleController.text = widget.boardInfo['bordTitle'] ?? '';
       _contentController.text = widget.boardInfo['bordContent'] ?? '';
     }
+  }
+
+  // 별 아이콘을 생성하는 위젯
+  Widget _buildStar(int starIndex) {
+    return InkWell( // 탭 감지를 위해 InkWell 사용
+      onTap: () {
+        setState(() {
+          starRating = starIndex + 1; // 탭한 별 인덱스에 1을 더하여 별점 설정
+        });
+      },
+      child: Icon(
+        Icons.star, // 별 아이콘
+        color: starRating > starIndex ? WitHomeTheme.wit_lightYellow : WitHomeTheme.wit_lightgray, // 선택된 별보다 작거나 같으면 노란색, 아니면 회색
+        size: 60.0, // 별 크기
+      ),
+    );
   }
 
   @override
@@ -71,27 +94,49 @@ class _BoardWriteState extends State<BoardWrite> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "제목",
-                  style: WitHomeTheme.title,
-                ),
-                TextField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "제목을 입력하세요",
-                    hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+                if (bordTypeGbn == "UH")...[
+                  Center( // 이 부분을 Center로 감싸서 가운데 정렬
+                    child: Text(
+                      "이용 후기는 어떠셨나요?", // 별점 레이블
+                      style: WitHomeTheme.title,
+                    ),
                   ),
-                  style: WitHomeTheme.subtitle,
-                  maxLines: 1,
-                ),
-                SizedBox(height: 10),
+                  SizedBox(height: 10),
+                  Center( // 이 부분을 Center로 감싸서 가운데 정렬
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: List.generate(5, (index) => _buildStar(index)),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                ],
+                if (bordTypeGbn != "UH")...[
+                  Text(
+                    "제목",
+                    style: WitHomeTheme.title,
+                  ),
+                  TextField(
+                    controller: _titleController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "제목을 입력하세요",
+                      hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+                    ),
+                    style: WitHomeTheme.subtitle,
+                    maxLines: 1,
+                  ),
+                  SizedBox(height: 10),
+                  ],
                 Container(
                   height: 1,
                   color: WitHomeTheme.wit_extraLightGrey,
                 ),
                 SizedBox(height: 10),
-                Text("내용", style: WitHomeTheme.title),
+                if (bordTypeGbn == "UH")...[
+                  Text("후기 작성", style: WitHomeTheme.title),
+                ] else ...[
+                  Text("내용", style: WitHomeTheme.title),
+                ],
                 TextField(
                     controller: _contentController,
                     decoration: InputDecoration(
@@ -158,8 +203,6 @@ class _BoardWriteState extends State<BoardWrite> {
                                       ),
                                     ),
                                     Positioned(
-                                      right: 0,
-                                      top: 0,
                                       child: IconButton(
                                         icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
                                         onPressed: () {
@@ -231,8 +274,6 @@ class _BoardWriteState extends State<BoardWrite> {
                     );
                   },
                 );
-                // UI가 즉시 업데이트 되도록 잠깐 지연
-                await Future.delayed(Duration(milliseconds: 500));
                 await saveImages();
                 Navigator.of(context).pop(); // 프로그래스 바 닫기
               },
@@ -253,18 +294,30 @@ class _BoardWriteState extends State<BoardWrite> {
   // [서비스] 이미지 저장
   Future<void> saveImages() async {
 
+    // 별점 입력 체크
+    if (starRating == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("별점을 입력해주세요.")));
+      return;
+    }
+
     // 제목 입력 체크
-    if (_titleController.text.trim().isEmpty) {
-      alertDialog.show(context, "제목을 입력해주세요.");
+    if (_titleController.text.trim().isEmpty && bordTypeGbn != "UH") {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("제목을 입력해주세요.")));
       return;
     }
 
     // 내용 입력 체크
     if (_contentController.text.trim().isEmpty) {
-      alertDialog.show(context, "내용을 입력해주세요.");
+      String txt = "내용";
+      if (bordTypeGbn == "UH") {
+        txt = "후기";
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(txt + "을 입력해주세요.")));
       return;
     }
-    
+
+    await Future.delayed(Duration(milliseconds: 500));
+
     // 이미지 확인
     if (_images.isEmpty) {
       saveBoardInfo(null);
@@ -298,6 +351,7 @@ class _BoardWriteState extends State<BoardWrite> {
         "sllrNo": widget.sllrNo,
         "reqNo": widget.reqNo,
         "ctgrId": widget.ctgrId,
+        "starRating": starRating,
         "creUser": loginClerkNo,
         "fileInfo": fileInfo
       });
@@ -308,12 +362,17 @@ class _BoardWriteState extends State<BoardWrite> {
         "bordTitle": _titleController.text,
         "bordContent": _contentController.text,
         "bordNo" : widget.boardInfo["bordNo"],
-        "bordKey": widget.bordKey,
+        "bordKey": widget.boardInfo["bordKey"],
         "bordType": widget.boardInfo["bordType"],
+        "aptNo": widget.boardInfo["aptNo"],
+        "sllrNo": widget.boardInfo["sllrNo"],
+        "reqNo": widget.boardInfo["reqNo"],
+        "ctgrId": widget.boardInfo["ctgrId"],
         "creUser": loginClerkNo,
         "updUser": loginClerkNo,
         "fileInfo": fileInfo,
         "fileDelInfo": fileDelInfo,
+        "starRating": starRating,
       });
     }
 
@@ -321,16 +380,7 @@ class _BoardWriteState extends State<BoardWrite> {
 
     if (result != null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 성공!")));
-      Navigator.pop(context,
-
-        SlideRoute(page: Board(bordType: widget.bordType,
-                          bordKey: widget.bordKey,
-                          aptNo: widget.aptNo,
-                          sllrNo: widget.aptNo,
-                          reqNo: widget.aptNo,
-                          ctgrId: widget.aptNo,
-                          creUserId: widget.creUserId)),
-      );
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패!")));
     }
