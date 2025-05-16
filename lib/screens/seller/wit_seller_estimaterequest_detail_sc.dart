@@ -784,7 +784,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                   MaterialPageRoute(builder: (context) =>  CustomChatScreen(
                                     estNo,   // 첫 번째 인자: 요청 번호
                                     seq,     // 두 번째 인자: 시퀀스 (chatId)
-                                    "userView",      // 세 번째 인자: 뷰 타입
+                                    "sellerView",      // 세 번째 인자: 뷰 타입
                                     ),
                                   ),
                                 );
@@ -794,7 +794,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                   MaterialPageRoute(builder: (context) =>  CustomChatScreen(
                                     estNo,   // 첫 번째 인자: 요청 번호
                                     seq,     // 두 번째 인자: 시퀀스 (chatId)
-                                    "userView",      // 세 번째 인자: 뷰 타입
+                                    "sellerView",      // 세 번째 인자: 뷰 타입
                                   ),
                                   ),
                                 );
