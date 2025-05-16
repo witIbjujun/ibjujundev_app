@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_launcher_icons/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -8,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:portone_flutter/iamport_certification.dart';
 import 'package:portone_flutter/model/certification_data.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:witibju/screens/seller/wit_seller_agreement1.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
@@ -50,6 +52,12 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
   String hpErrorMessage = '';
   String zipCodeErrorMessage = '';
   String address2ErrorMessage = '';
+
+  final _formKey = GlobalKey<FormState>();
+
+  final Map<String, bool> _agreementList = {
+    "(필수) 전자금융거래 기본약관 동의": false,
+  };
 
   @override
   void initState() {
@@ -170,20 +178,34 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
     getSellerInfo(widget.sllrNo);
   }
 
-  void _showAlertDialog(String title, String message) {
+  void _showAlertDialog(String title, String content) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
-          content: Text(message),
+          backgroundColor: WitHomeTheme.wit_white, // 배경을 흰색으로 설정
+          title: Text(
+            title,
+            style: WitHomeTheme.title.copyWith(fontSize: 16),
+          ),
+          content: Text(
+            content,
+            style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('확인'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.grey[300], // ✅ 회색 배경
+              ),
+              child: Text(
+                '확인',
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
+
           ],
         );
       },
@@ -202,6 +224,26 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
     } else {
       throw Exception('주소를 가져오는 데 실패했습니다.');
     }
+  }
+
+  bool get _isAllRequiredChecked {
+    return _agreementList.entries
+        .where((e) => e.key.startsWith('(필수)'))
+        .every((e) => e.value);
+  }
+
+  /*bool get _isAllChecked => _agreementList.values.every((v) => v);
+  void _toggleAll(bool? value) {
+    setState(() {
+      final val = value ?? false;
+      _agreementList.updateAll((key, _) => val);
+    });
+  }*/
+
+  void _toggleSingle(String key, bool? value) {
+    setState(() {
+      _agreementList[key] = value ?? false;
+    });
   }
 
   @override
@@ -342,6 +384,53 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
 
+              const SizedBox(height: 8),
+
+              /*CheckboxListTile(
+                title: const Text("전체 동의"),
+                value: _isAllChecked,
+                onChanged: _toggleAll,
+              ),*/
+
+              ListView(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                children: _agreementList.entries.map((entry) {
+                  String key = entry.key;
+                  bool value = entry.value;
+                  return CheckboxListTile(
+                    value: value,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (val) => _toggleSingle(key, val),
+                    title: GestureDetector(
+                      onTap: () {
+                        if (key.contains("전자금융거래 기본약관")) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SellerAgreement1()),
+                          );
+                        }
+                        // 다른 약관 페이지가 있으면 else if 추가 가능
+                        /* else if (key.contains("다른 약관 이름")) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Agreement2()),
+            );
+          } */
+                      },
+                      child: Text(
+                        key,
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+
+
               SizedBox(height: 10),
               Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
                 child: ElevatedButton(
@@ -366,6 +455,13 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
                       }
                     });
 
+                    if (!_isAllRequiredChecked) {
+                      _showAlertDialog(
+                          "약관 동의 필요", "서비스 가입을 위해 약관에 동의해주세요."
+                      );
+                      return;
+                    }
+
                     if (hpErrorMessage.isEmpty & zipCodeErrorMessage.isEmpty && address2ErrorMessage.isEmpty)
                     {
                       // 사업자 프로필 변경 로직
@@ -378,6 +474,7 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
                       await updateSellerProfile(hp1, zipCode, address1, address2);
                     }
                    },
+
                   child: Text('사업자등록 완료',
                     style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                   ),
@@ -527,3 +624,5 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
   }
 
 }
+
+
