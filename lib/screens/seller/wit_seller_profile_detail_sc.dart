@@ -63,6 +63,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
   @override
   void initState() {
     super.initState();
+
     sllrNo = widget.sllrNo.toString(); // 초기값 설정
     // 초기화 메서드 호출
     fetchData();

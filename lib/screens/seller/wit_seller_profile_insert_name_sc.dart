@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:convert';
@@ -46,6 +47,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
   String serviceErrorMessage = ''; // 서비스 품목 오류 메시지 변수
   bool _isAgreed = false; // 체크박스 상태 변수 (초기값 설정)
 
+  final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
 
   void showAsPeriodDialog(bool isAgreed, void Function(bool) onAgreed) {
     bool agreed = isAgreed; // 다이얼로그 내부에서 사용할 상태 변수
@@ -742,6 +744,9 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
     // REST ID
     String restId = "saveSellerProfile";
 
+    // clerkNo 추가
+    String? clerkNo = await secureStorage.read(key: 'clerkNo');
+
     String? saveServiceAreaCd = '';
     if (selectedLocations.isNotEmpty && selectedLocations.first['cd'] != null) {
       saveServiceAreaCd = selectedLocations.first['cd']; // 선택된 서비스 지역의 cd
@@ -768,6 +773,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
       "serviceItem": saveServiceItemCd,
       "asGbn":saveAsGbn,
       "regiLevel":"01",
+      "clerkNo": clerkNo
     });
 
     // API 호출
