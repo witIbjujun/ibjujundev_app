@@ -203,6 +203,8 @@ class _BoardWriteState extends State<BoardWrite> {
                                       ),
                                     ),
                                     Positioned(
+                                      right: -7,
+                                      top: -7,
                                       child: IconButton(
                                         icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
                                         onPressed: () {
@@ -238,8 +240,8 @@ class _BoardWriteState extends State<BoardWrite> {
                                       ),
                                     ),
                                     Positioned(
-                                      right: 0,
-                                      top: 0,
+                                      right: -7,
+                                      top: -7,
                                       child: IconButton(
                                         icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
                                         onPressed: () {
