@@ -4,6 +4,8 @@ import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/screens/board//wit_board_detail_sc.dart';
 
+import '../../common/wit_ImageViewer_sc.dart';
+
 class CustomSearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final TextEditingController searchController;
   final Function refreshBoardList;
@@ -135,7 +137,7 @@ class BoardListView extends StatelessWidget {
             controller: scrollController,
             slivers: [
               // 게시판 리스트
-              if (boardList.isEmpty)
+              if (boardList.isEmpty)...[
                 SliverToBoxAdapter(
                   child: Container(
                     color: WitHomeTheme.wit_white,
@@ -164,154 +166,289 @@ class BoardListView extends StatelessWidget {
                     ),
                   ),
                 )
-              else
-                SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
+              ] else ...[
+                  if (bordTypeGbn != "UH")...[
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
 
-                    final boardInfo = boardList[index];
-                    int starCount = int.tryParse((boardInfo["stsfRate"]?.toString() ?? '0')) ?? 0;
-                    String starString = "";
-                    if (starCount != 0) {
-                      starString = "  |  " + ("⭐" * starCount);
-                    }
+                        final boardInfo = boardList[index];
 
-                    return Container(
-                        color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
-                        child: Column(
-                        children: [
-                          ListTile(
-                            contentPadding: EdgeInsets.fromLTRB(17, 7, 17, 7),
-                            title: Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        return Container(
+                            color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
+                            child: Column(
+                            children: [
+                              ListTile(
+                                contentPadding: EdgeInsets.fromLTRB(17, 7, 17, 7),
+                                title: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        child: Column(
                                           children: [
-                                            Expanded(
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      boardInfo["bordTitle"],
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
-                                                    ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Text(
+                                                          boardInfo["bordTitle"],
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow.ellipsis,
+                                                          style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 10),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    // 사용자 이름, 날짜, 조회수만 표시 (별 문자열 없음)
+                                                    "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
+                                                    style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            // bordTypeGbn 값이 "UH"인 경우
-                                            if (bordTypeGbn == "UH") ...[
-                                              Expanded(
-                                                child: Text(
-                                                  // 사용자 이름, 날짜, 조회수 뒤에 계산된 별 문자열 추가
-                                                  "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}" + starString,
-                                                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
-                                                ),
-                                              )
-                                            ]
-                                            // bordTypeGbn 값이 "UH"가 아닌 경우
-                                            else ...[
-                                              Expanded(
-                                                child: Text(
-                                                  // 사용자 이름, 날짜, 조회수만 표시 (별 문자열 없음)
-                                                  "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
-                                                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
-                                                ),
-                                              ),
-                                            ],
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 10),
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.network(
-                                          apiUrl + boardInfo["imagePath"],
-                                          width: 55,
-                                          height: 55,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
-                                          },
                                         ),
                                       ),
+                                    ),
+                                    if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
+                                      Row(
+                                        children: [
+                                          SizedBox(width: 10),
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            child: Image.network(
+                                              apiUrl + boardInfo["imagePath"],
+                                              width: 55,
+                                              height: 55,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (context, error, stackTrace) {
+                                                return SizedBox(width: 0); // 오류 발생 시 빈 컨테이너
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
-                                  ),
-                                ],
-                                if (bordTypeGbn != "UH" && bordTypeGbn != "GJ")...[
-                                  SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
-                                  Container(
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
+                                    if (bordTypeGbn != "UH" && bordTypeGbn != "GJ")...[
+                                      SizedBox(width: 10), // 이미지 영역 뒤에 추가된 SizedBox
+                                      Container(
+                                        child: Column(
                                           children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                color: WitHomeTheme.wit_extraLightGrey,
-                                                borderRadius: BorderRadius.circular(10),
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                                              child: Column(
-                                                children: [
-                                                  Center(
-                                                    child: Text("${boardInfo["commentCnt"]}",
-                                                      style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
-                                                    ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    color: WitHomeTheme.wit_extraLightGrey,
+                                                    borderRadius: BorderRadius.circular(10),
                                                   ),
-                                                  SizedBox(height: 4),
-                                                  Text("댓글",
-                                                    style: WitHomeTheme.caption,
+                                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                                  child: Column(
+                                                    children: [
+                                                      Center(
+                                                        child: Text("${boardInfo["commentCnt"]}",
+                                                          style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 4),
+                                                      Text("댓글",
+                                                        style: WitHomeTheme.caption,
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ]
+                                  ],
+                                ),
+                                onTap: () async {
+                                  await Navigator.push(
+                                    context,
+                                    SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle)),
+                                  );
+                                  await refreshBoardList();
+                                },
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                child: Container(
+                                  height: 1,
+                                  color: WitHomeTheme.wit_extraLightGrey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      childCount: boardList.length,
+                    ),
+                  ),
+                ] else ... [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+
+                        final boardInfo = boardList[index];
+                        int starCount = int.tryParse((boardInfo["stsfRate"]?.toString() ?? '0')) ?? 0;
+                        String starString = "";
+                        if (starCount != 0) {
+                          starString = "    " + ("⭐" * starCount);
+                        }
+
+                        String imgStr = boardInfo["imagePath"] ?? "";
+                        List<String> imgList = imgStr.split(",").where((s) => s.isNotEmpty).toList();
+
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey[300]!),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10), // Container 자체 패딩
+                                  decoration: BoxDecoration(
+                                    color: WitHomeTheme.wit_extraLightGrey,
+                                    borderRadius: BorderRadius.circular(50),
                                   ),
-                                ]
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(width: 5),
+                                      Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: AssetImage('assets/images/profile1.png'),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    (boardInfo['aptNm'] ?? "") + " - " + boardInfo['ctgrNm'] ?? "",
+                                                    style: WitHomeTheme.title.copyWith(
+                                                      fontSize: 16,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 3),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  boardInfo['creUserNm'] + "    " + boardInfo['creDateTxt'],
+                                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                                ),
+                                                Text(
+                                                  "${starString}",
+                                                  style: WitHomeTheme.title.copyWith(fontSize: 18),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(height: 10),
+
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              boardInfo['bordContent'] ?? '',
+                                              style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      if (imgList.isNotEmpty) ...[
+                                        SizedBox(height: 10),
+                                        Container(
+                                          height: 80,
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: imgList.length,
+                                            itemBuilder: (context, index) {
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    SlideRoute(page: ImageViewer(
+                                                      imageUrls: imgList.map((item) => apiUrl + imgList[index]).toList(),
+                                                      initialIndex: index,
+                                                    )),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  width: 80,
+                                                  height: 80,
+                                                  margin: EdgeInsets.only(right: 8),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(apiUrl + imgList[index]),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
-                            onTap: () async {
-                              await Navigator.push(
-                                context,
-                                SlideRoute(page: BoardDetail(param: boardInfo, bordTitle : bordTitle)),
-                              );
-                              await refreshBoardList();
-                            },
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                            child: Container(
-                              height: 1,
-                              color: WitHomeTheme.wit_extraLightGrey,
-                            ),
-                          ),
-                        ],
+                        );
+                      },
+                        childCount: boardList.length,
                       ),
-                    );
-                  },
-                  childCount: boardList.length,
-                ),
-              ),
+                    ),
+                ],
+              ],
             ],
           ),
         ),

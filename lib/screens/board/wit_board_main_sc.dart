@@ -143,7 +143,7 @@ class BoardState extends State<Board> {
     // PARAM
     final param = jsonEncode({
       "bordType": widget.bordType,
-      "bordKey": widget.bordKey,
+      //"bordKey": widget.bordKey,
       "aptNo": widget.aptNo,
       "sllrNo": widget.sllrNo,
       "reqNo": widget.reqNo,
@@ -178,7 +178,7 @@ class BoardState extends State<Board> {
     // PARAM
     final param = jsonEncode({
       "bordType": widget.bordType,
-      "bordKey": widget.bordKey,
+      //"bordKey": widget.bordKey,
       "aptNo": widget.aptNo,
       "sllNo": widget.reqNo,
       "ctgrNo": widget.sllrNo,
