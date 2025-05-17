@@ -439,6 +439,40 @@ class BoardListView extends StatelessWidget {
                                           ),
                                         ),
                                       ],
+                                      SizedBox(height: 10),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () {
+
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: WitHomeTheme.wit_lightGreen, // 버튼 배경 색상 설정
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(8.0), // 모서리 라운드 값 설정 (숫자를 조절하여 라운드 정도 변경)
+                                                ),
+                                              ),
+                                              child: Text('상세 보기', style: WitHomeTheme.subtitle),
+                                            ),
+                                          ),
+                                          SizedBox(width: 8), // 버튼 사이 간격 유지
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              onPressed: () {
+
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: WitHomeTheme.wit_extraLightGrey, // 다른 색상 예시 (원하는 색상으로 변경 가능)
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(8.0), // 모서리 라운드 값 설정
+                                                ),
+                                              ),
+                                              child: Text('댓글 작성', style: WitHomeTheme.subtitle),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
