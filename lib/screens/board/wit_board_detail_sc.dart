@@ -41,8 +41,10 @@ class BoardDetailState extends State<BoardDetail> {
   void initState() {
     super.initState();
 
-    // 게시판 구분
-    bordTypeGbn = widget.param["bordType"].substring(0, 2);
+    // 게시판 타입 앞 2자리 추출
+    setState(() {
+      bordTypeGbn = widget.param["bordType"].substring(0, 2);
+    });
 
     // 게시판 조회수 증가
     boardRdCntUp();

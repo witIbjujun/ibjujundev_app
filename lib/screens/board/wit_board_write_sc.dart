@@ -52,8 +52,10 @@ class _BoardWriteState extends State<BoardWrite> {
   void initState() {
     super.initState();
 
-    // 게시판 구분
-    bordTypeGbn = widget.bordType.substring(0, 2);
+    // 게시판 타입 앞 2자리 추출
+    setState(() {
+      bordTypeGbn = widget.bordType.substring(0, 2);
+    });
 
     // boardInfo가 있을 경우 제목과 내용 설정
     if (widget.boardInfo != null) {
@@ -297,7 +299,7 @@ class _BoardWriteState extends State<BoardWrite> {
   Future<void> saveImages() async {
 
     // 별점 입력 체크
-    if (starRating == 0) {
+    if (starRating == 0 && bordTypeGbn == "UH") {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("별점을 입력해주세요.")));
       return;
     }

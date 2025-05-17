@@ -57,8 +57,10 @@ class BoardState extends State<Board> {
     super.initState();
 
     // 게시판 타입 앞 2자리 추출
-    bordTypeGbn = widget.bordType.substring(0, 2);
-
+    setState(() {
+      bordTypeGbn = widget.bordType.substring(0, 2);
+    });
+    
     // 스크롤 이벤트 추가
     _scrollController.addListener(_onScroll);
 
@@ -73,6 +75,9 @@ class BoardState extends State<Board> {
    */
   @override
   Widget build(BuildContext context) {
+
+    print(bordTypeGbn);
+
     return Scaffold(
       appBar: widget.appBarFlag ? CustomSearchAppBar(
         searchController: _searchController,

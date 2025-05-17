@@ -173,6 +173,9 @@ class BoardListView extends StatelessWidget {
 
                         final boardInfo = boardList[index];
 
+                        String imgStr = boardInfo["imagePath"] ?? "";
+                        List<String> imgList = imgStr.split(",").where((s) => s.isNotEmpty).toList();
+
                         return Container(
                             color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
                             child: Column(
@@ -220,14 +223,14 @@ class BoardListView extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    if (boardInfo["imagePath"] != null && boardInfo["imagePath"] != "") ...[
+                                    if (imgList.isNotEmpty) ...[
                                       Row(
                                         children: [
                                           SizedBox(width: 10),
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(10),
                                             child: Image.network(
-                                              apiUrl + boardInfo["imagePath"],
+                                              apiUrl + imgList.first,
                                               width: 55,
                                               height: 55,
                                               fit: BoxFit.cover,

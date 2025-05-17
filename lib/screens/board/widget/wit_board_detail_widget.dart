@@ -29,6 +29,9 @@ class TitleAndMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    print(bordKeyGbn);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -86,7 +89,7 @@ class TitleAndMenu extends StatelessWidget {
             },
             itemBuilder: (BuildContext context) {
               return [
-                if (boardDetailInfo["creUser"] == loginClerkNo && (bordKeyGbn == "UH" && bordKeyGbn != "GJ"))...[
+                if (boardDetailInfo["creUser"] == loginClerkNo && (bordKeyGbn != "UH" && bordKeyGbn != "GJ"))...[
                   PopupMenuItem<String>(
                     value: 'edit',
                     child: Text('수정하기',
