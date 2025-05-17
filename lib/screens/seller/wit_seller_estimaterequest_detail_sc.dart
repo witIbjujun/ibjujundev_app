@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:get/get_utils/get_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
   TextEditingController itemPrice1Controller = TextEditingController();
   TextEditingController estimateContentController = TextEditingController();
+  TextEditingController endReasonController = TextEditingController();
 
   String? contentError;
   String? priceError;
@@ -576,11 +578,12 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                 SizedBox(height: 20),
                 Row(
                   children: [
+                    if (!['99', '60', '70'].contains(reqState)) ...[
                     Expanded(
                       flex: 1,
                       child: ElevatedButton(
                         onPressed: () {
-                          TextEditingController reasonController =
+                          TextEditingController endReasonController =
                               TextEditingController();
 
                           showDialog(
@@ -608,7 +611,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                       ),
                                       const SizedBox(height: 16),
                                       TextField(
-                                        controller: reasonController,
+                                        controller: endReasonController,
                                         maxLines: 3,
                                         decoration: const InputDecoration(
                                           hintText: '작업 중지 사유를 입력하세요',
@@ -646,29 +649,35 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                           const SizedBox(width: 8),
                                           ElevatedButton(
                                             onPressed: () {
-                                              String reason =
-                                                  reasonController.text.trim();
+                                              String reason = endReasonController.text.trim();
+
+
+
                                               if (reason.isNotEmpty) {
-                                                updateEstimateInfo(
-                                                  estimateRequestInfoForSend[
-                                                          'companyId'] ??
-                                                      "",
-                                                  estimateRequestInfoForSend[
-                                                          'sllrClerkNo'] ??
-                                                      "",
-                                                  estimateRequestInfoForSend[
-                                                          'estNo'] ??
-                                                      "",
-                                                  estimateRequestInfoForSend[
-                                                          'seq'] ??
-                                                      "",
-                                                  reason,
-                                                  itemPrice1Controller.text,
+                                                updateEstimateEnd(
+                                                  context,
+                                                  estimateRequestInfoForSend['companyId'] ?? "",
+                                                  estimateRequestInfoForSend['sllrClerkNo'] ?? "",
+                                                  estimateRequestInfoForSend['estNo'] ?? "",
+                                                  estimateRequestInfoForSend['seq'] ?? "",
                                                   '99',
+                                                  reason,
+                                                  estimateContentController.text,
+                                                  itemPrice1Controller.text,
                                                 );
                                                 Navigator.of(context).pop();
+                                              } else {
+                                                // 입력값이 비어있으면 사용자에게 알림
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text('작업 중지 사유를 입력해주세요.'),
+                                                    duration: Duration(seconds: 2),
+                                                    behavior: SnackBarBehavior.floating,
+                                                  ),
+                                                );
                                               }
                                             },
+
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: WitHomeTheme
                                                   .wit_lightGreen, // 초록색 배경
@@ -713,6 +722,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ),
                     ),
                     const SizedBox(width: 10),
+
                     Expanded(
                       flex: 1,
                       child: ElevatedButton(
@@ -755,6 +765,16 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                       ),
                     ),
                     const SizedBox(width: 10),
+
+                    ]
+                    else ...[
+                      /// 버튼이 없어졌을 경우에도 공간 확보용으로 Spacer 삽입
+                      const Spacer(flex: 1),
+                      const SizedBox(width: 10),
+                      const Spacer(flex: 1),
+                      const SizedBox(width: 10),
+                    ],
+
                     Expanded(
                       flex: 2,
                       child: ElevatedButton(
@@ -801,38 +821,16 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                       inputItemPrice1,
                                       '20', // 상태를 '02'로 변경
                                     );
-                                  } else if (reqState == "20") {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CustomChatScreen(
-                                          estNo, // 첫 번째 인자: 요청 번호
-                                          seq, // 두 번째 인자: 시퀀스 (chatId)
-                                          "sellerView", // 세 번째 인자: 뷰 타입
-                                        ),
-                                      ),
-                                    );
-                                  } else if (reqState == "30") {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CustomChatScreen(
-                                          estNo, // 첫 번째 인자: 요청 번호
-                                          seq, // 두 번째 인자: 시퀀스 (chatId)
-                                          "sellerView", // 세 번째 인자: 뷰 타입
-                                        ),
-                                      ),
-                                    );
                                   } else {
-                                    // 견적 취소 로직
-                                    updateEstimateInfo(
-                                      sllrNo,
-                                      sllrClerkNo,
-                                      estNo,
-                                      seq,
-                                      estimateContent,
-                                      inputItemPrice1,
-                                      '99', // 상태를 '05'로 변경
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CustomChatScreen(
+                                          estNo, // 첫 번째 인자: 요청 번호
+                                          seq, // 두 번째 인자: 시퀀스 (chatId)
+                                          "sellerView", // 세 번째 인자: 뷰 타입
+                                        ),
+                                      ),
                                     );
                                   }
                                 }
@@ -843,11 +841,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               : reqState == "20" ||
                                       reqState == "30" ||
                                       reqState == "40" ||
-                                      reqState == "50" ||
-                                      reqState == "60" ||
-                                      reqState == "70"
+                                      reqState == "50"
                                   ? '메시지 대화하기'
-                                  : '취소',
+                                  : '메시지 보기',
                           style: WitHomeTheme.title.copyWith(
                               fontSize: 14, color: WitHomeTheme.wit_white),
                         ),
@@ -1157,7 +1153,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       "stat": reqState, // 02 : 판매자가 견적발송
       "cash": cash,
       "cashGbn": "02", // 02 : 견적발송
-      "fileInfo": fileInfo
+      "fileInfo": fileInfo,
+      "endReason": endReasonController.text,
     });
 
     // API 호출
@@ -1289,169 +1286,53 @@ Future<void> updateEstimateInfo2(
   }
 }
 
-// 성공 다이얼로그를 표시하는 메서드
-/*void _showSuccessDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('견적 발송 성공'),
-          content: Text('견적이 정상적으로 발송되었습니다.'),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // 초록색 배경
-                foregroundColor: Colors.white, // 하얀색 글씨
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
-                );
-              },
-              child: Text('확인'),
-            ),
-          ],
-        );
-      },
+// [서비스]견적 정보 저장
+Future<void> updateEstimateEnd(
+    BuildContext context,
+    dynamic sllrNo,
+    dynamic sllrClerkNo,
+    dynamic estNo,
+    dynamic seq,
+    dynamic reqState,
+    dynamic endReason,
+    dynamic estimateContent,
+    dynamic inputItemPrice1,
+    ) async {
+  // REST ID
+  String restId = "updateEstimateInfo";
+
+  // PARAM
+  final param = jsonEncode({
+    "sllrNo": sllrNo,
+    "sllrClerkNo": sllrClerkNo,
+    "estNo": estNo,
+    "seq": seq,
+    "stat": reqState, // 02 : 판매자가 견적발송
+    "endReason": endReason, // 02 : 판매자가 견적발송
+    "estimateContent": estimateContent,
+    "itemPrice1": inputItemPrice1,
+  });
+
+  // API 호출
+  final response = await sendPostRequest(restId, param);
+
+  // API 응답 처리
+  if (response != null) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => SellerProfileDetail(sllrNo: sllrNo)),
     );
-  }*/
-
-/*class PointNotOKDialog extends StatelessWidget {
-  final String sllrNo; // sllrNo 변수를 추가합니다.
-
-  PointNotOKDialog({required this.sllrNo}); // 생성자에 추가합니다.
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('캐시가 부족합니다.'),
-      content: Text('캐시를 충전하시겠습니까?'),
-      actions: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF63A566),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          onPressed: () {
-            // 충전 로직 추가
-            //Navigator.of(context).pop(); // 다이얼로그 닫기
-            // 충전 다이얼로그 띄우기
-            */ /*showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return PointPurchaseDialog();
-              },*/ /*
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => CashRecharge(sllrNo: sllrNo)),
-            );
-          },
-          child: Text('캐시충전'),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF8D8D8D),
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-          onPressed: () {
-            Navigator.of(context).pop(); // 다이얼로그 닫기
-          },
-          child: Text('취소'),
-        ),
-      ],
+    // 성공적으로 저장된 경우 처리
+    //_showSuccessDialog(context); // 다이얼로그 표시
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("견적이 성공적으로 발송되었습니다.")),
+    );
+  } else {
+    // 오류 처리
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("견적 저장에 실패했습니다.")),
     );
   }
-}*/
+}
 
-/*class PointPurchaseDialog extends StatefulWidget {
-  @override
-  _PointPurchaseDialogState createState() => _PointPurchaseDialogState();
-}*/
-
-/*class _PointPurchaseDialogState extends State<PointPurchaseDialog> {
-  int? _selectedPoint;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text('캐시충전으로 많은 견적서비스를 이용해보세요~',
-        style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
-            color: Colors.black
-        ),),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children: [3000, 5000, 10000, 30000, 50000, 100000].map((point) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedPoint = point;
-                  });
-                },
-                child: Container(
-                  width: 100,
-                  height: 50,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: _selectedPoint == point ? Colors.red : Colors.grey,
-                      width: 2,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text('$point P'),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-      actions: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green, // 초록색 배경
-            foregroundColor: Colors.white, // 하얀색 글씨
-          ),
-          onPressed: () {
-            // 결제하기 로직 추가 및 Intro로 이동
-            if (_selectedPoint != null) {
-              Navigator.of(context).pop(); // 다이얼로그 닫기
-              */ /*Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const TosspaymentsSampleApp()),
-              );*/ /*
-            } else {
-              // 포인트가 선택되지 않은 경우 알림
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('구매할 포인트를 선택해주세요.')),
-              );
-            }
-          },
-          child: Text('결제하기'),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.grey, // 회색 배경
-            foregroundColor: Colors.white, // 하얀색 글씨
-          ),
-          onPressed: () {
-            Navigator.of(context).pop(); // 다이얼로그 닫기
-          },
-          child: Text('취소'),
-        ),
-      ],
-    );
-  }
-}*/
