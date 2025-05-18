@@ -34,7 +34,18 @@ class BoardReportState extends State<BoardReport> {
   ];
 
   String? _selectedReason;
+  String bordTypeGbn = "";
   final TextEditingController _detailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 게시판 타입 앞 2자리 추출
+    setState(() {
+      bordTypeGbn = widget.boardInfo["bordType"].substring(0, 2);
+    });
+  }
 
   @override
   void dispose() {
@@ -44,6 +55,7 @@ class BoardReportState extends State<BoardReport> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("신고하기",
@@ -59,14 +71,24 @@ class BoardReportState extends State<BoardReport> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 제목과 작성자 정보 표시 영역
-              Text(
-                '제목  :  ' + widget.boardInfo["bordTitle"], // 작성자 정보 표시
-                style: WitHomeTheme.title,
-              ),
+              if (bordTypeGbn != "UH") ...[
+                Text(
+                  '제목  :  ' + widget.boardInfo["bordTitle"], // 작성자 정보 표시
+                  style: WitHomeTheme.title,
+                  maxLines: 1,
+                ),
+              ] else ...[
+                Text(
+                  '내용  :  ' + widget.boardInfo["bordContent"], // 작성자 정보 표시
+                  style: WitHomeTheme.title,
+                  maxLines: 1,
+                ),
+              ],
               SizedBox(height: 5), // 제목과 작성자 사이 간격
               Text(
                 '작성자  :  ' + widget.boardInfo["creUserNm"], // 작성자 정보 표시
                 style: WitHomeTheme.subtitle,
+                maxLines: 1,
               ),
 
               Divider(height: 30, thickness: 1), // 정보와 신고 사유 사이 구분선

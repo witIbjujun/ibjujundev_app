@@ -6,6 +6,7 @@ import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/screens/board//wit_board_detail_sc.dart';
 
 import '../../common/wit_ImageViewer_sc.dart';
+import '../wit_board_report_sc.dart';
 
 class CustomSearchAppBar extends StatefulWidget implements PreferredSizeWidget {
   final TextEditingController searchController;
@@ -302,250 +303,249 @@ class BoardListView extends StatelessWidget {
                     ),
                   ),
                 ] else ... [
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
 
-                        final boardInfo = boardList[index];
-                        int starCount = int.tryParse((boardInfo["stsfRate"]?.toString() ?? '0')) ?? 0;
-                        String starString = "";
-                        if (starCount != 0) {
-                          starString = "    " + ("⭐" * starCount);
-                        }
+                      final boardInfo = boardList[index];
+                      int starCount = int.tryParse((boardInfo["stsfRate"]?.toString() ?? '0')) ?? 0;
+                      String starString = "";
+                      if (starCount != 0) {
+                        starString = "    " + ("⭐" * starCount);
+                      }
 
-                        String imgStr = boardInfo["imagePath"] ?? "";
-                        List<String> imgList = imgStr.split(",").where((s) => s.isNotEmpty).toList();
+                      String imgStr = boardInfo["imagePath"] ?? "";
+                      List<String> imgList = imgStr.split(",").where((s) => s.isNotEmpty).toList();
 
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey[300]!),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(10), // Container 자체 패딩
-                                  decoration: BoxDecoration(
-                                    color: WitHomeTheme.wit_extraLightGrey,
-                                    borderRadius: BorderRadius.circular(50),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(width: 5),
-                                      Container(
-                                        width: 50,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            image: AssetImage('assets/images/profile1.png'),
-                                            fit: BoxFit.cover,
-                                          ),
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey[300]!),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10), // Container 자체 패딩
+                                decoration: BoxDecoration(
+                                  color: WitHomeTheme.wit_extraLightGrey,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(width: 5),
+                                    Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          image: AssetImage('assets/images/profile1.png'),
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                      SizedBox(width: 10),
-                                      Expanded(
+                                    ),
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded( // Text가 남은 공간을 모두 차지하도록 하여 PopupMenuButton을 오른쪽으로 밉니다.
+                                                child: Text(
+                                                  // 'bordKeyGbn' 변수를 사용하는 것으로 가정하고 수정했습니다.
+                                                  (boardInfo['aptNm'] ?? "") + " - " + (boardInfo['ctgrNm'] ?? ""), // null 처리 추가
+                                                  style: WitHomeTheme.title.copyWith(
+                                                    fontSize: 14,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ),
+                                              ),
+                                              if (bordTypeGbn == "UH")
+                                                PopupMenuButton<String>(
+                                                  icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
+                                                  color: WitHomeTheme.wit_white,
+                                                  iconSize: 25.0,
+                                                  onSelected: (value) async {
+                                                    if (value == "Detail") {
+
+                                                    } else if (value == 'reply') {
+                                                      showModalBottomSheet(
+                                                        context: context,
+                                                        isDismissible: true,
+                                                        isScrollControlled: true,
+                                                        builder: (context) {
+                                                          return Padding(
+                                                            padding: MediaQuery.of(context).viewInsets,
+                                                            child: Container(
+                                                              height: 341,
+                                                              child: ReplyWritePopWidget(bordNo: boardInfo["bordNo"]),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ).then((result) async {
+                                                        refreshBoardList();
+                                                      });
+                                                    } else if (value == 'report') {
+                                                      await Navigator.push(
+                                                        context,
+                                                        SlideRoute(page: BoardReport(boardInfo: boardInfo)),
+                                                      ).then((_) {
+                                                        refreshBoardList();
+                                                      });
+                                                    }
+                                                  },
+                                                  itemBuilder: (BuildContext context) {
+                                                    return [
+                                                      PopupMenuItem<String>(
+                                                        value: 'Detail',
+                                                        child: Text('상세보기', style: WitHomeTheme.subtitle),
+                                                      ),
+                                                      if(boardInfo['commentCnt'] == 0)...[
+                                                        PopupMenuItem<String>(
+                                                          value: 'reply',
+                                                          child: Text('댓글작성', style: WitHomeTheme.subtitle),
+                                                        ),
+                                                      ],
+                                                      PopupMenuItem<String>(
+                                                        value: 'report',
+                                                        child: Text('신고하기', style: WitHomeTheme.subtitle),
+                                                      ),
+                                                    ];
+                                                  },
+                                                ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                boardInfo['creUserNm'] + "    " + boardInfo['creDateTxt'],
+                                                style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                              ),
+                                              Text(
+                                                "${starString}",
+                                                style: WitHomeTheme.title.copyWith(fontSize: 18),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: 10),
+
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            boardInfo['bordContent'].trim() ?? '',
+                                            style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    if (imgList.isNotEmpty) ...[
+                                      SizedBox(height: 10),
+                                      Container(
+                                        height: 80,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: imgList.length,
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  SlideRoute(page: ImageViewer(
+                                                    imageUrls: imgList.map((item) => apiUrl + imgList[index]).toList(),
+                                                    initialIndex: index,
+                                                  )),
+                                                );
+                                              },
+                                              child: Container(
+                                                width: 80,
+                                                height: 80,
+                                                margin: EdgeInsets.only(right: 8),
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  image: DecorationImage(
+                                                    image: NetworkImage(apiUrl + imgList[index]),
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                    SizedBox(height: 10),
+
+                                    if(boardInfo['commentCnt'] > 0)...[
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: WitHomeTheme.wit_extraLightGrey,
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Row(
                                               children: [
+                                                Text(
+                                                  "사장님 - ",
+                                                  style: WitHomeTheme.title,
+                                                ),
                                                 Expanded(
                                                   child: Text(
-                                                    (boardInfo['aptNm'] ?? "") + " - " + boardInfo['ctgrNm'] ?? "",
-                                                    style: WitHomeTheme.title.copyWith(
-                                                      fontSize: 16,
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
+                                                    boardInfo['cmmtcreDateTxt'] ?? "",
+                                                    style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_gray),
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: 3),
+                                            SizedBox(height: 10),
                                             Row(
                                               children: [
                                                 Text(
-                                                  boardInfo['creUserNm'] + "    " + boardInfo['creDateTxt'],
+                                                  boardInfo['cmmtContent'].trim(),
                                                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                                ),
-                                                Text(
-                                                  "   ${boardInfo["commentCnt"]}",
-                                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                                ),
-                                                Text(
-                                                  "${starString}",
-                                                  style: WitHomeTheme.title.copyWith(fontSize: 18),
                                                 ),
                                               ],
                                             ),
                                           ],
                                         ),
                                       ),
-                                      SizedBox(width: 10),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
                                       SizedBox(height: 10),
-
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              boardInfo['bordContent'].trim() ?? '',
-                                              style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      if (imgList.isNotEmpty) ...[
-                                        SizedBox(height: 10),
-                                        Container(
-                                          height: 80,
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: imgList.length,
-                                            itemBuilder: (context, index) {
-                                              return GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                    context,
-                                                    SlideRoute(page: ImageViewer(
-                                                      imageUrls: imgList.map((item) => apiUrl + imgList[index]).toList(),
-                                                      initialIndex: index,
-                                                    )),
-                                                  );
-                                                },
-                                                child: Container(
-                                                  width: 80,
-                                                  height: 80,
-                                                  margin: EdgeInsets.only(right: 8),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(apiUrl + imgList[index]),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                      SizedBox(height: 10),
-
-                                      if(boardInfo['commentCnt'] > 0)...[
-                                        Container(
-                                          padding: const EdgeInsets.all(10), // Container 자체 패딩
-                                          decoration: BoxDecoration(
-                                            color: WitHomeTheme.wit_extraLightGrey,
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    "사장님 - ",
-                                                    style: WitHomeTheme.title,
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      boardInfo['cmmtcreDateTxt'] ?? "",
-                                                      style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_gray),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 10),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    boardInfo['cmmtContent'].trim(),
-                                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                      ],
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              onPressed: () {
-
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: WitHomeTheme.wit_lightGreen, // 버튼 배경 색상 설정
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(8.0), // 모서리 라운드 값 설정 (숫자를 조절하여 라운드 정도 변경)
-                                                ),
-                                              ),
-                                              child: Text('상세 보기', style: WitHomeTheme.subtitle),
-                                            ),
-                                          ),
-                                          SizedBox(width: 8), // 버튼 사이 간격 유지
-                                          if (boardInfo['commentCnt'] == 0)...[
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  showModalBottomSheet(
-                                                  context: context,
-                                                  isDismissible: true,
-                                                  isScrollControlled: true,
-                                                  builder: (context) {
-                                                    return Padding(
-                                                      padding: MediaQuery.of(context).viewInsets,
-                                                      child: Container(
-                                                        height: 341,
-                                                        child: ReplyWritePopWidget(bordNo: boardInfo["bordNo"]),
-                                                      ),
-                                                    );
-                                                  },
-                                                  ).then((result) async {
-                                                    refreshBoardList();
-                                                  });
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: WitHomeTheme.wit_extraLightGrey, // 다른 색상 예시 (원하는 색상으로 변경 가능)
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(8.0), // 모서리 라운드 값 설정
-                                                  ),
-                                                ),
-                                                child: Text('댓글 작성', style: WitHomeTheme.subtitle),
-                                              ),
-                                            ),
-                                          ]
-                                        ],
-                                      ),
                                     ],
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                        childCount: boardList.length,
-                      ),
+                        ),
+                      );
+                    },
+                      childCount: boardList.length,
                     ),
+                  ),
                 ],
               ],
             ],
