@@ -714,18 +714,52 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                       }
                                     });
                                   },
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.all(8),
-                                    color: Colors.transparent, // 터치 영역 확보용
-                                    child: Text(
-                                      item['bordContent'] ?? '',
-                                      style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                      maxLines: isExpanded ? null : 2,
-                                      overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                                    ),
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final content = item['bordContent'] ?? '';
+                                      final textStyle = WitHomeTheme.subtitle.copyWith(fontSize: 14);
+
+                                      final textSpan = TextSpan(text: content, style: textStyle);
+                                      final textPainter = TextPainter(
+                                        text: textSpan,
+                                        maxLines: 2,
+                                        textDirection: TextDirection.ltr,
+                                      )..layout(maxWidth: constraints.maxWidth);
+
+                                      final bool isLong = textPainter.didExceedMaxLines;
+
+                                      return Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.all(8),
+                                        color: Colors.transparent, // 전체 터치 영역 확보
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              content,
+                                              style: textStyle,
+                                              maxLines: isExpanded ? null : 2,
+                                              overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                                            ),
+                                            if (!isExpanded && isLong)
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 4),
+                                                child: Text(
+                                                  '... 더보기',
+                                                  style: textStyle.copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.grey[600],
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
+
+
                               ],
                             ),
                           ),
@@ -749,17 +783,31 @@ class SellerProfileViewState extends State<SellerProfileView> {
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: WitHomeTheme.wit_lightGreen, // ✅ 초록색 배경
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12), // 선택
+                              backgroundColor: WitHomeTheme.wit_white, // ✅ 초록색 배경
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: Text("더 보기",
-                              style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "더보기",
+                                  style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightGreen),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(
+                                  Icons.keyboard_arrow_down, // 또는 Icons.arrow_drop_down
+                                  size: 20,
+                                  color: WitHomeTheme.wit_lightGreen,
+
+                                ),
+                              ],
                             ),
                           ),
-                        ),
+                        )
+
                     ],
                   ),
                 ),

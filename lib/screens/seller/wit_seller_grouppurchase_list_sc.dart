@@ -461,7 +461,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                     borderRadius: BorderRadius.circular(0)),
               ),
               child: Text(
-                '신청',
+                application["stat"],
                 style: WitHomeTheme.title.copyWith(fontSize: 14),
               ),
             ),

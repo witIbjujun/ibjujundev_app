@@ -204,26 +204,60 @@ class EstimateItem extends StatelessWidget {
             SizedBox(height: 10), // 텍스트와 내용 사이의 간격
             GestureDetector(
               onTap: () {
-                onExpandToggle(!isExpanded); // 텍스트 영역을 클릭하면 상세보기/접기 토글
+                onExpandToggle(!isExpanded);
               },
-              child: Container(
-                padding: EdgeInsets.all(12), // 내용의 내부 여백
-                decoration: BoxDecoration(
-                  color: Colors.grey[300], // 회색 배경
-                  borderRadius: BorderRadius.circular(8), // 둥근 모서리
-                ),
-                child: Align(
-                  alignment: Alignment.centerLeft, // 왼쪽 정렬
-                  child: Text(
-                    reqContents, // 내용
-                    style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                    textAlign: TextAlign.left, // 텍스트 왼쪽 정렬
-                    maxLines: isExpanded ? null : 3, // 기본 3줄 표시
-                    overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis, // 줄 넘침 처리
-                  ),
-                ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final textStyle = WitHomeTheme.subtitle.copyWith(fontSize: 14);
+                  final textSpan = TextSpan(text: reqContents, style: textStyle);
+
+                  final textPainter = TextPainter(
+                    text: textSpan,
+                    maxLines: 3,
+                    textDirection: TextDirection.ltr,
+                  )..layout(maxWidth: constraints.maxWidth);
+
+                  final bool isLong = textPainter.didExceedMaxLines;
+
+                  return Container(
+                    width: double.infinity, // ✅ 너비 고정
+                    padding: const EdgeInsets.all(12),
+                    constraints: const BoxConstraints(
+                      minHeight: 70, // ✅ 최소 높이 고정
+                      minWidth: double.infinity, // ✅ 너비 유지
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          reqContents,
+                          style: textStyle,
+                          textAlign: TextAlign.left,
+                          maxLines: isExpanded ? null : 3,
+                          overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                        ),
+                        if (!isExpanded && isLong)
+                          const SizedBox(height: 4),
+                        if (!isExpanded && isLong)
+                          Text(
+                            '... 더보기',
+                            style: textStyle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
+
+
           ],
         ),
       ),

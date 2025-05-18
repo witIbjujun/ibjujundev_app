@@ -713,7 +713,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               fontSize: 14, color: WitHomeTheme.wit_black),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[300],
+                          backgroundColor: Colors.grey[100],
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -756,7 +756,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               fontSize: 14, color: WitHomeTheme.wit_white),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: WitHomeTheme.wit_lightBlue,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
