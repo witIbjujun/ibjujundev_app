@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/board/widget/wit_board_replywrite_pop.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/util/wit_code_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
@@ -374,6 +375,10 @@ class BoardListView extends StatelessWidget {
                                                   style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                                                 ),
                                                 Text(
+                                                  "   ${boardInfo["commentCnt"]}",
+                                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                                ),
+                                                Text(
                                                   "${starString}",
                                                   style: WitHomeTheme.title.copyWith(fontSize: 18),
                                                 ),
@@ -398,7 +403,7 @@ class BoardListView extends StatelessWidget {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              boardInfo['bordContent'] ?? '',
+                                              boardInfo['bordContent'].trim() ?? '',
                                               style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                                             ),
                                           ),
@@ -440,6 +445,46 @@ class BoardListView extends StatelessWidget {
                                         ),
                                       ],
                                       SizedBox(height: 10),
+
+                                      if(boardInfo['commentCnt'] > 0)...[
+                                        Container(
+                                          padding: const EdgeInsets.all(10), // Container 자체 패딩
+                                          decoration: BoxDecoration(
+                                            color: WitHomeTheme.wit_extraLightGrey,
+                                            borderRadius: BorderRadius.circular(10),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    "사장님 - ",
+                                                    style: WitHomeTheme.title,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      boardInfo['cmmtcreDateTxt'] ?? "",
+                                                      style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_gray),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    boardInfo['cmmtContent'].trim(),
+                                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
                                       Row(
                                         children: [
                                           Expanded(
@@ -457,20 +502,37 @@ class BoardListView extends StatelessWidget {
                                             ),
                                           ),
                                           SizedBox(width: 8), // 버튼 사이 간격 유지
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              onPressed: () {
-
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: WitHomeTheme.wit_extraLightGrey, // 다른 색상 예시 (원하는 색상으로 변경 가능)
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(8.0), // 모서리 라운드 값 설정
+                                          if (boardInfo['commentCnt'] == 0)...[
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  showModalBottomSheet(
+                                                  context: context,
+                                                  isDismissible: true,
+                                                  isScrollControlled: true,
+                                                  builder: (context) {
+                                                    return Padding(
+                                                      padding: MediaQuery.of(context).viewInsets,
+                                                      child: Container(
+                                                        height: 341,
+                                                        child: ReplyWritePopWidget(bordNo: boardInfo["bordNo"]),
+                                                      ),
+                                                    );
+                                                  },
+                                                  ).then((result) async {
+                                                    refreshBoardList();
+                                                  });
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: WitHomeTheme.wit_extraLightGrey, // 다른 색상 예시 (원하는 색상으로 변경 가능)
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(8.0), // 모서리 라운드 값 설정
+                                                  ),
                                                 ),
+                                                child: Text('댓글 작성', style: WitHomeTheme.subtitle),
                                               ),
-                                              child: Text('댓글 작성', style: WitHomeTheme.subtitle),
                                             ),
-                                          ),
+                                          ]
                                         ],
                                       ),
                                     ],
