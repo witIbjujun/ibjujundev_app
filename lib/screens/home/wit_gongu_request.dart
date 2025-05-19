@@ -14,9 +14,15 @@ import '../../util/wit_api_ut.dart';
 import '../board/wit_board_main_sc.dart';
 import '../checkList/wit_checkList_main_sc.dart';
 import '../preInspaction/wit_preInsp_main_sc.dart';
+import 'models/gonguInfo.dart';
 
+//공동구매
 class GonguRequest extends StatefulWidget  {
-  const GonguRequest({super.key});
+
+  final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
+
+  GonguRequest({super.key});
+
 
   @override
   _GonguRequeststState createState() => _GonguRequeststState();
@@ -27,6 +33,11 @@ class _GonguRequeststState extends State<GonguRequest> {
 
   List<String> options = [];
   int _selectedIndex = 3; // ✅ "내정보" 탭이 기본 선택
+
+  List<GonguInfo> gonguRequest = [];
+
+  GonguInfo? _selectedGonguList;
+
   // 컨설리더 설정
   final _storage = const FlutterSecureStorage();
   TextEditingController _controller = TextEditingController();
@@ -38,6 +49,36 @@ class _GonguRequeststState extends State<GonguRequest> {
   @override
   void initState() {
     super.initState();
+    gonguList();
+  }
+
+  Future<void> gonguList() async {
+    print("📡 데이터 조회 시작");
+    String restId = "getGonguList";
+
+    String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
+    String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
+
+    final param = jsonEncode({
+      "aptNo": aptNo,
+      "reqUser": clerkNo,
+    });
+
+    try {
+      final response = await sendPostRequest(restId, param);
+      print("📡 응답 받음: ${jsonEncode(response)}");
+
+      final parsed = GonguInfo().parseRequestList(response) ?? [];
+      setState(() {
+        gonguRequest = parsed;
+        _selectedGonguList = parsed.isNotEmpty ? parsed.first : null;
+        print("🔎 UI 업데이트 완료");
+      });
+
+      print("📡 requests 업데이트됨, 길이: ${gonguRequest.length}");
+    } catch (e) {
+      print("❌ 신청 목록 조회 중 오류 발생: $e");
+    }
   }
 
     @override
@@ -75,48 +116,17 @@ class _GonguRequeststState extends State<GonguRequest> {
                 const SizedBox(height: 16),
                 // 2025.04.03: 공동구매 리스트 추가
                 Column(
-                  children: [
-                    _buildGonguItem(
-                      title: 'D-20 미세방충망',
-                      description: '초미세철망으로 확~터효과!',
-                      current: 38,
-                      max: 30,
-                      icon: Icons.grid_4x4,
-                      iconColor: Colors.grey[700]!,
-                    ),
-                    _buildGonguItem(
-                      title: '입주청소',
-                      description: '전문팀 새집증후군 해결!',
-                      current: null,
-                      max: null,
-                      icon: Icons.cleaning_services,
-                      iconColor: Colors.blue,
-                    ),
-                    _buildGonguItem(
-                      title: 'D-5 탄성코팅',
-                      description: '방수 곰팡이 차단!',
-                      current: 15,
-                      max: 14,
-                      icon: Icons.eco,
-                      iconColor: Colors.green,
-                    ),
-                    _buildGonguItem(
-                      title: '가구/가전',
-                      description: '조합부터 단독, 완벽한 스타일매치',
-                      current: null,
-                      max: null,
-                      icon: Icons.chair,
-                      iconColor: Colors.purple,
-                    ),
-                    _buildGonguItem(
-                      title: 'D-13 암막커튼',
-                      description: '만족도 92%, 최고의 선택',
-                      current: 50,
-                      max: 32,
-                      icon: Icons.curtains,
-                      iconColor: Colors.redAccent,
-                    ),
-                  ],
+                  children:
+                    gonguRequest.map((gonguItem) {
+                      return _buildGonguItem(
+                        title:  gonguItem.gpEndDate +' '+ gonguItem.categoryNm ?? '제목 없음',
+                        description: gonguItem.detail ?? '설명 없음',
+                        current: gonguItem.reqCount ??'0', // 현재 신청 수
+                        max: gonguItem.limitCount ??'0',         // 최대 신청 수
+                        iconName: gonguItem.imagePath ?? 'image_not_supported',
+                        gonguItem: gonguItem, // 아이콘은 임의로 설정
+                      );
+                    }).toList(),
                 ),
 
               ],
@@ -132,11 +142,48 @@ class _GonguRequeststState extends State<GonguRequest> {
   Widget _buildGonguItem({
     required String title,
     required String description,
-    int? current,
-    int? max,
-    required IconData icon,
-    required Color iconColor,
+    required GonguInfo gonguItem, // 🔹 GonguInfo 자체를 전달
+    String? current,
+    String? max,
+    required String iconName, // 🔹 String으로 아이콘 이름 받기
   }) {
+    // 🔹 아이콘과 색상을 동시에 받아오기
+    final iconData = _getIconAndColor(iconName);
+
+    // 🔸 신청 상태에 따른 버튼 설정
+    final bool isRequestable = (gonguItem.reqState == null || gonguItem.reqState.isEmpty);
+
+    // 🔹 버튼 상태 및 텍스트 설정
+    String buttonText = "";
+    Color buttonColor = Colors.grey;
+    VoidCallback? onPressed;
+
+    if (gonguItem.gpStat == "10") {
+      buttonText = isRequestable ? '신청' : '신청완료';
+      buttonColor = isRequestable ? Colors.black : Colors.grey;
+      onPressed = isRequestable
+          ? () async {
+        bool isConfirmed = await DialogUtils.showIPhoneConfirmDialog(
+          context: context,
+          title: '공구신청',
+          content: '신청 하시겠습니까?',
+        );
+
+        if (isConfirmed) {
+          sendRequestInfo(gonguItem); // ✅ 신청하기
+        }
+      }
+          : null;
+    } else if (gonguItem.gpStat == "20") {
+      buttonText = '조기마감';
+      buttonColor = Colors.grey;
+      onPressed = null; // 비활성화
+    } else if (gonguItem.gpStat == "30") {
+      buttonText = '매진';
+      buttonColor = Colors.redAccent;
+      onPressed = null; // 비활성화
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -151,8 +198,11 @@ class _GonguRequeststState extends State<GonguRequest> {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: iconColor.withOpacity(0.2),
-                child: Icon(icon, color: iconColor),
+                backgroundColor: iconData['color']!.withOpacity(0.2),
+                child: Icon(
+                  iconData['icon'],
+                  color: iconData['color'],
+                ),
               ),
               const SizedBox(width: 12),
               Column(
@@ -181,18 +231,16 @@ class _GonguRequeststState extends State<GonguRequest> {
             ],
           ),
           ElevatedButton(
-            onPressed: () {
-              // 신청 버튼 눌렀을 때 동작
-            },
+            onPressed: onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
+              backgroundColor: buttonColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
-            child: const Text(
-              '신청',
-              style: TextStyle(color: Colors.white),
+            child: Text(
+              buttonText,
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ],
@@ -201,4 +249,108 @@ class _GonguRequeststState extends State<GonguRequest> {
   }
 
 
+  /**
+   * 견적요청하기
+   */
+  Future<void> sendRequestInfo(GonguInfo gonguItem) async {
+    String restId = "saveRequestInfo";
+    String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
+    String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
+
+    print("========== 📝 GonguInfo 정보 ==========");
+    print("categoryId: ${gonguItem.categoryId}");
+    print("categoryNm: ${gonguItem.categoryNm}");
+    print("detail: ${gonguItem.detail}");
+    print("imagePath: ${gonguItem.imagePath}");
+    print("gpStartDate: ${gonguItem.gpStartDate}");
+    print("gpEndDate: ${gonguItem.gpEndDate}");
+    print("gpStat: ${gonguItem.gpStat}");
+    print("limitCount: ${gonguItem.limitCount}");
+    print("reqCount: ${gonguItem.reqCount}");
+    print("saleRate: ${gonguItem.saleRate}");
+    print("saleAmt: ${gonguItem.saleAmt}");
+    print("========================================");
+
+    final param = jsonEncode({
+      "reqGubun": 'G',
+      "reqUser": clerkNo,
+      "aptNo": aptNo,
+      "categoryId": gonguItem.categoryId,
+    });
+
+    try {
+      final response = await sendPostRequest(restId, param);
+
+      if (response != null) {
+        await DialogUtils.showCustomDialog(
+          context: context,
+          title: '견적 요청 완료',
+          content: '견적 요청이 성공적으로 완료되었습니다.',
+          confirmButtonText: '확인',
+          onConfirm: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          },
+        );
+      } else {
+        throw Exception('응답 없음');
+      }
+    } catch (e) {
+      print('견적 요청 실패: $e');
+      await DialogUtils.showCustomDialog(
+        context: context,
+        title: '요청 실패',
+        content: '견적 요청에 실패했습니다. 다시 시도해 주세요.',
+        confirmButtonText: '확인',
+        onConfirm: () => Navigator.pop(context),
+      );
+    }
+  }
+
+
+
+  /// 🔹 String을 IconData와 Color로 변환하는 매핑 함수
+  Map<String, dynamic> _getIconAndColor(String iconName) {
+    switch (iconName) {
+      case 'grid_4x4':
+        return {
+          'icon': Icons.grid_4x4,
+          'color': Colors.grey[700]!,
+        };
+      case 'cleaning_services':
+        return {
+          'icon': Icons.cleaning_services,
+          'color': Colors.blue,
+        };
+      case 'eco':
+        return {
+          'icon': Icons.eco,
+          'color': Colors.green,
+        };
+      case 'chair':
+        return {
+          'icon': Icons.chair,
+          'color': Colors.purple,
+        };
+      case 'curtains':
+        return {
+          'icon': Icons.curtains,
+          'color': Colors.redAccent,
+        };
+      case 'border_all':
+        return {
+          'icon': Icons.border_all,
+          'color': Colors.purple,
+        };
+      default:
+        return {
+          'icon': Icons.border_all,
+          'color': Colors.grey,
+        };
+    }
+  }
+
 }
+

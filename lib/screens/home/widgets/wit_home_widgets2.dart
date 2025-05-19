@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:witibju/screens/preInspaction/wit_preInsp_main_sc.dart';
@@ -488,6 +490,8 @@ class FormatUtils {
   }
 }
 
+
+
 class DialogUtils {
   // 12/14: 공통 다이얼로그 메서드
   static Future<bool> showConfirmationDialog({
@@ -628,6 +632,143 @@ class DialogUtils {
         );
       },
     );
+  }
+
+  /**
+   * 아이폰 형식
+   */
+  static Future<bool> showIPhoneConfirmDialog({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String confirmText = '확인',
+    String cancelText = '취소',
+    Color confirmColor = Colors.blue,
+    Color cancelColor = Colors.grey,
+  }) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,  // 🔹 글씨 크기 키움
+            ),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              content,
+              style: const TextStyle(
+                fontSize: 16,  // 🔹 글씨 크기 키움
+              ),
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop(false); // 🚫 취소 시 false 반환
+              },
+              child: Text(
+                cancelText,
+                style: TextStyle(color: cancelColor),
+              ),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop(true); // ✅ 확인 시 true 반환
+              },
+              child: Text(
+                confirmText,
+                style: TextStyle(color: confirmColor),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    return result ?? false; // 결과가 null이면 false 반환
+  }
+}
+// 글씨 더보기
+// 2025-05-18: OverflowText 수정 - 클릭 시 확장 및 축소 기능 추가
+class OverflowText extends StatefulWidget {
+  const OverflowText({
+    Key? key,
+    required this.text,
+    required this.maxLines,
+  }) : super(key: key);
+
+  final String text;
+  final int maxLines;
+
+  @override
+  State<OverflowText> createState() => _OverflowTextState();
+}
+
+class _OverflowTextState extends State<OverflowText> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          child: ConstrainedBox(
+            constraints: _isExpanded
+                ? const BoxConstraints()
+                : BoxConstraints(maxHeight: widget.maxLines * 20.0),
+            child: Text(
+              widget.text,
+              softWrap: true,
+              overflow: TextOverflow.fade,
+              style: const TextStyle(height: 1.5),
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _isExpanded = !_isExpanded;
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: Text(
+              _isExpanded ? "" : "...",
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
+
+
+class proFlieImage {
+  /// 🔹 이미지 경로에 맞는 ImageProvider를 반환
+  static ImageProvider getImageProvider(String imagePath) {
+    print("이미지========"+imagePath);
+   if (imagePath != "") {
+      // 🔹 네트워크 이미지
+      return NetworkImage(apiUrl +imagePath);
+    } else {
+      // 🔹 기본 이미지 (없을 경우 대체)
+      return AssetImage('assets/images/profile1.png');
+    }
   }
 }
 

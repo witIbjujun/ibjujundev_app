@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/home/login/wit_user_agreement1.dart';
 import 'package:witibju/screens/home/login/wit_user_agreement2.dart';
+import 'package:witibju/screens/home/login/wit_user_agreement3.dart';
 import 'package:witibju/screens/home/login/wit_user_loginStep2.dart';
 import '../wit_home_theme.dart';
 
@@ -16,8 +17,11 @@ class WitUserLoginStep1 extends StatefulWidget {
 class _WitUserLoginStep1State extends State<WitUserLoginStep1> {
   bool _allChecked = false;
   final Map<String, bool> _agreementList = {
+    "(필수) 만 14세 이상입니다.": false,
     "(필수) 입주전 서비스 이용약관": false,
     "(필수) 개인정보 수집 및 이용 동의": false,
+    "(필수) 개인정보 제3자 제공 동의서": false,
+
   };
 
   /// 🔹 모두 동의 체크 시 모든 항목 업데이트
@@ -101,7 +105,6 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep1> {
 
           Divider(color: Colors.grey.shade300),
 
-          // ✅ 서브 약관 목록
           Expanded(
             child: ListView(
               children: _agreementList.keys.map((key) {
@@ -117,7 +120,13 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep1> {
                         context,
                         MaterialPageRoute(builder: (context) => Agreement2()),
                       );
+                    } else if (key.contains("개인정보 제3자 제공 동의서")) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Agreement3()),
+                      );
                     }
+                    // 🔹 "만 14세 이상입니다."는 상세로 이동하지 않음
                   },
                   child: ListTile(
                     leading: Checkbox(
@@ -134,13 +143,12 @@ class _WitUserLoginStep1State extends State<WitUserLoginStep1> {
                         color: Colors.black,
                       ),
                     ),
-                    trailing: const Text(
-                      "보기",
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blueAccent,
-                        decoration: TextDecoration.underline, // 🔹 언더라인 추가
-                      ),
+                    trailing: key.contains("만 14세 이상입니다.")
+                        ? null // 🔹 "만 14세 이상입니다."는 > 아이콘 표시 안 함
+                        : const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey,
+                      size: 18,
                     ),
                   ),
                 );

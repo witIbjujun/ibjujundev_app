@@ -226,7 +226,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              CustomChatScreen('S2025051200003', '3','userView')),
+                                          //  Question(qustCd: 'Q10001'))
+                                      CustomChatScreen('S2025051200003', '3','userView')),
                                     );
                                   },
                                 ),
@@ -237,7 +238,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              CustomChatScreen('S2025051200003', '3','sellerView')),
+                                        // Board(bordType: "CM01", bordKey: "5"))
+                                     CustomChatScreen('S2025051200003', '3','sellerView')),
                                     );
                                   },
                                 ),

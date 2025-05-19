@@ -63,7 +63,7 @@ class _PopularCourseListHorizontalViewState extends State<PopularCourseListHoriz
       return Padding(
         padding: const EdgeInsets.only(top: 8),
         child: SizedBox(
-          height: 600, // 화면의 높이로 ListView 크기를 지정
+          height: 90 * categoryList.length.toDouble(), // 🔹 리스트 개수에 따른 높이 조정
           child: ListView.builder(
             padding: const EdgeInsets.all(1),
             physics: const BouncingScrollPhysics(),
@@ -89,94 +89,93 @@ class _PopularCourseListHorizontalViewState extends State<PopularCourseListHoriz
 }
 
 class CategoryView extends StatelessWidget {
-  const CategoryView({Key? key, this.category, this.callback, this.isSelected}) : super(key: key);
+  const CategoryView({Key? key, this.category, this.callback, this.isSelected})
+      : super(key: key);
 
-  final Function()? callback; // 아이템 클릭 시 호출될 콜백 함수
-  final Category? category; // 카테고리 데이터
-  final bool? isSelected; // 선택 여부
+  final Function()? callback; // 🔸 클릭 시 호출될 콜백
+  final Category? category;   // 🔸 카테고리 정보
+  final bool? isSelected;     // 🔸 선택 여부
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: InkWell(
         splashColor: Colors.transparent,
-        onTap: callback, // 아이템 클릭 시 콜백 호출
+        onTap: callback, // 🔸 클릭 시 콜백 호출
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.8, // 화면의 80% 너비
-          height: 80, // 아이템 높이
-          margin: const EdgeInsets.symmetric(vertical: 3.0), // 상하 여백 추가
+          width: MediaQuery.of(context).size.width * 0.8, // 🔸 화면의 80% 너비
+          height: 80, // 🔸 높이 고정
+          margin: const EdgeInsets.symmetric(vertical: 3.0), // 🔸 위아래 간격
           decoration: BoxDecoration(
+            color: Colors.white, // ✅ 흰색 배경 유지
             border: Border.all(
-                color: isSelected! ? WitHomeTheme.nearlysYellow : Colors.grey,
-                width: isSelected! ? 3.0 : 1.0), // 선택된 경우 테두리 두께 변경
-            borderRadius: const BorderRadius.all(Radius.circular(16.0)),
+              color: isSelected! ? Color(0xFFA4C639) : Colors.grey, // ✅ 선택 시 녹색 테두리, 미선택 시 회색 테두리
+              width: isSelected! ? 2.0 : 1.0, // ✅ 두께 조정
+            ),
+            borderRadius: const BorderRadius.all(Radius.circular(16.0)), // ✅ 둥근 모서리
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0), // 왼쪽 여백 추가
-                child: Container(
-                  height: 60, // 이미지 높이를 줄여서 고정
-                  width: 60,
-                  child: category!.imagePath != null && category!.imagePath.isNotEmpty
-                      ? Image.asset(category!.imagePath+"Green.png")
-                      : Icon(Icons.image, size: 60), // 이미지가 없을 경우 대체 아이콘
-                ),
-              ),
-              SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      category!.categoryNm ?? 'No Name', // 카테고리 제목
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                        letterSpacing: 0.27,
-                        color: WitHomeTheme.darkerText,
-                      ),
+          child: Stack(
+            children: [
+              // 🔹 카테고리 정보 표시
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Container(
+                      height: 60,
+                      width: 60,
+                      child: category!.imagePath != null &&
+                          category!.imagePath.isNotEmpty
+                          ? Image.asset(category!.imagePath + "Green.png")
+                          : Icon(Icons.image, size: 60),
                     ),
-                    Text(
-                      category!.detail ?? 'No Detail', // 상세문구
-                      style: TextStyle(
-                        fontWeight: FontWeight.w200,
-                        fontSize: 12,
-                        letterSpacing: 0.27,
-                        color: WitHomeTheme.grey,
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    /*Row(
-                      children: [
+                  ),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
                         Text(
-                          '참여업체', // 참여업체 텍스트
+                          category!.categoryNm ?? 'No Name',
                           style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
                             letterSpacing: 0.27,
-                            color: WitHomeTheme.nearlyBlue,
+                            color: Colors.black,
                           ),
                         ),
-                        SizedBox(width: 4), // Text 사이의 간격을 조정
                         Text(
-                          '(${category!.companyCnt})개)', // 참여업체 개수
+                          category!.detail ?? 'No Detail',
                           style: TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w200,
                             fontSize: 12,
                             letterSpacing: 0.27,
-                            color: WitHomeTheme.nearlyBlue,
+                            color: Colors.black,
                           ),
                         ),
                       ],
-                    ),*/
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
-             // Icon(Icons.chevron_right, color: Colors.grey), // ">" 아이콘 추가
+              // 🔹 선택된 경우 체크 아이콘 표시
+              if (isSelected!)
+                Positioned(
+                  right: 20,
+                  top: 30,
+                  child: CircleAvatar(
+                    backgroundColor: WitHomeTheme.wit_lightGreen,
+                    radius: 12,
+                    child: Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: 25,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

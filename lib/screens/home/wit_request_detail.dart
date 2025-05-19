@@ -5,6 +5,7 @@ import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
 import '../chat/CustomChatScreen.dart';
+import '../seller/wit_seller_profile_view_sc.dart';
 import 'models/requestInfo.dart';
 
 /**
@@ -67,281 +68,247 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text(
+          title: const Text(
             '비교 견적 상세',
             style: TextStyle(
-              color: Colors.white,             // 텍스트 색상
-              fontSize: 20.0,                  // 폰트 크기
-              fontWeight: FontWeight.bold,     // 굵기
-              fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+              color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'NotoSansKR',
             ),
           ),
-          iconTheme: IconThemeData(color: Colors.white), // ← 아이콘 색상도 검정으로 맞추려면 추가
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        body: Center(
-          child: CircularProgressIndicator(), // 또는 '로딩 중...' 텍스트
+        body: const Center(
+          child: CircularProgressIndicator(),
         ),
       );
     }
 
     // 로딩이 끝난 이후의 화면
     return Scaffold(
+      backgroundColor: Colors.white, // 🔹 전체 배경 흰색으로 변경
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(
+        title: const Text(
           '비교 견적 상세',
           style: TextStyle(
-            color: Colors.white,             // 텍스트 색상
-            fontSize: 20.0,                  // 폰트 크기
-            fontWeight: FontWeight.bold,     // 굵기
-            fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+            color: Colors.white,
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'NotoSansKR',
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.white), // ← 아이콘 색상도 검정으로 맞추려면 추가
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Column(
-        children: [
-          // 요청 내역 정보 박스
-          SizedBox(height: 16), // 상단 간격 추가
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16.0),
-            margin: const EdgeInsets.symmetric(horizontal: 16.0), // ← 좌우 여백 추가
-            decoration: BoxDecoration(
-              color: Color(0xFFF2F2F2),
-              borderRadius: BorderRadius.circular(12),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// 🔹 AppBar와 상단 영역 사이의 간격
+            const SizedBox(height: 16),
+            /// 🔹 상단 영역
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF2F2F2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${requests[0].categoryNm}',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // 설명 + 더보기
+                  OverflowText(
+                    text: requests[0].reqContents,
+                    maxLines: 2,
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      _buildTag('# 총 ${requests.length}건 견적 도착'),
+                      _buildTag('# 요청일: ${_selectedRequest?.estimateDate ?? '-'}'),
+                    ],
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(height: 12),
+            const Divider(
+              color: Colors.grey, // 🔹 색상: 회색
+              thickness: 1,       // 🔹 두께: 1px
+              indent: 16,         // 🔹 왼쪽 간격
+              endIndent: 16,      // 🔹 오른쪽 간격
+            ),
+
+            /// 🔹 중단 영역 - 가로 스크롤 유지
+            Container(
+              color: Colors.white,
+              height: MediaQuery.of(context).size.height * 0.28,
+              padding: const EdgeInsets.all(13.0),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: requests.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final request = requests[index];
+                  final isSelected = _selectedRequest == request;
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedRequest = request;
+                      });
+                    },
+                    child: Container(
+                      height: MediaQuery.of(context).size.width * 0.35,
+                      width: MediaQuery.of(context).size.width * 0.38,
+                      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: Border.all(
+                          color: isSelected ? WitHomeTheme.wit_black : Colors.grey,
+                          width: isSelected ? 2.0 : 1.0,
+                        ),
+                        image: DecorationImage(
+                          image: AssetImage('assets/home/request${index + 1}.png'),
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                        ),
+                      ),
+                      child: _buildTagInfoOverlay(request, isSelected),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 16),
+            const Divider(
+              color: Colors.grey, // 🔹 색상: 회색
+              thickness: 1,       // 🔹 두께: 1px
+              indent: 16,         // 🔹 왼쪽 간격
+              endIndent: 16,      // 🔹 오른쪽 간격
+            ),
+
+            /// 🔹 하단 영역 - 상세 정보
+            Container(
+              color: Colors.white,
+              //margin: const EdgeInsets.symmetric(horizontal: 16.0), // 🔹 좌우폭 상단과 동일하게 설정
+              child: _buildRequestDetail(_selectedRequest ?? requests.first),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 🔹 이미지 위에 정보 오버레이
+  Widget _buildTagInfoOverlay(RequestInfo request, bool isSelected) {
+    String companyName = request.companyNm.length > 8
+        ? request.companyNm.substring(0, 8) + '...'
+        : request.companyNm;
+
+    return Container(
+      padding: const EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: Stack(
+        children: [
+          /// 🔹 텍스트 내용 전체 영역
+          Padding(
+            padding: const EdgeInsets.only(bottom: 40.0), // 하단 아이콘 공간 확보
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${requests[0].categoryNm}',
+                  companyName,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                SizedBox(height: 8),
-
-                // 설명 + 더보기
-              // 2025-05-08: 개행 문자 처리 및 [더보기] / <<<접기 조건 수정
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isExpanded = !isExpanded;
-                  });
-                },
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    // 🔹 줄 수 측정
-                    final span = TextSpan(
-                      text: requests[0].reqContents,
-                      style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                    );
-
-                    final tp = TextPainter(
-                      text: span,
-                      maxLines: 2,
-                      textDirection: TextDirection.ltr,
-                    )..layout(maxWidth: constraints.maxWidth);
-
-                    // 🔹 총 줄 수 계산
-                    final lineCount = tp.computeLineMetrics().length;
-
-                    return RichText(
-                      maxLines: isExpanded ? null : 2,
-                      overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                      text: TextSpan(
-                        style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                        children: [
-                          // 🔹 기본 텍스트 표시
-                          TextSpan(
-                            text: requests[0].reqContents,
-                          ),
-                          // 🔹 2줄 초과 시 [더보기] 또는 [접기] 표시
-                          if ((lineCount > 2 && !isExpanded) || isExpanded)
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.baseline,
-                              baseline: TextBaseline.alphabetic,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isExpanded = !isExpanded;
-                                  });
-                                },
-                                child: Text(
-                                  isExpanded ? ' [접기]' : ' [더보기]',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
+                    fontSize: 15,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: Colors.black,
+                    /*shadows: const [
+                      Shadow(
+                        offset: Offset(1, 1),
+                        blurRadius: 2.0,
+                        color: Colors.black45,
                       ),
-                    );
-                  },
+                    ],*/
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
+                const SizedBox(height: 10.0),
 
-              SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  children: [
-                    _buildTag('# 총 ${requests.length}건 견적 도착'),
-                    _buildTag('# 하루 전'),
-                  ],
-                ),
+                _buildTag('# 견적 ${request.estimateAmount.isEmpty || request.estimateAmount == "-" ? '-' : FormatUtils.formatCurrency(request.estimateAmount) + ' 원'}'),
+                const SizedBox(height: 10.0),
+                _buildTag('# 시공건수 11건'),
+                const SizedBox(height: 10.0),
+                _buildTag('# A/S 가능'),
               ],
             ),
           ),
 
-          // 총 받은 견적
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16.0),
-            alignment: Alignment.centerLeft,
-            child: Text("총 받은 견적 ${requests.length}개"),
-          ),
-
-          // 가로 스크롤 견적 목록
-          // 2025-04-02: index별 백그라운드 이미지 적용 및 오버레이 추가
-          Container(
-            color: Colors.white,
-            height: MediaQuery.of(context).size.height * 0.28,
-            padding: const EdgeInsets.all(13.0),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: requests.length,
-              itemBuilder: (BuildContext context, int index) {
-                final request = requests[index];
-                final isSelected = _selectedRequest == request;
-                String companyName = request.companyNm.length > 8
-                    ? request.companyNm.substring(0, 8) + '...'
-                    : request.companyNm;
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedRequest = request;
-                    });
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.width * 0.35,
-                    width: MediaQuery.of(context).size.width * 0.38,
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.0),
-                      border: Border.all(
-                        color: isSelected ? WitHomeTheme.wit_black : Colors.grey,
-                        width: isSelected ? 2.0 : 1.0,
-                      ),
-                      image: DecorationImage(
-                        image: AssetImage('assets/home/request${index + 1}.png'),
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
-                      ),
-                    ),
-                    child: Container(
-                      padding: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Stack(
-                        children: [
-                          // 🔹 텍스트 내용 전체 영역
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 40.0), // 하단 아이콘 공간 확보
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  companyName,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 10.0),
-
-                                _buildTag('# 견적 ${request.estimateAmount.isEmpty || request.estimateAmount == "-" ? '-' : FormatUtils.formatCurrency(request.estimateAmount) + ' 원'}'),
-                                SizedBox(height: 10.0),
-                                _buildTag('# 시공건수 11건'),
-                                SizedBox(height: 10.0),
-                                _buildTag('# A/S 가능'),
-                              ],
-                            ),
-                          ),
-
-                          // 🔹 왼쪽 하단: 별점 + 인증 아이콘
-                          Positioned(
-                            bottom: 0,
-                            left: 0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // ⭐️ 별 + 평점 한 줄
-                                Row(
-                                  children: [
-                                    Image.asset('assets/home/star.png', width: 16, height: 16),
-                                    SizedBox(width: 4.0),
-                                    Text(
-                                      '${request.rate}',
-                                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 4), // 별점과 인증 사이 간격
-                                // ✅ 인증완료 아이콘
-                                Image.asset(
-                                  'assets/home/confirmok.png',
-                                  height: 13,
-                                ),
-                              ],
-                            ),
+          /// 🔹 왼쪽 하단: 별점 + 인증 아이콘
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// ⭐️ 별 + 평점 한 줄
+                Row(
+                  children: [
+                    Image.asset('assets/home/star.png', width: 16, height: 16),
+                    const SizedBox(width: 4.0),
+                    Text(
+                      request.rate.isEmpty ? '-' : request.rate,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1, 1),
+                            blurRadius: 2.0,
+                            color: Colors.black45,
                           ),
                         ],
                       ),
                     ),
-                  ),
-                );
-              },
+                  ],
+                ),
+                const SizedBox(height: 4), // 별점과 인증 사이 간격
+                // ✅ 인증완료 아이콘
+                Image.asset(
+                  'assets/home/confirmok.png',
+                  height: 13,
+                ),
+              ],
             ),
           ),
-
-          // 구분선
-          Container(
-            color: Colors.white,
-            child: Divider(
-              thickness: 1,
-              color: Colors.black,
-            ),
-          ),
-
-          // 상세 내용
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              child: SingleChildScrollView(
-                child: _buildRequestDetail(_selectedRequest ?? requests.first), // 2025-04-02: 선택된 견적 보여주도록 수정
-
-              ),
-            ),
-          ),
-
         ],
       ),
     );
   }
+
+
 
   /**
    * 테두리 글씨
@@ -400,16 +367,34 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 children: [
                   CircleAvatar(
                     radius: 20,
-                    backgroundImage: NetworkImage('https://picsum.photos/200'),
+                    backgroundImage: proFlieImage.getImageProvider(request.imageFilePath), // 기본 이미지 설정
                     backgroundColor: Color(0xFFF2F2F2),
                     onBackgroundImageError: (error, stackTrace) {
                       print('이미지 로드 실패: $error');
                     },
                   ),
                   SizedBox(width: 8),
-                  Text(
-                    '${request.companyNm}',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  GestureDetector(
+                    onTap: () {
+                      print("🔹 ${request.companyNm} 클릭됨");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SellerProfileView(
+                            sllrNo: request.companyId,  // 🔹 request의 sllrNo를 넘김
+                            appbarYn: "Y",
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      '${request.companyNm}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black, // 🔹 클릭할 수 있다는 시각적 표현
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -431,12 +416,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
           /// 🔹 밑에 estimateContents 표시
           SizedBox(height: 10),
-          Text(
-            '${request.estimateContents}',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[700],
-            ),
+
+          OverflowText(
+            text: request.estimateContents,
+            maxLines: 2, // 최대 150글자까지만 표시, 이 이상은 '더보기' 처리
           ),
 
           SizedBox(height: 10),
@@ -446,8 +429,19 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             width: 400,
             height: 48,
             child: ElevatedButton(
-              onPressed: request.reqState == '20'
-                  ? () => _handleRequestAction(request)
+              onPressed: request.reqState != '10'
+                  //? () => _handleRequestAction(request)
+                  ? () {
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => CustomChatScreen(
+                              request.reqNo,   // 첫 번째 인자: 요청 번호
+                              request.seq,     // 두 번째 인자: 시퀀스 (chatId)
+                              "userView",      // 세 번째 인자: 뷰 타입
+                            ),
+                          ),
+                        );
+                      }
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
@@ -527,6 +521,22 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
               ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text(
+                '취소',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
               onPressed: () async {
                 Navigator.pop(context); // 다이얼로그 닫기
 
@@ -543,21 +553,6 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
               },
               child: const Text(
                 '확인',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                '취소',
                 style: TextStyle(color: Colors.white),
               ),
             ),

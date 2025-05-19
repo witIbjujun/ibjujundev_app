@@ -8,8 +8,7 @@ import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/home/wit_compay_view_sc_horizontal.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
-import 'package:witibju/screens/home/wit_compay_view_sc_.dart';
-import 'package:witibju/screens/home/wit_estimate_detail.dart';
+
 
 import '../../util/wit_api_ut.dart';
 import '../common/wit_calendarDialog.dart';
@@ -83,229 +82,209 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(
+        title: const Text(
           '견적받기',
           style: TextStyle(
-            color: Colors.white,             // 텍스트 색상
-            fontSize: 20.0,                  // 폰트 크기
-            fontWeight: FontWeight.bold,     // 굵기
-            fontFamily: 'NotoSansKR',        // 폰트 지정 (선택)
+            color: Colors.white,
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'NotoSansKR',
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.white), // ← 아이콘 색상도 검정으로 맞추려면 추가
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
         child: isLoading
-            ? Center(child: CircularProgressIndicator()) // 로딩 상태 표시
-            : Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: getPopularCourseUI(widget.type), // 인기 코스 UI만 스크롤 가능
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0), // ✅ 좌우 여백 통일
-              child: Container(
-                height: 50.0, // ✅ 기본 높이 지정
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16.0), // 텍스트 내부 여백
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white,
-                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                alignment: Alignment.centerLeft, // 텍스트 왼쪽 정렬
-                child: Text(
-                  '필요한 것만 견적을 받아보세요',
-                  style: WitHomeTheme.title.copyWith(fontSize: 16),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Row(
-                      children: [
-                        // "작업요청 예상일" 라벨
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                          decoration: BoxDecoration(
-                            color: WitHomeTheme.wit_lightGreen,
-                            borderRadius: BorderRadius.circular(6.0),
-                          ),
-                          child: Text(
-                            "작업요청 예상일",
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 12.0),
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// 🔹 인기 코스 UI (가로 스크롤)
+                getPopularCourseUI(widget.type),
+                const SizedBox(height: 1.0),
 
-                        // ✅ 날짜 선택 버튼
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () => _selectDate(context),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(6.0),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    _selectedDate ?? "날짜 선택", // 선택한 날짜가 없으면 빈 값
-                                    style: TextStyle(fontSize: 16.0),
-                                  ),
-                                  Icon(Icons.keyboard_arrow_down, color: Colors.grey), // ▼ 아이콘 추가
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                /// 🔹 필요한 견적 설명
+                Container(
+                  height: 50.0,
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  decoration: BoxDecoration(
+                    color: WitHomeTheme.white,
+                    border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 2),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  SizedBox(height: 16.0), // 날짜 선택과 추가 요청 사항 사이 간격
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '필요한 것만 견적을 받아보세요',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
 
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "추가조건/요구사항",
+                /// 🔹 작업 요청 예상일 입력
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                      decoration: BoxDecoration(
+                        color: WitHomeTheme.white,
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      child: const Text(
+                        "작업요청 예상일",
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
+                          color: WitHomeTheme.wit_mediumSeaGreen,
                         ),
                       ),
-                      SizedBox(height: 8.0),
-                      TextField(
-                        controller: _additionalRequirementsController,
-                        focusNode: _additionalFocusNode, // ✅ 포커스 노드 연결
-                        maxLines: 4,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
-                          contentPadding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                          focusedBorder: OutlineInputBorder( // 2025-04-26: 포커스 테두리 색 지정
-                            borderSide: BorderSide(
-                              color: Colors.green, // ✅ 원하는 색으로 변경 (예: 초록색)
-                              width: 2.0,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder( // 2025-04-26: 포커스 안됐을 때 테두리 색도 지정
-                            borderSide: BorderSide(
-                              color: Colors.grey, // ✅ 평소에는 회색
-                              width: 1.0,
-                            ),
-                          ),
-                        ),
-                        style: TextStyle(fontSize: 14.0),
-                      ),
-                      SizedBox(height: 8.0),
-                      GestureDetector(
-                        onTap: () async {
-
-                          // ✅ 날짜가 선택되지 않았을 경우 바로 다이얼로그 표시
-                          if (_selectedDate == null) {
-                            await DialogUtils.showCustomDialog(
-                              context: context,
-                              title: '날짜 선택 필요',
-                              content: '작업 요청 예정일을 선택해 주세요.',
-                              confirmButtonText: '확인',
-                            );
-                            return; // 날짜가 없으면 아래 로직 실행하지 않음
-                          }
-
-                          // ✅ 요청사항이 비어있을 경우 안내 메시지와 포커스 처리
-                          if (_additionalRequirementsController.text.isEmpty) {
-                            await DialogUtils.showCustomDialog(
-                              context: context,
-                              title: '요청사항 입력 필요',
-                              content: '추가 조건 또는 요구 사항을 입력해 주세요.',
-                              confirmButtonText: '확인',
-                            );
-
-                            // 텍스트 필드로 포커스 이동
-                            _additionalFocusNode.requestFocus();
-                            return;
-                          }
-
-
-                          bool isConfirmed = await DialogUtils.showConfirmationDialog(
-                            context: context,
-                            title: '견적 요청 확인',
-                            content: '견적 요청을 진행하시겠습니까?',
-                            confirmButtonText: '진행',
-                            cancelButtonText: '취소',
-                          );
-
-                          if (isConfirmed) {
-                            sendRequestInfo(); // 버튼 클릭 시 견적 요청 메서드 호출
-                          }
-                        },
+                    ),
+                    const SizedBox(width: 12.0),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _selectDate(context),
                         child: Container(
-                          width: double.infinity,
-                          height: 50.0,
+                          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
                           decoration: BoxDecoration(
-                            color: WitHomeTheme.wit_lightGreen,
-                            borderRadius: BorderRadius.circular(10.0),
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(6.0),
                           ),
-                          child: Center(
-                            child: RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '견적 요청하기 ',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: '(${_selectedItemCount})',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _selectedDate ?? "날짜 선택",
+                                style: const TextStyle(fontSize: 16.0),
+                              ),
+                              const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+
+                /// 🔹 추가조건 / 요구사항 입력
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "추가조건/요구사항",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    TextField(
+                      controller: _additionalRequirementsController,
+                      focusNode: _additionalFocusNode,
+                      maxLines: 4,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Ex) 안방과 거실만 70,000원 가능할까요?",
+                        contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green, width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                        ),
+                      ),
+                      style: const TextStyle(fontSize: 14.0),
+                    ),
+                    const SizedBox(height: 16.0),
+                  ],
+                ),
+
+                /// 🔹 견적 요청하기 버튼
+                GestureDetector(
+                  onTap: () async {
+                    if (_selectedDate == null) {
+                      await DialogUtils.showCustomDialog(
+                        context: context,
+                        title: '날짜 선택 필요',
+                        content: '작업 요청 예정일을 선택해 주세요.',
+                        confirmButtonText: '확인',
+                      );
+                      return;
+                    }
+
+                    if (_additionalRequirementsController.text.isEmpty) {
+                      await DialogUtils.showCustomDialog(
+                        context: context,
+                        title: '요청사항 입력 필요',
+                        content: '추가 조건 또는 요구 사항을 입력해 주세요.',
+                        confirmButtonText: '확인',
+                      );
+                      _additionalFocusNode.requestFocus();
+                      return;
+                    }
+
+                    bool isConfirmed = await DialogUtils.showConfirmationDialog(
+                      context: context,
+                      title: '견적 요청 확인',
+                      content: '견적 요청을 진행하시겠습니까?',
+                      confirmButtonText: '진행',
+                      cancelButtonText: '취소',
+                    );
+
+                    if (isConfirmed) {
+                      sendRequestInfo();
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: WitHomeTheme.wit_lightGreen,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Center(
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: '견적 요청하기 ',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
+                            TextSpan(
+                              text: '(${_selectedItemCount})',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ],
-              ),
-            )
-          ],
+                ),
+                const SizedBox(height: 24.0),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
-
 
   /**
    * 달력
