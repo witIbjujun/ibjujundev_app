@@ -310,8 +310,44 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                               return;
                             }
 
-                            // 마감처리
-                            updateGPstat(selectedGP['ctgrId'], "30");
+                            // 확인 창 표시
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  title: Text('마감 완료',
+                                      style: WitHomeTheme.title
+                                          .copyWith(fontSize: 16)),
+                                  content: Text('마감완료 하시겠습니까?',
+                                      style: WitHomeTheme.subtitle
+                                          .copyWith(fontSize: 14)),
+                                  actions: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.grey[300], // 연한 회색
+                                        foregroundColor: Colors.black, // 글씨 색
+                                      ),
+                                      onPressed: () => Navigator.of(context).pop(),
+                                      child: Text('취소', style: WitHomeTheme.title
+                                          .copyWith(fontSize: 14),),
+                                    ),
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: WitHomeTheme.wit_lightGreen, // 초록 배경
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // 다이얼로그 닫기
+                                        updateGPstat(selectedGP['ctgrId'], "30");
+                                      },
+                                      child: Text('확인', style: WitHomeTheme.title
+                                          .copyWith(fontSize: 14, color: WitHomeTheme.wit_white),),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
                           },
                           child: Container(
                             padding: EdgeInsets.zero,
@@ -326,6 +362,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                           ),
                         ),
                       ),
+
                       Expanded(
                         flex: 3,
                         child: InkWell(
@@ -341,8 +378,44 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                               return;
                             }
 
-                            // 조기 마감처리
-                            updateGPstat(selectedGP['ctgrId'], "20");
+                            // 조기 마감 확인 창
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  backgroundColor: Colors.white, // 배경 흰색
+                                  title: Text('조기 마감',
+                                      style: WitHomeTheme.title
+                                          .copyWith(fontSize: 16)),
+                                  content: Text('조기 마감하시겠습니까?',
+                                      style: WitHomeTheme.subtitle
+                                          .copyWith(fontSize: 14)),
+                                  actions: [
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.grey[300], // 연한 회색 배경
+                                        foregroundColor: Colors.black,     // 검정 글씨
+                                      ),
+                                      onPressed: () => Navigator.of(context).pop(),
+                                      child: Text('취소', style: WitHomeTheme.title
+                                          .copyWith(fontSize: 14),),
+                                    ),
+                                    TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: WitHomeTheme.wit_lightGreen, // 초록 배경
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(); // 다이얼로그 닫기
+                                        updateGPstat(selectedGP['ctgrId'], "20");
+                                      },
+                                      child: Text('확인', style: WitHomeTheme.title
+                                          .copyWith(fontSize: 14, color: WitHomeTheme.wit_white),),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
                           },
                           child: Container(
                             padding: EdgeInsets.zero,
@@ -357,6 +430,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                           ),
                         ),
                       ),
+
                       Expanded(
                         flex: 1,
                         child: InkWell(

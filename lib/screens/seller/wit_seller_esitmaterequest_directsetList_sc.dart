@@ -241,7 +241,7 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween, // 전체 Row는 양쪽 정렬
                       children: [
                         // 왼쪽 정렬 그룹 (체크박스 + 텍스트)
-                        Row(
+                        /*Row(
                           mainAxisSize: MainAxisSize.min, // 내부 요소 크기만큼만 차지하도록 설정
                           children: [
                             Checkbox(
@@ -258,7 +258,7 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                               style: WitHomeTheme.title.copyWith(fontSize: 16),
                             ),
                           ],
-                        ),
+                        ),*/
 
                         // 저장 버튼 (오른쪽 정렬)
                         GestureDetector(
@@ -289,7 +289,7 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
               ),
 
               // 체크박스가 체크된 경우에만 SellerProfileView 표시
-              if (_isChecked) ...[
+              //if (_isChecked) ...[
                 SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
@@ -301,8 +301,8 @@ class EstimateRequestDirectListState extends State<EstimateRequestDirectList> {
                     appbarYn: "N",
                    // isStandalone: false, // 부모 창에서 호출
                   ),
-                )
-              ],
+                ),
+              //],
 
               SizedBox(height: 10),
               Text(
