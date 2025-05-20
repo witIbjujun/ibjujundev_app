@@ -748,7 +748,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                                   '... 더보기',
                                                   style: textStyle.copyWith(
                                                     fontWeight: FontWeight.bold,
-                                                    color: Colors.grey[600],
+                                                    color: Colors.grey[500],
                                                   ),
                                                 ),
                                               ),

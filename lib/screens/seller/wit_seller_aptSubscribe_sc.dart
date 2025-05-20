@@ -35,66 +35,6 @@ Future<String?> getAccessToken() async {
   }
 }
 
-
-// 카드 등록 여부 확인 함수
-Future<Map<String, dynamic>?> checkCardRegistration(String customerUid) async {
-  final accessToken = await getAccessToken();
-
-  if (accessToken == null) {
-    print("엑세스 토큰 발급 실패");
-    return null;
-  } else {
-    print("엑세스 토큰 발급 성공 : $accessToken");
-  }
-
-  customerUid = 'user_' + sllrNo;
-
-  print("13123211231321233:" + customerUid);
-
-  final url = Uri.parse('https://api.iamport.kr/subscribe/customers/$customerUid');
-
-  final headers = {
-    'Authorization': 'Bearer $accessToken',
-    'Content-Type': 'application/json',
-  };
-
-  try {
-    final response = await http.get(url, headers: headers);
-
-    if (response.statusCode == 200) {
-      print('API 호출 성공: ${response.statusCode}');
-      final responseData = jsonDecode(response.body);
-      final data = responseData['response'];
-
-      if (data == null) {
-        print('카드 등록 정보 없음');
-        return null;
-      }
-      else {
-        print('카드 등록 정보 있음');
-      }
-
-      // 등록된 정보
-      final getCustomer_uid = data['customer_uid'];
-      bool isRegistered = getCustomer_uid != null && getCustomer_uid.isNotEmpty;
-
-      return {
-        'isRegistered': data['customer_uid'] != null && data['customer_uid'].toString().isNotEmpty,
-        'cardName': data['card_name'],
-        'cardNumber': data['card_number'],  // 마스킹된 카드번호
-      };
-    } else {
-      print('API 호출 오류: ${response.statusCode}');
-      print('응답 본문: ${response.body}');
-      return null;
-    }
-  } catch (e) {
-    print('API 호출 실패: $e');
-    return null;
-  }
-}
-
-
 class SellerAptSubscribe extends StatefulWidget {
   final dynamic sllrNo;
 
@@ -176,6 +116,131 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
     }
   }
 
+  // 카드 등록 여부 확인 함수
+  Future<Map<String, dynamic>?> checkCardRegistration(String customerUid) async {
+    final accessToken = await getAccessToken();
+
+    if (accessToken == null) {
+      print("엑세스 토큰 발급 실패");
+      return null;
+    } else {
+      print("엑세스 토큰 발급 성공 : $accessToken");
+    }
+
+    customerUid = 'user_' + widget.sllrNo;
+
+    print("13123211231321233:" + customerUid);
+
+    final url = Uri.parse('https://api.iamport.kr/subscribe/customers/$customerUid');
+
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        print('API 호출 성공: ${response.statusCode}');
+        final responseData = jsonDecode(response.body);
+        final data = responseData['response'];
+
+        if (data == null) {
+          print('카드 등록 정보 없음');
+          return null;
+        }
+        else {
+          print('카드 등록 정보 있음');
+        }
+
+        // 등록된 정보
+        final getCustomer_uid = data['customer_uid'];
+        bool isRegistered = getCustomer_uid != null && getCustomer_uid.isNotEmpty;
+
+        return {
+          'isRegistered': data['customer_uid'] != null && data['customer_uid'].toString().isNotEmpty,
+          'cardName': data['card_name'],
+          'cardNumber': data['card_number'],  // 마스킹된 카드번호
+        };
+      } else {
+        print('API 호출 오류: ${response.statusCode}');
+        print('응답 본문: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('API 호출 실패: $e');
+      return null;
+    }
+  }
+
+  // 아파트 구독 결제 정보 저장
+  Future<void> insertSubscribePaymentData({
+    required dynamic aptNo,
+    required String? impUid,
+    required String merchantUid,
+    required String payMethod,
+    required int amount,
+    required String status,
+    required String? cardName,
+    required String? cardNumber,
+    required String buyerName,
+    required String buyerEmail,
+    required int? paidAt,
+    required String? receiptUrl,
+    required String? failReason,
+    // required String createdAt,
+  }) async {
+
+    print('결제 데이터 확인👇');
+    print(jsonEncode({
+      'customer_uid': widget.sllrNo,
+      'apt_no': aptNo,
+      'imp_uid': impUid,
+      'merchant_uid': merchantUid,
+      'pay_method': payMethod,
+      'amount': amount,
+      'status': status,
+      'card_name': cardName,
+      'card_number': cardNumber,
+      'buyer_name': buyerName,
+      'buyer_email': buyerEmail,
+      'paid_at': paidAt,
+      'receipt_url': receiptUrl,
+      'fail_reason': failReason,
+    }));
+
+
+    String restId = "insertSubscribePaymentData";
+
+    // 예: Supabase 사용 시
+    final param = jsonEncode({
+      'customer_uid': widget.sllrNo,
+      'apt_no': aptNo,
+      'imp_uid': impUid,
+      'merchant_uid': merchantUid,
+      'pay_method': payMethod,
+      'amount': amount,
+      'status': status,
+      'card_name': cardName,
+      'card_number': cardNumber,
+      'buyer_name': buyerName,
+      'buyer_email': buyerEmail,
+      'paid_at': paidAt,
+      'receipt_url': receiptUrl,
+      'fail_reason': failReason,
+      // 'created_at': createdAt,
+    });
+
+    final response = await sendPostRequest(restId, param);
+
+    if (response.error != null) {
+      print('결제 로그 저장 실패: ${response.error!.message}');
+    } else {
+      print('결제 로그 저장 성공');
+    }
+  }
+
   // 아파트 구독
   Future<void> insertSubscribeApt(dynamic aptNo) async {
     String restId = "insertSubscribeApt";
@@ -231,7 +296,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
               child: CardInfoConfirmPage(
-                customerUid: 'user_1234',
+                customerUid: 'user_' + widget.sllrNo,
                 amount: saleAmt,
                 storeName: storeName,
                 cardName: cardName,
@@ -272,7 +337,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
     };
 
     final body = jsonEncode({
-      'customer_uid': 'user_1234',
+      'customer_uid': 'user_' + widget.sllrNo,
       'merchant_uid': 'mid_${DateTime.now().millisecondsSinceEpoch}',
       'amount': saleAmt,
       'name': '아파트 구독 결제',
@@ -286,16 +351,49 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['code'] == 0) {
-          print('자동결제 성공 ✅');
-          // 결제 성공 후 로직 (ex. 구독 처리)
-          insertSubscribeApt(aptNo);
+          final res = data['response'];
+
+          await insertSubscribePaymentData(
+            aptNo: aptNo,                               // 아파트 고유 번호
+            impUid: res['imp_uid'],                     // 포트원 거래 고유 ID
+            merchantUid: res['merchant_uid'],           // 주문 번호
+            payMethod: res['pay_method'],               // 결제 수단
+            amount: res['amount'],                      // 결제 금액
+            status: res['status'],                      // 상태 (paid)
+            cardName: res['card_name'],                 // 카드사 이름
+            cardNumber: res['card_number'],                 // 승인번호
+            buyerName: res['buyer_name'],               // 구매자 이름
+            buyerEmail: res['buyer_email'],             // 구매자 이메일
+            paidAt: res['paid_at'],                     // 결제 시각 (Unix timestamp)
+            receiptUrl: res['receipt_url'],             // 영수증 URL
+            failReason: null,                           // 실패 아님
+            // createdAt: now.toIso8601String(),           // 저장 시각
+          );
+
+          insertSubscribeApt(aptNo); // 실제 구독 처리
+
         } else {
-          print('자동결제 실패 ❌: ${data['message']}');
+          // ❌ 실패 응답일 경우 (결제 요청은 됐지만 카드사 등에서 거절)
+          await insertSubscribePaymentData(
+            aptNo: aptNo,
+            impUid: null,
+            merchantUid: jsonDecode(body)['merchant_uid'] ?? 'unknown',
+            payMethod: 'card',
+            amount: saleAmt,
+            status: 'failed',                           // 상태: 실패
+            cardName: null,
+            cardNumber: null,
+            buyerName: '범석 방충망',
+            buyerEmail: 'dravenn@naver.com',
+            paidAt: null,
+            receiptUrl: null,
+            failReason: data['message'],                // 실패 사유 저장
+            // createdAt: now.toIso8601String(),
+          );
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('자동결제 실패: ${data['message']}')),
           );
-
         }
       } else {
         print('자동결제 실패: ${response.statusCode}');

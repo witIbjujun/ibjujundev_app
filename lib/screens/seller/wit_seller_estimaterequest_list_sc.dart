@@ -247,7 +247,7 @@ class EstimateItem extends StatelessWidget {
                             '... 더보기',
                             style: textStyle.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey[700],
+                              color: Colors.grey[500],
                             ),
                           ),
                       ],
