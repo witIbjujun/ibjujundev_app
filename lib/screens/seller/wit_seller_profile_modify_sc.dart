@@ -1143,13 +1143,32 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
               ),
+              Row(
+                children: [
+                  Text(
+                    '사업자등록번호 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
+              ),
+              TextField(
+                controller: storeCodeController,
+                decoration: InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
               SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Text(
-                      '사업자 등록증 사본',
+                      '사업자등록증사본',
                       style: WitHomeTheme.title.copyWith(fontSize: 16),
                     ),
                   ),

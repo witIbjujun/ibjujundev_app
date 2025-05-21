@@ -78,6 +78,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
   String hpErrorMessage = '';
   String zipCodeErrorMessage = '';
   String address2ErrorMessage = '';
+  String storeCodeErrorMessage = '';
 
   @override
   void initState() {
@@ -502,6 +503,51 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                 ),
               SizedBox(height: 10),
               Row(
+                children: [
+                  Text(
+                    '개업일자 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.white, // 배경색을 하얀색으로
+                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                padding: const EdgeInsets.all(0), // 내부 여백
+                child: TextField(
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                  controller: storeCodeController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // 기본 테두리 제거
+                    hintText: '개업일자를 입력하세요', // 힌트 텍스트
+                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                  ),
+                  onChanged: (text) {
+                    setState(() {
+                      // 텍스트가 변경될 때마다 오류 메시지 초기화
+                      storeCodeErrorMessage = '';
+                    });
+                  },
+                ),
+
+              ),
+              // 오류 메시지 표시
+              if (storeCodeErrorMessage.isNotEmpty)
+                Text(
+                  storeCodeErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
+              SizedBox(height: 8),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
@@ -709,11 +755,13 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                       ceoErrorMessage = '';
                       emailErrorMessage = '';
                       openDateErrorMessage = '';
+                      storeCodeErrorMessage = '';
 
                       bool isNameValid = nameController.text.isNotEmpty;
                       bool isCeoName = ceoNameController.text.isNotEmpty;
                       bool isEmail = emailController.text.isNotEmpty;
                       bool isOpenDate = openDateController.text.isNotEmpty;
+                      bool isStoreCode = storeCodeController.text.isNotEmpty;
 
                       if (!isNameValid) {
                         nameErrorMessage = '사업자명을 입력해주세요.'; // 오류 메시지 설정
@@ -727,11 +775,14 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                       if (!isOpenDate) {
                         openDateErrorMessage = '개업일자를 입력해주세요.'; // 오류 메시지 설정
                       }
+                      if (!isStoreCode) {
+                        storeCodeErrorMessage = '사업자등록번호를 입력해주세요.'; // 오류 메시지 설정
+                      }
 
                     });
 
                     if (nameErrorMessage.isEmpty && ceoErrorMessage.isEmpty && emailErrorMessage.isEmpty
-                    && openDateErrorMessage.isEmpty)
+                    && openDateErrorMessage.isEmpty && storeCodeErrorMessage.isEmpty)
                     {
                       // 사업자 프로필 변경 로직
                       String name = nameController.text;
