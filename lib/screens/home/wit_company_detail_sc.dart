@@ -416,12 +416,10 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
                 }
 
                 // ✅ 날짜가 있을 경우에만 확인 다이얼로그 실행
-                bool isConfirmed = await DialogUtils.showConfirmationDialog(
+                bool isConfirmed = await DialogUtils.showIPhoneConfirmDialog(
                   context: context,
                   title: '견적 요청 확인',
                   content: '견적 요청을 진행하시겠습니까?',
-                  confirmButtonText: '진행',
-                  cancelButtonText: '취소',
                 );
 
                 if (isConfirmed) {
@@ -488,11 +486,10 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
       final response = await sendPostRequest(restId, param);
 
       if (response != null) {
-        await DialogUtils.showCustomDialog(
+        await DialogUtils.showIPhoneAlertDialog(
           context: context,
           title: '견적 요청 완료',
-          content: '견적 요청이 성공적으로 완료되었습니다.',
-          confirmButtonText: '확인',
+          content: '성공적으로 완료되었습니다.',
           onConfirm: () {
             Navigator.pushReplacement(
               context,

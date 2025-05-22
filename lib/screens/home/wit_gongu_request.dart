@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
@@ -256,6 +257,8 @@ class _GonguRequeststState extends State<GonguRequest> {
     String restId = "saveRequestInfo";
     String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
     String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
+    // 2025-05-20: 오늘 날짜를 yyyy.MM.dd 형식으로 포맷
+    String today = DateFormat('yyyy.MM.dd').format(DateTime.now());
 
     print("========== 📝 GonguInfo 정보 ==========");
     print("categoryId: ${gonguItem.categoryId}");
@@ -275,18 +278,22 @@ class _GonguRequeststState extends State<GonguRequest> {
       "reqGubun": 'G',
       "reqUser": clerkNo,
       "aptNo": aptNo,
+      "saleAmt": gonguItem.saleAmt,
+      "reqContents": "공동구매",
       "categoryId": gonguItem.categoryId,
+      "expectedDate": today,
+
     });
 
     try {
       final response = await sendPostRequest(restId, param);
 
       if (response != null) {
-        await DialogUtils.showCustomDialog(
+        await DialogUtils.showIPhoneAlertDialog(
           context: context,
           title: '견적 요청 완료',
-          content: '견적 요청이 성공적으로 완료되었습니다.',
-          confirmButtonText: '확인',
+          content: '성공적으로 완료되었습니다.',
+          confirmText: '확인',
           onConfirm: () {
             Navigator.pushReplacement(
               context,

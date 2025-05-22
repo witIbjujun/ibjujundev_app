@@ -49,6 +49,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   String _estimateProcDate = ''; // 최종 작업요청일
   String _nextReqState = ''; //  다음상태
   String _reqBtenNm = ''; // 버튼명
+  String _reqStepState = ''; // 버튼명
 
 
   String nextPage = ''; // anwCode 값에 따라서 후기등록(BOARD) , 완전종료(END)
@@ -140,11 +141,10 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
     if(widget.target =="sellerView"){
 
-      clerkNo = "17";
       inputGubun = "seller";
     }
 
-    /*print("🔍 [파라미터 출력]");
+    print("🔍 [파라미터 출력]");
     print("chatId: $chatId");
     print("reqNo: ${widget.reqNo}");
     print("seq: ${widget.seq}");
@@ -156,7 +156,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     print("inputGubun: $inputGubun");
     print("messageId: $messageId");
     print("anwCode: $anwCode");
-    print("type: text");*/
+    print("type: text");
 
     /*다음페이지 진행*/
     nextPage = anwCode ?? '';
@@ -260,6 +260,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           _estimateProcDate = result['estimateProcDate']?.toString() ?? '';
           _nextReqState = result['nextReqState']?.toString() ?? '';
           _reqBtenNm = result['reqBtenNm']?.toString() ?? '';
+          _reqStepState = result['reqStepState']?.toString() ?? '';
         });
       }
     } catch (e) {
@@ -279,9 +280,6 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     String? target = widget.target;
     //print('✅ 메시지 조회 seq: $seq');
 
-    if (widget.target == "sellerView") {
-      clerkNo = "17";
-    }
 
     final param = jsonEncode({
       "reqNo": reqNo,
@@ -471,21 +469,12 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /*Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                _categoryNm,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),*/
           Row(
             children: [
               Icon(Icons.store, color: Colors.grey[700]),
               const SizedBox(width: 6),
-              Text(_storeName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(_storeName,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               const SizedBox(width: 16),
               Icon(Icons.access_time, color: Colors.grey[700]),
               const SizedBox(width: 6),
@@ -494,28 +483,57 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           ),
           const SizedBox(height: 10),
 
-          // ✅ 버튼 상태에 따른 활성화/비활성 처리
-          ElevatedButton(
-            onPressed: _nextReqState == "-" ? null : () {
-              print("계약 확정하기 클릭됨");
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _nextReqState == "-"
-                  ? Colors.grey
-                  : WitHomeTheme.wit_lightGreen,
-              minimumSize: const Size.fromHeight(40),
-            ),
-            child: Text(
-              _reqBtenNm,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+          // ✅ 순서도 표시
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildStepIndicator("1. 협의", _reqStepState == "10"),
+              _buildStepIndicator("2. 작업중", _reqStepState == "20"),
+              _buildStepIndicator("3. 작업완료", _reqStepState == "30"),
+              _buildStepIndicator("4. 최종완료", _reqStepState == "40"),
+            ],
+          ),
+          const SizedBox(height: 5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(3, (index) => Expanded(
+              child: Divider(
+                color: _reqStepState == "10" && index == 0
+                    || _reqStepState == "20" && index <= 1
+                    || _reqStepState == "30" && index <= 2
+                    || _reqStepState == "40"
+                    ? WitHomeTheme.wit_lightGreen
+                    : Colors.grey[400],
+                thickness: 2,
               ),
-            ),
+            )),
           ),
         ],
       ),
+    );
+  }
+
+  // ✅ 단계를 표현하는 위젯
+  Widget _buildStepIndicator(String title, bool isActive) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 14,
+          backgroundColor: isActive ? WitHomeTheme.wit_lightGreen : Colors.grey[400],
+          child: isActive
+              ? const Icon(Icons.check, color: Colors.white, size: 18)
+              : null,
+        ),
+        const SizedBox(height: 5),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: isActive ? WitHomeTheme.wit_lightGreen : Colors.grey[600],
+          ),
+        ),
+      ],
     );
   }
 
@@ -888,9 +906,9 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
       String? clerkNo = await secureStorage.read(key: 'clerkNo');
 
-      if (widget.target == "sellerView") {
+     /* if (widget.target == "sellerView") {
         clerkNo = "17";
-      }
+      }*/
 
       if (chatId == null || clerkNo == null) {
         print("❌ chatId 또는 clerkNo가 없습니다. 메시지 저장 중단");

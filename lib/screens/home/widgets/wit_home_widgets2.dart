@@ -493,6 +493,55 @@ class FormatUtils {
 
 
 class DialogUtils {
+
+
+  /// ✅ **확인만 있는 공통 알림창**
+  static Future<void> showAlertDialog({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String confirmText = '확인',
+    Color confirmColor = Colors.blue,
+    VoidCallback? onConfirm,
+  }) async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false, // 바깥 클릭으로 닫히지 않음
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              content,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // 창 닫기
+                if (onConfirm != null) {
+                  onConfirm();
+                }
+              },
+              child: Text(
+                confirmText,
+                style: TextStyle(color: confirmColor),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // 12/14: 공통 다이얼로그 메서드
   static Future<bool> showConfirmationDialog({
     required BuildContext context,
@@ -568,6 +617,7 @@ class DialogUtils {
     return result ?? false; // result가 null이면 false 반환
   }
 
+  // 2025-05-19: 공통 알림창 함수 추가
   static Future<void> showCustomDialog({
     required BuildContext context,
     String title = '알림',
@@ -626,6 +676,128 @@ class DialogUtils {
                     onConfirm(); // 확인 버튼 콜백 실행
                   }
                 },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 2025-05-19: 공통 알림창 함수 추가
+  // 2025-05-19: showCustomAlertDialog 디자인 개선 및 스타일 업데이트
+  static Future<void> showCustomAlertDialog({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String confirmText = '확인',
+    VoidCallback? onConfirm, // 확인 버튼 동작 (null 가능)
+    bool barrierDismissible = false, // 다이얼로그 외부 클릭 닫기 여부
+  }) async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: barrierDismissible,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: WitHomeTheme.nearlyWhite, // 배경색
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0), // 모서리 둥글게
+          ),
+          title: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: WitHomeTheme.darkerText,
+              fontSize: 20, // 폰트 크기 설정
+            ),
+            textAlign: TextAlign.center, // 제목 가운데 정렬
+          ),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              content,
+              style: TextStyle(
+                color: WitHomeTheme.darkText,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center, // 본문 가운데 정렬
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center, // 버튼 가운데 정렬
+          actions: <Widget>[
+            SizedBox(
+              width: 200, // 버튼 너비 설정
+              height: 50, // 버튼 높이 설정
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: WitHomeTheme.wit_lightGreen, // 버튼 배경색
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0), // 모서리 둥글게
+                  ),
+                ),
+                child: Text(
+                  confirmText,
+                  style: TextStyle(
+                    color: WitHomeTheme.white, // 텍스트 색상
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16, // 텍스트 크기
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                  if (onConfirm != null) {
+                    onConfirm(); // 확인 버튼 콜백 실행
+                  }
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
+  /// ✅ **확인만 있는 iOS 스타일 알림창**
+  static Future<void> showIPhoneAlertDialog({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String confirmText = '확인',
+    Color confirmColor = CupertinoColors.activeBlue,
+    VoidCallback? onConfirm,
+  }) async {
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false, // 바깥 클릭으로 닫히지 않음
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              content,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop(); // 창 닫기
+                if (onConfirm != null) {
+                  onConfirm();
+                }
+              },
+              child: Text(
+                confirmText,
+                style: TextStyle(color: confirmColor),
               ),
             ),
           ],
@@ -693,6 +865,9 @@ class DialogUtils {
     return result ?? false; // 결과가 null이면 false 반환
   }
 }
+
+
+
 // 글씨 더보기
 // 2025-05-18: OverflowText 수정 - 클릭 시 확장 및 축소 기능 추가
 class OverflowText extends StatefulWidget {
