@@ -176,7 +176,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
 
   // 아파트 구독 결제 정보 저장
   Future<void> insertSubscribePaymentData({
-    required dynamic aptNo,
+    required String? aptNo,
     required String? impUid,
     required String merchantUid,
     required String payMethod,
@@ -186,7 +186,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
     required String? cardNumber,
     required String buyerName,
     required String buyerEmail,
-    required int? paidAt,
+    required String? paidAt,
     required String? receiptUrl,
     required String? failReason,
     // required String createdAt,
@@ -194,7 +194,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
 
     print('결제 데이터 확인👇');
     print(jsonEncode({
-      'customer_uid': widget.sllrNo,
+      'customer_id': widget.sllrNo,
       'apt_no': aptNo,
       'imp_uid': impUid,
       'merchant_uid': merchantUid,
@@ -215,29 +215,31 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
 
     // 예: Supabase 사용 시
     final param = jsonEncode({
-      'customer_uid': widget.sllrNo,
-      'apt_no': aptNo,
-      'imp_uid': impUid,
-      'merchant_uid': merchantUid,
-      'pay_method': payMethod,
+      'customerId': widget.sllrNo,
+      'aptNo': aptNo,
+      'impUid': impUid,
+      'merchantUid': merchantUid,
+      'payMethod': payMethod,
       'amount': amount,
       'status': status,
-      'card_name': cardName,
-      'card_number': cardNumber,
-      'buyer_name': buyerName,
-      'buyer_email': buyerEmail,
-      'paid_at': paidAt,
-      'receipt_url': receiptUrl,
-      'fail_reason': failReason,
+      'cardName': cardName,
+      'cardNumber': cardNumber,
+      'buyerName': buyerName,
+      'buyerEmail': buyerEmail,
+      'paidAt': paidAt.toString(),
+      'receiptUrl': receiptUrl,
+      'failReason': failReason,
       // 'created_at': createdAt,
     });
 
     final response = await sendPostRequest(restId, param);
 
-    if (response.error != null) {
-      print('결제 로그 저장 실패: ${response.error!.message}');
-    } else {
+    if (response is int && response == 1) {
       print('결제 로그 저장 성공');
+    } else if (response is Map && response['error'] != null) {
+      print('결제 로그 저장 실패: ${response['error']['message']}');
+    } else {
+      print('결제 로그 응답 확인 필요: $response');
     }
   }
 
@@ -248,7 +250,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
     // PARAM
     final param = jsonEncode({
       "sllrNo": widget.sllrNo,
-      "aptNo": aptNo,
+      "aptNo": aptNo.toString(),
     });
 
     // API 호출
@@ -322,11 +324,11 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
   Future<void> proceedWithAutoPayment(dynamic aptNo, dynamic saleAmt) async {
     final accessToken = await getAccessToken();
     if (accessToken == null) {
-      print('자동결제 실패: 액세스 토큰 없음');
+      print('자동결제 실패: 액세스 토큰 없음 : ' + aptNo.toString());
       return;
     }
     else {
-      print('자동결제 진행: 액세스 토큰 있음');
+      print('자동결제 진행: 액세스 토큰 있음' + aptNo.toString());
     }
 
     final url = Uri.parse('https://api.iamport.kr/subscribe/payments/again');
@@ -341,8 +343,8 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
       'merchant_uid': 'mid_${DateTime.now().millisecondsSinceEpoch}',
       'amount': saleAmt,
       'name': '아파트 구독 결제',
-      'buyer_email': 'dravenn@naver.com',
-      'buyer_name': '범석 방충망',
+      //'buyer_email': 'dravenn@naver.com',
+      //'buyer_name': '범석 방충망',
     });
 
     try {
@@ -354,20 +356,19 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
           final res = data['response'];
 
           await insertSubscribePaymentData(
-            aptNo: aptNo,                               // 아파트 고유 번호
-            impUid: res['imp_uid'],                     // 포트원 거래 고유 ID
-            merchantUid: res['merchant_uid'],           // 주문 번호
-            payMethod: res['pay_method'],               // 결제 수단
-            amount: res['amount'],                      // 결제 금액
-            status: res['status'],                      // 상태 (paid)
-            cardName: res['card_name'],                 // 카드사 이름
-            cardNumber: res['card_number'],                 // 승인번호
-            buyerName: res['buyer_name'],               // 구매자 이름
-            buyerEmail: res['buyer_email'],             // 구매자 이메일
-            paidAt: res['paid_at'],                     // 결제 시각 (Unix timestamp)
-            receiptUrl: res['receipt_url'],             // 영수증 URL
-            failReason: null,                           // 실패 아님
-            // createdAt: now.toIso8601String(),           // 저장 시각
+            aptNo: aptNo.toString(),
+            impUid: res['imp_uid']?.toString() ?? '',
+            merchantUid: res['merchant_uid']?.toString() ?? '',
+            payMethod: res['pay_method']?.toString() ?? '',
+            amount: res['amount'] ?? 0,
+            status: res['status']?.toString() ?? '',
+            cardName: res['card_name']?.toString() ?? '',
+            cardNumber: res['card_number']?.toString() ?? '',
+            buyerName: res['buyer_name']?.toString() ?? '',
+            buyerEmail: res['buyer_email']?.toString() ?? '',
+            paidAt: res['paid_at']?.toString() ?? '', // ✅ 여기에서 에러 났을 확률 높음
+            receiptUrl: res['receipt_url']?.toString() ?? '',
+            failReason: null,
           );
 
           insertSubscribeApt(aptNo); // 실제 구독 처리
@@ -375,18 +376,18 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
         } else {
           // ❌ 실패 응답일 경우 (결제 요청은 됐지만 카드사 등에서 거절)
           await insertSubscribePaymentData(
-            aptNo: aptNo,
-            impUid: null,
+            aptNo: aptNo.toString(),
+            impUid: "",
             merchantUid: jsonDecode(body)['merchant_uid'] ?? 'unknown',
             payMethod: 'card',
             amount: saleAmt,
             status: 'failed',                           // 상태: 실패
-            cardName: null,
-            cardNumber: null,
-            buyerName: '범석 방충망',
-            buyerEmail: 'dravenn@naver.com',
-            paidAt: null,
-            receiptUrl: null,
+            cardName: "",
+            cardNumber: "",
+            buyerName: "",
+            buyerEmail: "",
+            paidAt: "",
+            receiptUrl: "",
             failReason: data['message'],                // 실패 사유 저장
             // createdAt: now.toIso8601String(),
           );
@@ -421,7 +422,7 @@ class SellerAptSubscribeState extends State<SellerAptSubscribe> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CardRegisterWebView(customerUid: 'user_1234',
+        builder: (context) => CardRegisterWebView(customerUid: 'user_'+widget.sllrNo,
           amount: amount, // 💰 실제 금액 전달
           storeName: storeName,),
       ),

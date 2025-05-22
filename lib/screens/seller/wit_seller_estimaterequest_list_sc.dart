@@ -113,6 +113,7 @@ class EstimateItem extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isExpanded = request['isExpanded'] ?? false; // 상세보기 상태 관리
     String reqContents = request['reqContents'] ?? '내용 없음'; // 내용
+    String itemName = request['itemName'] ?? '품목 없음'; // 내용
 
     // 내용이 3줄 이상인지 확인
     bool hasMoreThanThreeLines = (reqContents.split('\n').length > 3);
@@ -233,6 +234,15 @@ class EstimateItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // ✅ itemName 텍스트 추가
+                        Text(
+                          "요청품목 : " + itemName,
+                          style: textStyle.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 6), // 간격 추가
                         Text(
                           reqContents,
                           style: textStyle,

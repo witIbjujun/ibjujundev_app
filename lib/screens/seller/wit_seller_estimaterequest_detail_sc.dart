@@ -311,23 +311,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     ),*/
                 // 체크박스가 체크된 경우 SellerProfileView 표시
                 //if (_isChecked)
-                SizedBox(height: 10),
-                Text(
-                  "내 프로필",
-                  style: WitHomeTheme.title.copyWith(
-                    fontSize: 16,
-                    color: WitHomeTheme.wit_lightSteelBlue,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black), // 테두리 색상 설정
-                    borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
-                  ),
-                  child: SellerProfileChildView(
-                      sllrNo: widget.sllrNo, appbarYn: "N"),
-                ),
+
                 //],
 
                 SizedBox(height: 10), // 금액 입력란 카드
@@ -479,7 +463,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        if (reqState == "01") // 조건부 렌더링
+                        if (reqState == "10") // 조건부 렌더링
                           GestureDetector(
                             onTap: () => _showImagePickerOptions(),
                             child: Container(
@@ -573,7 +557,29 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     ),
                   ),
                 ),
-
+                SizedBox(height: 10),
+                Text(
+                  "내 프로필",
+                  style: WitHomeTheme.title.copyWith(
+                    fontSize: 16,
+                    color: WitHomeTheme.wit_lightSteelBlue,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black), // 테두리 색상 설정
+                    borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
+                  ),
+                  child: SellerProfileChildView(
+                      sllrNo: widget.sllrNo, appbarYn: "N"),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  "* 파트너님의 프로필 정보가 견적요청시 전송됩니다.",
+                  style: WitHomeTheme.subtitle
+                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
                 //],
                 SizedBox(height: 20),
                 Row(
@@ -917,6 +923,10 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     // 결과 셋팅
     setState(() {
       estimateRequestInfoForSend = _estimateRequestInfoForSend;
+
+      print("111 : " + estimateRequestInfoForSend["estNo"]);
+      print("222 : " + estimateRequestInfoForSend["chatId"]);
+
     });
 
     getSellerDetailImageList();
