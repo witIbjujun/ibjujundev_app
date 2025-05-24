@@ -924,9 +924,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     setState(() {
       estimateRequestInfoForSend = _estimateRequestInfoForSend;
 
-      print("111 : " + estimateRequestInfoForSend["estNo"]);
-      print("222 : " + estimateRequestInfoForSend["chatId"]);
-
     });
 
     getSellerDetailImageList();
