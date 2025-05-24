@@ -66,7 +66,8 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
     String prevAptNo = _selectedAptNo; // ✅ 이전 선택값 저장
 
     final param = jsonEncode({
-      "sllrNo": widget.sllrNo
+      "sllrNo": widget.sllrNo,
+      "ctgrId": sellerInfo["serviceItem"]
     });
     final response = await sendPostRequest("getGPList", param);
 
