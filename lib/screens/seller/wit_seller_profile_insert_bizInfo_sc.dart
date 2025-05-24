@@ -505,7 +505,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
               Row(
                 children: [
                   Text(
-                    '개업일자 ',
+                    '사업자등록번호 ',
                     style: WitHomeTheme.title.copyWith(fontSize: 16),
                   ),
                   Icon(
@@ -528,7 +528,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   controller: storeCodeController,
                   decoration: InputDecoration(
                     border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '개업일자를 입력하세요', // 힌트 텍스트
+                    hintText: '사업자등록번호를 입력하세요', // 힌트 텍스트
                     contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
                   ),
                   onChanged: (text) {
