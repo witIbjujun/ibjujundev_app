@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
 import '../chat/CustomChatScreen.dart';
@@ -134,10 +134,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                   ),
                   const SizedBox(height: 8),
 
-                  // 설명 + 더보기
-                  OverflowText(
-                    text: requests[0].reqContents,
-                    maxLines: 2,
+                  // 설명
+                  Text(
+                    requests[0].reqContents,
+                    style: const TextStyle(fontSize: 14, height: 1.5),
                   ),
                   const SizedBox(height: 12),
                   Wrap(
@@ -417,9 +417,9 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
           /// 🔹 밑에 estimateContents 표시
           SizedBox(height: 10),
 
-          OverflowText(
-            text: request.estimateContents,
-            maxLines: 2, // 최대 150글자까지만 표시, 이 이상은 '더보기' 처리
+          Text(
+            request.estimateContents,
+            style: const TextStyle(fontSize: 14, height: 1.5),
           ),
 
           SizedBox(height: 10),

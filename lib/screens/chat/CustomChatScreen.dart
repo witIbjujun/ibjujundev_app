@@ -10,14 +10,16 @@ import '../../util/wit_api_ut.dart';
 import '../../util/wit_code_ut.dart';
 import '../board/wit_board_write_sc.dart';
 import '../common/wit_calendarDialog.dart';
+import '../home/widgets/wit_home_widgets.dart';
 import '../home/wit_home_theme.dart';
+import '../seller/wit_seller_profile_view_sc.dart';
 import 'models/message_info.dart';
 
 // 대화하기
 class CustomChatScreen extends StatefulWidget {
   final String? reqNo;
   final String seq;
-  late  String? target;
+  final String? target; // ✅ final로 그대로 유지 (late 제거)
 
   CustomChatScreen(this.reqNo, this.seq, this.target,{super.key});
 
@@ -26,7 +28,7 @@ class CustomChatScreen extends StatefulWidget {
 }
 
 class _CustomChatScreenState extends State<CustomChatScreen> {
-
+  late String? _target; // 내부 변수로 선언
   final List<Map<String, dynamic>> _chatMessages = [];
   final List<Map<String, dynamic>> _questionMessages = [];
   final List<Map<String, dynamic>> _chatUserMessages = [];
@@ -43,6 +45,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
   String _reqName = '';  //신청자
   String _categoryNm = '';  // 카테고리 명
+  String _categoryId = '';  // 카테고리  ID
   String _estimateAmount = ''; // 견적금액
   String _storeName = ''; // 업체명
   String _estimateDate = ''; // 최초 작업요청일
@@ -50,7 +53,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   String _nextReqState = ''; //  다음상태
   String _reqBtenNm = ''; // 버튼명
   String _reqStepState = ''; // 버튼명
-
+  String _sllrNo = ''; // 업체ID
 
   String nextPage = ''; // anwCode 값에 따라서 후기등록(BOARD) , 완전종료(END)
 
@@ -74,7 +77,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   @override
   void initState() {
     super.initState();
-
+    _target = widget.target; // ✅ 최초 값 복사
     //print('🧪 initState - reqNo: ${widget.reqNo}, seq: ${widget.seq}, target: ${widget.target}');
     _loadData();
     // 2025-05-04: 채팅정보 먼저 가져오고 → 그다음 채팅내용 조회
@@ -139,12 +142,12 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
    // print('✅ 메시지 저장 (anwCode: ${anwCode ?? 'null'}, gubun: ${gubun ?? 'null'}, messageId: ${messageId ?? 'null'})');
 
 
-    if(widget.target =="sellerView"){
+    if(_target =="sellerView"){
 
       inputGubun = "seller";
     }
 
-    print("🔍 [파라미터 출력]");
+ /*   print("🔍 [파라미터 출력]");
     print("chatId: $chatId");
     print("reqNo: ${widget.reqNo}");
     print("seq: ${widget.seq}");
@@ -156,7 +159,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     print("inputGubun: $inputGubun");
     print("messageId: $messageId");
     print("anwCode: $anwCode");
-    print("type: text");
+    print("type: text");*/
 
     /*다음페이지 진행*/
     nextPage = anwCode ?? '';
@@ -192,10 +195,8 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
         print('✅ 메시지 저장 성공===' + nextPage);
         if(nextPage == "BOARD"){
           print('✅ 업체후기 이동');
-          String? clerkNo = await secureStorage.read(key: 'clerkNo');
-          //String? clerkNo = await secureStorage.read(key: 'clerkNo');
-          //String? clerkNo = await secureStorage.read(key: 'clerkNo');
-
+          String clerkNo = await secureStorage.read(key: 'clerkNo') ?? '';
+          String aptNo = await secureStorage.read(key: 'mainAptNo') ?? '';
 
           Navigator.push(
             context,
@@ -204,10 +205,10 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                   bordNo: "",             // 게시판 번호 (필요한 경우 수정)
                   bordType: 'UH01',       // 게시판 타입
                   bordKey: '',            // 게시판 키 (필요한 경우 수정)
-                  aptNo: '7',             // 아파트 번호
-                  sllrNo: '17',           // 판매자 번호
+                  aptNo: aptNo,             // 아파트 번호
+                  sllrNo: _sllrNo,           // 판매자 번호
                   reqNo: widget.reqNo ?? '',  // 요청 번호
-                  ctgrId: 'CATE001',            // 카테고리 ID
+                  ctgrId: _categoryId,            // 카테고리 ID
                   creUserId: clerkNo ?? ''  // 생성자 ID
               ),
             ),
@@ -236,7 +237,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
     String? reqNo = widget.reqNo;
     String? seq = widget.seq;
-    String? target = widget.target;
+    String? target = _target;
     //print('✅ getChatInfo 호출 - seq: $seq');
 
     final param = jsonEncode({
@@ -254,6 +255,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
         setState(() {
           _reqName = result['reqName']?.toString() ?? '';
           _categoryNm = result['categoryNm']?.toString() ?? '';
+          _categoryId = result['categoryId']?.toString() ?? '';
           _estimateAmount = result['estimateAmount']?.toString() ?? '0';
           _storeName = result['storeName']?.toString() ?? '';
           _estimateDate = result['estimateDate']?.toString() ?? '';
@@ -261,6 +263,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           _nextReqState = result['nextReqState']?.toString() ?? '';
           _reqBtenNm = result['reqBtenNm']?.toString() ?? '';
           _reqStepState = result['reqStepState']?.toString() ?? '';
+          _sllrNo = result['sllrNo']?.toString() ?? '';
         });
       }
     } catch (e) {
@@ -277,7 +280,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     String clerkNo = (await secureStorage.read(key: 'clerkNo'))!;
     String? reqNo = widget.reqNo;
     String? seq = widget.seq;
-    String? target = widget.target;
+    String? target = _target;
     //print('✅ 메시지 조회 seq: $seq');
 
 
@@ -451,6 +454,9 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           date: msg['date'] ?? '',
           storeName: msg['storeName'],
           profileImage: msg['profileImage'],
+          nickName: msg['nickName'],
+          userImage: msg['userImage'],
+          storeImgPath: msg['storeImgPath'],
           type: msg['type'] ?? 'text',
         )));
       }
@@ -471,10 +477,29 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.store, color: Colors.grey[700]),
-              const SizedBox(width: 6),
-              Text(_storeName,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              // 2025-05-23: 업체명을 클릭 시 SellerProfileView로 이동하도록 GestureDetector 추가
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SellerProfileView(
+                        sllrNo: _sllrNo,  // 🔹 request의 sllrNo를 넘김
+                        appbarYn: "Y",
+                      ),
+                    ),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Icon(Icons.store, color: Colors.grey[700]),
+                    const SizedBox(width: 6),
+                    Text(
+                      _storeName,
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(width: 16),
               Icon(Icons.access_time, color: Colors.grey[700]),
               const SizedBox(width: 6),
@@ -573,10 +598,10 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     final msgCode = q['msgCode'];  // 🔹 msgCode 추가
     final isCalendarButton = text.contains('CAL');
     final isActionButton = text.contains('BTN1');
+    final replacedText = text.replaceAll('ValDate', _estimateDate);
     final cleanedText = text.replaceAll('CAL', '').replaceAll('BTN1', '').trim();
 
-    //  print("🚀 _buildQuestionButton: text=$text, anwCode=$anwCode, messageId=$messageId, msgCode=$msgCode");
-
+      print("🚀 _buildQuestionButton: text=$text, anwCode=$anwCode, messageId=$messageId, replacedText=$replacedText");
 
     return GestureDetector(
       onTap: () async {
@@ -606,7 +631,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           _showProceedDialog(text,anwCode, msgCode,messageId: messageId);
         } else {
           _saveMessageToServer(
-            text,
+            replacedText, // ✅ 여기
             anwCode: anwCode,
             gubun: 'system',
             messageId: messageId,
@@ -664,7 +689,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
             ),
           ),
         )
-            : Text(text, style: const TextStyle(fontSize: 14, color: Colors.black87)),
+            : Text(replacedText, style: const TextStyle(fontSize: 14, color: Colors.black87)),
       ),
     );
   }
@@ -755,8 +780,6 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     }
   }
 
-
-
   /**
    * 달력
    */
@@ -802,7 +825,6 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   /**
    * 견적서
    */
-  // 2025-05-04: getChatInfo 결과를 기반으로 견적 정보 출력
   Widget _estimateCard() {
     return Container(
       decoration: BoxDecoration(
@@ -945,16 +967,20 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
    */
   // 2025-05-04: chatgubun이 me인 경우 프로필 이미지 숨김, profileImage 없을 시 기본 이미지로 대체
   // 2025-05-04: chatgubun == 'me'일 경우 date 오른쪽, 'other'일 경우 왼쪽에 표시
+  // 2025-05-23: target이 userView일 경우 storeImgPath 또는 userImage 사용하고, storeName / nickName 처리 추가
   Widget _chatBubble({
     required String text,
-    required String chatgubun, // me, system, other
+    required String chatgubun,
     required String date,
     String? profileImage,
     String? storeName,
-    String type = 'text',        // ✅ type 추가
+    String? nickName,
+    String? userImage,
+    String? storeImgPath,
+    String type = 'text',
+
   }) {
     final radius = Radius.circular(18);
-
     final Color bubbleColor = switch (chatgubun) {
       'me' => const Color(0xFFFFFF66),
       'system' => Colors.grey.shade400,
@@ -965,9 +991,35 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
         ? Alignment.centerRight
         : Alignment.centerLeft;
 
-    final String resolvedProfileImage = (profileImage == null || profileImage.isEmpty)
-        ? 'https://picsum.photos/200'
-        : profileImage;
+
+
+    // 🔸 프로필 이미지 선택 (target에 따라 storeImgPath 또는 userImage)
+    final String targetValue = _target ?? '';
+
+    final String? resolvedProfileImage =
+    (targetValue == 'sellerView')
+        ? (userImage?.isNotEmpty ?? false)
+        ? userImage
+        : null
+        : (storeImgPath?.isNotEmpty ?? false)
+        ? storeImgPath
+        : null;
+
+
+    // 🔸 사용자 이름 선택 (target에 따라 storeName 또는 nickName)
+    final String? displayName =
+    (_target == 'userView') ? storeName : (nickName ?? storeName);
+
+   /* print("🔍 [파라미터 출력]");
+    print("widget.target: $_target");
+    print("reqNo: ${widget.reqNo}");
+    print("seq: ${widget.seq}");
+    print("storeImgPath: $storeImgPath");
+    print("userImage: $userImage");
+    print("nickName: $nickName");
+    print("storeName: $storeName");
+    print("displayName: $displayName");
+    print("resolvedProfileImage: $resolvedProfileImage");*/
 
     return Align(
       alignment: alignment,
@@ -983,12 +1035,12 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                 children: [
                   CircleAvatar(
                     radius: 16,
-                    backgroundImage: NetworkImage(resolvedProfileImage),
+                    backgroundImage: proFlieImage.getImageProvider(resolvedProfileImage ?? ""),
                   ),
                   const SizedBox(width: 6),
-                  if (storeName != null)
+                  if (displayName != null)
                     Text(
-                      storeName,
+                      displayName,
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -1035,8 +1087,6 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                         ),
                       ),
                       const SizedBox(height: 2),
-
-                      // ✅ 날짜 위치 반전
                       Row(
                         mainAxisAlignment: chatgubun == 'me'
                             ? MainAxisAlignment.end

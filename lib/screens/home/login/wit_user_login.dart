@@ -64,6 +64,7 @@ Future<void> getUserInfo(MainViewModel viewModel,String tempClerkNo,String gubun
     print('userInfo 닉네임: '+(userInfo!.nickName??''));
     print('userInfo 역할: '+(userInfo!.role??''));
     print('userInfo 역할: '+(userInfo!.email??''));
+    print('userInfo sllrNo: '+(userInfo!.sllrNo??''));
     print('userInfo Main아파트 번호: '+(userInfo!.mainAptNo??''));
     print('userInfo Main아파트 이름: '+(userInfo!.mainAptNm??''));
     print('userInfo aptNo 이름: ${userInfo!.aptNo?.join(', ') ?? ''}');
@@ -79,6 +80,7 @@ Future<void> getUserInfo(MainViewModel viewModel,String tempClerkNo,String gubun
     await secureStorage.write(key: 'mainAptNo', value: userInfo!.mainAptNo);
     await secureStorage.write(key: 'mainAptNm', value: userInfo!.mainAptNm);
     await secureStorage.write(key: 'role', value: userInfo!.role);
+    await secureStorage.write(key: 'sllrNo', value: userInfo!.sllrNo);
     await secureStorage.write(key: 'authToken', value: "11111");
     await secureStorage.write(key: 'aptNo', value: userInfo!.aptNo?.join(',') ?? '');
     await secureStorage.write(key: 'aptName', value: userInfo!.aptName?.join(',') ?? '');
@@ -252,13 +254,17 @@ Future<void> logOut(BuildContext context) async {
 }
 
 
-
+// 2025-05-23: 로그인 상태 확인 시 예외 발생에 대비한 try-catch 추가
 Future<bool> checkLoginStatus() async {
-  final secureStorage = FlutterSecureStorage(); //
-  final token = await secureStorage.read(key: 'authToken');
-  return token != null; // 토큰이 있으면 로그인 상태
+  try {
+    final secureStorage = FlutterSecureStorage(); // 🔹 보안 저장소 인스턴스
+    final token = await secureStorage.read(key: 'authToken');
+    return token != null; // 🔸 토큰이 있으면 로그인 상태로 간주
+  } catch (e) {
+    print('🔴 checkLoginStatus 오류 발생: $e'); // 오류 로깅
+    return false; // 🔸 오류 발생 시 로그인 상태 아님으로 처리
+  }
 }
-
 
 
 

@@ -28,7 +28,7 @@ import '../../main.dart';
 import '../board/wit_board_main_sc.dart';
 import '../common/wit_tableCalendar_sc.dart';
 import '../common/wit_tableCalendar_widget.dart';
-import '../home/widgets/wit_home_widgets2.dart';
+import '../home/widgets/wit_home_widgets.dart';
 import '../home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:dotted_border/dotted_border.dart';

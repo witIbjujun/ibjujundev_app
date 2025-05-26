@@ -24,7 +24,10 @@ class MessageInfo {
     this.reqBtenNm = '',
     this.reqStepState = '',
     this.reqStateNm = '',
-
+    this.nickName = '',
+    this.sllrNo = '',
+    this.categoryId = '',
+    this.storeImgPath = '',
 
   });
 
@@ -52,6 +55,11 @@ class MessageInfo {
   String userImage;
   String reqStepState;
   String reqStateNm;
+  String nickName;
+  String sllrNo;
+  String categoryId;
+  String storeImgPath;
+
 
 
   List<MessageInfo>? parseMessageList(List<dynamic> messageList) {
@@ -80,6 +88,10 @@ class MessageInfo {
           reqStateNm: messageInfo['reqStateNm'] ?? '',
           estimateAmount: messageInfo['estimateAmount'] ?? '',
           reqUser: messageInfo['reqUser'] ?? '',
+          nickName: messageInfo['nickName'] ?? '',
+          sllrNo: messageInfo['sllrNo'] ?? '',
+          categoryId: messageInfo['categoryId'] ?? '',
+          storeImgPath: messageInfo['storeImgPath'] ?? '',
           storeName: messageInfo['storeName'] ?? ''
       );
     }).toList();
@@ -108,6 +120,9 @@ class MessageInfo {
       'targetView': targetView,
       'categoryNm': categoryNm,
       'reqName': reqName,
+      'nickName': nickName,
+      'storeImgPath': storeImgPath,
+      'sllrNo': sllrNo,
       'estimateAmount': estimateAmount,
       'reqUser': reqUser,
 

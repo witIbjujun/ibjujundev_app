@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
@@ -218,7 +218,6 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     return Board(bordType: "UH01"); // 탭 안에서 '업체후기' 화면을 표시
   }
 
-
   // 2025-04-22: 이미지 비율에 따라 fullHeight 자동 계산 + Semantics 오류 방지 적용
   Widget getCategoryDetailInfo() {
     double initialHeight = 250.0;
@@ -228,26 +227,36 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
 
     return StatefulBuilder(
       builder: (BuildContext context, StateSetter setState) {
-        final imageUrl = apiUrl + '/WIT/lineEye.jpg';
+
+        // 2025-05-26: 이미지 리스트로 변경하여 7개 이미지 순차 출력
+        final List<String> imageUrls = List.generate(
+          7,
+              (index) => '$apiUrl/WIT/Board/clean0${index + 1}.png',
+        );
+
+        List<double?> fullHeights = List.filled(imageUrls.length, null);
+        bool imagesLoaded = false;
 
         // 2025-04-22: 이미지 비율을 기반으로 fullHeight 계산
-        if (!imageLoaded) {
-          final imageProvider = NetworkImage(imageUrl);
-          final imageStream = imageProvider.resolve(const ImageConfiguration());
-          imageStream.addListener(
-            ImageStreamListener((ImageInfo info, bool _) {
-              final imageWidth = info.image.width.toDouble();
-              final imageHeight = info.image.height.toDouble();
-              final screenWidth = MediaQuery.of(context).size.width;
-              final calculatedHeight = screenWidth * imageHeight / imageWidth;
+        if (!imagesLoaded) {
+          for (int i = 0; i < imageUrls.length; i++) {
+            final imageProvider = NetworkImage(imageUrls[i]);
+            final imageStream = imageProvider.resolve(const ImageConfiguration());
+            imageStream.addListener(
+              ImageStreamListener((ImageInfo info, bool _) {
+                final screenWidth = MediaQuery.of(context).size.width;
+                final calculatedHeight = screenWidth * info.image.height / info.image.width;
 
-              setState(() {
-                fullHeight = calculatedHeight;
-                imageLoaded = true;
-              });
-            }),
-          );
+                setState(() {
+                  fullHeights[i] = calculatedHeight;
+                  imagesLoaded = fullHeights.every((h) => h != null);
+                });
+              }),
+            );
+          }
         }
+
+
 
         return ListView(
           primary: true,
@@ -263,20 +272,25 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
             SizedBox(height: 16.0),
 
             // 🔽 자동 높이 이미지 영역
-            ClipRect(
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                width: MediaQuery.of(context).size.width,
-                height: _isExpanded
-                    ? (fullHeight ?? initialHeight)
-                    : initialHeight,
-                child: Image.network(
-                  imageUrl,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
-                ),
-              ),
+            // 2025-05-26: 이미지 모서리 둥글게 + 좌우 잘림 방지 적용
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch, // 너비를 전체로
+              children: List.generate(imageUrls.length, (index) {
+                final height = fullHeights[index] ?? initialHeight;
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(8), // 모서리 둥글게
+                  child: Image.network(
+                    imageUrls[index],
+                    width: double.infinity,
+                    height: _isExpanded ? height : initialHeight,
+                    fit: BoxFit.fitWidth, // 좌우 자르지 않고 꽉 채움
+                    alignment: Alignment.topCenter,
+                  ),
+                );
+              }),
             ),
+
+
             SizedBox(height: 8.0),
 
             Center(
@@ -455,7 +469,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Board(bordType: "CM01")),
+        MaterialPageRoute(builder: (context) => Board(bordType: "UH01",ctgrId: widget.categoryId)),
       );
     });
 

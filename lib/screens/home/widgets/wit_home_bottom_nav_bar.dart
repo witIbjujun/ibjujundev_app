@@ -6,11 +6,14 @@ import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/board/wit_board_main_sc.dart';
 import 'package:witibju/screens/checkList/wit_checkList_main_sc.dart';
 
+import '../login/wit_user_login.dart';
+import '../login/wit_user_loginStep.dart';
+
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
   const BottomNavBar({Key? key, required this.selectedIndex}) : super(key: key);
 
-  void _onItemTapped(BuildContext context, int index) {
+  void _onItemTapped (BuildContext context, int index) async {
     if (index == selectedIndex) return; // 현재 선택된 탭이면 아무 작업 안 함
 
     Widget nextScreen;
@@ -25,6 +28,12 @@ class BottomNavBar extends StatelessWidget {
         nextScreen = HomeScreen();
         break;
       case 3:
+      // 2025-05-26: 내정보는 로그인 여부 확인 후 이동
+        bool isLoggedIn = await checkLoginStatus();
+        if (!isLoggedIn) {
+          _showLoginDialog(context); // 로그인 유도
+          return;
+        }
         nextScreen = MyProfile();
         break;
       case 4:
@@ -38,6 +47,13 @@ class BottomNavBar extends StatelessWidget {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => nextScreen),
+    );
+  }
+
+  void _showLoginDialog(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => WitUserLoginStep()),
     );
   }
 

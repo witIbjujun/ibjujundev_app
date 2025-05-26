@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/login/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_estimate_detail.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
@@ -22,6 +22,7 @@ import 'package:witibju/screens/home/models/userInfo.dart' as model;
 
 
 import '../question/wit_question_main_sc.dart';
+import '../seller/wit_seller_profile_detail_sc.dart';
 import '../seller/wit_seller_profile_insert_name_sc.dart';
 import 'login/wit_kakaoLogin.dart';
 import 'models/main_view_model.dart';
@@ -35,6 +36,7 @@ class MyProfile extends StatefulWidget  {
 
 class _MyProfileState extends State<MyProfile> {
   String? aptName; // 🔹 클래스 필드로 선언
+  String? _sllrNo; // 파트너 번호
   int _selectedIndex = 3; // ✅ "내정보" 탭이 기본 선택
   // 컨설리더 설정
   final _storage = const FlutterSecureStorage();
@@ -58,6 +60,7 @@ class _MyProfileState extends State<MyProfile> {
       String? clerkNo = await _storage.read(key: 'clerkNo');
       String? role = await _storage.read(key: 'role');
       String? mainAptNo = await _storage.read(key: 'mainAptNo');
+      String? loadedSllrNo = await _storage.read(key: 'sllrNo');
 
       print('myprofile 고객 번호: $clerkNo');
       print('myprofile 닉네임: $loadedNickName');
@@ -71,6 +74,7 @@ class _MyProfileState extends State<MyProfile> {
           _controller.text = loadedNickName;
         }
         aptName = loadedAptName ?? 'APT 선택';
+        _sllrNo = loadedSllrNo;
       });
 
     } catch (e) {
@@ -115,7 +119,6 @@ class _MyProfileState extends State<MyProfile> {
     }
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     print("Rendering MyProfile...");
@@ -216,13 +219,24 @@ class _MyProfileState extends State<MyProfile> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => SellerProfileInsertName(),
-                      ),
-                    );
+                    if (_sllrNo != null && _sllrNo!.isNotEmpty) {
+                      // 2025-05-26: sllrNo 존재 → 파트너 상세로 이동
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SellerProfileDetail(sllrNo: int.parse(_sllrNo!)),
+                        ),
+                      );
+                    } else {
+                      // sllrNo 없음 → 파트너 등록으로 이동
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SellerProfileInsertName(),
+                        ),
+                      );
+                    }
                   },
-                  child: _buildListTile(Icons.business_center, '파트너 등록'),
+                  child: _buildListTile(Icons.business_center,
+                      _sllrNo != null && _sllrNo!.isNotEmpty ? '파트너 전환' : '파트너 등록'),
                 ),
                 GestureDetector(
                   onTap: () async {

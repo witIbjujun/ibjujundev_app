@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/login/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/home/wit_compay_view_sc_.dart';
@@ -212,11 +212,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 _buildIconWithLabel(
                                   imagePath: 'assets/home/FloorPlan.png',
                                   label: '평면도',
-                                  onTap: () {
-                                    showImagePopup(
-                                      context: context,
-                                      imageUrl: '/WIT/12345.png',
-                                    );
+                                  onTap: () async {
+                                    // 2025-05-26: 평면도 클릭 시 로그인 체크 후 처리
+                                    bool isLoggedIn = await checkLoginStatus();
+                                    if (isLoggedIn) {
+                                      showImagePopup(
+                                        context: context,
+                                        imageUrl: '/WIT/12345.png',
+                                      );
+                                    } else {
+                                      _showLoginDialog(context); // 로그인 화면으로 이동
+                                    }
                                   },
                                 ),
                                 _buildIconWithLabel(
@@ -234,92 +240,103 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 _buildIconWithLabel(
                                   imagePath: 'assets/home/apt.png',
                                   label: '아파트',
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                         Board(bordType: "CM01", bordKey: "5"))
-                                       //CustomChatScreen('S2025051200003', '3','sellerView')),
-                                    );
+                                  onTap: () async {
+                                    // 2025-05-26: 로그인 체크 후 이동
+                                    bool isLoggedIn = await checkLoginStatus();
+                                    if (isLoggedIn) {
+                                      String aptNo = await secureStorage.read(key: 'mainAptNo') ?? '';
+                                      String mainAptNm = await secureStorage.read(key: 'mainAptNm') ?? '';
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => Board(
+                                            bordType: "CM01",
+                                            aptNo: aptNo,
+                                            bordTitle: mainAptNm,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      _showLoginDialog(context); // 로그인 유도
+                                    }
                                   },
                                 ),
                                 _buildIconWithLabel(
                                   imagePath: 'assets/home/best.png',
                                   label: '베스트',
-                                  onTap: () {
-                                    showGuirdDialog(
-                                      context: context,
-                                      dialogWidth: 340,
-                                      dialogHeight: 500,
-                                      options: [
-                                        {
-                                          'text': 'Simple 인테리어',
-                                          'textSub': '100~200만',
-                                          'bgImage ': 'assets/home/bestBack2.png',
-                                        'height'  : 44.0,             // 원하는 크기
-                                        'width'   : 300.0,
+                                  onTap: () async {
+                                    // 2025-05-26: 로그인 체크 후 다이얼로그 실행
+                                    bool isLoggedIn = await checkLoginStatus();
+                                    if (isLoggedIn) {
+                                      showGuirdDialog(
+                                        context: context,
+                                        dialogWidth: 340,
+                                        dialogHeight: 500,
+                                        options: [
+                                          {
+                                            'text': 'Simple 인테리어',
+                                            'textSub': '100~200만',
+                                            'bgImage ': 'assets/home/bestBack2.png',
+                                            'height': 44.0,
+                                            'width': 300.0,
+                                          },
+                                          {
+                                            'text': 'Standard 인테리어',
+                                            'textSub': '300~500만',
+                                            'bgImage ': 'assets/home/bestBack1.png',
+                                            'height': 44.0,
+                                            'width': 300.0,
+                                          },
+                                          {
+                                            'text': 'Premium 인테리어',
+                                            'textSub': '700~1000만',
+                                            'bgImage ': 'assets/home/bestBack4.png',
+                                            'height': 44.0,
+                                            'width': 300.0,
+                                          },
+                                          {
+                                            'text': 'My Choice 인테리어',
+                                            'textSub': '자유선택',
+                                            'bgImage ': 'assets/home/bestBack3.png',
+                                            'height': 44.0,
+                                            'width': 300.0,
+                                          },
+                                        ],
+                                        onOptionSelected: (selectedOption) {
+                                          if (selectedOption == 'Simple 인테리어') {
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('S')));
+                                          } else if (selectedOption == 'Standard 인테리어') {
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('T')));
+                                          } else if (selectedOption == 'Premium 인테리어') {
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('P')));
+                                          } else if (selectedOption == 'My Choice 인테리어') {
+                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('A')));
+                                          }
                                         },
-                                        {
-                                          'text': 'Standard 인테리어',
-                                          'textSub': '300~500만',
-                                          'bgImage ': 'assets/home/bestBack1.png',
-                                          'height'  : 44.0,             // 원하는 크기
-                                          'width'   : 300.0,
-                                        },
-                                        {
-                                          'text': 'Premium 인테리어',
-                                          'textSub': '700~1000만',
-                                          'bgImage ': 'assets/home/bestBack4.png',
-                                          'height'  : 44.0,             // 원하는 크기
-                                          'width'   : 300.0,
-                                        },
-                                        {
-                                          'text': 'My Choice 인테리어',
-                                          'textSub': '자유선택',
-                                          'bgImage ': 'assets/home/bestBack3.png',
-                                          'height'  : 44.0,             // 원하는 크기
-                                          'width'   : 300.0,
-                                        },
-                                      ],
-                                      onOptionSelected: (selectedOption) {
-                                        if (selectedOption == 'Simple 인테리어') {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      getEstimate('S')));
-                                        } else if (selectedOption ==
-                                            'Standard 인테리어') {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      getEstimate('T')));
-                                        } else if (selectedOption ==
-                                            'Premium 인테리어') {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      getEstimate('P')));
-                                        } else if (selectedOption ==
-                                            'My Choice 인테리어') {
-                                          Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      getEstimate('A')));
-                                        }
-                                      },
-                                    );
+                                      );
+                                    } else {
+                                      _showLoginDialog(context); // 로그인 화면으로 이동
+                                    }
                                   },
                                 ),
+
                                 _buildIconWithLabel(
                                   imagePath: 'assets/home/GroupPurchase.png',
                                   label: '공동구매',
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => GonguRequest()),
-                                    );
+                                  onTap: () async {
+                                    // 2025-05-26: 공동구매 클릭 시 로그인 체크 후 이동
+                                    bool isLoggedIn = await checkLoginStatus();
+                                    if (isLoggedIn) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => GonguRequest(),
+                                        ),
+                                      );
+                                    } else {
+                                      _showLoginDialog(context); // 로그인 화면으로 이동
+                                    }
                                   },
                                 ),
+
                               ],
                             ),
                           ),

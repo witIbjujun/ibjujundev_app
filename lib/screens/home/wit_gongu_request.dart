@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/login/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_estimate_detail.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
@@ -36,7 +36,7 @@ class _GonguRequeststState extends State<GonguRequest> {
   int _selectedIndex = 3; // ✅ "내정보" 탭이 기본 선택
 
   List<GonguInfo> gonguRequest = [];
-
+  bool _isLoading = true; // 2025-05-26: 로딩 상태
   GonguInfo? _selectedGonguList;
 
   // 컨설리더 설정
@@ -54,32 +54,23 @@ class _GonguRequeststState extends State<GonguRequest> {
   }
 
   Future<void> gonguList() async {
-    print("📡 데이터 조회 시작");
-    String restId = "getGonguList";
+    await runWithLoading(
+      setLoading: (bool val) => setState(() => _isLoading = val),
+      action: () async {
+        String restId = "getGonguList";
+        String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
+        String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
 
-    String? aptNo = await widget.secureStorage.read(key: 'mainAptNo');
-    String? clerkNo = await widget.secureStorage.read(key: 'clerkNo');
+        final param = jsonEncode({"aptNo": aptNo, "reqUser": clerkNo});
+        final response = await sendPostRequest(restId, param);
+        final parsed = GonguInfo().parseRequestList(response) ?? [];
 
-    final param = jsonEncode({
-      "aptNo": aptNo,
-      "reqUser": clerkNo,
-    });
-
-    try {
-      final response = await sendPostRequest(restId, param);
-      print("📡 응답 받음: ${jsonEncode(response)}");
-
-      final parsed = GonguInfo().parseRequestList(response) ?? [];
-      setState(() {
-        gonguRequest = parsed;
-        _selectedGonguList = parsed.isNotEmpty ? parsed.first : null;
-        print("🔎 UI 업데이트 완료");
-      });
-
-      print("📡 requests 업데이트됨, 길이: ${gonguRequest.length}");
-    } catch (e) {
-      print("❌ 신청 목록 조회 중 오류 발생: $e");
-    }
+        setState(() {
+          gonguRequest = parsed;
+          _selectedGonguList = parsed.isNotEmpty ? parsed.first : null;
+        });
+      },
+    );
   }
 
     @override
@@ -116,20 +107,28 @@ class _GonguRequeststState extends State<GonguRequest> {
                 ),
                 const SizedBox(height: 16),
                 // 2025.04.03: 공동구매 리스트 추가
-                Column(
-                  children:
-                    gonguRequest.map((gonguItem) {
-                      return _buildGonguItem(
-                        title:  gonguItem.gpEndDate +' '+ gonguItem.categoryNm ?? '제목 없음',
-                        description: gonguItem.detail ?? '설명 없음',
-                        current: gonguItem.reqCount ??'0', // 현재 신청 수
-                        max: gonguItem.limitCount ??'0',         // 최대 신청 수
-                        iconName: gonguItem.imagePath ?? 'image_not_supported',
-                        gonguItem: gonguItem, // 아이콘은 임의로 설정
-                      );
-                    }).toList(),
+                _isLoading
+                    ? const Center(
+                  child: CircularProgressIndicator(), // 또는 로딩용 이미지
+                )
+                    : (gonguRequest.isEmpty
+                    ? const Padding(
+                  padding: EdgeInsets.only(top: 32),
+                  child: EmptyImageWidget(width: 250, height: 250),
+                )
+                    : Column(
+                  children: gonguRequest.map((gonguItem) {
+                    return _buildGonguItem(
+                      title: gonguItem.gpEndDate + ' ' + (gonguItem.categoryNm ?? '제목 없음'),
+                      description: gonguItem.detail ?? '설명 없음',
+                      current: gonguItem.reqCount ?? '0',
+                      max: gonguItem.limitCount ?? '0',
+                      iconName: gonguItem.imagePath ?? 'image_not_supported',
+                      gonguItem: gonguItem,
+                    );
+                  }).toList(),
+                )
                 ),
-
               ],
             ),
           )

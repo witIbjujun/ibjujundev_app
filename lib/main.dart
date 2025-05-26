@@ -140,7 +140,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // ✅ 3초 후에 HomeScreen으로 이동
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 1), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomeScreen()),

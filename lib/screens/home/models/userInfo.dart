@@ -13,6 +13,8 @@ class UserInfo {
   String? mainAptNo;
   String? mainAptNm;
   String? mainAptPyoung;
+  String? sllrNo;
+
   final List<String>? aptNo;
   final List<String>? aptName;
 
@@ -33,6 +35,8 @@ class UserInfo {
     this.mainAptPyoung,
     this.aptNo,
     this.aptName,
+    this.sllrNo,
+
   });
 
   @override
@@ -54,6 +58,7 @@ class UserInfo {
       birthyear: json['birthyear'],
       mainAptNo: json['mainAptNo'],
       mainAptNm: json['mainAptNm'],
+      sllrNo: json['sllrNo'],
       mainAptPyoung: json['mainAptPyoung'],
       role: json['role'],
       aptNo: json['aptNo'] != null ? List<String>.from(json['aptNo']) : null,
@@ -79,6 +84,7 @@ class UserInfo {
       'role': role,
       'aptNo': aptNo,
       'aptName': aptName,
+      'sllrNo': sllrNo,
     };
   }
 }

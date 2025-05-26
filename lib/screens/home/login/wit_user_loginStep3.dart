@@ -10,7 +10,7 @@ import 'package:witibju/screens/home/login/wit_user_loginStep3.dart';
 import '../../../util/wit_api_ut.dart';
 import '../models/main_view_model.dart';
 import '../models/userInfo.dart';
-import '../widgets/wit_home_widgets2.dart';
+import '../widgets/wit_home_widgets.dart';
 import '../wit_home_sc.dart';
 import '../wit_home_theme.dart';
 

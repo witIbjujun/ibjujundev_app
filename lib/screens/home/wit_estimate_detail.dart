@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/wit_request_detail.dart';
@@ -105,7 +105,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
                 children: [
                   // 📌 견적탭
                   requestList.isEmpty
-                      ? showEmptyImage()   // 🔥 조회 결과가 없을 때
+                      ? EmptyImageWidget(width: 200, height: 200)   // 🔥 조회 결과가 없을 때
                       : SingleChildScrollView(
                     child: Column(
                       children: [
@@ -253,7 +253,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
   }
 
   /// 빈 화면 이미지 보여주기 (견적탭 아래 중앙 정렬)
-  Widget showEmptyImage({double width = 200, double height = 200}) {
+ /* Widget showEmptyImage({double width = 200, double height = 200}) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -266,7 +266,7 @@ class _EstimateScreenState extends State<EstimateScreen> with SingleTickerProvid
         ],
       ),
     );
-  }
+  }*/
 
 
   Future<void> getRequesDetailtList(RequestInfo request) async {

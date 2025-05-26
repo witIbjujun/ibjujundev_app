@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets2.dart';
+import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/home/wit_compay_view_sc_horizontal.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
@@ -232,12 +232,10 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
                       return;
                     }
 
-                    bool isConfirmed = await DialogUtils.showConfirmationDialog(
+                    bool isConfirmed = await DialogUtils.showIPhoneConfirmDialog(
                       context: context,
                       title: '견적 요청 확인',
                       content: '견적 요청을 진행하시겠습니까?',
-                      confirmButtonText: '진행',
-                      cancelButtonText: '취소',
                     );
 
                     if (isConfirmed) {
@@ -334,11 +332,10 @@ class _getEstimateState extends State<getEstimate> with SingleTickerProviderStat
       final response = await sendPostRequest(restId, param);
 
       if (response != null) {
-        await DialogUtils.showCustomDialog(
+        await DialogUtils.showIPhoneAlertDialog(
           context: context,
           title: '견적 요청 완료',
-          content: '견적 요청이 성공적으로 완료되었습니다.',
-          confirmButtonText: '확인',
+          content: '성공적으로 완료되었습니다.',
           onConfirm: () {
             Navigator.pushReplacement(
               context,
