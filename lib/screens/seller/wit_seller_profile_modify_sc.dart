@@ -124,7 +124,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     super.dispose();
   }
 
-  Future<void> getSellerInfo() async {
+  Future<void> getSellerInfo({bool fetchImages = true}) async {
 
     String restId = "getSellerInfo";
     // PARAM
@@ -245,8 +245,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
             ? sellerInfo['bizCertificationNm']
             : '인증요청';
 
-        getSellerDetailImageList("SR01");
-        getSellerDetailImageList("SR02");
+        if (fetchImages) {
+          getSellerDetailImageList("SR01");
+          getSellerDetailImageList("SR02");
+        }
+
       });
     } else {
       // 오류 처리
@@ -1173,7 +1176,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                     ),
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
-                  ElevatedButton(
+                  /*ElevatedButton(
                     onPressed: (sellerInfo != null &&
                         (sellerInfo['bizCertification'] == '04' ||
                             sellerInfo['bizCertification'] == null ||
@@ -1195,7 +1198,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                       disabledBackgroundColor: WitHomeTheme.wit_gray,
                       disabledForegroundColor: WitHomeTheme.wit_white,
                     ),
-                  ),
+                  ),*/
 
                   SizedBox(width: 16.0), // 버튼 간격
                   ElevatedButton(
@@ -1204,7 +1207,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                             sellerInfo['bizCertification'] == null ||
                             sellerInfo['bizCertification'].toString().isEmpty))
                         ? () {
-                      updateBizCertification(); // 인증 요청 로직
+                      saveSellerBizImage(); // 인증 요청 로직
                     }
                         : null, // 비활성화 (회색 + 클릭 안됨)
                     child: Text(
@@ -1602,10 +1605,12 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         final _bizImageList = await sendPostRequest(restId, param);
 
         if (_bizImageList > 0) {
+
+          updateBizCertification();
           // 값이 있을 때 수행할 작업
-          ScaffoldMessenger.of(context).showSnackBar(
+          /*ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("사업자 등록증이 첨부가 성공하였습니다.")),
-          );
+          );*/
         } else {
           // 값이 없을 때 수행할 작업
           ScaffoldMessenger.of(context).showSnackBar(
@@ -1788,7 +1793,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     if (response != null) {
       print("API 호출 성공");
       // 인증 요청 성공 후 정보 재조회
-      await getSellerInfo();
+      await getSellerInfo(fetchImages: false);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("사업자 인증 요청이 성공하였습니다.")),

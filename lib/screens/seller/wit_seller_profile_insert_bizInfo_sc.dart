@@ -204,9 +204,11 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
         if (_bizImageList > 0) {
           // 값이 있을 때 수행할 작업
-          ScaffoldMessenger.of(context).showSnackBar(
+          /*ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("사업자 등록증이 첨부가 성공하였습니다.")),
-          );
+          );*/
+
+          updateBizCertification();
         } else {
           // 값이 없을 때 수행할 작업
           ScaffoldMessenger.of(context).showSnackBar(
@@ -239,8 +241,14 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
     if (response != null) {
       print("API 호출 성공");
-      // 인증 요청 성공 후 정보 재조회
-      await getSellerInfo();
+      // 인증 상태만 변경 (sellerInfo는 로컬 변수 또는 상태 관리에 따라 다르게 처리 가능)
+      setState(() {
+        setState(() {
+          bizCertification = "01";
+          sellerInfo["bizCertification"] = "01";
+          buttonText = "요청중";
+        });
+      });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("사업자 인증 요청이 성공하였습니다.")),
@@ -557,7 +565,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                     ),
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
-                  ElevatedButton(
+                  /*ElevatedButton(
                     onPressed: (sellerInfo != null &&
                         (sellerInfo['bizCertification'] == '04' ||
                             sellerInfo['bizCertification'] == null ||
@@ -580,14 +588,15 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                       disabledForegroundColor: WitHomeTheme.wit_white,
                     ),
                   ),
-                  SizedBox(width: 16.0), // 버튼 간격
+                  SizedBox(width: 16.0), // 버튼 간격*/
                   ElevatedButton(
                     onPressed: (sellerInfo != null &&
                         (sellerInfo['bizCertification'] == '04' ||
                             sellerInfo['bizCertification'] == null ||
                             sellerInfo['bizCertification'].toString().isEmpty))
                         ? () {
-                      updateBizCertification(); // 인증 요청 로직
+                      saveSellerBizImage();
+                      // updateBizCertification(); // 인증 요청 로직
                     }
                         : null, // 비활성화 (회색 + 클릭 안됨)
                     child: Text(
