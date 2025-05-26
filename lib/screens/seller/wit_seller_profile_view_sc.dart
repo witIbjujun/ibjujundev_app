@@ -430,8 +430,12 @@ class SellerProfileViewState extends State<SellerProfileView> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-
-                                  if (sellerInfo?['bizCertification'] == '02')
+                                  Text(
+                                    sellerInfo?['bizCertificationNm'] ?? '사업자 인증 미완료', // null 체크 및 기본값 설정
+                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                                  ),
+                                  SizedBox(width: 5),
+                                  if (sellerInfo?['certificationYn'] == 'Y')
                                     Image.asset(
                                     'assets/images/인증완료.png', // 이미지 경로
                                   ),
