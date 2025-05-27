@@ -430,8 +430,19 @@ class SellerProfileViewState extends State<SellerProfileView> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-
-                                  if (sellerInfo?['bizCertification'] == '02')
+                                  Container(
+                                    padding:
+                                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: WitHomeTheme.wit_white, // 초록색 배경
+                                      borderRadius: BorderRadius.circular(8), // 둥근 모서리
+                                    ),
+                                    child: Text(
+                                      sellerInfo?['bizCertificationNm'] ?? '사업자 인증 미완료',
+                                      style: WitHomeTheme.subtitle.copyWith(fontSize: 10),                      ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  if (sellerInfo?['certificationYn'] == 'Y')
                                     Image.asset(
                                     'assets/images/인증완료.png', // 이미지 경로
                                   ),
@@ -497,7 +508,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
               _buildContainer(
                 title: '업체 주소',
                 content: Text(
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                   (sellerInfo?['address1'] ?? '주소 없음') + " / " + (sellerInfo?['serviceAreaNm'] ?? '서비스 지역 없음'),
                 ),
               ),
@@ -505,7 +516,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
               // 네 번째 영역: 업체 설명
               _buildContainer(
                 title: '업체 설명',
-                content: Text(sellerInfo?['sllrContent'] ?? '', style: WitHomeTheme.subtitle.copyWith(fontSize: 16),),
+                content: Text(sellerInfo?['sllrContent'] ?? '', style: WitHomeTheme.subtitle.copyWith(fontSize: 14),),
               ),
               // 다섯 번째 영역: 시공 사진/동영상
               _buildContainer(
