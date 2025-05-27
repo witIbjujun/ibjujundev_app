@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/board/widget/wit_board_main_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/board/wit_board_write_sc.dart';
@@ -48,6 +49,12 @@ class BoardState extends State<Board> {
   final int pageSize = 10;
   // 게시판 구분
   String bordTypeGbn = "";
+  // 빈데이터 화면 출력여부
+  bool emptyDataFlag = false;
+  // 세션 정보 조회
+  final secureStorage = FlutterSecureStorage();
+  // 세션 판매자 번호
+  String loginSllrNo = "";
 
   /**
    * 초기로딩
@@ -93,6 +100,8 @@ class BoardState extends State<Board> {
             scrollController: _scrollController,  // ScrollController 연결
             bordTitle: widget.bordTitle,
             bordTypeGbn: bordTypeGbn,
+            loginSllrNo: loginSllrNo,
+            emptyDataFlag: emptyDataFlag,
           ),
         ),
       ),
@@ -136,6 +145,9 @@ class BoardState extends State<Board> {
   // [서비스] 게시판 리스트 조회
   Future<void> getBoardList() async {
 
+    // 로그인 판매자 번호
+    loginSllrNo = await secureStorage.read(key: 'sllrNo') ?? "";
+
     if (isLoading) return; // 이미 로딩 중이면 무시
 
     setState(() {
@@ -168,6 +180,12 @@ class BoardState extends State<Board> {
       boardList.addAll(_boardList);
       currentPage++; // 페이지 증가
       isLoading = false;
+
+      if (boardList.isEmpty) {
+        emptyDataFlag = true;
+      } else {
+        emptyDataFlag = false;
+      }
     });
   }
 
@@ -203,6 +221,12 @@ class BoardState extends State<Board> {
       boardList.addAll(_boardList);
       currentPage++; // 페이지 증가
       isLoading = false;
+
+      if (boardList.isEmpty) {
+        emptyDataFlag = true;
+      } else {
+        emptyDataFlag = false;
+      }
     });
 
   }

@@ -403,7 +403,7 @@ class _BoardWriteState extends State<BoardWrite> {
                 leading: Icon(Icons.photo),
                 title: Text('갤러리에서 선택'),
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
+                  _pickMultiImages();
                   Navigator.pop(context);
                 },
               ),
@@ -427,6 +427,15 @@ class _BoardWriteState extends State<BoardWrite> {
     if (pickedFile != null) {
       setState(() {
         _images.add(File(pickedFile.path));
+      });
+    }
+  }
+
+  Future<void> _pickMultiImages() async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        _images.addAll(pickedFiles.map((xfile) => File(xfile.path)).toList());
       });
     }
   }
