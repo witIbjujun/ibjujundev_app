@@ -4,6 +4,8 @@ import 'package:witibju/screens/seller/wit_seller_estimaterequest_detail_sc.dart
 import '../../util/wit_api_ut.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
+import '../chat/CustomChatScreen.dart';
+
 
 class EstimateRequestList extends StatefulWidget {
   final String stat; // stat을 멤버 변수로 추가
@@ -176,30 +178,65 @@ class EstimateItem extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 10), // 상태 텍스트와의 간격
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EstimateRequestDetail(
-                          estNo: request['estNo'],
-                          seq: request['seq'],
-                          sllrNo: sllrNo,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 상태 텍스트
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EstimateRequestDetail(
+                              estNo: request['estNo'],
+                              seq: request['seq'],
+                              sllrNo: sllrNo,
+                            ),
+                          ),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0),
                         ),
                       ),
-                    );
-                  },
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero, // 패딩을 0으로 설정하여 간격 줄이기
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0), // 테두리 없애기
+                      child: Text(
+                        request['stat'] ?? '',
+                        style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    request['stat'] ?? '', // 상태
-                    style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
-                  ),
+
+                    // stat이 10이나 20이 아니면 메시지 보기 버튼 보여주기
+                    if (request['reqState'] != "10" && request['reqState'] != "20")
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CustomChatScreen(
+                                request["estNo"], // 첫 번째 인자: 요청 번호
+                                request["seq"], // 두 번째 인자: 시퀀스 (chatId)
+                                "sellerView", // 세 번째 인자: 뷰 타입
+                              ),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(50, 36),
+                          backgroundColor: WitHomeTheme.wit_lightGreen,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: Text(
+                          '메시지 보기',
+                          style: WitHomeTheme.subtitle.copyWith(fontSize: 12, color: Colors.white),
+                        ),
+                      ),
+                  ],
                 ),
+
               ],
             ),
             SizedBox(height: 10), // 텍스트와 내용 사이의 간격

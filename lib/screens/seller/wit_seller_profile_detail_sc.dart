@@ -493,7 +493,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 15.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -549,7 +549,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 10.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -614,7 +614,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 10.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -678,7 +678,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 10.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -726,7 +726,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 10.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -776,7 +776,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 15.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -816,7 +816,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 10.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -857,7 +857,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 10.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -914,7 +914,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 15.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,
@@ -958,7 +958,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
               style: TextButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_white,
                 padding: EdgeInsets.only(
-                    left: 20.0, top: 6.0, bottom: 6.0, right: 0.0),
+                    left: 20.0, top: 10.0, bottom: 10.0, right: 0.0),
                 // 왼쪽 20, 상하 0
                 alignment: Alignment.centerLeft,
                 minimumSize: Size.zero,

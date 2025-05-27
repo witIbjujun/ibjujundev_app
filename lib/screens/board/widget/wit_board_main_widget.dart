@@ -116,6 +116,8 @@ class BoardListView extends StatelessWidget {
   final ScrollController scrollController;
   final String bordTitle;
   final String bordTypeGbn;
+  final String loginSllrNo;
+  final bool emptyDataFlag;
 
   BoardListView({
     required this.boardList,
@@ -123,6 +125,8 @@ class BoardListView extends StatelessWidget {
     required this.scrollController,
     required this.bordTitle,
     required this.bordTypeGbn,
+    required this.loginSllrNo,
+    required this.emptyDataFlag,
   });
 
   @override
@@ -139,7 +143,7 @@ class BoardListView extends StatelessWidget {
             controller: scrollController,
             slivers: [
               // 게시판 리스트
-              if (boardList.isEmpty)...[
+              if (emptyDataFlag == true)...[
                 SliverToBoxAdapter(
                   child: Container(
                     color: WitHomeTheme.wit_white,
@@ -403,20 +407,24 @@ class BoardListView extends StatelessWidget {
                                                   },
                                                   itemBuilder: (BuildContext context) {
                                                     return [
-                                                      PopupMenuItem<String>(
-                                                        value: 'Detail',
-                                                        child: Text('상세보기', style: WitHomeTheme.subtitle),
-                                                      ),
-                                                      if(boardInfo['commentCnt'] == 0)...[
+                                                      if(boardInfo["sllrNo"] == loginSllrNo)...[
+                                                        PopupMenuItem<String>(
+                                                          value: 'Detail',
+                                                          child: Text('상세보기', style: WitHomeTheme.subtitle),
+                                                        ),
+                                                      ],
+                                                      if(boardInfo["sllrNo"] == loginSllrNo && boardInfo['commentCnt'] == 0)...[
                                                         PopupMenuItem<String>(
                                                           value: 'reply',
                                                           child: Text('댓글작성', style: WitHomeTheme.subtitle),
                                                         ),
                                                       ],
-                                                      PopupMenuItem<String>(
-                                                        value: 'report',
-                                                        child: Text('신고하기', style: WitHomeTheme.subtitle),
-                                                      ),
+                                                      if(boardInfo["sllrNo"] != loginSllrNo)...[
+                                                        PopupMenuItem<String>(
+                                                          value: 'report',
+                                                          child: Text('신고하기', style: WitHomeTheme.subtitle),
+                                                        ),
+                                                      ],
                                                     ];
                                                   },
                                                 ),
