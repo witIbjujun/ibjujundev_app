@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_launcher_icons/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -18,6 +19,7 @@ import '../home/wit_home_theme.dart';
 
 class SellerProfileInsertBizInfo extends StatefulWidget {
   final dynamic sllrNo;
+
   const SellerProfileInsertBizInfo({super.key, required this.sllrNo});
 
   @override
@@ -26,7 +28,8 @@ class SellerProfileInsertBizInfo extends StatefulWidget {
   }
 }
 
-class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> {
+class SellerProfileInsertBizInfoState
+    extends State<SellerProfileInsertBizInfo> {
   dynamic sellerInfo;
   String name = "";
   String ceoName = "";
@@ -45,6 +48,14 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
   List<dynamic> bizImageList = [];
   String buttonText = "인증요청";
 
+  final _firstController = TextEditingController();
+  final _secondController = TextEditingController();
+  final _thirdController = TextEditingController();
+
+  final _firstFocus = FocusNode();
+  final _secondFocus = FocusNode();
+  final _thirdFocus = FocusNode();
+
   TextEditingController nameController = TextEditingController();
   TextEditingController ceoNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -57,7 +68,6 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
   TextEditingController zipCodeController = TextEditingController();
   final TextEditingController detailAddressController = TextEditingController();
 
-
   TextEditingController receiverZipController = TextEditingController();
   TextEditingController receiverAddress1Controller = TextEditingController();
   TextEditingController receiverAddress2Controller = TextEditingController();
@@ -65,7 +75,8 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
   final TextEditingController contact1Controller = TextEditingController();
   final TextEditingController contact2Controller = TextEditingController();
   final TextEditingController contact3Controller = TextEditingController();
-  final TextEditingController verificationCodeController = TextEditingController();
+  final TextEditingController verificationCodeController =
+      TextEditingController();
 
   final TextEditingController _smsController = TextEditingController();
   String? _verificationId;
@@ -86,8 +97,23 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
     getSellerInfo();
   }
 
-  Future<void> getSellerInfo() async {
+  void dispose() {
+    _firstController.dispose();
+    _secondController.dispose();
+    _thirdController.dispose();
+    _firstFocus.dispose();
+    _secondFocus.dispose();
+    _thirdFocus.dispose();
+    super.dispose();
+  }
 
+  void _handleInputChange(TextEditingController controller, int maxLength, FocusNode nextFocus) {
+    if (controller.text.length == maxLength) {
+      nextFocus.requestFocus();
+    }
+  }
+
+  Future<void> getSellerInfo() async {
     String restId = "getSellerInfo";
     // PARAM
     final param = jsonEncode({
@@ -116,15 +142,23 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
         openDateController.text = openDate;
 
         storeCode = sellerInfo['storeCode'] ?? '';
-        storeCodeController.text = storeCode;
+        if (storeCode.length == 10) {
+          _firstController.text = storeCode.substring(0, 3);  // 앞 3자리
+          _secondController.text = storeCode.substring(3, 5); // 그다음 2자리
+          _thirdController.text = storeCode.substring(5);     // 마지막 5자리
+        } else {
+          _firstController.clear();
+          _secondController.clear();
+          _thirdController.clear();
+        }
 
-        buttonText = sellerInfo['bizCertificationNm'] != null && sellerInfo['bizCertificationNm'].isNotEmpty
+        buttonText = sellerInfo['bizCertificationNm'] != null &&
+                sellerInfo['bizCertificationNm'].isNotEmpty
             ? sellerInfo['bizCertificationNm']
             : '인증요청';
 
         // 사업자 등록증 가져오기
         getSellerDetailImageList("SR02");
-
       });
     } else {
       // 오류 처리
@@ -145,7 +179,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
       "bizKey": sellerInfo["sllrNo"],
     });
 
-    if(bizCd == "SR02") {
+    if (bizCd == "SR02") {
       // API 호출 (게시판 상세 조회)
       final _bizImageList = await sendPostRequest(restId, param);
 
@@ -179,15 +213,15 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
   // 사업자 등록증 이미지 저장
   Future<void> saveSellerBizImage() async {
-
     // 이미지 확인
     if (_images2.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("사업자등록증을 첨부해주세요.")));
-
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("사업자등록증을 첨부해주세요.")));
     } else {
       final fileInfo = await sendFilePostRequest("fileUpload", _images2);
       if (fileInfo == "FAIL") {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("사업자등록증 업로드 실패")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("사업자등록증 업로드 실패")));
       } else {
         String restId = "saveSellerBizImage";
 
@@ -220,7 +254,6 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
         /*setState(() {
           bizImageList = _bizImageList;
         });*/
-
       }
     }
   }
@@ -264,7 +297,6 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: WitHomeTheme.wit_white,
       appBar: AppBar(
@@ -289,7 +321,9 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                       children: [
                         CircleAvatar(
                           radius: 18.0,
-                          backgroundColor: 2 == index ? WitHomeTheme.wit_lightGreen : WitHomeTheme.wit_gray,
+                          backgroundColor: 2 == index
+                              ? WitHomeTheme.wit_lightGreen
+                              : WitHomeTheme.wit_gray,
                           child: Text(
                             '${index + 1}',
                             style: const TextStyle(color: Colors.white),
@@ -316,16 +350,17 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                 ),
               ),*/
               Container(
-                  width: double.infinity, // 넓이를 최대로 설정
-                  padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
-                  decoration: BoxDecoration(
-                    color: WitHomeTheme.wit_lightGreen, //Colors.lightGreen[100], // 연한 녹색 배경
-                    borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                  ),
-                  child: Text(
-                    '사업자정보를 입력해주세요~\n견적요청시 사장님 회사를 돋보이게\n뱃지도 달아드려요~',
-                    style: WitHomeTheme.title.copyWith(fontSize: 16),
-                  ),
+                width: double.infinity, // 넓이를 최대로 설정
+                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
+                decoration: BoxDecoration(
+                  color: WitHomeTheme.wit_lightGreen,
+                  //Colors.lightGreen[100], // 연한 녹색 배경
+                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                ),
+                child: Text(
+                  '사업자정보를 입력해주세요~\n견적요청시 사장님 회사를 돋보이게\n뱃지도 달아드려요~',
+                  style: WitHomeTheme.title.copyWith(fontSize: 16),
+                ),
               ),
 
               SizedBox(height: 8),
@@ -366,13 +401,13 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                     });
                   },
                 ),
-
               ),
               // 오류 메시지 표시
               if (nameErrorMessage.isNotEmpty)
                 Text(
                   nameErrorMessage,
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  style: WitHomeTheme.subtitle
+                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
               SizedBox(height: 10),
               Row(
@@ -411,13 +446,13 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                     });
                   },
                 ),
-
               ),
               // 오류 메시지 표시
               if (ceoErrorMessage.isNotEmpty)
                 Text(
                   ceoErrorMessage,
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  style: WitHomeTheme.subtitle
+                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
               SizedBox(height: 10),
               Row(
@@ -456,13 +491,13 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                     });
                   },
                 ),
-
               ),
               // 오류 메시지 표시
               if (emailErrorMessage.isNotEmpty)
                 Text(
                   emailErrorMessage,
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  style: WitHomeTheme.subtitle
+                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
               SizedBox(height: 10),
               Row(
@@ -501,59 +536,124 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                     });
                   },
                 ),
-
               ),
               // 오류 메시지 표시
               if (openDateErrorMessage.isNotEmpty)
                 Text(
                   openDateErrorMessage,
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  style: WitHomeTheme.subtitle
+                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
               SizedBox(height: 10),
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    '사업자등록번호 ',
-                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  Row(
+                    children: [
+                      Text(
+                        '사업자등록번호 ',
+                        style: WitHomeTheme.title.copyWith(fontSize: 16),
+                      ),
+                      Icon(
+                        Icons.star,
+                        color: Colors.red,
+                        size: 16,
+                      ),
+                    ],
                   ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.red,
-                    size: 16,
+                  SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: TextField(
+                          controller: _firstController,
+                          focusNode: _firstFocus,
+                          keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
+                          maxLength: 3,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          decoration: InputDecoration(
+                            counterText: '',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                          ),
+                          onChanged: (value) {
+                            _handleInputChange(_firstController, 3, _secondFocus);
+                            setState(() {
+                              storeCodeErrorMessage = '';
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text('-'),
+                      SizedBox(width: 8),
+                      Expanded(
+                        flex: 2,
+                        child: TextField(
+                          controller: _secondController,
+                          focusNode: _secondFocus,
+                          keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
+                          maxLength: 2,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          decoration: InputDecoration(
+                            counterText: '',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                          ),
+                          onChanged: (value) {
+                            _handleInputChange(_secondController, 2, _thirdFocus);
+                            setState(() {
+                              storeCodeErrorMessage = '';
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Text('-'),
+                      SizedBox(width: 8),
+                      Expanded(
+                        flex: 4,
+                        child: TextField(
+                          controller: _thirdController,
+                          focusNode: _thirdFocus,
+                          keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
+                          maxLength: 5,
+                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                          decoration: InputDecoration(
+                            counterText: '',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            contentPadding:
+                            EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              storeCodeErrorMessage = '';
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
+                  SizedBox(height: 8),
+                  // 오류 메시지 표시
+                  if (storeCodeErrorMessage.isNotEmpty)
+                    Text(
+                      storeCodeErrorMessage,
+                      style: WitHomeTheme.subtitle
+                          .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                    ),
                 ],
               ),
-              SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                padding: const EdgeInsets.all(0), // 내부 여백
-                child: TextField(
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                  controller: storeCodeController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '사업자등록번호를 입력하세요', // 힌트 텍스트
-                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      // 텍스트가 변경될 때마다 오류 메시지 초기화
-                      storeCodeErrorMessage = '';
-                    });
-                  },
-                ),
 
-              ),
-              // 오류 메시지 표시
-              if (storeCodeErrorMessage.isNotEmpty)
-                Text(
-                  storeCodeErrorMessage,
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                ),
               SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -591,13 +691,15 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   SizedBox(width: 16.0), // 버튼 간격*/
                   ElevatedButton(
                     onPressed: (sellerInfo != null &&
-                        (sellerInfo['bizCertification'] == '04' ||
-                            sellerInfo['bizCertification'] == null ||
-                            sellerInfo['bizCertification'].toString().isEmpty))
+                            (sellerInfo['bizCertification'] == '04' ||
+                                sellerInfo['bizCertification'] == null ||
+                                sellerInfo['bizCertification']
+                                    .toString()
+                                    .isEmpty))
                         ? () {
-                      saveSellerBizImage();
-                      // updateBizCertification(); // 인증 요청 로직
-                    }
+                            saveSellerBizImage();
+                            // updateBizCertification(); // 인증 요청 로직
+                          }
                         : null, // 비활성화 (회색 + 클릭 안됨)
                     child: Text(
                       buttonText,
@@ -608,13 +710,17 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: WitHomeTheme.wit_lightBlue,
-                      disabledBackgroundColor: WitHomeTheme.wit_gray, // 비활성화일 때 색상 지정
-                      disabledForegroundColor: WitHomeTheme.wit_white, // 비활성화 텍스트 색상
+                      disabledBackgroundColor: WitHomeTheme.wit_gray,
+                      // 비활성화일 때 색상 지정
+                      disabledForegroundColor:
+                          WitHomeTheme.wit_white, // 비활성화 텍스트 색상
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 height: 120, // 높이 설정
                 child: SingleChildScrollView(
@@ -627,13 +733,17 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                         child: Container(
                           width: 100,
                           height: 100,
-                          margin: EdgeInsets.only(right: 8), // 이미지 간격
+                          margin: EdgeInsets.only(right: 8),
+                          // 이미지 간격
                           decoration: BoxDecoration(
                             color: WitHomeTheme.wit_white,
-                            border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                            border: Border.all(
+                                width: 1, color: WitHomeTheme.wit_lightgray),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
+                          child: Icon(Icons.add_a_photo,
+                              size: 40, color: WitHomeTheme.wit_gray),
+                          // 사진기 아이콘
                           alignment: Alignment.center,
                         ),
                       ),
@@ -647,7 +757,9 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ImageViewer(
-                                  imageUrls: bizImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                                  imageUrls: bizImageList
+                                      .map((item) => apiUrl + item["imagePath"])
+                                      .toList(),
                                   initialIndex: index, // 클릭한 이미지 인덱스 전달
                                 ),
                               ),
@@ -660,7 +772,8 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12), // 둥글게 처리
                               image: DecorationImage(
-                                image: NetworkImage(apiUrl + bizImageList[index]["imagePath"]),
+                                image: NetworkImage(
+                                    apiUrl + bizImageList[index]["imagePath"]),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -676,7 +789,8 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                           child: Stack(
                             children: [
                               ClipRRect(
-                                borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
+                                borderRadius: BorderRadius.circular(12.0),
+                                // 원하는 둥글기 설정
                                 child: Image.file(
                                   image,
                                   width: 100,
@@ -688,7 +802,9 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                                 right: 0,
                                 top: 0,
                                 child: IconButton(
-                                  icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
+                                  icon: Icon(Icons.close,
+                                      color: WitHomeTheme.wit_red),
+                                  // X 아이콘
                                   onPressed: () {
                                     setState(() {
                                       _images2.removeAt(index); // 이미지 삭제
@@ -756,9 +872,19 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
               ),
               SizedBox(height: 20),
 
-              Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
+              Center(
+                // Center 위젯으로 버튼을 감싸서 가운데 정렬
                 child: ElevatedButton(
                   onPressed: () async {
+                    // 이메일 형식 체크
+                    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+
+                    emailErrorMessage = '';
+                    // ...다른 에러 메시지 초기화
+
+
+                    
+                    
                     setState(() {
                       nameErrorMessage = ''; // 오류 메시지 초기화
                       ceoErrorMessage = '';
@@ -768,9 +894,20 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
                       bool isNameValid = nameController.text.isNotEmpty;
                       bool isCeoName = ceoNameController.text.isNotEmpty;
-                      bool isEmail = emailController.text.isNotEmpty;
                       bool isOpenDate = openDateController.text.isNotEmpty;
-                      bool isStoreCode = storeCodeController.text.isNotEmpty;
+                      // 사업자번호 각 필드 체크
+                      bool isStoreCodeValid = _firstController.text.length == 3 &&
+                          _secondController.text.length == 2 &&
+                          _thirdController.text.length == 5;
+
+                      bool isEmail = emailController.text.isNotEmpty;
+                      bool isEmailValidFormat = emailRegex.hasMatch(emailController.text);
+
+                      if (!isEmail) {
+                        emailErrorMessage = '대표 이메일을 입력해주세요.';
+                      } else if (!isEmailValidFormat) {
+                        emailErrorMessage = '이메일 형식을 확인해주세요.';
+                      }
 
                       if (!isNameValid) {
                         nameErrorMessage = '사업자명을 입력해주세요.'; // 오류 메시지 설정
@@ -784,28 +921,34 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                       if (!isOpenDate) {
                         openDateErrorMessage = '개업일자를 입력해주세요.'; // 오류 메시지 설정
                       }
-                      if (!isStoreCode) {
+                      if (!isStoreCodeValid) {
                         storeCodeErrorMessage = '사업자등록번호를 입력해주세요.'; // 오류 메시지 설정
                       }
-
                     });
 
-                    if (nameErrorMessage.isEmpty && ceoErrorMessage.isEmpty && emailErrorMessage.isEmpty
-                    && openDateErrorMessage.isEmpty && storeCodeErrorMessage.isEmpty)
-                    {
+                    if (nameErrorMessage.isEmpty &&
+                        ceoErrorMessage.isEmpty &&
+                        emailErrorMessage.isEmpty &&
+                        openDateErrorMessage.isEmpty &&
+                        storeCodeErrorMessage.isEmpty) {
                       // 사업자 프로필 변경 로직
                       String name = nameController.text;
                       String ceoName = ceoNameController.text;
                       String email = emailController.text;
                       String openDate = openDateController.text;
-                      String storeCode = storeCodeController.text;
+                      String storeCode = _firstController.text +
+                          _secondController.text +
+                          _thirdController.text;
 
                       // 이미지 저장 후 프로필 업데이트
-                      await updateSellerProfile(name, ceoName, email, storeCode, openDate);
+                      await updateSellerProfile(
+                          name, ceoName, email, storeCode, openDate);
                     }
-                   },
-                  child: Text('다음',
-                    style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                  },
+                  child: Text(
+                    '다음',
+                    style: WitHomeTheme.title
+                        .copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: WitHomeTheme.wit_lightGreen,
@@ -815,7 +958,6 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
                   ),
                 ),
               ),
-
             ],
           ),
         ),
@@ -825,14 +967,13 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
 
   // [서비스]견적 정보 저장
   Future<void> updateSellerProfile(
-      dynamic name,
-      dynamic ceoName,
-      dynamic email,
-      dynamic storeCode,
-      dynamic openDate,
-      // dynamic categoryContent,
+    dynamic name,
+    dynamic ceoName,
+    dynamic email,
+    dynamic storeCode,
+    dynamic openDate,
+    // dynamic categoryContent,
   ) async {
-
     // REST ID
     String restId = "updateSellerInfo";
 
@@ -863,7 +1004,8 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SellerProfileInsertHpInfo(sllrNo: widget.sllrNo),
+          builder: (context) =>
+              SellerProfileInsertHpInfo(sllrNo: widget.sllrNo),
         ),
       );
     } else {
@@ -886,8 +1028,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
             children: [
               ListTile(
                 leading: Icon(Icons.photo),
-                title: Text('갤러리에서 선택',
-                    style: WitHomeTheme.title),
+                title: Text('갤러리에서 선택', style: WitHomeTheme.title),
                 onTap: () {
                   _pickImage(ImageSource.gallery);
                   Navigator.pop(context);
@@ -895,8 +1036,7 @@ class SellerProfileInsertBizInfoState extends State<SellerProfileInsertBizInfo> 
               ),
               ListTile(
                 leading: Icon(Icons.camera),
-                title: Text('사진 찍기',
-                    style: WitHomeTheme.title),
+                title: Text('사진 찍기', style: WitHomeTheme.title),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.pop(context);
