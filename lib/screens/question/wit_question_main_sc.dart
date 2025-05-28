@@ -100,6 +100,8 @@ class _QuestionState extends State<QuestionList> {
 
   int currentIndex = 0;                     // 현재 선택된 항목 인덱스
 
+  String userId = "";
+
   // 스크롤 컨트롤러
   ScrollController _scrollController = ScrollController();
 
@@ -110,6 +112,15 @@ class _QuestionState extends State<QuestionList> {
   @override
   void initState() {
     super.initState();
+
+    // 세션 정보 조회
+    getSesstionInfo();
+  }
+
+  // 세션 정보 조회
+  Future<void> getSesstionInfo() async {
+
+    userId = await _storage.read(key: 'clerkNo') ?? "";
 
     // 최초 질문 조회
     getFirstQuestionInfo();
@@ -189,6 +200,13 @@ class _QuestionState extends State<QuestionList> {
                               });
                               return;
                             }
+                            
+                            // 로그인 체크
+                            if ((userId == null || userId == "") && index == 1) {
+                              alertDialog.show(context: context, title: "알림", content: "로그인을 해주세요.");
+                              return;
+                            }
+
                             // 박스 비활성화
                             isBoxEnabled[index] = false;
                             // 하위 질문 코드
@@ -411,8 +429,6 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 최초 질문 조회
   Future<void> getFirstQuestionInfo() async {
 
-    String? userId = await _storage.read(key: 'clerkNo');
-
     // REST ID
     String restId = "getFirstQuestionInfo";
 
@@ -590,8 +606,6 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 저장
   Future<void> saveQuestionInfo(String gustType, String lowQustCd, int index) async {
 
-    String? userId = await _storage.read(key: 'clerkNo');
-
     final selectedOption = selectedValues[index];
 
     // REST ID
@@ -646,8 +660,6 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 삭제
   Future<void> deleteQuestionInfo(String gustType, int index) async {
 
-    String? userId = await _storage.read(key: 'clerkNo');
-
     // REST ID
     String restId = "deleteQuestionInfo";
 
@@ -671,8 +683,6 @@ class _QuestionState extends State<QuestionList> {
 
   // [서비스] 질문 전체 삭제
   Future<void> deleteQuestionInfoByAll() async {
-
-    String? userId = await _storage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "deleteQuestionInfoByAll";
