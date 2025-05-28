@@ -576,61 +576,6 @@ class SellerProfileViewState extends State<SellerProfileView> {
                         style: WitHomeTheme.title.copyWith(fontSize: 20),
                       ),
                       SizedBox(height: 10), // 제목과 사용자 정보 영역 간격
-                      /*Container(
-                        padding: EdgeInsets.all(10), // 사용자 정보 영역의 패딩
-                        decoration: BoxDecoration(
-                          color: WitHomeTheme.wit_lightGrey, // 사용자 닉네임 영역 배경색 (진한 회색)
-                          borderRadius: BorderRadius.circular(50), // 모서리 둥글게
-                        ),
-                        child: Row(
-                          children: [
-                            // 사용자 이미지
-                            Container(
-                              width: 40, // 이미지 너비
-                              height: 40, // 이미지 높이
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle, // 원형으로 설정
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/profile1.png'), // 사용자 이미지 경로
-                                  fit: BoxFit.cover, // 이미지 크기 조정
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10), // 아이콘과 텍스트 간격
-                            Text(
-                              '이재명', // 사용자 이름
-                              style: WitHomeTheme.title.copyWith(fontSize: 16), // 텍스트 색상 흰색
-                            ),
-                            Spacer(), // 남은 공간을 차지하여 별점 오른쪽 정렬
-                            Row(
-                              children: List.generate(5, (index) {
-                                return Icon(
-                                  index < 4 ? Icons.star : Icons.star_border, // 4개는 채워진 별, 1개는 빈 별
-                                  color: Colors.amber, // 별 색상
-                                  size: 20, // 별 크기
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 10), // 제목과 후기사이 간격
-                      Text(
-                        "업체명: ABC 방충망\n"
-                            "위치: 서울 강남구\n\n"
-                            "ABC 방충망에서 방충망을 구매하고 설치했습니다. 제품의 품질이 매우 뛰어나고, "
-                            "재질이 튼튼하여 오래 사용할 수 있을 것 같습니다. 디자인도 깔끔해서 집 인테리어와 잘 어울립니다.\n\n"
-                            "설치 서비스도 매우 만족스러웠습니다. 설치팀이 친절하고 전문적이었으며, "
-                            "예상보다 빠르게 작업을 마쳤습니다.\n\n"
-                            "가격은 다른 업체들과 비교했을 때 적당한 편이었고, 가성비가 좋다고 느꼈습니다.\n\n"
-                            "전체적으로 매우 만족하며, 방충망을 설치한 이후로 벌레 걱정이 없어져서 기쁩니다. "
-                            "다음에도 필요할 경우 다시 이용할 생각입니다.",
-                        style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                        maxLines: null,
-                        overflow: TextOverflow.visible,
-                      ),
-
-                      const SizedBox(height: 12),*/
 
                       // 현재 표시할 개수만큼만 표시
                       ...boardList

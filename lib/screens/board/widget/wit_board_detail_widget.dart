@@ -65,17 +65,15 @@ class TitleAndMenu extends StatelessWidget {
                   callBack();
                 });
               } else if (value == 'delete') {
-                ConfimDialog.show(context,
-                    "삭제",
-                    "삭제하시겠습니까?",
-                    () async {
-                      endBoardInfo();
-                    }
-                );
+                bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "삭제하시겠습니까?");
+                if (isConfirmed == true) {
+                  endBoardInfo();
+                }
+
               } else if (value == 'report') {
 
                 if (boardDetailInfo["reportYn"] == "Y") {
-                  alertDialog.show(context, "이미 신고한 게시글입니다.");
+                  alertDialog.show(context: context, title: "알림", content: "이미 신고한 게시글입니다.");
                   return;
                 }
 
@@ -310,14 +308,11 @@ class CommentList extends StatelessWidget {
               if (commentList[index]["creUser"] == loginClerkNo)...[
                 IconButton(
                   icon: Icon(Icons.delete, color: WitHomeTheme.wit_gray), // 휴지통 아이콘
-                  onPressed: () {
-                    ConfimDialog.show(context,
-                        "삭제",
-                        "선택하신 댓글을 삭제하시겠습니까?",
-                        () async {
-                          endCommentInfo(commentList[index]);
-                        }
-                    );
+                  onPressed: () async {
+                    bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "선택하신 댓글을 삭제하시겠습니까?");
+                    if (isConfirmed == true) {
+                      endCommentInfo(commentList[index]);
+                    }
                   },
                 ),
               ]

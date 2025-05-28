@@ -31,14 +31,11 @@ class Question extends StatelessWidget {
               icon: Icon(Icons.refresh), // 초기화 기능을 나타내는 아이콘
               color: WitHomeTheme.wit_white, // 아이콘 색상 설정 (AppBar iconTheme과 일관되게)
               tooltip: '초기화', // 길게 눌렀을 때 표시되는 텍스트
-              onPressed: () {
-                ConfimDialog.show(context,
-                    "초기화",
-                    "선택한 가이드 정보를 초기화 하시겠습니까?",
-                    () async {
-                      deleteQuestionInfoByAll();
-                    }
-                );
+              onPressed: () async {
+                bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "선택한 가이드 정보를 초기화 하시겠습니까?");
+                if (isConfirmed == true) {
+                  deleteQuestionInfoByAll();
+                }
               },
             ),
             // 필요한 경우 다른 actions 위젯을 여기에 추가할 수 있습니다.
@@ -103,6 +100,8 @@ class _QuestionState extends State<QuestionList> {
 
   int currentIndex = 0;                     // 현재 선택된 항목 인덱스
 
+  String userId = "";
+
   // 스크롤 컨트롤러
   ScrollController _scrollController = ScrollController();
 
@@ -113,6 +112,15 @@ class _QuestionState extends State<QuestionList> {
   @override
   void initState() {
     super.initState();
+
+    // 세션 정보 조회
+    getSesstionInfo();
+  }
+
+  // 세션 정보 조회
+  Future<void> getSesstionInfo() async {
+
+    userId = await _storage.read(key: 'clerkNo') ?? "";
 
     // 최초 질문 조회
     getFirstQuestionInfo();
@@ -192,6 +200,13 @@ class _QuestionState extends State<QuestionList> {
                               });
                               return;
                             }
+                            
+                            // 로그인 체크
+                            if ((userId == null || userId == "") && index == 1) {
+                              alertDialog.show(context: context, title: "알림", content: "로그인을 해주세요.");
+                              return;
+                            }
+
                             // 박스 비활성화
                             isBoxEnabled[index] = false;
                             // 하위 질문 코드
@@ -293,49 +308,37 @@ class _QuestionState extends State<QuestionList> {
                           SizedBox(height: 16), // SelectedOptionsRow 위에 공간 추가
                           SelectedOptionsRow(
                             selectedOptionsText: getSelectedOptionsText(index), // 선택된 옵션 텍스트
-                            onReselect: () {
-                              // 삭제 확인 대화상자 표시
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  // 컨펌 팝업 확인
-                                  return ConfirmationDialog(
-                                    title: "초기화",
-                                    content: "선택하신 항목 이후값이 초기화됩니다.\n초기화 하시겠습니까?",
-                                    onConfirm: () {
-                                      setState(() {
-                                        // 현재 인덱스 이후 데이터 삭제
-                                        for (int delIdx in selectedValues.keys) {
-                                          if (delIdx >= index) {
-                                            deleteQuestionInfo(qustList[delIdx]['qustType']!, delIdx);
-                                          }
-                                        }
+                            onReselect: () async {
 
-                                        // 재선택 버튼 클릭 시 해당 항목 이후의 리스트를 숨김
-                                        // 현재 인덱스 이후로 표시하지 않도록 설정
-                                        currentIndex = index;
-                                        // 선택한 데이터 초기화
-                                        selectedValues.removeWhere((key, value) => key >= index);
-                                        isBoxEnabled.removeWhere((key, value) => key >= index);
-                                        // qustList와 qustOptionList에서 인덱스 이후의 요소 삭제
-                                        qustList.removeRange(index+1, qustList.length);
-                                        qustOptionList.removeRange(index+1, qustOptionList.length);
-                                        // 특정 인덱스의 박스 활성화
-                                        isBoxEnabled[index] = true;
+                              bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "선택하신 항목값이 초기화됩니다.\n초기화 하시겠습니까?");
+                              if (isConfirmed == true) {
 
-                                      });
+                                setState(() {
+                                  // 현재 인덱스 이후 데이터 삭제
+                                  for (int delIdx in selectedValues.keys) {
+                                    if (delIdx >= index) {
+                                      deleteQuestionInfo(qustList[delIdx]['qustType']!, delIdx);
+                                    }
+                                  }
 
-                                      // 스크롤 하단 이동
-                                      _scrollToBottom();
-                                    },
-                                    onCencel: () {
-                                      setState(() {
+                                  // 재선택 버튼 클릭 시 해당 항목 이후의 리스트를 숨김
+                                  // 현재 인덱스 이후로 표시하지 않도록 설정
+                                  currentIndex = index;
+                                  // 선택한 데이터 초기화
+                                  selectedValues.removeWhere((key, value) => key >= index);
+                                  isBoxEnabled.removeWhere((key, value) => key >= index);
+                                  // qustList와 qustOptionList에서 인덱스 이후의 요소 삭제
+                                  qustList.removeRange(index+1, qustList.length);
+                                  qustOptionList.removeRange(index+1, qustOptionList.length);
+                                  // 특정 인덱스의 박스 활성화
+                                  isBoxEnabled[index] = true;
 
-                                      });
-                                    },
-                                  );
-                                },
-                              );
+                                });
+
+                                // 스크롤 하단 이동
+                                _scrollToBottom();
+
+                              }
                             },
                           ),
                         ],
@@ -413,8 +416,6 @@ class _QuestionState extends State<QuestionList> {
 
   // [서비스] 최초 질문 조회
   Future<void> getFirstQuestionInfo() async {
-
-    String? userId = await _storage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "getFirstQuestionInfo";
@@ -593,8 +594,6 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 저장
   Future<void> saveQuestionInfo(String gustType, String lowQustCd, int index) async {
 
-    String? userId = await _storage.read(key: 'clerkNo');
-
     final selectedOption = selectedValues[index];
 
     // REST ID
@@ -649,8 +648,6 @@ class _QuestionState extends State<QuestionList> {
   // [서비스] 질문 삭제
   Future<void> deleteQuestionInfo(String gustType, int index) async {
 
-    String? userId = await _storage.read(key: 'clerkNo');
-
     // REST ID
     String restId = "deleteQuestionInfo";
 
@@ -674,8 +671,6 @@ class _QuestionState extends State<QuestionList> {
 
   // [서비스] 질문 전체 삭제
   Future<void> deleteQuestionInfoByAll() async {
-
-    String? userId = await _storage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "deleteQuestionInfoByAll";

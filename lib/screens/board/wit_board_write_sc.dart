@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
-import 'package:witibju/screens/board/wit_board_main_sc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
@@ -166,7 +165,13 @@ class _BoardWriteState extends State<BoardWrite> {
               mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
               children: [
                 GestureDetector(
-                  onTap: () => _showImagePickerOptions(),
+                  onTap: () {
+                    if (_images.length >= 5) {
+                      alertDialog.show(context: context, title:"알림", content: "이미지는 최대 5건\n입력 가능합니다.");
+                      return;
+                    }
+                    _showImagePickerOptions();
+                  },
                   child: Container(
                     width: 85,
                     height: 85,
@@ -175,7 +180,21 @@ class _BoardWriteState extends State<BoardWrite> {
                       border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
+                    // 아이콘과 텍스트를 세로로 배치하기 위해 Column 사용
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center, // 세로 중앙 정렬
+                      crossAxisAlignment: CrossAxisAlignment.center, // 가로 중앙 정렬
+                      mainAxisSize: MainAxisSize.min, // Column의 크기를 자식 위젯들 크기에 맞게 최소화
+                      children: [
+                        Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
+                        SizedBox(height: 4), // 아이콘과 텍스트 사이 간격 추가 (조절 가능)
+                        Text(
+                          '${_images.length}/5', // <--- 이 부분을 수정했습니다.
+                          style: WitHomeTheme.subtitle, // 텍스트 색상 조절
+                        ),
+                      ],
+                    ),
+                    // Container 자체의 정렬은 Column의 중앙 정렬과 함께 사용되어 효과적으로 중앙 배치
                     alignment: Alignment.center,
                   ),
                 ),
@@ -300,13 +319,13 @@ class _BoardWriteState extends State<BoardWrite> {
 
     // 별점 입력 체크
     if (starRating == 0 && bordTypeGbn == "UH") {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("별점을 입력해주세요.")));
+      alertDialog.show(context: context, title: "알림", content: "별점을 입력해주세요.");
       return;
     }
 
     // 제목 입력 체크
     if (_titleController.text.trim().isEmpty && bordTypeGbn != "UH") {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("제목을 입력해주세요.")));
+      alertDialog.show(context: context, title: "알림", content: "제목을 입력해주세요.");
       return;
     }
 
@@ -316,7 +335,7 @@ class _BoardWriteState extends State<BoardWrite> {
       if (bordTypeGbn == "UH") {
         txt = "후기";
       }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(txt + "을 입력해주세요.")));
+      alertDialog.show(context: context, title: "알림", content: txt + "을 입력해주세요.");
       return;
     }
 
@@ -328,7 +347,7 @@ class _BoardWriteState extends State<BoardWrite> {
     } else {
       final fileInfo = await sendFilePostRequest("fileUpload", _images);
       if (fileInfo == "FAIL") {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
+        alertDialog.show(context: context, title: "알림", content: "파일 업로드 실패하였습니다.");
       } else {
         saveBoardInfo(fileInfo);
       }
@@ -383,10 +402,11 @@ class _BoardWriteState extends State<BoardWrite> {
     final result = await sendPostRequest(restId, param);
 
     if (result != null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 성공!")));
       Navigator.pop(context);
+      alertDialog.show(context: context, title: "알림", content: "저장 성공 하였습니다.");
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패!")));
+      Navigator.pop(context);
+      alertDialog.show(context: context, title: "알림", content: "저장 실패 하였습니다.");
     }
   }
 
@@ -426,7 +446,9 @@ class _BoardWriteState extends State<BoardWrite> {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _images.add(File(pickedFile.path));
+        if (_images.length < 5) {
+          _images.add(File(pickedFile.path));
+        }
       });
     }
   }
@@ -435,7 +457,11 @@ class _BoardWriteState extends State<BoardWrite> {
     final List<XFile>? pickedFiles = await _picker.pickMultiImage();
     if (pickedFiles != null && pickedFiles.isNotEmpty) {
       setState(() {
-        _images.addAll(pickedFiles.map((xfile) => File(xfile.path)).toList());
+        for (final xfile in pickedFiles) {
+          if (_images.length < 5) {
+            _images.add(File(xfile.path));
+          }
+        }
       });
     }
   }

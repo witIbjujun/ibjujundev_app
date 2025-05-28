@@ -280,13 +280,10 @@ class _ScheduleWritePopWidgetState extends State<ScheduleWritePopWidget> {
                                   ),
                                 ),
                                 onPressed: () async {
-                                  ConfimDialog.show(context,
-                                      "확인",
-                                      "선택한 스케쥴을 삭제하시겠습니까?",
-                                          () async {
-                                        deleteScheduleInfo();
-                                      }
-                                  );
+                                  bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "선택한 스케쥴을 삭제하시겠습니까?");
+                                  if (isConfirmed == true) {
+                                    deleteScheduleInfo();
+                                  }
                                 },
                                 child: Text(
                                   "삭제",

@@ -394,7 +394,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
 
       // 이미지 등록 실패
       if (fileInfo == "FAIL") {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
+        alertDialog.show(context: context, title: "알림", content: "파일 업로드 실패 하였습니다.");
 
       // 이미지 등록 성공
       } else {

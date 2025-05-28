@@ -32,12 +32,24 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
   int? expandedIndex = -1; // 클릭된 항목의 인덱스를 저장
   final ScrollController _scrollController = ScrollController();
 
+  String loginClerkNo = "";
+
   /**
    * 화면 초기화
    */
   @override
   void initState() {
     super.initState();
+
+    // 세션 정보 조회
+    getSessionInfo();
+
+
+  }
+
+  // 세션 정보 조회
+  Future<void> getSessionInfo() async {
+    loginClerkNo = await secureStorage.read(key: 'clerkNo') ?? "";
 
     // 하자 전체 조회
     getCheckAllList();
@@ -75,6 +87,7 @@ class CheckAllListState extends State<CheckAllList> with TickerProviderStateMixi
                   itemBuilder: (context, index) {
                     bool isExpanded = expandedIndex == index;
                     return ExpandableItem(
+                      loginClerkNo: loginClerkNo,
                       checkInfoLv3: checkAllList[index],
                       isExpanded: isExpanded,
                       onSwitchChanged: (value) {

@@ -63,14 +63,11 @@ class CheckListMainState extends State<CheckListMain> {
           if (isEditing)
             IconButton(
               icon: Icon(Icons.refresh),
-              onPressed: () {
-                ConfimDialog.show(context,
-                    "초기화",
-                    "체크리스트 초기화를 진행하시겠습니까?",
-                    () async {
-                      await initSwitchStates();
-                    }
-                );
+              onPressed: () async {
+                bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "체크리스트를 초기화 하시겠습니까?");
+                if (isConfirmed == true) {
+                  initSwitchStates();
+                }
               },
             ),
           IconButton(
