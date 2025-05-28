@@ -219,7 +219,7 @@ class BoardListView extends StatelessWidget {
                                                 Expanded(
                                                   child: Text(
                                                     // 사용자 이름, 날짜, 조회수만 표시 (별 문자열 없음)
-                                                    "${boardInfo["creUserNm"]}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
+                                                    "${boardInfo["creUserNm"] ?? "익명"}  |  ${boardInfo["creDateTxt"]}  |  조회 ${boardInfo["bordRdCnt"]}",
                                                     style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                                                   ),
                                                 ),

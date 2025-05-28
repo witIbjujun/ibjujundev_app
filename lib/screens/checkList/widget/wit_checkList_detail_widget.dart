@@ -4,11 +4,13 @@ import 'package:witibju/screens/checkList/wit_checkList_write_pop.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
 import '../../common/wit_ImageViewer_sc.dart';
+import '../../common/wit_common_widget.dart';
 
 /**
  * 체크리스트 상세 화면 UI
  */
 class CheckListDetailView extends StatefulWidget {
+  final String loginClerkNo;
   final dynamic checkInfoLv1;
   final List<dynamic> checkListByLv2;
   final List<dynamic> checkListByLv3;
@@ -18,6 +20,7 @@ class CheckListDetailView extends StatefulWidget {
 
   const CheckListDetailView({
     Key? key,
+    required this.loginClerkNo,
     required this.checkInfoLv1,
     required this.checkListByLv2,
     required this.checkListByLv3,
@@ -65,6 +68,7 @@ class _CheckListDetailViewState extends State<CheckListDetailView> {
                   itemBuilder: (context, index) {
                     bool isExpanded = expandedIndex == index;
                     return ExpandableItem(
+                      loginClerkNo: widget.loginClerkNo,
                       checkInfoLv3: widget.checkListByLv3[index],
                       isExpanded: isExpanded,
                       onSwitchChanged: (value) {
@@ -151,6 +155,7 @@ class TabBarWidget extends StatelessWidget {
  * 체크리스트 상세 TabBar 상세 Widget
  */
 class ExpandableItem extends StatelessWidget {
+  final String loginClerkNo;
   final dynamic checkInfoLv3;
   final bool isExpanded;
   final Function(bool) onSwitchChanged;
@@ -158,6 +163,7 @@ class ExpandableItem extends StatelessWidget {
 
   const ExpandableItem({
     Key? key,
+    required this.loginClerkNo,
     required this.checkInfoLv3,
     required this.isExpanded,
     required this.onSwitchChanged,
@@ -213,6 +219,25 @@ class ExpandableItem extends StatelessWidget {
                   if (checkInfoLv3["checkYn"] == 'Y' || checkInfoLv3["checkDate"] != null) // 'Y'일 때 연필 아이콘 추가
                     GestureDetector(
                       onTap: () {
+
+                        print("TEST!");
+                        print("TEST!");
+                        print("TEST!");
+                        print("TEST!");
+                        print("TEST!");
+                        print("TEST!");
+                        print("TEST!");
+                        print("TEST!");
+                        print("TEST!");
+                        print("TEST!");
+
+
+
+                        if (loginClerkNo == null || loginClerkNo == "") {
+                          alertDialog.show(context: context, title: "알림", content: "로그인이 필요합니다.");
+                          return;
+                        }
+
                         showModalBottomSheet(
                           context: context,
                           isDismissible: true, // 바깥을 클릭해도 닫히지 않도록 설정
@@ -250,6 +275,12 @@ class ExpandableItem extends StatelessWidget {
                     Container(
                       child: GestureDetector(
                         onTap: () {
+
+                          if (loginClerkNo == null || loginClerkNo == "") {
+                            alertDialog.show(context: context, title: "알림", content: "로그인이 필요합니다.");
+                            return;
+                          }
+
                           onSwitchChanged(checkInfoLv3["checkYn"] == "Y"); // Y일 경우 false, 나머지 경우 true
 
                           if (checkInfoLv3["checkYn"] == "Y" && checkInfoLv3["checkDate"] == null) {

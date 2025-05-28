@@ -288,7 +288,17 @@ class _BoardWriteState extends State<BoardWrite> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                saveImages();
+                showDialog(
+                  context: context,
+                  barrierDismissible: false, // 배경 클릭으로 닫히지 않도록 설정
+                  builder: (BuildContext context) {
+                    return Center(
+                      child: CircularProgressIndicator(), // 프로그래스 바
+                    );
+                  },
+                );
+                await saveImages();
+                Navigator.of(context).pop(); // 프로그래스 바 닫기
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: WitHomeTheme.wit_lightBlue, // 옅은 녹색 배경
@@ -389,24 +399,13 @@ class _BoardWriteState extends State<BoardWrite> {
       });
     }
 
-    showDialog(
-      context: context,
-      barrierDismissible: false, // 배경 클릭으로 닫히지 않도록 설정
-      builder: (BuildContext context) {
-        return Center(
-          child: CircularProgressIndicator(), // 프로그래스 바
-        );
-      },
-    );
-
     final result = await sendPostRequest(restId, param);
-
-    Navigator.pop(context);
 
     if (result != null) {
       Navigator.pop(context);
       alertDialog.show(context: context, title: "알림", content: "저장 성공 하였습니다.");
     } else {
+      Navigator.pop(context);
       alertDialog.show(context: context, title: "알림", content: "저장 실패 하였습니다.");
     }
   }

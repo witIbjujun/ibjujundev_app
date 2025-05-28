@@ -33,12 +33,23 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
   List<dynamic> checkListByLv3 = [];      // 사전 점검 항목 리스트 (레벨3)
   TabController? _tabController;          // TAB 컨트롤러
 
+  String loginClerkNo = "";
+
   /**
    * 화면 초기화
    */
   @override
   void initState() {
     super.initState();
+
+    // 세션 정보 조회
+    getSessionInfo();
+
+  }
+
+  // 세션 정보 조회
+  Future<void> getSessionInfo() async {
+    loginClerkNo = await secureStorage.read(key: 'clerkNo') ?? "";
 
     // 사전 점검 상세 조회 (Lv2)
     getCheckListByLv2();
@@ -59,6 +70,7 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
         ),
       ),
       body: CheckListDetailView(
+        loginClerkNo : loginClerkNo,
         checkInfoLv1: widget.checkInfoLv1,
         checkListByLv2: checkListByLv2,
         checkListByLv3: checkListByLv3,
@@ -81,9 +93,6 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
 
   // [서비스] 사전 점검 상세 조회 (Lv2)
   Future<void> getCheckListByLv2() async {
-
-    // 로그인 사번
-    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "getPreinspactionListByLv2";
@@ -109,9 +118,6 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
   // [서비스] 사전 점검 상세 조회 (Lv3)
   Future<void> getCheckListByLv3(String inspId) async {
 
-    // 로그인 사번
-    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
-
     // REST ID
     String restId = "getPreinspactionListByLv3";
 
@@ -133,9 +139,6 @@ class CheckListDetailState extends State<CheckListDetail> with TickerProviderSta
 
   // [서비스] 사전 점검 상세 저장
   Future<void> saveCheckInfo(dynamic item, String newCheckYn) async {
-
-    // 로그인 사번
-    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
 
     // REST ID
     String restId = "savePreinspactionInfo";
