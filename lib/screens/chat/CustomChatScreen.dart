@@ -54,6 +54,8 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   String _reqBtenNm = ''; // 버튼명
   String _reqStepState = ''; // 버튼명
   String _sllrNo = ''; // 업체ID
+  String _reqState = ''; // 상태
+
 
   String nextPage = ''; // anwCode 값에 따라서 후기등록(BOARD) , 완전종료(END)
 
@@ -264,6 +266,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
           _reqBtenNm = result['reqBtenNm']?.toString() ?? '';
           _reqStepState = result['reqStepState']?.toString() ?? '';
           _sllrNo = result['sllrNo']?.toString() ?? '';
+          _reqState = result['reqState']?.toString() ?? '';
         });
       }
     } catch (e) {
@@ -363,52 +366,54 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
               ],
             ),
           ),
-          const Divider(height: 1),
-          Container(
-            color: Colors.grey.shade100,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            child: Row(
-              children: [
-                // ✅ + 버튼
-                IconButton(
-                  icon: const Icon(Icons.add_circle_outline, size: 28, color: Colors.black54),
-                  onPressed: () {
-                    _showImagePickerDialog(context);
-                  },
-                ),
+        ],
+      ),
+      bottomNavigationBar: _buildBottomInputBar(), // 2025-05-28 추가
+    );
+  }
 
-                // ✅ 메시지 입력창
-                Expanded(
-                  child: TextField(
-                    focusNode: _focusNode,
-                    controller: _textController,
-                    onChanged: (val) {
-                      setState(() {
-                        _currentText = val;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: '메시지를 입력하세요',
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
 
-                // ✅ 전송 버튼
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () {
-                    final message = _textController.text.trim();
-                    if (message.isNotEmpty) {
-                      _saveMessageToServer(message);
-                      _textController.clear();
-                      _currentText = '';
-                    }
-                  },
-                ),
-              ],
+  // 2025-05-28: reqState가 '70'이면 입력창 전체 숨김 처리
+  Widget? _buildBottomInputBar() {
+    if (_reqState == '70') return null;
+
+    return Container(
+      color: Colors.grey.shade100,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.add_circle_outline, size: 28, color: Colors.black54),
+            onPressed: () {
+              _showImagePickerDialog(context);
+            },
+          ),
+          Expanded(
+            child: TextField(
+              focusNode: _focusNode,
+              controller: _textController,
+              onChanged: (val) {
+                setState(() {
+                  _currentText = val;
+                });
+              },
+              decoration: const InputDecoration(
+                hintText: '메시지를 입력하세요',
+                border: InputBorder.none,
+              ),
             ),
-          )
+          ),
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: () {
+              final message = _textController.text.trim();
+              if (message.isNotEmpty) {
+                _saveMessageToServer(message);
+                _textController.clear();
+                _currentText = '';
+              }
+            },
+          ),
         ],
       ),
     );
@@ -475,15 +480,16 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          /// 🔹 업체명 + 시간 표시
           Row(
             children: [
-              // 2025-05-23: 업체명을 클릭 시 SellerProfileView로 이동하도록 GestureDetector 추가
+              // 업체명 클릭 시 프로필로 이동
               GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SellerProfileView(
-                        sllrNo: _sllrNo,  // 🔹 request의 sllrNo를 넘김
+                        sllrNo: _sllrNo,
                         appbarYn: "Y",
                       ),
                     ),
@@ -506,9 +512,8 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
               Text(_estimateDate, style: const TextStyle(fontSize: 14)),
             ],
           ),
-          const SizedBox(height: 10),
-
-          // ✅ 순서도 표시
+          const SizedBox(height: 5),
+          /// 🔹 작업 단계 동그라미
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -518,8 +523,10 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
               _buildStepIndicator("4. 최종완료", _reqStepState == "40"),
             ],
           ),
+
           const SizedBox(height: 5),
-          Row(
+          /// 🔹 단계 선 (Divider) 표시
+          /*Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(3, (index) => Expanded(
               child: Divider(
@@ -532,28 +539,111 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                 thickness: 2,
               ),
             )),
-          ),
+          ),*/
+
+          if (_reqStepState == "20") ...[
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                ),
+              ),
+              child: Row(
+                children: [
+                  // 🔸 작업 취소 버튼
+                  Expanded(
+                    child: InkWell(
+                      onTap: () async {
+                        bool isConfirmed = await DialogUtils.showIPhoneConfirmDialog(
+                          context: context,
+                          title: '작업 중지',
+                          content: '작업을 중지하시겠습니까?',
+                        );
+                        if (isConfirmed) {
+                          await updateProgressStatus("99");
+                        }
+                      },
+                      child: Container(
+                        height: 48,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            top: BorderSide(color: Color(0xFFE0E0E0)),
+                            right: BorderSide(color: Color(0xFFE0E0E0)),
+                          ),
+                        ),
+                        child: const Text(
+                          '작업취소',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.red, // ✅ 빨간색 글씨
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // 🔸 작업 완료 버튼
+                  Expanded(
+                    child: InkWell(
+                      onTap: () async {
+                        bool isConfirmed = await DialogUtils.showIPhoneConfirmDialog(
+                          context: context,
+                          title: '작업 완료',
+                          content: '작업을 완료하시겠습니까?',
+                        );
+                        if (isConfirmed) {
+                          await updateProgressStatus("70");
+                        }
+                      },
+                      child: Container(
+                        height: 48,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            top: BorderSide(color: Color(0xFFE0E0E0)),
+                          ),
+                        ),
+                        child: const Text(
+                          '작업완료',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue, // ✅ 파란색 글씨
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
+
 
   // ✅ 단계를 표현하는 위젯
   Widget _buildStepIndicator(String title, bool isActive) {
     return Column(
       children: [
         CircleAvatar(
-          radius: 14,
+          radius: 10,
           backgroundColor: isActive ? WitHomeTheme.wit_lightGreen : Colors.grey[400],
           child: isActive
-              ? const Icon(Icons.check, color: Colors.white, size: 18)
+              ? const Icon(Icons.check, color: Colors.white, size: 10)
               : null,
         ),
         const SizedBox(height: 5),
         Text(
           title,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: FontWeight.bold,
             color: isActive ? WitHomeTheme.wit_lightGreen : Colors.grey[600],
           ),
@@ -724,7 +814,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
               Navigator.pop(context);
 
               // ✅ 상태값 수정 함수 호출
-              await updateProgressStatus(text);
+              await updateProgressStatus("50");
 
               // ✅ 서버에 메시지 저장
               _saveMessageToServer(
@@ -752,22 +842,27 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   /**
    * 진행상태 업데이트
    */
-  Future<void> updateProgressStatus(String? text) async {
+  Future<void> updateProgressStatus(String? reqState) async {
+    const String restId = "updateProgressStatus";
     // ✅ "REBTN1"일 때만 진행하도록 조건 추가
-    if (text == "REBTN1") {
-      const String restId = "updateProgressStatus";
-      //print("✅ 진행 상태 업데이트 요청됨: $text");
-
       final param = jsonEncode({
         "reqNo": widget.reqNo,
         "seq": widget.seq,
-        "reqState": "3",
+        "reqState": reqState,
         "status": "IN_PROGRESS" // 상태값을 진행 중으로 업데이트
       });
 
       try {
         final response = await sendPostRequest(restId, param);
         if (response > 0) {
+          await DialogUtils.showIPhoneAlertDialog(
+            context: context,
+            title: '처리완료',
+            content: '성공적으로 완료되었습니다.',
+            onConfirm: () {
+              Navigator.pop(context); // 🔙 이전 화면으로 돌아감
+            },
+          );
           print("✅ 진행 상태 업데이트 완료");
         } else {
           print("❌ 진행 상태 업데이트 실패: $response");
@@ -775,9 +870,6 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
       } catch (e) {
         print("❌ 진행 상태 업데이트 중 오류 발생: $e");
       }
-    } else {
-      print("🚫 업데이트 조건에 맞지 않습니다. (text: $text)");
-    }
   }
 
   /**

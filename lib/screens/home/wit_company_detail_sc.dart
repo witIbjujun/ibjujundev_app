@@ -16,7 +16,6 @@ import 'models/company.dart';
 class DetailCompany extends StatefulWidget {
   final String title;
   final String categoryId;
-
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
 
 
@@ -215,7 +214,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   }
 
   Widget getReviewBoard() {
-    return Board(bordType: "UH01"); // 탭 안에서 '업체후기' 화면을 표시
+    return Board(bordType: "UH01",ctgrId: widget.categoryId,appBarFlag:false); // 탭 안에서 '업체후기' 화면을 표시
   }
 
   // 2025-04-22: 이미지 비율에 따라 fullHeight 자동 계산 + Semantics 오류 방지 적용
@@ -462,18 +461,6 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
         );
       },
     );
-  }
-
-  Widget getCommunityTabs() {
-    // '업체후기' 탭을 선택하면 즉시 Board(1, 'C1')로 이동
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Board(bordType: "UH01",ctgrId: widget.categoryId)),
-      );
-    });
-
-    return Container(); // 화면 이동 후 기존 위젯은 필요 없으므로 빈 컨테이너 반환
   }
 
   /**

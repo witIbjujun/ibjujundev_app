@@ -216,6 +216,75 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
           ],
         ),
       ),
+      // ✅ 2025-05-28: 메시지로 진행하기 버튼을 하단에 고정
+      bottomNavigationBar: _selectedRequest != null
+          ? SafeArea(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0), // 🔹 높이 줄임
+          color: Colors.white,
+          child: SizedBox(
+            height: 43,
+            child: ElevatedButton(
+              onPressed: _selectedRequest!.reqState != '10'
+                  ? () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CustomChatScreen(
+                      _selectedRequest!.reqNo,
+                      _selectedRequest!.seq,
+                      "userView",
+                    ),
+                  ),
+                );
+              }
+                  : null,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _selectedRequest!.reqState == '70'
+                    ? Colors.grey[400] // 🔹 상태가 70이면 회색
+                    : Colors.black,    // 🔹 그 외엔 검정
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 48.0),
+                    child: Text(
+                      _selectedRequest!.reqState == '70'
+                          ? '메시지로 진행하기(진행완료)' // 🔹 진행완료일 경우 텍스트 변경
+                          : '메시지로 진행하기',        // 🔹 그 외는 기본 문구
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 16.0),
+                    width: 36,
+                    height: 27,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Center(
+                      child: Image.asset(
+                        'assets/home/message.png',
+                        width: 36,
+                        height: 27,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      )
+          : null,
     );
   }
 
@@ -425,19 +494,19 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
           SizedBox(height: 10),
 
           /// 🔹 진행 요청 버튼 + 메시지 버튼
-          SizedBox(
+          /*SizedBox(
             width: 400,
             height: 48,
             child: ElevatedButton(
               onPressed: request.reqState != '10'
                   //? () => _handleRequestAction(request)
                   ? () {
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => CustomChatScreen(
-                              request.reqNo,   // 첫 번째 인자: 요청 번호
-                              request.seq,     // 두 번째 인자: 시퀀스 (chatId)
-                              "userView",      // 세 번째 인자: 뷰 타입
+                              request.reqNo,
+                              request.seq,
+                              "userView",
                             ),
                           ),
                         );
@@ -482,7 +551,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 ],
               ),
             ),
-          ),
+          ),*/
         ],
       ),
     );
@@ -538,15 +607,15 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 ),
               ),
               onPressed: () async {
-                Navigator.pop(context); // 다이얼로그 닫기
+                //Navigator.pop(context); // 다이얼로그 닫기
 
                 /// ✅ Chat 화면으로 이동
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => CustomChatScreen(
                       request.reqNo,
-                      request.seq,// chatId
-                      "userView",      // 세 번째 인자 예: 업체 이름
+                      request.seq,
+                      "userView",
                     ),
                   ),
                 );

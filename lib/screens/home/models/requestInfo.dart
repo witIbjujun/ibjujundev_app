@@ -19,6 +19,7 @@ class RequestInfo {
     this.imageFilePath = '',
     this.seq = '',
     this.formatReqNo = '',
+    this.selCategoryNm = '',
     this.estimateDate = '',
     this.receivedEstimates = const [], // 🔹 기본값을 빈 리스트([])로 설정하여 null 방지
   });
@@ -43,6 +44,8 @@ class RequestInfo {
   String seq;
   String companyCnt;
   String estimateDate;
+  String selCategoryNm;
+
   List<EstimateItem> receivedEstimates; // 🔹 필수 필드 추가
 
   // JSON 데이터를 받아 RequestInfo 리스트로 변환하는 함수
@@ -69,6 +72,7 @@ class RequestInfo {
         estimateContents: requestInfo['estimateContents'] ?? '',
         reqContents: requestInfo['reqContents'] ?? '',
         estimateDate: requestInfo['estimateDate'] ?? '',
+        selCategoryNm: requestInfo['selCategoryNm'] ?? '',
         receivedEstimates: (requestInfo['receivedEstimates'] as List<dynamic>?)?.map((e) => EstimateItem.fromJson(e)).toList() ?? [], // 🔹 데이터 파싱 추가
       );
     }).toList();
