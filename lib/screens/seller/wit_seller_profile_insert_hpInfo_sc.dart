@@ -130,7 +130,8 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
                       .millisecondsSinceEpoch}',
                   phone: hp1Controller.text,
                   company: '포트원', // 또는 원하는 이름
-                  mRedirectUrl : 'http://123.com'
+                  mRedirectUrl : 'http://123.com',
+                pg: 'kcp',
               ),
               callback: (Map<String, String> result) {
                 if (result['success'] == 'true') {
