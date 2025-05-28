@@ -456,13 +456,28 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
             ),
             SizedBox(height: 16),
             Expanded(
-              child: ListView.builder(
+              child: applicationList.isNotEmpty
+                  ? ListView.builder(
                 itemCount: applicationList.length,
                 itemBuilder: (context, index) {
                   return buildApplicationItem(applicationList[index]);
                 },
+              )
+                  : Container(
+                height: MediaQuery.of(context).size.height - 100,
+                child: Center(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.40,
+                    width: MediaQuery.of(context).size.width * 0.85,
+                    child: Image.asset(
+                      'assets/images/조회된 내용 (1).png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
               ),
             ),
+
           ],
         ),
       ),
