@@ -1,6 +1,7 @@
 // ConfirmationDialog 위젯 정의
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:witibju/screens/home/wit_home_theme.dart';
 
 // [유틸] 컴펌 팝업
 class ConfirmationDialog extends StatelessWidget {
@@ -121,63 +122,109 @@ class SlideRoute extends PageRouteBuilder {
 }
 
 /*******************************
- * [이벤트] 알림 팝업 호출
+ * [이벤트] 컨펌 팝업 호출
  ******************************/
-class alertDialog {
-  static void show(BuildContext context, String message) {
-    showDialog(
+class ConfimDialog {
+  static Future<bool> show({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String confirmText = '확인',
+    String cancelText = '취소',
+    Color confirmColor = WitHomeTheme.wit_lightSteelBlue,
+    Color cancelColor = WitHomeTheme.wit_gray,
+  }) async {
+    final result = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("알림",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+        return CupertinoAlertDialog(
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,  // 🔹 글씨 크기 키움
+            ),
           ),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text("확인",
-                  style: TextStyle(fontSize: 12)
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              content,
+              style: const TextStyle(
+                fontSize: 16,  // 🔹 글씨 크기 키움
               ),
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(false);
               },
+              child: Text(
+                cancelText,
+                style: TextStyle(color: cancelColor),
+              ),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: Text(
+                confirmText,
+                style: TextStyle(color: confirmColor),
+              ),
             ),
           ],
         );
       },
     );
+
+    return result ?? false; // 결과가 null이면 false 반환
   }
 }
 
 /*******************************
- * [이벤트] 컨펌 팝업 호출
+ * [이벤트] 알림 팝업 호출
  ******************************/
-class ConfimDialog {
-  static void show(BuildContext context, String title, String message, Future<void> Function() onConfirm) {
-    showDialog(
+class alertDialog {
+  static Future<void> show({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String confirmText = '확인',
+    Color confirmColor = WitHomeTheme.wit_lightSteelBlue,
+    VoidCallback? onConfirm,
+  }) async {
+    await showDialog<void>(
       context: context,
+      barrierDismissible: false, // 바깥 클릭으로 닫히지 않음
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+        return CupertinoAlertDialog(
+          title: Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
-          content: Text(message,
-            style: TextStyle(fontSize: 12),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              content,
+              style: const TextStyle(fontSize: 16),
+            ),
           ),
           actions: <Widget>[
-            TextButton(
+            CupertinoDialogAction(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // 창 닫기
+                if (onConfirm != null) {
+                  onConfirm();
+                }
               },
-              child: Text("취소"),
-            ),
-            TextButton(
-              onPressed: () {
-                onConfirm().then((_) {
-                  Navigator.of(context).pop();
-                });
-              },
-              child: Text("확인"),
+              child: Text(
+                confirmText,
+                style: TextStyle(color: confirmColor),
+              ),
             ),
           ],
         );

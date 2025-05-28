@@ -174,7 +174,7 @@ class _ReplyWritePopWidgetState extends State<ReplyWritePopWidget> {
     String replyContent = replyController.text;
 
     if (replyContent.isEmpty) {
-      alertDialog.show(context, "댓글을 입력해주세요.");
+      alertDialog.show(context: context, title: "알림", content: "댓글을 입력해주세요.");
       return;
     }
     
@@ -197,10 +197,9 @@ class _ReplyWritePopWidgetState extends State<ReplyWritePopWidget> {
       setState(() {
 
         if (_commentList.length > 0) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장되었습니다.")));
-
+          alertDialog.show(context: context, title: "알림", content: "저장 성공 하였습니다.");
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("저장 실패하였습니다.")));
+          alertDialog.show(context: context, title: "알림", content: "저장 실패 하였습니다.");
         }
 
         Navigator.pop(context);

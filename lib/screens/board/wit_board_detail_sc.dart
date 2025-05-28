@@ -4,6 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/board/widget/wit_board_detail_widget.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
+import 'package:witibju/screens/common/wit_common_widget.dart';
 
 dynamic boardDetailInfo = {};
 String boardTitle = "";
@@ -289,14 +290,10 @@ class BoardDetailState extends State<BoardDetail> {
     final result = await sendPostRequest(restId, param);
 
     if (result > 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('삭제되었습니다.')),
-      );
       Navigator.of(context).pop(true);
+      alertDialog.show(context: context, title: "알림", content: "삭제되었습니다.");
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('오류가 발생했습니다. 다시 시도해주세요.')),
-      );
+      alertDialog.show(context: context, title: "알림", content: "삭제 실패하였습니다.");
     }
 
   }

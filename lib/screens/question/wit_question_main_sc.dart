@@ -31,14 +31,11 @@ class Question extends StatelessWidget {
               icon: Icon(Icons.refresh), // 초기화 기능을 나타내는 아이콘
               color: WitHomeTheme.wit_white, // 아이콘 색상 설정 (AppBar iconTheme과 일관되게)
               tooltip: '초기화', // 길게 눌렀을 때 표시되는 텍스트
-              onPressed: () {
-                ConfimDialog.show(context,
-                    "초기화",
-                    "선택한 가이드 정보를 초기화 하시겠습니까?",
-                    () async {
-                      deleteQuestionInfoByAll();
-                    }
-                );
+              onPressed: () async {
+                bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "선택한 가이드 정보를 초기화 하시겠습니까?");
+                if (isConfirmed == true) {
+                  deleteQuestionInfoByAll();
+                }
               },
             ),
             // 필요한 경우 다른 actions 위젯을 여기에 추가할 수 있습니다.

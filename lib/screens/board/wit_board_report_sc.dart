@@ -179,12 +179,12 @@ class BoardReportState extends State<BoardReport> {
 
     // 사유 선택 체크
     if (reason == null || reason == "") {
-      alertDialog.show(context, "신고 사유를 선택해주세요.");
+      alertDialog.show(context: context, title: "알림", content: "신고 사유를 선택해주세요.");
       return;
     }
 
     if (reason == "기타" && details == "") {
-      alertDialog.show(context, "기타 선택시 상세 사유를 입력해주세요");
+      alertDialog.show(context: context, title: "알림", content: "기타 선택시 상세 사유를 입력해주세요.");
       return;
     }
 
@@ -202,14 +202,14 @@ class BoardReportState extends State<BoardReport> {
     final result = await sendPostRequest(restId, param);
 
     if (result == 1) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("신고 성공")));
       Navigator.pop(context);
+      alertDialog.show(context: context, title: "알림", content: "신고 성공 하였습니다.");
     } else if (result == -2) {
-      alertDialog.show(context, "이미 신고한 게시글입니다.");
+      alertDialog.show(context: context, title: "알림", content: "이미 신고한 게시글입니다.");
       return;
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("신고 실패")));
       Navigator.pop(context);
+      alertDialog.show(context: context, title: "알림", content: "신고 신고 하였습니다.");
     }
   }
 
