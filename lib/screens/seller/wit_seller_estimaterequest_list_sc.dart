@@ -117,6 +117,8 @@ class EstimateItem extends StatelessWidget {
     String reqContents = request['reqContents'] ?? '내용 없음'; // 내용
     String itemName = request['itemName'] ?? '품목 없음'; // 내용
 
+    print("request : " + request['prsnImageUrl'].toString());
+
     // 내용이 3줄 이상인지 확인
     bool hasMoreThanThreeLines = (reqContents.split('\n').length > 3);
 
@@ -144,11 +146,13 @@ class EstimateItem extends StatelessWidget {
                 // 왼쪽에 사진
                 Container(
                   width: 50,
-                  height: 50, // 이미지 높이 설정
+                  height: 50,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25), // 둥근 프로필 사진
+                    borderRadius: BorderRadius.circular(25),
                     image: DecorationImage(
-                      image: AssetImage('assets/images/profile1.png'),
+                      image: request['prsnImageUrl'] != null && request['prsnImageUrl'].isNotEmpty
+                          ? NetworkImage(request['prsnImageUrl'])
+                          : AssetImage('assets/images/profile1.png') as ImageProvider,
                       fit: BoxFit.cover,
                     ),
                   ),

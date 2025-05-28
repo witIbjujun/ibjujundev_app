@@ -490,7 +490,9 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
                 image: DecorationImage(
-                  image: AssetImage('assets/images/profile1.png'),
+                  image: application['prsnImageUrl'] != null && application['prsnImageUrl'].isNotEmpty
+                      ? NetworkImage(application['prsnImageUrl'])
+                      : AssetImage('assets/images/profile1.png') as ImageProvider,
                   fit: BoxFit.cover,
                 ),
               ),
