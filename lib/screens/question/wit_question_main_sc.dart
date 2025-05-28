@@ -308,49 +308,37 @@ class _QuestionState extends State<QuestionList> {
                           SizedBox(height: 16), // SelectedOptionsRow 위에 공간 추가
                           SelectedOptionsRow(
                             selectedOptionsText: getSelectedOptionsText(index), // 선택된 옵션 텍스트
-                            onReselect: () {
-                              // 삭제 확인 대화상자 표시
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  // 컨펌 팝업 확인
-                                  return ConfirmationDialog(
-                                    title: "초기화",
-                                    content: "선택하신 항목 이후값이 초기화됩니다.\n초기화 하시겠습니까?",
-                                    onConfirm: () {
-                                      setState(() {
-                                        // 현재 인덱스 이후 데이터 삭제
-                                        for (int delIdx in selectedValues.keys) {
-                                          if (delIdx >= index) {
-                                            deleteQuestionInfo(qustList[delIdx]['qustType']!, delIdx);
-                                          }
-                                        }
+                            onReselect: () async {
 
-                                        // 재선택 버튼 클릭 시 해당 항목 이후의 리스트를 숨김
-                                        // 현재 인덱스 이후로 표시하지 않도록 설정
-                                        currentIndex = index;
-                                        // 선택한 데이터 초기화
-                                        selectedValues.removeWhere((key, value) => key >= index);
-                                        isBoxEnabled.removeWhere((key, value) => key >= index);
-                                        // qustList와 qustOptionList에서 인덱스 이후의 요소 삭제
-                                        qustList.removeRange(index+1, qustList.length);
-                                        qustOptionList.removeRange(index+1, qustOptionList.length);
-                                        // 특정 인덱스의 박스 활성화
-                                        isBoxEnabled[index] = true;
+                              bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "선택하신 항목값이 초기화됩니다.\n초기화 하시겠습니까?");
+                              if (isConfirmed == true) {
 
-                                      });
+                                setState(() {
+                                  // 현재 인덱스 이후 데이터 삭제
+                                  for (int delIdx in selectedValues.keys) {
+                                    if (delIdx >= index) {
+                                      deleteQuestionInfo(qustList[delIdx]['qustType']!, delIdx);
+                                    }
+                                  }
 
-                                      // 스크롤 하단 이동
-                                      _scrollToBottom();
-                                    },
-                                    onCencel: () {
-                                      setState(() {
+                                  // 재선택 버튼 클릭 시 해당 항목 이후의 리스트를 숨김
+                                  // 현재 인덱스 이후로 표시하지 않도록 설정
+                                  currentIndex = index;
+                                  // 선택한 데이터 초기화
+                                  selectedValues.removeWhere((key, value) => key >= index);
+                                  isBoxEnabled.removeWhere((key, value) => key >= index);
+                                  // qustList와 qustOptionList에서 인덱스 이후의 요소 삭제
+                                  qustList.removeRange(index+1, qustList.length);
+                                  qustOptionList.removeRange(index+1, qustOptionList.length);
+                                  // 특정 인덱스의 박스 활성화
+                                  isBoxEnabled[index] = true;
 
-                                      });
-                                    },
-                                  );
-                                },
-                              );
+                                });
+
+                                // 스크롤 하단 이동
+                                _scrollToBottom();
+
+                              }
                             },
                           ),
                         ],
