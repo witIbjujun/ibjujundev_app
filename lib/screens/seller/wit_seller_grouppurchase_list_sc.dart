@@ -105,11 +105,11 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
     print("aptNo : " + aptNo);
 
     final param =
-        jsonEncode({
-          "sllrNo": widget.sllrNo,
-          "reqGubun": "G",
-          "aptNo": aptNo
-        });
+    jsonEncode({
+      "sllrNo": widget.sllrNo,
+      "reqGubun": "G",
+      "aptNo": aptNo
+    });
 
     final response = await sendPostRequest("getEstimateRequestList", param);
     setState(() {
@@ -173,10 +173,10 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                           children: [
                             Padding(
                               padding:
-                                  EdgeInsets.only(left: 2, top: 0.0, bottom: 0),
+                              EdgeInsets.only(left: 2, top: 0.0, bottom: 0),
                               child: Container(
                                 height:
-                                    MediaQuery.of(context).size.height * 0.25,
+                                MediaQuery.of(context).size.height * 0.25,
                                 width: MediaQuery.of(context).size.width * 0.92,
                                 child: Image.asset(
                                   'assets/images/공동구매 판매자 배너.png',
@@ -222,11 +222,11 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                   },
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(left: 10.0),
+                                        const EdgeInsets.only(left: 10.0),
                                         child: Text(
                                           _selectedApartment,
                                           style: WitHomeTheme.title
@@ -235,7 +235,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                       ),
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(right: 10.0),
+                                        const EdgeInsets.only(right: 10.0),
                                         child: Icon(Icons.arrow_drop_down,
                                             color: WitHomeTheme.wit_black),
                                       ),
@@ -258,8 +258,8 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                             : '공동구매 정보 없음',
                                         style: WitHomeTheme.subtitle.copyWith(
                                           fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.03,
                                           color: WitHomeTheme.wit_white,
                                         ),
@@ -274,8 +274,8 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
                                             : '',
                                         style: WitHomeTheme.subtitle.copyWith(
                                           fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                                              .size
+                                              .width *
                                               0.03,
                                           color: WitHomeTheme.wit_white,
                                         ),
@@ -496,7 +496,7 @@ class SellerGroupPurchaseListState extends State<SellerGroupPurchaseList> {
       ),
       child: Padding(
         padding:
-            const EdgeInsets.only(top: 12.0, bottom: 27, left: 16, right: 16),
+        const EdgeInsets.only(top: 12.0, bottom: 27, left: 16, right: 16),
         child: Row(
           children: [
             Container(
