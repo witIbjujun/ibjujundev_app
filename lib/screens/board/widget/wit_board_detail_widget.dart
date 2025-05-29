@@ -5,6 +5,8 @@ import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/screens/board/wit_board_write_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
+import '../../home/widgets/wit_home_widgets.dart';
+import '../../home/widgets/wit_home_widgets2.dart';
 import '../wit_board_report_sc.dart';
 
 // 타이틀 및 수정/삭제 영역
@@ -138,7 +140,10 @@ class UserInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(radius: 20, backgroundColor: WitHomeTheme.wit_lightBlue),
+        CircleAvatar(
+            radius: 20,
+            backgroundImage: proFlieImage.getImageProvider(boardDetailInfo["profileImg"]),
+        ),
         SizedBox(width: 15),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,7 +290,8 @@ class CommentList extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               CircleAvatar(
-                radius: 20, backgroundColor: WitHomeTheme.wit_lightBlue
+                radius: 20,
+                backgroundImage: proFlieImage.getImageProvider(commentList[index]["profileImg"]),
               ),
               SizedBox(width: 15),
               Expanded(
@@ -299,7 +305,7 @@ class CommentList extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      (commentList[index]["creUserNm"] ?? "") + " | " + (commentList[index]["creDateTxt"] ?? ""),
+                      (commentList[index]["creUserNm"] ?? "익명") + " | " + (commentList[index]["creDateTxt"] ?? ""),
                       style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                     ),
                   ],

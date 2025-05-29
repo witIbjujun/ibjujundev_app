@@ -89,224 +89,224 @@ class _BoardWriteState extends State<BoardWrite> {
       ),
       backgroundColor: WitHomeTheme.wit_white,
       body: SafeArea(
-        child: SingleChildScrollView( // 화면 전체 스크롤을 위해 Column을 SingleChildScrollView로 감쌉니다.
-          child: Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (bordTypeGbn == "UH")...[
-                  Center( // 이 부분을 Center로 감싸서 가운데 정렬
-                    child: Text(
-                      "이용 후기는 어떠셨나요?", // 별점 레이블
-                      style: WitHomeTheme.title,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Center( // 이 부분을 Center로 감싸서 가운데 정렬
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: List.generate(5, (index) => _buildStar(index)),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                ],
-                if (bordTypeGbn != "UH")...[
-                  Text(
-                    "제목",
-                    style: WitHomeTheme.title,
-                  ),
-                  TextField(
-                    controller: _titleController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "제목을 입력하세요",
-                      hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
-                    ),
-                    style: WitHomeTheme.subtitle,
-                    maxLines: 1,
-                  ),
-                  SizedBox(height: 10),
-                  ],
-                Container(
-                  height: 1,
-                  color: WitHomeTheme.wit_extraLightGrey,
-                ),
-                SizedBox(height: 10),
-                if (bordTypeGbn == "UH")...[
-                  Text("후기 작성", style: WitHomeTheme.title),
-                ] else ...[
-                  Text("내용", style: WitHomeTheme.title),
-                ],
-                TextField(
-                    controller: _contentController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "내용을 입력하세요",
-                      hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
-                    ),
-                    style: WitHomeTheme.subtitle,
-                    maxLines: null, // 자동 조절
-                    minLines: 15,
-                    keyboardType: TextInputType.multiline,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 10), // 패딩 10 설정
-        child: Column( // 세로로 위젯을 배치하기 위해 Column 사용
-          mainAxisSize: MainAxisSize.min, // Column의 크기를 자식들의 크기에 맞게 최소화
-          crossAxisAlignment: CrossAxisAlignment.stretch, // 버튼이 가로로 꽉 차도록 스트레치
+        child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start, // 왼쪽 정렬
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (_images.length >= 5) {
-                      alertDialog.show(context: context, title:"알림", content: "이미지는 최대 5건\n입력 가능합니다.");
-                      return;
-                    }
-                    _showImagePickerOptions();
-                  },
-                  child: Container(
-                    width: 85,
-                    height: 85,
-                    decoration: BoxDecoration(
-                      color: WitHomeTheme.wit_white,
-                      border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    // 아이콘과 텍스트를 세로로 배치하기 위해 Column 사용
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center, // 세로 중앙 정렬
-                      crossAxisAlignment: CrossAxisAlignment.center, // 가로 중앙 정렬
-                      mainAxisSize: MainAxisSize.min, // Column의 크기를 자식 위젯들 크기에 맞게 최소화
-                      children: [
-                        Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
-                        SizedBox(height: 4), // 아이콘과 텍스트 사이 간격 추가 (조절 가능)
-                        Text(
-                          '${_images.length}/5', // <--- 이 부분을 수정했습니다.
-                          style: WitHomeTheme.subtitle, // 텍스트 색상 조절
+            Expanded(
+              child: SingleChildScrollView( // 화면 전체 스크롤을 위해 Column을 SingleChildScrollView로 감쌉니다.
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (bordTypeGbn == "UH")...[
+                        Center( // 이 부분을 Center로 감싸서 가운데 정렬
+                          child: Text(
+                            "이용 후기는 어떠셨나요?", // 별점 레이블
+                            style: WitHomeTheme.title,
+                          ),
                         ),
-                      ],
-                    ),
-                    // Container 자체의 정렬은 Column의 중앙 정렬과 함께 사용되어 효과적으로 중앙 배치
-                    alignment: Alignment.center,
-                  ),
-                ),
-                SizedBox(width: 15), // GestureDetector와 이미지 리스트 간격 추가
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        // 첫 번째 이미지 리스트
-                        if (_images.isNotEmpty) ...[
-                          Row(
-                            children: _images.asMap().entries.map((entry) {
-                              int index = entry.key;
-                              var image = entry.value;
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      child: Image.file(
-                                        image,
-                                        width: 85,
-                                        height: 85,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: -7,
-                                      top: -7,
-                                      child: IconButton(
-                                        icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
-                                        onPressed: () {
-                                          setState(() {
-                                            _images.removeAt(index);
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
+                        SizedBox(height: 10),
+                        Center( // 이 부분을 Center로 감싸서 가운데 정렬
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(5, (index) => _buildStar(index)),
                           ),
-                        ],
-                        // 두 번째 이미지 URL 리스트
-                        // 이미지 URL 리스트
-                        if (widget.imageList != null && widget.imageList!.isNotEmpty) ...[
-                          Row(
-                            children: widget.imageList!.map((item) {
-                              var image = apiUrl + item["imagePath"];
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      child: Image.network(
-                                        image,
-                                        width: 85,
-                                        height: 85,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: -7,
-                                      top: -7,
-                                      child: IconButton(
-                                        icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
-                                        onPressed: () {
-                                          setState(() {
-                                            fileDelInfo.add(item["imagePath"]);
-                                            widget.imageList!.remove(item); // URL 이미지 삭제
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ],
+                        ),
+                        SizedBox(height: 20),
                       ],
-                    ),
+                      if (bordTypeGbn != "UH")...[
+                        Text(
+                          "제목",
+                          style: WitHomeTheme.title,
+                        ),
+                        TextField(
+                          controller: _titleController,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "제목을 입력하세요",
+                            hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+                          ),
+                          style: WitHomeTheme.subtitle,
+                          maxLines: 1,
+                        ),
+                        SizedBox(height: 10),
+                        ],
+                      Container(
+                        height: 1,
+                        color: WitHomeTheme.wit_extraLightGrey,
+                      ),
+                      SizedBox(height: 10),
+                      if (bordTypeGbn == "UH")...[
+                        Text("후기 작성", style: WitHomeTheme.title),
+                      ] else ...[
+                        Text("내용", style: WitHomeTheme.title),
+                      ],
+                      TextField(
+                          controller: _contentController,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "내용을 입력하세요",
+                            hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+                          ),
+                          style: WitHomeTheme.subtitle,
+                          maxLines: null, // 자동 조절
+                          minLines: 15,
+                          keyboardType: TextInputType.multiline,
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false, // 배경 클릭으로 닫히지 않도록 설정
-                  builder: (BuildContext context) {
-                    return Center(
-                      child: CircularProgressIndicator(), // 프로그래스 바
-                    );
-                  },
-                );
-                await saveImages();
-                Navigator.of(context).pop(); // 프로그래스 바 닫기
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: WitHomeTheme.wit_lightBlue, // 옅은 녹색 배경
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: Text("작성", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
+            ),
+            Padding( // 버튼 주변에 가로 패딩 적용 및 상하 여백 추가
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (_images.length >= 5) {
+                        alertDialog.show(context: context, title:"알림", content: "이미지는 최대 5건\n입력 가능합니다.");
+                        return;
+                      }
+                      _showImagePickerOptions();
+                    },
+                    child: Container(
+                      width: 85,
+                      height: 85,
+                      decoration: BoxDecoration(
+                        color: WitHomeTheme.wit_white,
+                        border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray),
+                          SizedBox(height: 4),
+                          Text(
+                            '${_images.length}/5',
+                            style: WitHomeTheme.subtitle,
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          if (_images.isNotEmpty) ...[
+                            Row(
+                              children: _images.asMap().entries.map((entry) {
+                                int index = entry.key;
+                                var image = entry.value;
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        child: Image.file(
+                                          image,
+                                          width: 85,
+                                          height: 85,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: -7,
+                                        top: -7,
+                                        child: IconButton(
+                                          icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                          onPressed: () {
+                                            setState(() {
+                                              _images.removeAt(index);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                          if (widget.imageList != null && widget.imageList!.isNotEmpty) ...[
+                            Row(
+                              children: widget.imageList!.map((item) {
+                                var image = apiUrl + item["imagePath"];
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        child: Image.network(
+                                          image,
+                                          width: 85,
+                                          height: 85,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: -7,
+                                        top: -7,
+                                        child: IconButton(
+                                          icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                          onPressed: () {
+                                            setState(() {
+                                              fileDelInfo.add(item["imagePath"]);
+                                              widget.imageList!.remove(item);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding( // 버튼 주변에 가로 패딩 적용 및 상하 여백 추가
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+              child: SizedBox( // 버튼을 좌우 가득 채우도록 설정
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (BuildContext context) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    );
+                    await saveImages();
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: WitHomeTheme.wit_lightBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text("작성", style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
+                ),
+              ),
             ),
           ],
         ),
