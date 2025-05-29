@@ -376,89 +376,70 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                 children: [
                   SizedBox(height: 8),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start, // 수직 정렬을 위해 상단 정렬
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 사업자 이미지
-                      Container(
-                        width: 70,
-                        height: 70, // 이미지 높이 설정
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8), // 모서리 둥글게
-                        ),
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: storeImageList.isNotEmpty ? 1 : 0, // 리스트가 비어있지 않은 경우 1로 설정
-                          itemBuilder: (context, index) {
-                            if (storeImageList.isEmpty) {
-                              return Center(child: Text('이미지가 없습니다.')); // 이미지가 없을 때 표시할 위젯
-                            }
-                            return GestureDetector(
-                              onTap: () {
-                                // 클릭 시 ImageViewer로 이동
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ImageViewer(
-                                      imageUrls: storeImageList.map((item) => apiUrl + item["imagePath"]).toList(),
-                                      initialIndex: 0, // 첫 번째 이미지를 항상 표시
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                width: 70,
-                                height: 70,
-                                margin: EdgeInsets.only(right: 8), // 이미지 간격
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12), // 둥글게 처리
-                                  image: DecorationImage(
-                                    image: NetworkImage(apiUrl + storeImageList[0]["imagePath"]), // 첫 번째 이미지를 사용
-                                    fit: BoxFit.cover,
-                                  ),
+                      // 사업자 이미지 (단일 이미지)
+                      GestureDetector(
+                        onTap: () {
+                          final imagePath = sellerInfo?['storeImage'];
+                          if (imagePath != null && imagePath.isNotEmpty) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageViewer(
+                                  imageUrls: [apiUrl + imagePath],
+                                  initialIndex: 0,
                                 ),
                               ),
                             );
-                          },
+                          }
+                        },
+                        child: Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                              image: (sellerInfo?['storeImage'] != null && sellerInfo!['storeImage'].isNotEmpty)
+                                  ? NetworkImage(apiUrl + sellerInfo['storeImage'])
+                                  : const AssetImage('assets/images/profile1.png') as ImageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
-
                       ),
-                      SizedBox(width: 10), // 이미지와 판매자명 간격
+                      SizedBox(width: 10),
                       // 판매자명 및 인증 정보
                       Expanded(
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start, // 판매자명을 왼쪽 정렬
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // 판매자명
                             Text(
-                              sellerInfo?['storeName'] ?? '판매자명 없음', // null 체크 및 기본값 설정
+                              sellerInfo?['storeName'] ?? '판매자명 없음',
                               style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                             ),
-                            SizedBox(height: 8), // 사업자명과 인증 정보 간격
+                            SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding:
-                                  EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: WitHomeTheme.wit_white, // 초록색 배경
-                                    borderRadius: BorderRadius.circular(8), // 둥근 모서리
+                                    color: WitHomeTheme.wit_white,
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     sellerInfo?['bizCertificationNm'] ?? '사업자 인증 미완료',
-                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 10),                      ),
+                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 10),
+                                  ),
                                 ),
                                 SizedBox(width: 5),
                                 if (sellerInfo?['certificationYn'] == 'Y')
-                                  Image.asset(
-                                    'assets/images/인증완료.png', // 이미지 경로
-                                  ),
-                                SizedBox(width: 5), // 두 컨테이너 간격
-                                // rateFlag가 'Y'일 때만 'BEST 추천' 표시
+                                  Image.asset('assets/images/인증완료.png'),
+                                SizedBox(width: 5),
                                 if (sellerInfo?['rateFlag'] == 'Y')
-                                  Image.asset(
-                                    'assets/images/베스트 추천.png', // 이미지 경로
-                                  ),
+                                  Image.asset('assets/images/베스트 추천.png'),
                               ],
                             ),
                           ],
