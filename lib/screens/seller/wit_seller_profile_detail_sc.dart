@@ -523,8 +523,8 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                           onPressed: () {
                             int gongguCnt = 0;
                             // gongguCnt 값을 sellerInfo에서 받아온다고 가정
-                            if (sellerInfo != null && sellerInfo['gpCnt'] != null) {
-                              gongguCnt = int.tryParse(sellerInfo['gpCnt'].toString()) ?? 0;
+                            if (sellerInfo != null && sellerInfo['gongguCnt'] != null) {
+                              gongguCnt = int.tryParse(sellerInfo['gongguCnt'].toString()) ?? 0;
                             }
 
                             if (gongguCnt > 0) {
