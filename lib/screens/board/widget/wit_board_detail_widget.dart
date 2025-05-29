@@ -6,7 +6,6 @@ import 'package:witibju/screens/board/wit_board_write_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
 import '../../home/widgets/wit_home_widgets.dart';
-import '../../home/widgets/wit_home_widgets2.dart';
 import '../wit_board_report_sc.dart';
 
 // 타이틀 및 수정/삭제 영역
@@ -142,7 +141,7 @@ class UserInfo extends StatelessWidget {
       children: [
         CircleAvatar(
             radius: 20,
-            backgroundImage: proFlieImage.getImageProvider(boardDetailInfo["profileImg"]),
+            backgroundImage: proFlieImage.getImageProvider(boardDetailInfo["profileImg"] ?? ""),
         ),
         SizedBox(width: 15),
         Column(
@@ -291,7 +290,7 @@ class CommentList extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundImage: proFlieImage.getImageProvider(commentList[index]["profileImg"]),
+                backgroundImage: proFlieImage.getImageProvider(commentList[index]["profileImg"] ?? ""),
               ),
               SizedBox(width: 15),
               Expanded(
