@@ -9,6 +9,7 @@ import 'package:witibju/screens/seller/wit_seller_profile_insert_content_sc.dart
 import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
+import '../common/wit_ImageViewer_sc.dart';
 import '../home/wit_home_theme.dart';
 import 'dot_line.dart';
 
@@ -50,6 +51,37 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
   List<Map<String, String>> selectedServiceList = []; // 코드 저장용 리스트
 
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
+
+  /* 이미지추가 S */
+  List<File> _images = [];
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _images.add(File(pickedFile.path));
+      });
+    }
+  }
+
+  // [서비스] 이미지 저장
+  Future<void> saveImages() async {
+    // 이미지 확인
+    if (_images.isEmpty) {
+      // 이미지가 없으면 프로필 업데이트 호출
+      saveSellerProfile(null);
+    } else {
+      final fileInfo = await sendFilePostRequest("fileUpload", _images);
+      if (fileInfo == "FAIL") {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
+      } else {
+        // 파일 업로드 성공 후 프로필 업데이트 호출
+        saveSellerProfile(fileInfo);
+      }
+    }
+  }
 
   void showAsPeriodDialog(bool isAgreed, void Function(bool) onAgreed) {
     bool agreed = isAgreed; // 다이얼로그 내부에서 사용할 상태 변수
@@ -147,10 +179,13 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                                 SnackBar(
                                   content: Text(
                                     '체크박스를 선택해야 동의할 수 있습니다.',
-                                    style: TextStyle(fontSize: 12, color: Colors.white), // 흰색 글씨로 지정
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white), // 흰색 글씨로 지정
                                   ),
                                   backgroundColor: Colors.black87, // 어두운 배경
-                                  behavior: SnackBarBehavior.floating, // 떠있는 스타일
+                                  behavior:
+                                      SnackBarBehavior.floating, // 떠있는 스타일
                                 ),
                               );
                             }
@@ -429,6 +464,88 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                   style: WitHomeTheme.subtitle
                       .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
                 ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    '판매자프로필 사진 ',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                  Icon(
+                    Icons.star,
+                    color: Colors.red,
+                    size: 16,
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Container(
+                height: 120,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => _showImagePickerOptions(),
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          margin: EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            color: WitHomeTheme.wit_white,
+                            border: Border.all(
+                              width: 1,
+                              color: WitHomeTheme.wit_lightgray,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.add_a_photo,
+                            size: 40,
+                            color: WitHomeTheme.wit_gray,
+                          ),
+                          alignment: Alignment.center,
+                        ),
+                      ),
+
+                      // 선택한 이미지 리스트
+                      ..._images.asMap().entries.map((entry) {
+                        int index = entry.key;
+                        var image = entry.value;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: Image.file(
+                                  image,
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: IconButton(
+                                  icon: Icon(Icons.close,
+                                      color: WitHomeTheme.wit_red),
+                                  onPressed: () {
+                                    setState(() {
+                                      _images.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(height: 10),
               Row(
                 children: [
@@ -731,15 +848,11 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
   }
 
   void _submitProfile() {
-    String storeName = storeNameController.text;
+/*    String storeName = storeNameController.text;
     String serviceArea = selectedLocations.map((loc) => loc['cdNm']).join(', ');
-    String serviceItem = selectedServiceTypes.join(', ');
+    String serviceItem = selectedServiceTypes.join(', ');*/
 
-    saveSellerProfile(
-      storeName,
-      serviceArea,
-      serviceItem,
-    );
+    saveImages();
   }
 
   void _onNextPressed() {
@@ -791,11 +904,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
   }
 
   // [서비스]견적 정보 저장
-  Future<void> saveSellerProfile(
-    dynamic storeName,
-    dynamic serviceArea,
-    dynamic serviceItem,
-  ) async {
+  Future<void> saveSellerProfile(dynamic fileInfo) async {
     // REST ID
     String restId = "saveSellerProfile";
 
@@ -823,12 +932,13 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
 
     // PARAM
     final param = jsonEncode({
-      "storeName": storeName,
+      "storeName": storeNameController.text,
       "serviceArea": saveServiceAreaCd,
       "serviceItem": saveServiceItemCd,
       "asGbn": saveAsGbn,
       "regiLevel": "01",
-      "clerkNo": clerkNo
+      "clerkNo": clerkNo,
+      "fileInfo": fileInfo
     });
 
     // API 호출
@@ -856,5 +966,38 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
         SnackBar(content: Text("파트너 프로필 저장에 실패했습니다.")),
       );
     }
+  }
+
+  // [팝업] 갤러리, 카메라 팝업 호출
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: WitHomeTheme.wit_white,
+      builder: (BuildContext context) {
+        return Container(
+          height: 150,
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.photo),
+                title: Text('갤러리에서 선택', style: WitHomeTheme.title),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera),
+                title: Text('사진 찍기', style: WitHomeTheme.title),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

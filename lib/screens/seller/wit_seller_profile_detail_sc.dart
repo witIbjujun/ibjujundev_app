@@ -562,6 +562,10 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                                     child: Container(
                                       width: width * 0.9, // 화면 너비의 90% 사용 (사이드 여백 약간 남김)
                                       padding: const EdgeInsets.all(20),
+                                      decoration: BoxDecoration(
+                                        color: WitHomeTheme.wit_white, // 배경색 흰색 지정
+                                        borderRadius: BorderRadius.circular(12), // 둥근 모서리 적용
+                                      ),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment: CrossAxisAlignment.start,
