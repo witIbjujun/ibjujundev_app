@@ -652,7 +652,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   return Scaffold(
-                                    appBar: AppBar(
+                                    /*appBar: AppBar(
                                       backgroundColor: WitHomeTheme.wit_black,
                                       iconTheme: const IconThemeData(
                                           color: WitHomeTheme.wit_white),
@@ -661,7 +661,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                                         style: WitHomeTheme.title
                                             .copyWith(color: WitHomeTheme.wit_white),
                                       ),
-                                    ),
+                                    ),*/
                                     body: Container(
                                       child: EstimateRequestList(
                                           stat: '10', sllrNo: sllrNo.toString()), // 리스트를 추가
@@ -716,7 +716,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   return Scaffold(
-                                    appBar: AppBar(
+                                    /*appBar: AppBar(
                                       backgroundColor: WitHomeTheme.wit_black,
                                       iconTheme: const IconThemeData(
                                           color: WitHomeTheme.wit_white),
@@ -725,7 +725,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                                         style: WitHomeTheme.title
                                             .copyWith(color: WitHomeTheme.wit_white),
                                       ),
-                                    ),
+                                    ),*/
                                     body: Container(
                                       child: EstimateRequestList(
                                           stat: '', sllrNo: sllrNo.toString()), // 리스트를 추가

@@ -34,6 +34,16 @@ class EstimateRequestListState extends State<EstimateRequestList> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white, // 배경색을 흰색으로 설정
+      appBar: AppBar(
+        backgroundColor: WitHomeTheme.wit_black,
+        iconTheme: const IconThemeData(
+            color: WitHomeTheme.wit_white),
+        title: Text(
+          widget.stat == '10' ? '받은 요청' : '진행 중',
+          style: WitHomeTheme.title
+              .copyWith(color: WitHomeTheme.wit_white),
+        ),
+      ),
       body: isLoading // 로딩 상태에 따라 다르게 표시
           ? Center(child: CircularProgressIndicator()) // 로딩 인디케이터 표시
           : SingleChildScrollView( // 스크롤 가능하게 설정
