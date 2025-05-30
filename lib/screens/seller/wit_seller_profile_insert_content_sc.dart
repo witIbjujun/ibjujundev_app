@@ -176,6 +176,7 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
                 ),
                 padding: const EdgeInsets.all(0), // 내부 여백
                 child: TextField(
+                  maxLength: 4000,
                   style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                   controller: sllrContentController,
                   maxLines: 10,

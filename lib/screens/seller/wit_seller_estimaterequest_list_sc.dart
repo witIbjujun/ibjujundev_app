@@ -275,15 +275,17 @@ class EstimateItem extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ✅ itemName 텍스트 추가
                         Text(
-                          "요청품목 : " + itemName,
-                          style: textStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                          request['reqType'] ?? '',
+                          style: WitHomeTheme.title.copyWith(fontSize: 14),
                         ),
                         const SizedBox(height: 6), // 간격 추가
+                        // ✅ itemName 텍스트 추가
+                        Text(
+                          "[${request['itemName'] ?? ''}]",
+                          style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                        ),
+                        const SizedBox(height: 15), // 간격 추가
                         Text(
                           reqContents,
                           style: textStyle,

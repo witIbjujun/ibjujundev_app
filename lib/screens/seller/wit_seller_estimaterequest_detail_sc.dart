@@ -279,6 +279,17 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           // 왼쪽 정렬
                           children: [
+                            Text(
+                              estimateRequestInfoForSend['reqType'] ?? '',
+                              style: WitHomeTheme.title.copyWith(fontSize: 14),
+                            ),
+                            const SizedBox(height: 6), // 간격 추가
+                            // ✅ itemName 텍스트 추가
+                            Text(
+                              "[${estimateRequestInfoForSend['itemName'] ?? ''}]",
+                              style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                            ),
+                            const SizedBox(height: 15),
                             Align(
                               alignment: Alignment.centerLeft, // 왼쪽 정렬
                               child: Text(
@@ -422,6 +433,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: TextField(
+                          maxLength: 4000,
                           controller: estimateContentController,
                           style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
                           minLines: 3,
@@ -629,6 +641,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                         ),
                                         const SizedBox(height: 16),
                                         TextField(
+                                          maxLength: 1000,
                                           controller: endReasonController,
                                           maxLines: 3,
                                           decoration: const InputDecoration(
