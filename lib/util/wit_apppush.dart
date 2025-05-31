@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-class FirebaseMessageService {
+class FirebaseMessageService1 {
   /// FirebaseMessaging 인스턴스 초기화
   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 

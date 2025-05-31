@@ -4,20 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:witibju/screens/home/login/wit_naverLogin.dart';
 import 'package:witibju/screens/home/models/main_view_model.dart';
-// import 'package:witibju/screens/home/wit_home2.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/login/wit_kakaoLogin.dart';
-import 'package:witibju/screens/home/login/wit_kakaoLogin_home_sc.dart';
-import 'package:witibju/screens/result.dart';
-import 'package:witibju/screens/tosspayments_widget/widget_home.dart';
-// import 'package:witibju/util/wit_apppush.dart';
+import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
+import 'package:witibju/util/firebase_push_handler.dart';
 
 /// 백그라운드 메시지 처리 함수
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -27,6 +22,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 // 화면 재조회 설정 // RouteObserver 선언 (전역)
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
 
@@ -41,10 +37,11 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-
-
   // Firebase 초기화 추가
   await Firebase.initializeApp(); // Firebase 서비스를 사용하기 전에 반드시 초기화해야 함
+  // ✅ 푸시 초기화는 그 다음에!
+  FirebasePushHandler.initialize(); // 🔄 새로운 핸들러 초기화 호출
+
   // 날짜 형식 초기화
   await initializeDateFormatting('ko_KR', null);
   // Firebase Messaging 초기화
@@ -60,7 +57,7 @@ Future<void> main() async {
     sound: true,
   );
 
-  // 포그라운드 메시지 핸들러 등록
+  // 포그라운드 메시지 핸들러 등록 (앱이 실행중일때)
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print("포그라운드에서 메시지 수신: ${message.notification?.title}");
     print("내용: ${message.notification?.body}");
@@ -103,7 +100,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-
+      navigatorKey: navigatorKey, // ✅ 전역 navigatorKey 등록 App_pusH 선택시 이동을 윈한
       navigatorObservers: [routeObserver],
 
       // 앱 언어 설정

@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
-import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
+
 import 'package:witibju/screens/home/login/wit_user_login.dart';
 import 'package:witibju/screens/home/wit_company_detail_sc.dart';
 import 'package:witibju/screens/home/wit_compay_view_sc_.dart';
@@ -11,21 +11,13 @@ import 'package:witibju/screens/home/wit_gongu_request.dart';
 import 'package:witibju/screens/home/wit_home_get_estimate.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/screens/home/wit_estimate_detail.dart';
-import 'package:witibju/screens/home/wit_myprofile_sc.dart';
-import 'dart:convert';
-import '../../main.dart';
-import '../../util/wit_api_ut.dart';
-import '../../util/wit_apppush.dart';
+
+
 import '../board/wit_board_main_sc.dart';
-import '../chat/CustomChatScreen.dart';
-import '../checkList/wit_checkList_main_sc.dart';
-import '../preInspaction/wit_preInsp_main_sc.dart';
 import '../question/wit_question_main_sc.dart';
 import '../seller/wit_seller_profile_detail_sc.dart';
-import 'login/wit_user_loginStep.dart';
-import 'login/wit_user_loginStep1.dart';
+
 import 'models/main_view_model.dart';
-import 'login/wit_login_pop_home_sc.dart'; // 로그인 파송창 파일을 임포트
 import 'models/category.dart';
 import 'models/userInfo.dart';
 ///메인 홈
@@ -42,30 +34,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _selectedIndex = 2; // 기본으로 Home (1번 인덱스) 선택
 
   DateTime? _lastBackPressed;
+
   // SelectBox에 표시할 옵션 리스트
   Map<String, String> options = {};
   String selectedOption = ""; // 기본 선택된 옵션
   String? nickname; // 닉네임 값을 저장할 변수
   UserInfo? userInfo; // 사용자 정보를 저장할 변수
   final secureStorage = FlutterSecureStorage(); // Flutter Secure Storage 인스턴스
-  String  isLogined = "false";
+  String isLogined = "false";
 
 
   @override
   void initState() {
     super.initState();
-      setState(() {});
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final mainViewModel = Provider.of<MainViewModel>(context);
-    FirebaseMessageService.initialize(context);
+    // FirebaseMessageService.initialize(context);
 
     return WillPopScope( // 📆 2025.04.01 - WillPopScope로 감싸기
       onWillPop: () async {
         if (_lastBackPressed == null ||
-            DateTime.now().difference(_lastBackPressed!) > Duration(seconds: 2)) {
+            DateTime.now().difference(_lastBackPressed!) >
+                Duration(seconds: 2)) {
           _lastBackPressed = DateTime.now();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('뒤로 버튼을 한 번 더 누르시면 종료됩니다.')),
@@ -115,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ),
                           );
                         } else {
-                          _showLoginDialog(context);
+                          await LoginUtils.showLoginDialog(context);
                         }
                       },
                       icon: FutureBuilder<String?>( // 📦 FutureBuilder 그대로 유지
@@ -123,11 +117,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         builder: (context, snapshot) {
                           String aptName = snapshot.data ?? '';
                           return Row(
-                            mainAxisSize: MainAxisSize.min, // ✅ Row가 자식 크기에 맞게
-                            crossAxisAlignment: CrossAxisAlignment.center, // ✅ 세로 중앙 정렬
+                            mainAxisSize: MainAxisSize.min,
+                            // ✅ Row가 자식 크기에 맞게
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            // ✅ 세로 중앙 정렬
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(top: 2.0), // ✅ 미세 보정
+                                padding: const EdgeInsets.only(top: 2.0),
+                                // ✅ 미세 보정
                                 child: Image.asset(
                                   'assets/home/locationMain.png',
                                   width: 30,
@@ -170,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             ),
                           );
                         } else {
-                          _showLoginDialog(context);
+                          await LoginUtils.showLoginDialog(context);
                         }
                       },
                       icon: Image.asset(
@@ -194,8 +191,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: Column(
                       children: [
                         APTStatusWidget(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: MediaQuery.of(context).size.height * 0.23,
+                          width: MediaQuery
+                              .of(context)
+                              .size
+                              .width * 0.9,
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.23,
                         ),
                         const SizedBox(height: 6.0),
                         Container(
@@ -221,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         imageUrl: '/WIT/12345.png',
                                       );
                                     } else {
-                                      _showLoginDialog(context); // 로그인 화면으로 이동
+                                      await LoginUtils.showLoginDialog(context);
                                     }
                                   },
                                 ),
@@ -230,9 +233,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                   label: '가이드',
                                   onTap: () {
                                     Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                            Question(qustCd: 'Q10001'))
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Question(qustCd: 'Q10001'))
                                       //CustomChatScreen('S2025051200003', '3','userView')),
                                     );
                                   },
@@ -244,19 +247,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     // 2025-05-26: 로그인 체크 후 이동
                                     bool isLoggedIn = await checkLoginStatus();
                                     if (isLoggedIn) {
-                                      String aptNo = await secureStorage.read(key: 'mainAptNo') ?? '';
-                                      String mainAptNm = await secureStorage.read(key: 'mainAptNm') ?? '';
+                                      String aptNo = await secureStorage.read(
+                                          key: 'mainAptNo') ?? '';
+                                      String mainAptNm = await secureStorage
+                                          .read(key: 'mainAptNm') ?? '';
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) => Board(
-                                            bordType: "CM01",
-                                            aptNo: aptNo,
-                                            bordTitle: mainAptNm,
-                                          ),
+                                          builder: (context) =>
+                                              Board(
+                                                bordType: "CM01",
+                                                aptNo: aptNo,
+                                                bordTitle: mainAptNm,
+                                              ),
                                         ),
                                       );
                                     } else {
-                                      _showLoginDialog(context); // 로그인 유도
+                                      await LoginUtils.showLoginDialog(context);
                                     }
                                   },
                                 ),
@@ -303,18 +309,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         ],
                                         onOptionSelected: (selectedOption) {
                                           if (selectedOption == 'Simple 인테리어') {
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('S')));
-                                          } else if (selectedOption == 'Standard 인테리어') {
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('T')));
-                                          } else if (selectedOption == 'Premium 인테리어') {
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('P')));
-                                          } else if (selectedOption == 'My Choice 인테리어') {
-                                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => getEstimate('A')));
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        getEstimate('S')));
+                                          } else if (selectedOption ==
+                                              'Standard 인테리어') {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        getEstimate('T')));
+                                          } else if (selectedOption ==
+                                              'Premium 인테리어') {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        getEstimate('P')));
+                                          } else if (selectedOption ==
+                                              'My Choice 인테리어') {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        getEstimate('A')));
                                           }
                                         },
                                       );
                                     } else {
-                                      _showLoginDialog(context); // 로그인 화면으로 이동
+                                      await LoginUtils.showLoginDialog(context);
                                     }
                                   },
                                 ),
@@ -332,7 +353,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                         ),
                                       );
                                     } else {
-                                      _showLoginDialog(context); // 로그인 화면으로 이동
+                                      await LoginUtils.showLoginDialog(context);
                                     }
                                   },
                                 ),
@@ -344,15 +365,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0),
                             child: Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width * 0.9,
                               padding: const EdgeInsets.all(12.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: [
                                       Text(
                                         "견적서비스",
@@ -441,7 +467,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   /// 최하단 카테고리 리스트 (Popular Course)
   Widget getPopularCourseUI() {
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8.0), // 좌우만 여백
 
@@ -459,12 +484,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   print("✅ 클릭됨: ${category.categoryNm} 이동 중...");
                   moveTo(category); // 로그인 상태일 때만 이동
                 } else {
-                  _showLoginDialog(context); // 로그인 다이얼로그 표시
+                  await LoginUtils.showLoginDialog(context);
                 }
               },
             ),
           ),
-         /// const SizedBox(height: 4),
+
+          /// const SizedBox(height: 4),
         ],
       ),
     );
@@ -474,56 +500,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void moveTo(Category category) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => DetailCompany(title: category.categoryNm, categoryId: category.categoryId),
+        builder: (context) =>
+            DetailCompany(
+                title: category.categoryNm, categoryId: category.categoryId),
       ),
     );
   }
 
   Widget getCommunityTabs() {
     // 2025-01-16: TabBar 제거, Board 직접 호출
-    return Board(bordType: "UH01");// '업체후기' 화면만 표시
+    return Board(bordType: "UH01"); // '업체후기' 화면만 표시
   }
 
 
-  // 🔹 로그인 후 사용자 정보를 AlertDialog로 표시
-  void _showAlertDialog({
-    required BuildContext context,
-    required String title,
-    required String content,
-  }) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("확인"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /**
-   * 로그인 화면이동
-   */
-  // 2025-04-22: Dialog 내부 높이 제한 문제 해결을 위해 UnconstrainedBox 적용
-  void _showLoginDialog(BuildContext parentContext) async {
-    bool isLoggedIn = await checkLoginStatus();
-    if (!isLoggedIn) {
-      // ✅ 기존의 Dialog를 띄우는 방식 삭제하고 직접 페이지 이동
-      Navigator.push(
-        parentContext,
-        MaterialPageRoute(
-          builder: (context) => WitUserLoginStep(),
-        ),
-      );
-    }
-  }
 }

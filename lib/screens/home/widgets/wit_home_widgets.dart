@@ -9,6 +9,8 @@ import '../../../util/wit_code_ut.dart';
 import '../../checkList/wit_checkList_main_sc.dart';
 import '../../common/wit_common_util.dart';
 import '../../question/wit_question_main_sc.dart';
+import '../login/wit_user_login.dart';
+import '../login/wit_user_loginStep.dart';
 import '../models/requestInfo.dart';
 import '../wit_home_theme.dart'; // PreInspaction 화면 import
 
@@ -535,6 +537,22 @@ class FormatUtils {
   }
 }
 
+/**
+ * 로그인 공통 유틸
+ */
+class LoginUtils {
+  /// 로그인 여부 확인 후 로그인 페이지로 이동하는 공통 함수
+  static Future<void> showLoginDialog(BuildContext context) async {
+    bool isLoggedIn = await checkLoginStatus(); // SecureStorage에서 상태 확인
+    if (!isLoggedIn) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => WitUserLoginStep()),
+      );
+    }
+  }
+
+}
 
 
 class DialogUtils {
@@ -802,8 +820,6 @@ class DialogUtils {
     );
   }
 
-
-
   /// ✅ **확인만 있는 iOS 스타일 알림창**
   static Future<void> showIPhoneAlertDialog({
     required BuildContext context,
@@ -911,6 +927,9 @@ class DialogUtils {
   }
 }
 
+/**
+ * 프로파일 이미지
+ */
 class proFlieImage {
   /// 🔹 이미지 경로에 맞는 ImageProvider를 반환
   static ImageProvider getImageProvider(String imagePath) {

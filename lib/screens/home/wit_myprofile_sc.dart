@@ -241,7 +241,7 @@ class _MyProfileState extends State<MyProfile> {
                 GestureDetector(
                   onTap: () async {
                     final viewModel = Provider.of<MainViewModel>(context, listen: false); // 2025-04-26: 기존 Provider에서 가져옴
-                    await viewModel.getUserInfoProxy(context, '72091587', 'C');
+                    await viewModel.getUserInfoProxy(context, '1', 'C');
 
                     // 팝업 등 필요한 추가 동작이 있다면 여기에 작성 가능
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -292,7 +292,7 @@ class _MyProfileState extends State<MyProfile> {
                 GestureDetector(
                   onTap: () async {
                     final viewModel = Provider.of<MainViewModel>(context, listen: false); // 2025-04-26: 기존 Provider에서 가져옴
-                    await viewModel.getUserInfoProxy(context, '72091588', 'C');
+                    await viewModel.getUserInfoProxy(context, '2', 'C');
 
                     // 팝업 등 필요한 추가 동작이 있다면 여기에 작성 가능
                     ScaffoldMessenger.of(context).showSnackBar(

@@ -5,6 +5,7 @@ import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
 import '../chat/CustomChatScreen.dart';
+import '../seller/wit_seller_profile_child_view_sc.dart';
 import '../seller/wit_seller_profile_view_sc.dart';
 import 'models/requestInfo.dart';
 
@@ -220,10 +221,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       bottomNavigationBar: _selectedRequest != null
           ? SafeArea(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0), // 🔹 높이 줄임
+          padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 1.0), // 🔹 높이 줄임
           color: Colors.white,
           child: SizedBox(
-            height: 43,
+            height: 48,
             child: ElevatedButton(
               onPressed: _selectedRequest!.reqState != '10'
                   ? () {
@@ -257,7 +258,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                           : '메시지로 진행하기',        // 🔹 그 외는 기본 문구
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -486,6 +487,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
           /// 🔹 밑에 estimateContents 표시
           SizedBox(height: 10),
 
+          // 견적 상세 설명
           Text(
             request.estimateContents,
             style: const TextStyle(fontSize: 14, height: 1.5),
@@ -493,65 +495,13 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
           SizedBox(height: 10),
 
-          /// 🔹 진행 요청 버튼 + 메시지 버튼
-          /*SizedBox(
-            width: 400,
-            height: 48,
-            child: ElevatedButton(
-              onPressed: request.reqState != '10'
-                  //? () => _handleRequestAction(request)
-                  ? () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => CustomChatScreen(
-                              request.reqNo,
-                              request.seq,
-                              "userView",
-                            ),
-                          ),
-                        );
-                      }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 48.0),
-                    child: Text(
-                      '메시지로 진행하기',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 16.0),
-                    width: 36,
-                    height: 27,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        'assets/home/message.png',
-                        width: 36,
-                        height: 27,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),*/
+          // 👉 아래처럼 수정 (2025-05-31)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            //child: SellerProfileContent(sllrNo: request.companyId),
+            child: SellerProfileChildView(sllrNo: request.companyId, appbarYn: "N"),
+
+          ),
         ],
       ),
     );
