@@ -365,7 +365,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(top: 0.0, bottom: 0.0, left: 16.0, right: 16.0),
         child: Column(
           children: [
             // 첫 번째 영역: 사업자 이미지 및 이름, 인증 정보
