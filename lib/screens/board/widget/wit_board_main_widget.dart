@@ -6,6 +6,8 @@ import 'package:witibju/screens/common/wit_common_widget.dart';
 import 'package:witibju/screens/board//wit_board_detail_sc.dart';
 
 import '../../common/wit_ImageViewer_sc.dart';
+import '../../home/widgets/wit_home_widgets.dart';
+import '../../seller/wit_seller_estimaterequest_detail_sc.dart';
 import '../wit_board_report_sc.dart';
 
 class CustomSearchAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -118,6 +120,7 @@ class BoardListView extends StatelessWidget {
   final String bordTypeGbn;
   final String loginSllrNo;
   final bool emptyDataFlag;
+  final Function saveCommentInfo;
 
   BoardListView({
     required this.boardList,
@@ -127,10 +130,15 @@ class BoardListView extends StatelessWidget {
     required this.bordTypeGbn,
     required this.loginSllrNo,
     required this.emptyDataFlag,
+    required this.saveCommentInfo,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    // 댓글 컨트롤러
+    final TextEditingController replyController = TextEditingController();
+
     return SafeArea(
       child: Scrollbar(
         thumbVisibility: true,
@@ -342,16 +350,9 @@ class BoardListView extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(width: 5),
-                                    Container(
-                                      width: 50,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: AssetImage('assets/images/profile1.png'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundImage: proFlieImage.getImageProvider(boardInfo["profileImg"] ?? ""),
                                     ),
                                     SizedBox(width: 10),
                                     Expanded(
@@ -378,7 +379,10 @@ class BoardListView extends StatelessWidget {
                                                   iconSize: 25.0,
                                                   onSelected: (value) async {
                                                     if (value == "Detail") {
-
+                                                      await Navigator.push(
+                                                        context,
+                                                        SlideRoute(page: EstimateRequestDetail(estNo : boardInfo["reqNo"], seq: "1", sllrNo: boardInfo["sllrNo"])),
+                                                      );
                                                     } else if (value == 'reply') {
                                                       showModalBottomSheet(
                                                         context: context,
@@ -413,12 +417,12 @@ class BoardListView extends StatelessWidget {
                                                           child: Text('상세보기', style: WitHomeTheme.subtitle),
                                                         ),
                                                       ],
-                                                      if(boardInfo["sllrNo"] == loginSllrNo && boardInfo['commentCnt'] == 0)...[
+                                                      /*if(boardInfo["sllrNo"] == loginSllrNo && boardInfo['commentCnt'] == 0)...[
                                                         PopupMenuItem<String>(
                                                           value: 'reply',
                                                           child: Text('댓글작성', style: WitHomeTheme.subtitle),
                                                         ),
-                                                      ],
+                                                      ],*/
                                                       if(boardInfo["sllrNo"] != loginSllrNo)...[
                                                         PopupMenuItem<String>(
                                                           value: 'report',
@@ -503,8 +507,7 @@ class BoardListView extends StatelessWidget {
                                       ),
                                     ],
                                     SizedBox(height: 10),
-
-                                    if(boardInfo['commentCnt'] > 0)...[
+                                    if (boardInfo['commentCnt'] > 0)...[
                                       Container(
                                         padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
@@ -531,10 +534,14 @@ class BoardListView extends StatelessWidget {
                                             ),
                                             SizedBox(height: 10),
                                             Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  boardInfo['cmmtContent'].trim(),
-                                                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                                Expanded(
+                                                  child: Text(
+                                                    boardInfo['cmmtContent'].trim(),
+                                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                                                    softWrap: true,
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -542,6 +549,62 @@ class BoardListView extends StatelessWidget {
                                         ),
                                       ),
                                       SizedBox(height: 10),
+                                    ] else if (boardInfo["sllrNo"] == loginSllrNo)... [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: WitHomeTheme.wit_white, // 배경색
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(10.0),
+                                            bottom: Radius.circular(10.0),
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.fromLTRB(10, 2, 5, 2),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                children: [
+                                                  Expanded(
+                                                    child: TextField(
+                                                      controller: replyController,
+                                                      decoration: InputDecoration(
+                                                        hintText: "후기 댓글을 입력해주세요",
+                                                        hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
+                                                        border: InputBorder.none, // 밑줄 제거
+                                                        focusedBorder: InputBorder.none,
+                                                        enabledBorder: InputBorder.none,
+                                                        contentPadding: EdgeInsets.symmetric(vertical: 12.0),
+                                                      ),
+                                                      style: WitHomeTheme.subtitle,
+                                                      maxLines: null,
+                                                      keyboardType: TextInputType.multiline,
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    style: TextButton.styleFrom(
+                                                      backgroundColor: WitHomeTheme.wit_lightBlue,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(10),
+                                                      ),
+                                                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                                      minimumSize: Size(0, 40),
+                                                    ),
+                                                    onPressed: () async {
+                                                      saveCommentInfo(boardInfo['bordNo'], replyController.text);
+                                                    },
+                                                    child: Text(
+                                                      "등록",
+                                                      style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold, color: WitHomeTheme.white),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ],
                                 ),

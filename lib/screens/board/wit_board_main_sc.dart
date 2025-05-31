@@ -83,8 +83,6 @@ class BoardState extends State<Board> {
   @override
   Widget build(BuildContext context) {
 
-    print(bordTypeGbn);
-
     return Scaffold(
       appBar: widget.appBarFlag ? CustomSearchAppBar(
         searchController: _searchController,
@@ -102,6 +100,7 @@ class BoardState extends State<Board> {
             bordTypeGbn: bordTypeGbn,
             loginSllrNo: loginSllrNo,
             emptyDataFlag: emptyDataFlag,
+            saveCommentInfo: saveCommentInfo,
           ),
         ),
       ),
@@ -203,9 +202,9 @@ class BoardState extends State<Board> {
       "bordType": widget.bordType,
       //"bordKey": widget.bordKey,
       "aptNo": widget.aptNo,
-      "sllNo": widget.reqNo,
-      "ctgrNo": widget.sllrNo,
-      "reqrId": widget.ctgrId,
+      "sllrNo": widget.sllrNo,
+      "reqNo": widget.reqNo,
+      "ctgrId": widget.ctgrId,
       "creUserId": widget.creUserId,
       "searchText" : _searchController.text.trim(),
       "currentPage": (currentPage - 1) * pageSize,
@@ -229,6 +228,50 @@ class BoardState extends State<Board> {
       }
     });
 
+  }
+
+  // 댓글 저장
+  Future<void> saveCommentInfo(String bordNo, String cmmtContent) async {
+
+    // 로그인 사번
+    String? loginClerkNo = await secureStorage.read(key: 'clerkNo');
+
+    if (cmmtContent.isEmpty) {
+      alertDialog.show(context: context, title: "알림", content: "댓글을 입력해주세요.");
+      return;
+    }
+
+    bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "후기 댓글을 등록 하시겠습니까?");
+
+    if (isConfirmed == true) {
+
+      // 댓글 내용이 비어있지 않은 경우에만 추가
+      // REST ID
+      String restId = "saveCommentInfo";
+
+      // PARAM
+      final param = jsonEncode({
+        "bordNo": bordNo,
+        "cmmtContent": cmmtContent,
+        "creUser": loginClerkNo,
+      });
+
+      // API 호출 (댓글 추가)
+      final _commentList = await sendPostRequest(restId, param);
+
+      // 팝업 닫기
+      setState(() {
+
+        if (_commentList.length > 0) {
+          alertDialog.show(context: context, title: "알림", content: "저장 성공 하였습니다.");
+        } else {
+          alertDialog.show(context: context, title: "알림", content: "저장 실패 하였습니다.");
+        }
+
+        refreshBoardList();
+      });
+
+    }
   }
 
   // [이벤트] 스크롤 이벤트
