@@ -121,7 +121,8 @@ class SellerProfileViewState extends State<SellerProfileView> {
 
     final param = jsonEncode({
       "bordType": 'UH01',
-      "bordKey": widget.sllrNo.toString(),
+      // "bordKey": widget.sllrNo.toString(),
+      "sllrNo": widget.sllrNo.toString(),
       "searchText": '',
       "currentPage": (currentPage - 1) * pageSize,
       "pageSize": pageSize,
@@ -807,7 +808,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
 
       // 결과 셋팅
       setState(() {
-        storeImageList = _storeImageList;
+        storeImageList = _storeImageList.where((item) => item['bizCd']?.toString() == 'SR01').toList();
       });
     }
 

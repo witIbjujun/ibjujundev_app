@@ -122,7 +122,8 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
 
     final param = jsonEncode({
       "bordType": 'UH01',
-      "bordKey": widget.sllrNo.toString(),
+      // "bordKey": widget.sllrNo.toString(),
+      "sllrNo": widget.sllrNo.toString(),
       "searchText": '',
       "currentPage": (currentPage - 1) * pageSize,
       "pageSize": pageSize,
@@ -365,7 +366,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(top: 0.0, bottom: 0.0, left: 16.0, right: 16.0),
         child: Column(
           children: [
             // 첫 번째 영역: 사업자 이미지 및 이름, 인증 정보
@@ -549,7 +550,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
               ),
             ),
             SizedBox(height: 8),
-            if (widget.appbarYn == "Y") ...[ // ... 연산자를 사용하여 위젯 리스트를 펼침
+            //if (widget.appbarYn == "Y") ...[ // ... 연산자를 사용하여 위젯 리스트를 펼침
               Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -756,7 +757,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                 ),
               ),
             ],
-          ],
+          //],
         )
 
         //    ),
@@ -814,7 +815,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
 
       // 결과 셋팅
       setState(() {
-        storeImageList = _storeImageList;
+        storeImageList = _storeImageList.where((item) => item['bizCd']?.toString() == 'SR01').toList();
       });
     }
   }
