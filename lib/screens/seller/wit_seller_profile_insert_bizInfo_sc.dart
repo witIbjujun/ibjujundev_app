@@ -15,6 +15,7 @@ import 'package:kpostal/kpostal.dart';
 import '../../util/wit_code_ut.dart';
 import '../board/wit_board_detail_sc.dart';
 import '../common/wit_ImageViewer_sc.dart';
+import '../common/wit_common_widget.dart';
 import '../home/wit_home_theme.dart';
 
 class SellerProfileInsertBizInfo extends StatefulWidget {
@@ -47,6 +48,7 @@ class SellerProfileInsertBizInfoState
   List<dynamic> boardDetailImageList = [];
   List<dynamic> bizImageList = [];
   String buttonText = "인증요청";
+  List<String> fileDelInfo = [];
 
   final _firstController = TextEditingController();
   final _secondController = TextEditingController();
@@ -207,7 +209,22 @@ class SellerProfileInsertBizInfoState
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _images2.add(File(pickedFile.path));
+        if (_images2.length < 1) {
+          _images2.add(File(pickedFile.path));
+        }
+      });
+    }
+  }
+
+  Future<void> _pickMultiImages() async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        for (final xfile in pickedFiles) {
+          if (_images2.length < 1) {
+            _images2.add(File(xfile.path));
+          }
+        }
       });
     }
   }
@@ -722,103 +739,126 @@ class SellerProfileInsertBizInfoState
               SizedBox(
                 height: 10,
               ),
-              Container(
-                height: 120, // 높이 설정
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      // 카메라 아이콘
-                      GestureDetector(
-                        onTap: () => _showImagePickerOptions2(),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          margin: EdgeInsets.only(right: 8),
-                          // 이미지 간격
-                          decoration: BoxDecoration(
-                            color: WitHomeTheme.wit_white,
-                            border: Border.all(
-                                width: 1, color: WitHomeTheme.wit_lightgray),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(Icons.add_a_photo,
-                              size: 40, color: WitHomeTheme.wit_gray),
-                          // 사진기 아이콘
-                          alignment: Alignment.center,
+              Padding( // 버튼 주변에 가로 패딩 적용 및 상하 여백 추가
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (_images2.length >= 1) {
+                          alertDialog.show(context: context, title:"알림", content: "이미지는 최대 1건\n입력 가능합니다.");
+                          return;
+                        }
+                        _showImagePickerOptions2();
+                      },
+                      child: Container(
+                        width: 85,
+                        height: 85,
+                        decoration: BoxDecoration(
+                          color: WitHomeTheme.wit_white,
+                          border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      // 등록된 이미지 리스트
-                      ...bizImageList.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        return GestureDetector(
-                          onTap: () {
-                            // 클릭 시 ImageViewer로 이동
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ImageViewer(
-                                  imageUrls: bizImageList
-                                      .map((item) => apiUrl + item["imagePath"])
-                                      .toList(),
-                                  initialIndex: index, // 클릭한 이미지 인덱스 전달
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            width: 120,
-                            height: 120,
-                            margin: EdgeInsets.only(right: 8), // 이미지 간격
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12), // 둥글게 처리
-                              image: DecorationImage(
-                                image: NetworkImage(
-                                    apiUrl + bizImageList[index]["imagePath"]),
-                                fit: BoxFit.cover,
-                              ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray),
+                            SizedBox(height: 4),
+                            Text(
+                              '${_images2.length}/1',
+                              style: WitHomeTheme.subtitle,
                             ),
-                          ),
-                        );
-                      }).toList(),
-                      // 선택한 이미지 리스트
-                      ..._images2.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        var image = entry.value;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12.0),
-                                // 원하는 둥글기 설정
-                                child: Image.file(
-                                  image,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover, // 이미지 비율 유지
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: IconButton(
-                                  icon: Icon(Icons.close,
-                                      color: WitHomeTheme.wit_red),
-                                  // X 아이콘
-                                  onPressed: () {
-                                    setState(() {
-                                      _images2.removeAt(index); // 이미지 삭제
-                                    });
-                                  },
-                                ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            if (_images2.isNotEmpty) ...[
+                              Row(
+                                children: _images2.asMap().entries.map((entry) {
+                                  int index = entry.key;
+                                  var image = entry.value;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                          child: Image.file(
+                                            image,
+                                            width: 85,
+                                            height: 85,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Positioned(
+                                          right: -7,
+                                          top: -7,
+                                          child: IconButton(
+                                            icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                            onPressed: () {
+                                              setState(() {
+                                                _images2.removeAt(index);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ],
-                          ),
-                        );
-                      }).toList(),
-                    ],
-                  ),
+                            if (bizImageList != null && bizImageList!.isNotEmpty) ...[
+                              Row(
+                                children: bizImageList!.map((item) {
+                                  var image = apiUrl + item["imagePath"];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                          child: Image.network(
+                                            image,
+                                            width: 85,
+                                            height: 85,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Positioned(
+                                          right: -7,
+                                          top: -7,
+                                          child: IconButton(
+                                            icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                            onPressed: () {
+                                              setState(() {
+                                                fileDelInfo.add(item["imagePath"]);
+                                                bizImageList!.remove(item);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -1021,7 +1061,6 @@ class SellerProfileInsertBizInfoState
   void _showImagePickerOptions2() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: WitHomeTheme.wit_white,
       builder: (BuildContext context) {
         return Container(
           height: 150,
@@ -1029,15 +1068,15 @@ class SellerProfileInsertBizInfoState
             children: [
               ListTile(
                 leading: Icon(Icons.photo),
-                title: Text('갤러리에서 선택', style: WitHomeTheme.title),
+                title: Text('갤러리에서 선택'),
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
+                  _pickMultiImages();
                   Navigator.pop(context);
                 },
               ),
               ListTile(
                 leading: Icon(Icons.camera),
-                title: Text('사진 찍기', style: WitHomeTheme.title),
+                title: Text('사진 찍기'),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.pop(context);

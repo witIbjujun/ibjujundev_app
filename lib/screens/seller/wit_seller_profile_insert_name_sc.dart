@@ -10,6 +10,7 @@ import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
 import '../common/wit_ImageViewer_sc.dart';
+import '../common/wit_common_widget.dart';
 import '../home/wit_home_theme.dart';
 import 'dot_line.dart';
 
@@ -60,7 +61,22 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _images.add(File(pickedFile.path));
+        if (_images.length < 1) {
+          _images.add(File(pickedFile.path));
+        }
+      });
+    }
+  }
+
+  Future<void> _pickMultiImages(ImageSource gallery) async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        for (final xfile in pickedFiles) {
+          if (_images.length < 1) {
+            _images.add(File(xfile.path));
+          }
+        }
       });
     }
   }
@@ -479,73 +495,93 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                 ],
               ),
               SizedBox(height: 8),
-              Container(
-                height: 120,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => _showImagePickerOptions(),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          margin: EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: WitHomeTheme.wit_white,
-                            border: Border.all(
-                              width: 1,
-                              color: WitHomeTheme.wit_lightgray,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.add_a_photo,
-                            size: 40,
-                            color: WitHomeTheme.wit_gray,
-                          ),
-                          alignment: Alignment.center,
+              Padding( // 버튼 주변에 가로 패딩 적용 및 상하 여백 추가
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (_images.length >= 1) {
+                          alertDialog.show(context: context, title:"알림", content: "이미지는 최대 1건\n입력 가능합니다.");
+                          return;
+                        }
+                        _showImagePickerOptions();
+                      },
+                      child: Container(
+                        width: 85,
+                        height: 85,
+                        decoration: BoxDecoration(
+                          color: WitHomeTheme.wit_white,
+                          border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                          borderRadius: BorderRadius.circular(12),
                         ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray),
+                            SizedBox(height: 4),
+                            Text(
+                              '${_images.length}/1',
+                              style: WitHomeTheme.subtitle,
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
                       ),
-
-                      // 선택한 이미지 리스트
-                      ..._images.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        var image = entry.value;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12.0),
-                                child: Image.file(
-                                  image,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: IconButton(
-                                  icon: Icon(Icons.close,
-                                      color: WitHomeTheme.wit_red),
-                                  onPressed: () {
-                                    setState(() {
-                                      _images.removeAt(index);
-                                    });
-                                  },
-                                ),
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            if (_images.isNotEmpty) ...[
+                              Row(
+                                children: _images.asMap().entries.map((entry) {
+                                  int index = entry.key;
+                                  var image = entry.value;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                          child: Image.file(
+                                            image,
+                                            width: 85,
+                                            height: 85,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Positioned(
+                                          right: -7,
+                                          top: -7,
+                                          child: IconButton(
+                                            icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                            onPressed: () {
+                                              setState(() {
+                                                _images.removeAt(index);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ],
-                          ),
-                        );
-                      }).toList(),
-                    ],
-                  ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
               SizedBox(height: 10),
               Row(
                 children: [
@@ -792,11 +828,19 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                             deleteIcon: Icon(Icons.close),
                             backgroundColor: WitHomeTheme.wit_white,
                             // 배경색을 하얀색으로 설정
-                            onDeleted: () {
-                              setState(() {
-                                selectedServiceWithAsPeriod.remove(service);
-                              });
-                            },
+                              onDeleted: () {
+                                setState(() {
+                                  // UI에서 해당 항목 삭제
+                                  selectedServiceWithAsPeriod.remove(service);
+
+                                  // selectedServiceList에서도 해당 항목 삭제
+                                  selectedServiceList.removeWhere((item) {
+                                    // 삭제하려는 서비스명과 매칭되는 항목 삭제
+                                    // combinedDisplay와 매칭되는 항목을 삭제
+                                    return '${item['categoryId']}/${item['asCd']}' == service;
+                                  });
+                                });
+                              }
                           ),
                         ))
                     .toList(),
@@ -884,9 +928,19 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
 
     if (isStoreNameValid && isServiceAreaValid && isServiceTypeValid) {
       // AS 기간 중 03이 아닌 항목이 있는지 체크
-      bool needAgreement = selectedServiceList
-          .any((item) => item['asCd'] != null && item['asCd'] != '03');
+      /*bool needAgreement = selectedServiceList
+          .any((item) => item['asCd'] != null && item['asCd'] != '03');*/
 
+      print("selectedServiceList ::: " + selectedServiceList.toString());
+
+      bool needAgreement = selectedServiceList.any((item) {
+        print("asCd ::: " + (item['asCd'] ?? 'null'));
+        return item['asCd'] != null && item['asCd'] != '03';
+      });
+
+      print("needAgreement ::: " + needAgreement.toString());
+
+      print("needAgreement ::: " + needAgreement.toString());
       if (needAgreement) {
         showAsPeriodDialog(_isAgreed, (bool agreed) {
           setState(() {
@@ -982,7 +1036,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
                 leading: Icon(Icons.photo),
                 title: Text('갤러리에서 선택', style: WitHomeTheme.title),
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
+                  _pickMultiImages(ImageSource.gallery);
                   Navigator.pop(context);
                 },
               ),

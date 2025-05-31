@@ -7,6 +7,7 @@ import '../../util/wit_api_ut.dart';
 import '../../util/wit_code_ut.dart';
 import '../board/wit_board_detail_sc.dart';
 import '../common/wit_ImageViewer_sc.dart';
+import '../common/wit_common_widget.dart';
 import '../home/wit_home_theme.dart';
 
 class SellerProfileInsertContents extends StatefulWidget {
@@ -25,6 +26,8 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
   TextEditingController sllrImageController = TextEditingController();
   String errorMessage = ''; // 판매자명 오류 메시지 변수
   List<dynamic> bizImageList = [];
+  List<String> fileDelInfo = [];
+
 
   @override
   void initState() {
@@ -94,20 +97,26 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
   List<File> _images = [];
   final ImagePicker _picker = ImagePicker();
 
-  /*Future<void> _pickImages(ImageSource source) async {
-    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
-    if (pickedFiles != null) {
-      setState(() {
-        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
-      });
-    }
-  }*/
-
   Future<void> _pickImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _images.add(File(pickedFile.path));
+        if (_images.length < 5) {
+          _images.add(File(pickedFile.path));
+        }
+      });
+    }
+  }
+
+  Future<void> _pickMultiImages() async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        for (final xfile in pickedFiles) {
+          if (_images.length < 5) {
+            _images.add(File(xfile.path));
+          }
+        }
       });
     }
   }
@@ -200,111 +209,129 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
                 ),
 
               SizedBox(height: 16),
-              Container(
-                height: 120, // 높이 설정
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      // 카메라 아이콘
-                      GestureDetector(
-                        onTap: () => _showImagePickerOptions(),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          margin: EdgeInsets.only(right: 8), // 이미지 간격
-                          decoration: BoxDecoration(
-                            color: WitHomeTheme.wit_white,
-                            border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray), // 사진기 아이콘
-                          alignment: Alignment.center,
+              Padding( // 버튼 주변에 가로 패딩 적용 및 상하 여백 추가
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (_images.length >= 10) {
+                          alertDialog.show(context: context, title:"알림", content: "이미지는 최대 10건\n입력 가능합니다.");
+                          return;
+                        }
+                        _showImagePickerOptions();
+                      },
+                      child: Container(
+                        width: 85,
+                        height: 85,
+                        decoration: BoxDecoration(
+                          color: WitHomeTheme.wit_white,
+                          border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      // 등록된 이미지 리스트
-                      ...boardDetailImageList.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        return GestureDetector(
-                          onTap: () {
-                            // 클릭 시 ImageViewer로 이동
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ImageViewer(
-                                  imageUrls: boardDetailImageList.map((item) => apiUrl + item["imagePath"]).toList(),
-                                  initialIndex: index, // 클릭한 이미지 인덱스 전달
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            width: 120,
-                            height: 120,
-                            margin: EdgeInsets.only(right: 8), // 이미지 간격
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12), // 둥글게 처리
-                              image: DecorationImage(
-                                image: NetworkImage(apiUrl + boardDetailImageList[index]["imagePath"]),
-                                fit: BoxFit.cover,
-                              ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray),
+                            SizedBox(height: 4),
+                            Text(
+                              '${_images.length}/5',
+                              style: WitHomeTheme.subtitle,
                             ),
-                          ),
-                        );
-                      }).toList(),
-                      // 선택한 이미지 리스트
-                      ..._images.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        var image = entry.value;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0), // 이미지 간격
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12.0), // 원하는 둥글기 설정
-                                child: Image.file(
-                                  image,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover, // 이미지 비율 유지
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                top: 0,
-                                child: IconButton(
-                                  icon: Icon(Icons.close, color: WitHomeTheme.wit_red), // X 아이콘
-                                  onPressed: () {
-                                    setState(() {
-                                      _images.removeAt(index); // 이미지 삭제
-                                    });
-                                  },
-                                ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                      ),
+                    ),
+                    SizedBox(width: 15),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            if (_images.isNotEmpty) ...[
+                              Row(
+                                children: _images.asMap().entries.map((entry) {
+                                  int index = entry.key;
+                                  var image = entry.value;
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                          child: Image.file(
+                                            image,
+                                            width: 85,
+                                            height: 85,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Positioned(
+                                          right: -7,
+                                          top: -7,
+                                          child: IconButton(
+                                            icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                            onPressed: () {
+                                              setState(() {
+                                                _images.removeAt(index);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ],
-                          ),
-                        );
-                      }).toList(),
-                    ],
-                  ),
+                            if (boardDetailImageList != null && boardDetailImageList!.isNotEmpty) ...[
+                              Row(
+                                children: boardDetailImageList!.map((item) {
+                                  var image = apiUrl + item["imagePath"];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                          child: Image.network(
+                                            image,
+                                            width: 85,
+                                            height: 85,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Positioned(
+                                          right: -7,
+                                          top: -7,
+                                          child: IconButton(
+                                            icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
+                                            onPressed: () {
+                                              setState(() {
+                                                fileDelInfo.add(item["imagePath"]);
+                                                boardDetailImageList!.remove(item);
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-
               SizedBox(height: 16),
-              /*Container(
-                width: double.infinity, // 넓이를 최대로 설정
-                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white, // 배경색을 하얀색으로
-                  border: Border.all(color: WitHomeTheme.wit_lightGreen, width: 2), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                child: Text(
-                  '사업자정보 등록 후\n견적서비스 이용이 가능합니다..',
-                  style: WitHomeTheme.title.copyWith(fontSize: 16),
-                ),
-              ),*/
-
               Center( // Center 위젯으로 버튼을 감싸서 가운데 정렬
                 child: ElevatedButton(
                   onPressed: () async {
@@ -409,7 +436,6 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
   void _showImagePickerOptions() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: WitHomeTheme.wit_white,
       builder: (BuildContext context) {
         return Container(
           height: 150,
@@ -417,17 +443,15 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
             children: [
               ListTile(
                 leading: Icon(Icons.photo),
-                title: Text('갤러리에서 선택',
-                    style: WitHomeTheme.title),
+                title: Text('갤러리에서 선택'),
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
+                  _pickMultiImages();
                   Navigator.pop(context);
                 },
               ),
               ListTile(
                 leading: Icon(Icons.camera),
-                title: Text('사진 찍기',
-                    style: WitHomeTheme.title),
+                title: Text('사진 찍기'),
                 onTap: () {
                   _pickImage(ImageSource.camera);
                   Navigator.pop(context);

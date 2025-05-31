@@ -26,6 +26,7 @@ import 'package:witibju/screens/seller/wit_seller_profile_modify_sc.dart';
 // import '../../main_toss.dart';
 import '../../main.dart';
 import '../board/wit_board_main_sc.dart';
+import '../common/wit_common_widget.dart';
 import '../common/wit_tableCalendar_sc.dart';
 import '../common/wit_tableCalendar_widget.dart';
 // import '../home/widgets/wit_home_widgets2.dart';
@@ -550,64 +551,9 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                               );
                             } else {
                               // 팝업 띄우기
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  final width = MediaQuery.of(context).size.width;
-
-                                  return Dialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Container(
-                                      width: width * 0.9, // 화면 너비의 90% 사용 (사이드 여백 약간 남김)
-                                      padding: const EdgeInsets.all(20),
-                                      decoration: BoxDecoration(
-                                        color: WitHomeTheme.wit_white, // 배경색 흰색 지정
-                                        borderRadius: BorderRadius.circular(12), // 둥근 모서리 적용
-                                      ),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            '안내',
-                                            style: WitHomeTheme.title.copyWith(fontSize: 18),
-                                          ),
-                                          const SizedBox(height: 16),
-                                          Text(
-                                            '공동구매에 참여하시려면\n관리자에게 문의해주세요.',
-                                            style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                                          ),
-                                          const SizedBox(height: 24),
-                                          Align(
-                                            alignment: Alignment.centerRight,
-                                            child: TextButton(
-                                              onPressed: () => Navigator.of(context).pop(),
-                                              style: TextButton.styleFrom(
-                                                backgroundColor: WitHomeTheme.wit_lightGreen,
-                                                padding:
-                                                const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                '확인',
-                                                style: WitHomeTheme.title.copyWith(
-                                                  fontSize: 14,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-
+                              alertDialog.show(context: context,
+                                  title: "알림",
+                                  content: "공동구매 진행을 원하시면\n관리자에게 문의해주세요.");
                             }
                           },
                           style: TextButton.styleFrom(
