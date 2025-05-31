@@ -480,7 +480,7 @@ class BoardListView extends StatelessWidget {
                                                 Navigator.push(
                                                   context,
                                                   SlideRoute(page: ImageViewer(
-                                                    imageUrls: imgList.map((item) => apiUrl + imgList[index]).toList(),
+                                                    imageUrls: imgList.map((item) => apiUrl + item).toList(),
                                                     initialIndex: index,
                                                   )),
                                                 );

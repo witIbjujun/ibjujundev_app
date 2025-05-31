@@ -431,32 +431,17 @@ class _QuestionState extends State<QuestionList> {
     // API 호출 (질문 조회)
     final questionList = await sendPostRequest(restId, param);
 
+    // 첫 로그인 인지 확인
+    bool isLoggedIn = await checkLoginStatus();
+    if (isLoggedIn == true) {
+      getNextQuestionInfo(widget.qustCd, 0);
+      return;
+    }
+
     // 진행 여부 확인
     if (questionList["questionList"] != null && questionList["questionList"].isNotEmpty) {
 
-      bool? confirm = await showDialog<bool>(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("확인"),
-            content: Text("진행하신 데이터가 있습니다.\n이어서 진행 하시겠습니까?"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(false); // 취소
-                },
-                child: Text("처음부터"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(true); // 확인
-                },
-                child: Text("이어서"),
-              ),
-            ],
-          );
-        },
-      );
+      bool confirm = await ConfimDialog.show(context: context, title: "확인", content: "진행하신 데이터가 있습니다.\n이어서 진행 하시겠습니까?");
 
       // "이어서" 선택시
       if (confirm == true) {
