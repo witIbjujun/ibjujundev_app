@@ -40,14 +40,21 @@ class _CustomCalendarBottomSheetState extends State<CustomCalendarBottomSheet> {
           TableCalendar(
             firstDay: DateTime.utc(2023, 1, 1),
             lastDay: DateTime.utc(2030, 12, 31),
-            locale: 'ko_KR', // 2025-04-26: 한글로 년/월/요일 나오게 수정
+            locale: 'ko_KR',
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
+              // 오늘 이전 날짜는 선택 못하게 막기
+              if (!isBeforeToday(selectedDay)) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              }
+            },
+            enabledDayPredicate: (day) {
+              // 오늘 이전 날짜는 비활성화
+              return !isBeforeToday(day);
             },
             calendarFormat: CalendarFormat.month,
             headerStyle: HeaderStyle(
@@ -60,7 +67,7 @@ class _CustomCalendarBottomSheetState extends State<CustomCalendarBottomSheet> {
             ),
             calendarStyle: CalendarStyle(
               selectedDecoration: BoxDecoration(
-                color: WitHomeTheme.wit_lightGreen, // 선택된 날짜 색상
+                color: WitHomeTheme.wit_lightGreen,
                 shape: BoxShape.circle,
               ),
               todayDecoration: BoxDecoration(
@@ -68,6 +75,7 @@ class _CustomCalendarBottomSheetState extends State<CustomCalendarBottomSheet> {
                 shape: BoxShape.circle,
               ),
               outsideDaysVisible: false,
+              disabledTextStyle: TextStyle(color: Colors.grey.shade400), // 비활성화된 날 스타일
             ),
           ),
 
@@ -95,5 +103,14 @@ class _CustomCalendarBottomSheetState extends State<CustomCalendarBottomSheet> {
         ],
       ),
     );
+  }
+
+  bool isBeforeToday(DateTime day) {
+    final today = DateTime.now();
+    // 년/월/일 비교만 하려면 시간 정보 제거 필요
+    final justDate = DateTime(day.year, day.month, day.day);
+    final todayDate = DateTime(today.year, today.month, today.day);
+
+    return justDate.isBefore(todayDate);
   }
 }
