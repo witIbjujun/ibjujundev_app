@@ -121,7 +121,8 @@ class SellerProfileViewState extends State<SellerProfileView> {
 
     final param = jsonEncode({
       "bordType": 'UH01',
-      "bordKey": widget.sllrNo.toString(),
+      // "bordKey": widget.sllrNo.toString(),
+      "sllrNo": widget.sllrNo.toString(),
       "searchText": '',
       "currentPage": (currentPage - 1) * pageSize,
       "pageSize": pageSize,
@@ -130,6 +131,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
     final _boardList = await sendPostRequest(restId, param);
 
     setState(() {
+      print("1111");
       boardList.addAll(_boardList);
       currentPage++;
 

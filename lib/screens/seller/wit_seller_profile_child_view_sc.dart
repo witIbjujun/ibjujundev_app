@@ -122,7 +122,8 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
 
     final param = jsonEncode({
       "bordType": 'UH01',
-      "bordKey": widget.sllrNo.toString(),
+      // "bordKey": widget.sllrNo.toString(),
+      "sllrNo": widget.sllrNo.toString(),
       "searchText": '',
       "currentPage": (currentPage - 1) * pageSize,
       "pageSize": pageSize,
