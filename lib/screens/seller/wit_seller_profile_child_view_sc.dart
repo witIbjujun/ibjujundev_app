@@ -550,7 +550,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
               ),
             ),
             SizedBox(height: 8),
-            if (widget.appbarYn == "Y") ...[ // ... 연산자를 사용하여 위젯 리스트를 펼침
+            //if (widget.appbarYn == "Y") ...[ // ... 연산자를 사용하여 위젯 리스트를 펼침
               Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -757,7 +757,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                 ),
               ),
             ],
-          ],
+          //],
         )
 
         //    ),
