@@ -158,7 +158,7 @@ class SellerProfileInsertBizInfoState
             : '인증요청';
 
         // 사업자 등록증 가져오기
-        getSellerDetailImageList("SR02");
+        getSellerDetailImageList();
       });
     } else {
       // 오류 처리
@@ -169,33 +169,34 @@ class SellerProfileInsertBizInfoState
   }
 
   // [서비스] 판매자 상세 이미지 조회
-  Future<void> getSellerDetailImageList(dynamic bizCd) async {
+  Future<void> getSellerDetailImageList() async {
     // REST ID
     String restId = "getSellerDetailImageList";
 
     // PARAM
     final param = jsonEncode({
-      "bizCd": bizCd,
-      "bizKey": sellerInfo["sllrNo"],
+      //"bizCd": bizCd,
+      "bizKey": sellerInfo["sllrNo"].toString(),
     });
 
-    if (bizCd == "SR02") {
-      // API 호출 (게시판 상세 조회)
-      final _bizImageList = await sendPostRequest(restId, param);
+    // API 호출 (게시판 상세 조회)
+    final _bizImageList = await sendPostRequest(restId, param);
 
-      if (bizImageList.isNotEmpty) {
-        // 값이 있을 때 수행할 작업
-        print("보드 상세 이미지 리스트에 값이 있습니다: ${bizImageList.length}개");
-      } else {
-        // 값이 없을 때 수행할 작업
-        print("보드 상세 이미지 리스트가 비어 있습니다.");
-      }
-
-      // 결과 셋팅
-      setState(() {
-        bizImageList = _bizImageList;
-      });
+    if (_bizImageList.isNotEmpty) {
+      // 값이 있을 때 수행할 작업
+      print("보드 상세 이미지 리스트에 값이 있습니다: ${_bizImageList.length}개");
+    } else {
+      // 값이 없을 때 수행할 작업
+      print("보드 상세 이미지 리스트가 비어 있습니다.");
     }
+
+    // 결과 셋팅
+    setState(() {
+      bizImageList.clear();
+      bizImageList = _bizImageList.where((item) => item['bizCd']?.toString() == 'SR02').toList();
+
+    });
+
   }
 
   /* 이미지추가 S */
