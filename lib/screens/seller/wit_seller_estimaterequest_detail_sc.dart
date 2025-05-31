@@ -1162,6 +1162,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
     // 결과 셋팅
     setState(() {
+      boardDetailImageList.clear(); // 중복 방지용 초기화
       boardDetailImageList = _boardDetailImageList;
     });
   }

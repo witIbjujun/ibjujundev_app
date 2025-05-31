@@ -1755,6 +1755,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
       // 결과 셋팅
       setState(() {
+        boardDetailImageList.clear(); // 중복 방지용 초기화
         boardDetailImageList = _boardDetailImageList;
       });
     }
@@ -1772,6 +1773,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
       // 결과 셋팅
       setState(() {
+        bizImageList.clear(); // 중복 방지용 초기화
         bizImageList = _bizImageList;
       });
     }
