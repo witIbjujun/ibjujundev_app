@@ -131,7 +131,6 @@ class SellerProfileViewState extends State<SellerProfileView> {
     final _boardList = await sendPostRequest(restId, param);
 
     setState(() {
-      print("1111");
       boardList.addAll(_boardList);
       currentPage++;
 
@@ -809,7 +808,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
 
       // 결과 셋팅
       setState(() {
-        storeImageList = _storeImageList;
+        storeImageList = _storeImageList.where((item) => item['bizCd']?.toString() == 'SR01').toList();
       });
     }
 

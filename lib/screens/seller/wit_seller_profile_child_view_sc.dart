@@ -815,7 +815,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
 
       // 결과 셋팅
       setState(() {
-        storeImageList = _storeImageList;
+        storeImageList = _storeImageList.where((item) => item['bizCd']?.toString() == 'SR01').toList();
       });
     }
   }

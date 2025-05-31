@@ -246,8 +246,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
             : '인증요청';
 
         if (fetchImages) {
-          getSellerDetailImageList("SR01");
-          getSellerDetailImageList("SR02");
+          getSellerDetailImageList();
+          // getSellerDetailImageList("SR02");
         }
 
       });
@@ -1729,54 +1729,38 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   }
 
   // [서비스] 판매자 상세 이미지 조회
-  Future<void> getSellerDetailImageList(dynamic bizCd) async {
+  Future<void> getSellerDetailImageList() async {
     // REST ID
     String restId = "getSellerDetailImageList";
 
-    print("여기 : " + sellerInfo["sllrNo"].toString());
+    // print("여기 : " + sellerInfo["sllrNo"].toString());
 
     // PARAM
     final param = jsonEncode({
-      "bizCd": bizCd,
-      "bizKey": sellerInfo["sllrNo"],
+      // "bizCd": bizCd,
+      "bizKey": sellerInfo["sllrNo"].toString(),
+    });
+      // API 호출 (게시판 상세 조회)
+    final _boardDetailImageList = await sendPostRequest(restId, param);
+
+    if (_boardDetailImageList.isNotEmpty) {
+      // 값이 있을 때 수행할 작업
+      print("보드 상세 이미지 리스트에 값이 있습니다: ${_boardDetailImageList.length}개");
+    } else {
+      // 값이 없을 때 수행할 작업
+      print("보드 상세 이미지 리스트가 비어 있습니다.");
+    }
+
+    // 결과 셋팅
+    setState(() {
+      boardDetailImageList.clear(); // 중복 방지용 초기화
+      bizImageList.clear(); // 중복 방지용 초기화
+
+      boardDetailImageList = _boardDetailImageList.where((item) => item['bizCd']?.toString() == 'SR01').toList();
+      bizImageList = _boardDetailImageList.where((item) => item['bizCd']?.toString() == 'SR02').toList();
+
     });
 
-    if(bizCd == "SR01") {
-      // API 호출 (게시판 상세 조회)
-      final _boardDetailImageList = await sendPostRequest(restId, param);
-
-      if (boardDetailImageList.isNotEmpty) {
-        // 값이 있을 때 수행할 작업
-        print("보드 상세 이미지 리스트에 값이 있습니다: ${boardDetailImageList.length}개");
-      } else {
-        // 값이 없을 때 수행할 작업
-        print("보드 상세 이미지 리스트가 비어 있습니다.");
-      }
-
-      // 결과 셋팅
-      setState(() {
-        boardDetailImageList.clear(); // 중복 방지용 초기화
-        boardDetailImageList = _boardDetailImageList;
-      });
-    }
-    else if(bizCd == "SR02") {
-      // API 호출 (게시판 상세 조회)
-      final _bizImageList = await sendPostRequest(restId, param);
-
-      if (bizImageList.isNotEmpty) {
-        // 값이 있을 때 수행할 작업
-        print("보드 상세 이미지 리스트에 값이 있습니다: ${bizImageList.length}개");
-      } else {
-        // 값이 없을 때 수행할 작업
-        print("보드 상세 이미지 리스트가 비어 있습니다.");
-      }
-
-      // 결과 셋팅
-      setState(() {
-        bizImageList.clear(); // 중복 방지용 초기화
-        bizImageList = _bizImageList;
-      });
-    }
   }
 
   // [서비스] 사업자 인증 상태 수정
