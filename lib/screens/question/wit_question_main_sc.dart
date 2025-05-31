@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:witibju/util/wit_api_ut.dart';
 import 'package:witibju/screens/common/wit_common_widget.dart';
 
+import '../home/login/wit_user_login.dart';
+import '../home/login/wit_user_loginStep.dart';
+import '../home/widgets/wit_home_widgets.dart';
 import '../home/wit_home_theme.dart';
 
 class Question extends StatelessWidget {
@@ -203,7 +206,7 @@ class _QuestionState extends State<QuestionList> {
                             
                             // 로그인 체크
                             if ((userId == null || userId == "") && index == 1) {
-                              alertDialog.show(context: context, title: "알림", content: "로그인을 해주세요.");
+                              LoginUtils.showLoginDialog(context);
                               return;
                             }
 
@@ -691,5 +694,4 @@ class _QuestionState extends State<QuestionList> {
       print("전체 삭제 오류");
     }
   }
-
 }

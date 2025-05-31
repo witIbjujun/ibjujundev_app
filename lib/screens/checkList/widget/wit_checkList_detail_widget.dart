@@ -5,6 +5,9 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 
 import '../../common/wit_ImageViewer_sc.dart';
 import '../../common/wit_common_widget.dart';
+import '../../home/login/wit_user_login.dart';
+import '../../home/login/wit_user_loginStep.dart';
+import '../../home/widgets/wit_home_widgets.dart';
 
 /**
  * 체크리스트 상세 화면 UI
@@ -277,7 +280,7 @@ class ExpandableItem extends StatelessWidget {
                         onTap: () {
 
                           if (loginClerkNo == null || loginClerkNo == "") {
-                            alertDialog.show(context: context, title: "알림", content: "로그인이 필요합니다.");
+                            LoginUtils.showLoginDialog(context);
                             return;
                           }
 
