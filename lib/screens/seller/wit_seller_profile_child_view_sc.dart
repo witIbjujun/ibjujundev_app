@@ -56,13 +56,17 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
 
   // 게시판 리스트
   List<dynamic> boardList = [];
+
   // 페이징 로딩 여부
   bool isLoading = false;
   bool isLastPage = false;
+
   // 페이징 시작 번호
   int currentPage = 1;
+
   // 페이징 1회 건수
   final int pageSize = 10;
+
   // 처음에는 3건만 표시
   int displayCount = 3;
 
@@ -366,7 +370,8 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.only(top: 0.0, bottom: 0.0, left: 16.0, right: 16.0),
+        padding: const EdgeInsets.only(
+            top: 0.0, bottom: 0.0, left: 16.0, right: 16.0),
         child: Column(
           children: [
             // 첫 번째 영역: 사업자 이미지 및 이름, 인증 정보
@@ -401,9 +406,13 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             image: DecorationImage(
-                              image: (sellerInfo?['storeImage'] != null && sellerInfo!['storeImage'].isNotEmpty)
-                                  ? NetworkImage(apiUrl + sellerInfo['storeImage'])
-                                  : const AssetImage('assets/images/profile1.png') as ImageProvider,
+                              image: (sellerInfo?['storeImage'] != null &&
+                                      sellerInfo!['storeImage'].isNotEmpty)
+                                  ? NetworkImage(
+                                      apiUrl + sellerInfo['storeImage'])
+                                  : const AssetImage(
+                                          'assets/images/profile1.png')
+                                      as ImageProvider,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -418,21 +427,25 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                             // 판매자명
                             Text(
                               sellerInfo?['storeName'] ?? '판매자명 없음',
-                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                              style:
+                                  WitHomeTheme.subtitle.copyWith(fontSize: 16),
                             ),
                             SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
                                     color: WitHomeTheme.wit_white,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
-                                    sellerInfo?['bizCertificationNm'] ?? '사업자 인증 미완료',
-                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 10),
+                                    sellerInfo?['bizCertificationNm'] ??
+                                        '사업자 인증 미완료',
+                                    style: WitHomeTheme.subtitle
+                                        .copyWith(fontSize: 10),
                                   ),
                                 ),
                                 SizedBox(width: 5),
@@ -460,15 +473,15 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                 children: [
                   // 서비스 품목 버튼
                   Container(
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: WitHomeTheme.wit_white, // 초록색 배경
                       borderRadius: BorderRadius.circular(8), // 둥근 모서리
                     ),
                     child: Text(
                       sellerInfo?['categoryNm'] ?? '카테고리 없음',
-                      style: WitHomeTheme.subtitle.copyWith(fontSize: 14),                      ),
+                      style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+                    ),
                   ),
                   SizedBox(width: 10), // 버튼 간격
                   Container(
@@ -488,7 +501,6 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                       ],
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -498,14 +510,19 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
               title: '업체 주소',
               content: Text(
                 style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                (sellerInfo?['address1'] ?? '주소 없음') + " / " + (sellerInfo?['serviceAreaNm'] ?? '서비스 지역 없음'),
+                (sellerInfo?['address1'] ?? '주소 없음') +
+                    " / " +
+                    (sellerInfo?['serviceAreaNm'] ?? '서비스 지역 없음'),
               ),
             ),
 
             // 네 번째 영역: 업체 설명
             _buildContainer(
               title: '업체 설명',
-              content: Text(sellerInfo?['sllrContent'] ?? '', style: WitHomeTheme.subtitle.copyWith(fontSize: 14),),
+              content: Text(
+                sellerInfo?['sllrContent'] ?? '',
+                style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
+              ),
             ),
             // 다섯 번째 영역: 시공 사진/동영상
             _buildContainer(
@@ -514,10 +531,13 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                 height: 120, // 높이 설정
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: storeImageList.length > 0 ? storeImageList.length : 1, // 기본값 설정
+                  itemCount: storeImageList.length > 0
+                      ? storeImageList.length
+                      : 1, // 기본값 설정
                   itemBuilder: (context, index) {
                     if (storeImageList.isEmpty) {
-                      return Center(child: Text('이미지가 없습니다.')); // 이미지가 없을 때 표시할 위젯
+                      return Center(
+                          child: Text('이미지가 없습니다.')); // 이미지가 없을 때 표시할 위젯
                     }
                     return GestureDetector(
                       onTap: () {
@@ -526,7 +546,9 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ImageViewer(
-                              imageUrls: storeImageList.map((item) => apiUrl + item["imagePath"]).toList(),
+                              imageUrls: storeImageList
+                                  .map((item) => apiUrl + item["imagePath"])
+                                  .toList(),
                               initialIndex: index, // 클릭한 이미지 인덱스 전달
                             ),
                           ),
@@ -539,7 +561,8 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12), // 둥글게 처리
                           image: DecorationImage(
-                            image: NetworkImage(apiUrl + storeImageList[index]["imagePath"]),
+                            image: NetworkImage(
+                                apiUrl + storeImageList[index]["imagePath"]),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -551,212 +574,227 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
             ),
             SizedBox(height: 8),
             //if (widget.appbarYn == "Y") ...[ // ... 연산자를 사용하여 위젯 리스트를 펼침
-              Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100], // 카드 배경색 (연한 회색)
-                  borderRadius: BorderRadius.circular(8), // 모서리 둥글게
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "후기", // 제목 추가
-                      style: WitHomeTheme.title.copyWith(fontSize: 20),
-                    ),
-                    SizedBox(height: 10), // 제목과 사용자 정보 영역 간격
+            Container(
+              width: double.infinity, // ✅ 배경 너비를 전체로 확장
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.grey[100], // 카드 배경색 (연한 회색)
+                borderRadius: BorderRadius.circular(8), // 모서리 둥글게
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "후기", // 제목 추가
+                    style: WitHomeTheme.title.copyWith(fontSize: 20),
+                  ),
+                  SizedBox(height: 10), // 제목과 사용자 정보 영역 간격
 
-                    // 현재 표시할 개수만큼만 표시
-                    ...boardList
-                        .take(displayCount)
-                        .toList()
-                        .asMap()
-                        .entries
-                        .map((entry) {
-                      final int index = entry.key;
-                      final item = entry.value;
+                  // 현재 표시할 개수만큼만 표시
+                  ...boardList
+                      .take(displayCount)
+                      .toList()
+                      .asMap()
+                      .entries
+                      .map((entry) {
+                    final int index = entry.key;
+                    final item = entry.value;
 
-                      final int gdCnt = int.tryParse(item['bordGdCnt']?.toString() ?? '0') ?? 0;
-                      final bool isExpanded = expandedIndexes.contains(index);
+                    final int gdCnt =
+                        int.tryParse(item['bordGdCnt']?.toString() ?? '0') ?? 0;
+                    final bool isExpanded = expandedIndexes.contains(index);
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey[300]!),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              /// ✅ 사용자 정보 영역
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: WitHomeTheme.wit_lightGrey,
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: Row(
-                                  children: [
-                                    /// 프로필 이미지
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        image: DecorationImage(
-                                          image: AssetImage('assets/images/profile1.png'),
-                                          fit: BoxFit.cover,
-                                        ),
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey[300]!),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            /// ✅ 사용자 정보 영역
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: WitHomeTheme.wit_lightGrey,
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Row(
+                                children: [
+                                  /// 프로필 이미지
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                            'assets/images/profile1.png'),
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                    const SizedBox(width: 10),
+                                  ),
+                                  const SizedBox(width: 10),
 
-                                    /// 사용자 이름
-                                    Text(
-                                      item['creUserNm'] ?? '사용자',
-                                      style: WitHomeTheme.title.copyWith(fontSize: 16),
-                                    ),
+                                  /// 사용자 이름
+                                  Text(
+                                    item['creUserNm'] ?? '사용자',
+                                    style: WitHomeTheme.title
+                                        .copyWith(fontSize: 16),
+                                  ),
 
-                                    const Spacer(),
+                                  const Spacer(),
 
-                                    /// 별점
-                                    Row(
-                                      children: List.generate(5, (i) {
-                                        return Icon(
-                                          i < gdCnt ? Icons.star : Icons.star_border,
-                                          color: Colors.amber,
-                                          size: 20,
-                                        );
-                                      }),
-                                    ),
-                                  ],
-                                ),
+                                  /// 별점
+                                  Row(
+                                    children: List.generate(5, (i) {
+                                      return Icon(
+                                        i < gdCnt
+                                            ? Icons.star
+                                            : Icons.star_border,
+                                        color: Colors.amber,
+                                        size: 20,
+                                      );
+                                    }),
+                                  ),
+                                ],
                               ),
+                            ),
 
-                              const SizedBox(height: 12),
+                            const SizedBox(height: 12),
 
-                              /// ✅ 게시글 제목
-                              Text(
-                                item['bordTitle'] ?? '제목 없음',
-                                style: WitHomeTheme.subtitle.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            /// ✅ 게시글 제목
+                            Text(
+                              item['bordTitle'] ?? '제목 없음',
+                              style: WitHomeTheme.subtitle.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
+                            ),
 
-                              const SizedBox(height: 8),
+                            const SizedBox(height: 8),
 
-                              /// ✅ 내용 영역 전체를 클릭 가능하게 감쌈
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    if (isExpanded) {
-                                      expandedIndexes.remove(index);
-                                    } else {
-                                      expandedIndexes.add(index);
-                                    }
-                                  });
-                                },
-                                child: LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    final content = item['bordContent'] ?? '';
-                                    final textStyle = WitHomeTheme.subtitle.copyWith(fontSize: 14);
+                            /// ✅ 내용 영역 전체를 클릭 가능하게 감쌈
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  if (isExpanded) {
+                                    expandedIndexes.remove(index);
+                                  } else {
+                                    expandedIndexes.add(index);
+                                  }
+                                });
+                              },
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final content = item['bordContent'] ?? '';
+                                  final textStyle = WitHomeTheme.subtitle
+                                      .copyWith(fontSize: 14);
 
-                                    final textSpan = TextSpan(text: content, style: textStyle);
-                                    final textPainter = TextPainter(
-                                      text: textSpan,
-                                      maxLines: 2,
-                                      textDirection: TextDirection.ltr,
-                                    )..layout(maxWidth: constraints.maxWidth);
+                                  final textSpan =
+                                      TextSpan(text: content, style: textStyle);
+                                  final textPainter = TextPainter(
+                                    text: textSpan,
+                                    maxLines: 2,
+                                    textDirection: TextDirection.ltr,
+                                  )..layout(maxWidth: constraints.maxWidth);
 
-                                    final bool isLong = textPainter.didExceedMaxLines;
+                                  final bool isLong =
+                                      textPainter.didExceedMaxLines;
 
-                                    return Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(8),
-                                      color: Colors.transparent, // 전체 터치 영역 확보
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            content,
-                                            style: textStyle,
-                                            maxLines: isExpanded ? null : 2,
-                                            overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                                          ),
-                                          if (!isExpanded && isLong)
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 4),
-                                              child: Text(
-                                                '... 더보기',
-                                                style: textStyle.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.grey[500],
-                                                ),
+                                  return Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(8),
+                                    color: Colors.transparent, // 전체 터치 영역 확보
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          content,
+                                          style: textStyle,
+                                          maxLines: isExpanded ? null : 2,
+                                          overflow: isExpanded
+                                              ? TextOverflow.visible
+                                              : TextOverflow.ellipsis,
+                                        ),
+                                        if (!isExpanded && isLong)
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 4),
+                                            child: Text(
+                                              '... 더보기',
+                                              style: textStyle.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey[500],
                                               ),
                                             ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
+                                          ),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
-
-
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-
-                    if (isLoading)
-                      const Center(child: CircularProgressIndicator()),
-
-                    if (!isLoading && (displayCount < boardList.length || !isLastPage))
-                      Center(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              displayCount += 3;
-                            });
-
-                            // 화면에 보여줄 개수가 전체 데이터보다 많아졌고, 아직 마지막 페이지가 아니라면 API 호출
-                            if (displayCount > boardList.length && !isLastPage) {
-                              getBoardList();
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: WitHomeTheme.wit_white, // ✅ 초록색 배경
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "더보기",
-                                style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightGreen),
-                              ),
-                              const SizedBox(width: 8),
-                              const Icon(
-                                Icons.keyboard_arrow_down, // 또는 Icons.arrow_drop_down
-                                size: 20,
-                                color: WitHomeTheme.wit_lightGreen,
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
 
-                              ),
-                            ],
+                  if (isLoading)
+                    const Center(child: CircularProgressIndicator()),
+
+                  if (!isLoading &&
+                      (displayCount < boardList.length || !isLastPage))
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            displayCount += 3;
+                          });
+
+                          // 화면에 보여줄 개수가 전체 데이터보다 많아졌고, 아직 마지막 페이지가 아니라면 API 호출
+                          if (displayCount > boardList.length && !isLastPage) {
+                            getBoardList();
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: WitHomeTheme.wit_white, // ✅ 초록색 배경
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                      )
-
-                  ],
-                ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "더보기",
+                              style: WitHomeTheme.title.copyWith(
+                                  fontSize: 14,
+                                  color: WitHomeTheme.wit_lightGreen),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.keyboard_arrow_down,
+                              // 또는 Icons.arrow_drop_down
+                              size: 20,
+                              color: WitHomeTheme.wit_lightGreen,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                ],
               ),
-            ],
+            ),
+            SizedBox(height: 16),
+          ],
           //],
         )
 
@@ -815,7 +853,9 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
 
       // 결과 셋팅
       setState(() {
-        storeImageList = _storeImageList.where((item) => item['bizCd']?.toString() == 'SR01').toList();
+        storeImageList = _storeImageList
+            .where((item) => item['bizCd']?.toString() == 'SR01')
+            .toList();
       });
     }
   }
