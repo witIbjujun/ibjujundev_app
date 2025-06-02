@@ -92,6 +92,8 @@ class SellerProfileInsertBizInfoState
   String zipCodeErrorMessage = '';
   String address2ErrorMessage = '';
   String storeCodeErrorMessage = '';
+  String bizCertErrorMessage = '';
+
 
   @override
   void initState() {
@@ -298,6 +300,7 @@ class SellerProfileInsertBizInfoState
           bizCertification = "01";
           sellerInfo["bizCertification"] = "01";
           buttonText = "요청중";
+          bizCertErrorMessage = ""; // 에러 메시지 제거
         });
       });
 
@@ -683,30 +686,7 @@ class SellerProfileInsertBizInfoState
                     ),
                   ),
                   SizedBox(width: 16.0), // 버튼 간격
-                  /*ElevatedButton(
-                    onPressed: (sellerInfo != null &&
-                        (sellerInfo['bizCertification'] == '04' ||
-                            sellerInfo['bizCertification'] == null ||
-                            sellerInfo['bizCertification'].toString().isEmpty))
-                        ? () async {
-                      // 이미지 저장 함수 호출
-                      saveSellerBizImage();
-                    }
-                        : null, // 비활성화
-                    child: Text(
-                      '첨부',
-                      style: WitHomeTheme.title.copyWith(
-                        fontSize: 14,
-                        color: WitHomeTheme.wit_white,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: WitHomeTheme.wit_lightBlue,
-                      disabledBackgroundColor: WitHomeTheme.wit_gray,
-                      disabledForegroundColor: WitHomeTheme.wit_white,
-                    ),
-                  ),
-                  SizedBox(width: 16.0), // 버튼 간격*/
+
                   ElevatedButton(
                     onPressed: (sellerInfo != null &&
                             (sellerInfo['bizCertification'] == '04' ||
@@ -861,42 +841,15 @@ class SellerProfileInsertBizInfoState
                   ],
                 ),
               ),
-
-              /*Container(
-                height: 120, // 높이 설정
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: bizImageList.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // 클릭 시 ImageViewer로 이동
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ImageViewer(
-                              imageUrls: bizImageList.map((item) => apiUrl + item['imagePath']).toList(),
-                              initialIndex: index, // 클릭한 이미지 인덱스 전달
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: 120,
-                        height: 120,
-                        margin: EdgeInsets.only(right: 8), // 이미지 간격
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12), // 둥글게 처리
-                          image: DecorationImage(
-                            image: NetworkImage(apiUrl + bizImageList[index]['imagePath']),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+              if (bizCertErrorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    bizCertErrorMessage,
+                    style: WitHomeTheme.subtitle
+                        .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),                  ),
                 ),
-              ),*/
+
               SizedBox(height: 6),
               Container(
                 width: double.infinity, // 넓이를 최대로 설정
@@ -932,6 +885,7 @@ class SellerProfileInsertBizInfoState
                       emailErrorMessage = '';
                       openDateErrorMessage = '';
                       storeCodeErrorMessage = '';
+                      bizCertErrorMessage = '';
 
                       bool isNameValid = nameController.text.isNotEmpty;
                       bool isCeoName = ceoNameController.text.isNotEmpty;
@@ -943,6 +897,7 @@ class SellerProfileInsertBizInfoState
 
                       bool isEmail = emailController.text.isNotEmpty;
                       bool isEmailValidFormat = emailRegex.hasMatch(emailController.text);
+                      bool isBizCertValid = sellerInfo['bizCertification'] == '01';
 
                       if (!isEmail) {
                         emailErrorMessage = '대표 이메일을 입력해주세요.';
@@ -965,13 +920,20 @@ class SellerProfileInsertBizInfoState
                       if (!isStoreCodeValid) {
                         storeCodeErrorMessage = '사업자등록번호를 입력해주세요.'; // 오류 메시지 설정
                       }
+                      if (!isBizCertValid) {
+                        setState(() {
+                          bizCertErrorMessage = '사업자 인증 요청을 해주세요.';
+                        });
+                      }
                     });
 
                     if (nameErrorMessage.isEmpty &&
                         ceoErrorMessage.isEmpty &&
                         emailErrorMessage.isEmpty &&
                         openDateErrorMessage.isEmpty &&
-                        storeCodeErrorMessage.isEmpty) {
+                        storeCodeErrorMessage.isEmpty&&
+                        bizCertErrorMessage.isEmpty
+                    ) {
                       // 사업자 프로필 변경 로직
                       String name = nameController.text;
                       String ceoName = ceoNameController.text;
