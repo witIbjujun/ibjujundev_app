@@ -327,16 +327,41 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
                   ),
                 ],
               ),
+              SizedBox(height: 8),
 
-              Column(
+// 👉 연락처 입력란 + 인증 버튼 (한 줄 Row로 배치)
+              Row(
                 children: [
-                  TextField(
-                    controller: hp1Controller,
+                  // 연락처 입력란
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: WitHomeTheme.white,
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: TextField(
+                        controller: hp1Controller,
+                        style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: '휴대폰 번호를 입력하세요',
+                        ),
+                        onChanged: (text) {
+                          setState(() {
+                            hpErrorMessage = '';
+                          });
+                        },
+                      ),
+                    ),
                   ),
+                  SizedBox(width: 10), // 입력란과 버튼 사이 간격
+                  // 인증 버튼
                   ElevatedButton(
                     onPressed: isCertified ? null : _startCertification,
                     child: Text(
-                      isCertified ? '인증 완료' : '본인인증 하기',
+                      isCertified ? '인증 완료' : '본인인증',
                       style: TextStyle(
                         fontSize: 14,
                         color: WitHomeTheme.wit_white,
@@ -344,16 +369,23 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: WitHomeTheme.wit_lightCoral,
-                      disabledBackgroundColor: WitHomeTheme.wit_gray, // <-- 추가!
+                      disabledBackgroundColor: WitHomeTheme.wit_gray,
+                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(18),
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
-
                 ],
               ),
+              if (hpErrorMessage.isNotEmpty)
+                Text(
+                  hpErrorMessage,
+                  style: WitHomeTheme.subtitle.copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
+
+              SizedBox(height: 10),
+
               Row(
                 children: [
                   Text(
