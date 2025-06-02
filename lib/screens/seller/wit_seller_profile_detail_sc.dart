@@ -112,7 +112,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
     if (response != null) {
       setState(() {
         sellerInfo = response;
-        storeName = sellerInfo['storeName'];
+        storeName = sellerInfo['storeName'] ?? '';
       });
     } else {
       // 오류 처리

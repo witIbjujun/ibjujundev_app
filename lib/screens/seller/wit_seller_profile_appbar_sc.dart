@@ -74,8 +74,8 @@ class SellerAppBarState extends State<SellerAppBar> {
     if (response != null) {
       setState(() {
         sellerInfo = response;
-        storeName = sellerInfo['storeName'];
-        sllrNo = sellerInfo['sllrNo'];
+        storeName = response['storeName'] ?? '';
+        sllrNo = response['sllrNo'] ?? '';
         print("여기 : " + sellerInfo['sllrNo'].toString());
       });
     } else {
