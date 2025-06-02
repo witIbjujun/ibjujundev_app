@@ -600,8 +600,8 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                     final int index = entry.key;
                     final item = entry.value;
 
-                    final int gdCnt =
-                        int.tryParse(item['bordGdCnt']?.toString() ?? '0') ?? 0;
+                    final int stsfRate =
+                        int.tryParse(item['stsfRate']?.toString() ?? '0') ?? 0;
                     final bool isExpanded = expandedIndexes.contains(index);
 
                     return Padding(
@@ -653,7 +653,7 @@ class SellerProfileChildViewState extends State<SellerProfileChildView> {
                                   Row(
                                     children: List.generate(5, (i) {
                                       return Icon(
-                                        i < gdCnt
+                                        i < stsfRate
                                             ? Icons.star
                                             : Icons.star_border,
                                         color: Colors.amber,

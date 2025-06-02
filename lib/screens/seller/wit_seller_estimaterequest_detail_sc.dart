@@ -121,6 +121,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   void _loadProfile() {
     // 여기에 프로필을 불러오는 로직 추가
     print("프로필을 불러옵니다."); // 예시로 콘솔에 출력
+    getEstimateRequestInfoForSend(widget.estNo, widget.seq);
+
   }
 
   @override
@@ -888,7 +890,11 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                           "sellerView", // 세 번째 인자: 뷰 타입
                                         ),
                                       ),
-                                    );
+                                    ).then((_) {
+                                      // 이 부분에서 리로드할 작업 실행
+                                      // 예: 데이터 다시 불러오기
+                                      _loadProfile(); // 또는 setState(() { ... })
+                                    });
                                   }
                                 }
                               },
@@ -1172,12 +1178,14 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
       "bizKey": bizKey,
     });
 
+    // ✅ 이 두 개 다 초기화
+    boardDetailImageList.clear();
+    _images.clear();
     // API 호출 (게시판 상세 조회)
     final _boardDetailImageList = await sendPostRequest(restId, param);
 
     // 결과 셋팅
     setState(() {
-      boardDetailImageList.clear(); // 중복 방지용 초기화
       boardDetailImageList = _boardDetailImageList;
     });
   }

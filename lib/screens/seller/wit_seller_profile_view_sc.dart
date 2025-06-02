@@ -9,6 +9,7 @@ import '../../util/wit_api_ut.dart';
 import 'package:kpostal/kpostal.dart';
 
 import '../../util/wit_code_ut.dart';
+import '../board/wit_board_main_sc.dart';
 import '../common/wit_ImageViewer_sc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -543,6 +544,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                 ),
               ),
               SizedBox(height: 8),
+
               if (widget.appbarYn == "Y") ...[ // ... 연산자를 사용하여 위젯 리스트를 펼침
                 Container(
                   padding: EdgeInsets.all(10),
@@ -569,7 +571,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                         final int index = entry.key;
                         final item = entry.value;
 
-                        final int gdCnt = int.tryParse(item['bordGdCnt']?.toString() ?? '0') ?? 0;
+                        final int stsfRate = int.tryParse(item['stsfRate']?.toString() ?? '0') ?? 0;
                         final bool isExpanded = expandedIndexes.contains(index);
 
                         return Padding(
@@ -619,7 +621,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                                       Row(
                                         children: List.generate(5, (i) {
                                           return Icon(
-                                            i < gdCnt ? Icons.star : Icons.star_border,
+                                            i < stsfRate ? Icons.star : Icons.star_border,
                                             color: Colors.amber,
                                             size: 20,
                                           );
