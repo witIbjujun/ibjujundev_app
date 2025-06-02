@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:witibju/screens/seller/wit_common_imageViewer_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_cash_recharge_sc.dart';
 import 'package:flutter/material.dart';
 import 'package:witibju/screens/seller/wit_seller_profile_appbar_sc.dart';
@@ -32,8 +33,7 @@ class EstimateRequestDetail extends StatefulWidget {
   final String sllrNo;
 
   const EstimateRequestDetail(
-      {Key? key, required this.estNo, required this.seq, required this.sllrNo})
-      : super(key: key);
+      {super.key, required this.estNo, required this.seq, required this.sllrNo});
 
   @override
   State<StatefulWidget> createState() {
@@ -94,6 +94,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
         });
       }
     });
+
   }
 
   @override
@@ -124,6 +125,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
   @override
   Widget build(BuildContext context) {
+
+
     String estNo = estimateRequestInfoForSend['estNo'] ?? "";
     String seq = estimateRequestInfoForSend['seq'] ?? "";
     String aptName = estimateRequestInfoForSend['aptName'] ?? "고객 APT 정보 없음";
@@ -477,18 +480,30 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                 ),
                 SizedBox(height: 16),
                 //if (reqState == "01") ...[ // reqState가 "01"일 때만 이 부분이 렌더링됨
+
+                Column(
+                  children: [
+                    if (reqState != "10")
+                      CommonImageViewer(
+                        key: ValueKey("${estimateRequestInfoForSend['estNo']}_${estimateRequestInfoForSend['seq']}"),
+                        estNo: estimateRequestInfoForSend['estNo'] ?? '',
+                        seq: estimateRequestInfoForSend['seq'] ?? '',
+                        imageGubun: 'RQ01',
+                      ),
+                  ],
+                ),
+                if (reqState == "10")
                 Container(
                   height: 120,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        if (reqState == "10") // 조건부 렌더링
                           GestureDetector(
                             onTap: () => _showImagePickerOptions(),
                             child: Container(
-                              width: 100,
-                              height: 100,
+                              width: 85,
+                              height: 85,
                               margin: EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 color: WitHomeTheme.wit_white,
@@ -526,8 +541,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                               );
                             },
                             child: Container(
-                              width: 120,
-                              height: 120,
+                              width: 85,
+                              height: 85,
                               margin: EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
@@ -553,8 +568,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                                   borderRadius: BorderRadius.circular(12.0),
                                   child: Image.file(
                                     image,
-                                    width: 100,
-                                    height: 100,
+                                    width: 85,
+                                    height: 85,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -955,8 +970,8 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
     // API 호출 (견적발송 용 데이터 조회)
     final _estimateRequestInfoForSend = await sendPostRequest(restId, param);
+    final reqState = _estimateRequestInfoForSend['reqState'] ?? "";
 
-    // 결과 셋팅
     setState(() {
       estimateRequestInfoForSend = _estimateRequestInfoForSend;
     });
