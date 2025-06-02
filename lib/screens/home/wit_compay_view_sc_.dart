@@ -61,11 +61,11 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
                   itemBuilder: (BuildContext context, int index) {
                     final category = categoryList[index];
 
-                    print("📌 Category 로드됨: ${category.categoryId}, ${category.categoryNm}, ${category.imagePath}");
+                    //print("📌 Category 로드됨: ${category.categoryId}, ${category.categoryNm}, ${category.imagePath}");
 
                     return GestureDetector(
                       onTap: () {
-                        print("✅ 클릭됨: ${category.categoryNm}, 이동 시작...");
+                       // print("✅ 클릭됨: ${category.categoryNm}, 이동 시작...");
                         if (widget.callBack != null) {
                           widget.callBack!(category); // 클릭 시 이동
                         }
@@ -87,7 +87,7 @@ class _PopularCourseListViewState extends State<PopularCourseListView> {
   }
 
   Widget _buildGridItem(String bgImage, String iconImage, String title) {
-    print("bgImage=="+bgImage+"  iconImage=="+iconImage);
+   // print("bgImage=="+bgImage+"  iconImage=="+iconImage);
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(

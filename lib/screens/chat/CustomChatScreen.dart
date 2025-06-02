@@ -301,10 +301,10 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
       final List<MessageInfo> parsedList = MessageInfo().parseMessageList(_chatList) ?? [];
 
       //print('🧾 파싱된 메시지 리스트:');
-   /*   for (var msg in parsedList) {
+      for (var msg in parsedList) {
         final json = msg.toJson();
         print('👉 ${json['text']} | msgCode: ${json['msgCode']} | keys: ${json.keys}');
-      }*/
+      }
 
       // ✅ chatId 설정
       if (parsedList.isNotEmpty) {
@@ -519,28 +519,13 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
             children: [
               _buildStepIndicator("1. 협의", _reqStepState == "10"),
               _buildStepIndicator("2. 작업중", _reqStepState == "20"),
-              _buildStepIndicator("3. 작업완료", _reqStepState == "30"),
-              _buildStepIndicator("4. 최종완료", _reqStepState == "40"),
+              _buildStepIndicator("3. 작업완료", _reqStepState == "40"),
+             /* _buildStepIndicator("4. 최종완료", _reqStepState == "40"),*/
             ],
           ),
 
           const SizedBox(height: 5),
-          /// 🔹 단계 선 (Divider) 표시
-          /*Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: List.generate(3, (index) => Expanded(
-              child: Divider(
-                color: _reqStepState == "10" && index == 0
-                    || _reqStepState == "20" && index <= 1
-                    || _reqStepState == "30" && index <= 2
-                    || _reqStepState == "40"
-                    ? WitHomeTheme.wit_lightGreen
-                    : Colors.grey[400],
-                thickness: 2,
-              ),
-            )),
-          ),*/
-
+          // 🔹 작업중일 때만 버튼 표시
           if (_reqStepState == "20") ...[
             Container(
               decoration: BoxDecoration(
@@ -562,7 +547,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                           content: '작업을 중지하시겠습니까?',
                         );
                         if (isConfirmed) {
-                          await updateProgressStatus("99");
+                          await updateProgressStatus("99","B");
                         }
                       },
                       child: Container(
@@ -596,7 +581,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                           content: '작업을 완료하시겠습니까?',
                         );
                         if (isConfirmed) {
-                          await updateProgressStatus("70");
+                          await updateProgressStatus("70","B");
                         }
                       },
                       child: Container(
@@ -681,6 +666,9 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
   // 2025-04-30: messageId 전달 안되던 문제 수정 - Map<String, dynamic> 사용 및 로그 확인 추가
   // 2025-04-30: CAL, BTN1 버튼 중 BTN1(진행하기)에 견적 요청 스타일 적용
+  /**
+   * 시스템 문구 선택함수
+   */
   Widget _buildQuestionButton(Map<String, dynamic> q) {
     final text = q['text'] ?? '';
     final anwCode = q['anwCode'];
@@ -690,8 +678,8 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
     final isActionButton = text.contains('BTN1');
     final replacedText = text.replaceAll('ValDate', _estimateDate);
     final cleanedText = text.replaceAll('CAL', '').replaceAll('BTN1', '').trim();
-
-      print("🚀 _buildQuestionButton: text=$text, anwCode=$anwCode, messageId=$messageId, replacedText=$replacedText");
+    final normalizedText = text.replaceAll('CAL', '').replaceAll('BTN1', '').trim();
+      print("🚀 _buildQuestionButton: text=$text, anwCode=$anwCode, messageId=$messageId, normalizedText=$normalizedText");
 
     return GestureDetector(
       onTap: () async {
@@ -717,8 +705,40 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
             _currentText = '';
             _focusNode.unfocus();
           }
-        } else if (isActionButton) { // 작업 진행하기
+        } else if (isActionButton) {
+       // ✅ 작업 진행하기 버튼 처리
           _showProceedDialog(text,anwCode, msgCode,messageId: messageId);
+
+         }  else if (anwCode == 'BOARD' && msgCode == 'MSG_007') {
+         // ✅ 업체후기
+           _saveMessageToServer(
+             "후기가 등록되었습니다!",
+             anwCode: anwCode,
+             gubun: 'system',
+             messageId: messageId,
+             msgCode: msgCode,
+           );
+
+           _textController.clear();
+           _currentText = '';
+           _focusNode.unfocus();
+
+
+         } else if (anwCode == 'MSG_006' && msgCode == 'MSG_007') {
+           // ✅ 2025-05-31: "AS가 필요해요" 선택 시 상태 업데이트 + 문구 대체
+          /// await updateProgressStatus("80","S");
+
+           _saveMessageToServer(
+             "🚨소비자 불만이 접수되었습니다.",
+             anwCode: anwCode,
+             gubun: 'system',
+             messageId: messageId,
+             msgCode: msgCode,
+           );
+
+           _textController.clear();
+           _currentText = '';
+           _focusNode.unfocus();
         } else {
           _saveMessageToServer(
             replacedText, // ✅ 여기
@@ -814,7 +834,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
               Navigator.pop(context);
 
               // ✅ 상태값 수정 함수 호출
-              await updateProgressStatus("50");
+              await updateProgressStatus("50","S");
 
               // ✅ 서버에 메시지 저장
               _saveMessageToServer(
@@ -842,8 +862,10 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
   /**
    * 진행상태 업데이트
    */
-  Future<void> updateProgressStatus(String? reqState) async {
+  Future<void> updateProgressStatus(String? reqState,String? gubun) async {
     const String restId = "updateProgressStatus";
+
+    print("👉 reqState 이거뭐냐 === $reqState"); // ✅ 오타 수정
     // ✅ "REBTN1"일 때만 진행하도록 조건 추가
       final param = jsonEncode({
         "reqNo": widget.reqNo,
@@ -855,14 +877,17 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
       try {
         final response = await sendPostRequest(restId, param);
         if (response > 0) {
-          await DialogUtils.showIPhoneAlertDialog(
-            context: context,
-            title: '처리완료',
-            content: '성공적으로 완료되었습니다.',
-            onConfirm: () {
-              Navigator.pop(context); // 🔙 이전 화면으로 돌아감
-            },
-          );
+          if(gubun !="S"){
+            await DialogUtils.showIPhoneAlertDialog(
+              context: context,
+              title: '처리완료',
+              content: '성공적으로 완료되었습니다.',
+              onConfirm: () {
+                Navigator.pop(context); // 🔙 이전 화면으로 돌아감
+              },
+            );
+          }
+
           print("✅ 진행 상태 업데이트 완료");
         } else {
           print("❌ 진행 상태 업데이트 실패: $response");
@@ -984,7 +1009,7 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
                 title: const Text('갤러리에서 선택'),
                 onTap: () {
                   Navigator.pop(context);
-                  _pickImage(ImageSource.gallery);
+                  _pickMultiImages(ImageSource.gallery);
                 },
               ),
             ],
@@ -993,6 +1018,101 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
       },
     );
   }
+
+  // 2025-06-01: 갤러리 선택 시 다건 이미지 처리 추가
+  Future<void> _pickMultiImages(ImageSource source) async {
+    final picker = ImagePicker();
+
+    try {
+      if (source == ImageSource.gallery) {
+        // ✅ 갤러리 선택 시 다건 이미지 선택
+        final List<XFile>? pickedFiles = await picker.pickMultiImage();
+
+        if (pickedFiles == null || pickedFiles.isEmpty) {
+          print("❌ 이미지가 선택되지 않았습니다.");
+          return;
+        }
+
+        for (final xfile in pickedFiles) {
+          final file = File(xfile.path);
+          final fileInfo = await sendFilePostRequest("fileUpload", [file]);
+          if (fileInfo == "FAIL") {
+            print("❌ 이미지 업로드 실패");
+            continue;
+          }
+
+          String? clerkNo = await secureStorage.read(key: 'clerkNo');
+          if (chatId.isEmpty || clerkNo == null) {
+            print("❌ chatId 또는 clerkNo가 없습니다.");
+            continue;
+          }
+
+          final param = jsonEncode({
+            "chatId": chatId,
+            "clerkNo": clerkNo,
+            "createdAt": DateTime.now().toIso8601String(),
+            "text": "[이미지]",
+            "systemGubun": "user",
+            "chatgubun": "user",
+            "type": "image",
+            "fileInfo": fileInfo
+          });
+
+          final response = await sendPostRequest("saveChatMessage", param);
+          if (response > 0) {
+            print("✅ 이미지 메시지 저장 성공");
+          } else {
+            print("❌ 이미지 메시지 저장 실패: $response");
+          }
+        }
+
+        getChatMessages(); // 전체 완료 후 새로고침
+      } else {
+        // ✅ 카메라로 촬영한 단일 이미지 처리
+        final pickedFile = await picker.pickImage(source: source);
+        if (pickedFile == null) {
+          print("❌ 이미지가 선택되지 않았습니다.");
+          return;
+        }
+
+        final fileInfo = await sendFilePostRequest("fileUpload", [File(pickedFile.path)]);
+        if (fileInfo == "FAIL") {
+          print("❌ 이미지 업로드 실패");
+          return;
+        }
+
+        String? clerkNo = await secureStorage.read(key: 'clerkNo');
+        if (chatId.isEmpty || clerkNo == null) {
+          print("❌ chatId 또는 clerkNo가 없습니다.");
+          return;
+        }
+
+        final param = jsonEncode({
+          "chatId": chatId,
+          "clerkNo": clerkNo,
+          "createdAt": DateTime.now().toIso8601String(),
+          "text": "[이미지]",
+          "systemGubun": "user",
+          "chatgubun": "user",
+          "type": "image",
+          "fileInfo": fileInfo
+        });
+
+        final response = await sendPostRequest("saveChatMessage", param);
+        if (response > 0) {
+          getChatMessages(); // 채팅 새로고침
+        } else {
+          print("❌ 이미지 메시지 저장 실패: $response");
+        }
+      }
+    } catch (e) {
+      print('❌ 이미지 처리 중 오류: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('이미지를 전송할 수 없습니다.')),
+      );
+    }
+  }
+
 
   // 2025-05-01: BoardWrite 방식처럼 간단하게 변경 – 권한은 ImagePicker에 맡김
   // 2025-05-01: 이미지 선택 → 서버 업로드 → 이미지 메시지 전송까지 처리
@@ -1020,9 +1140,9 @@ class _CustomChatScreenState extends State<CustomChatScreen> {
 
       String? clerkNo = await secureStorage.read(key: 'clerkNo');
 
-     /* if (widget.target == "sellerView") {
+      if (widget.target == "sellerView") {
         clerkNo = "17";
-      }*/
+      }
 
       if (chatId == null || clerkNo == null) {
         print("❌ chatId 또는 clerkNo가 없습니다. 메시지 저장 중단");

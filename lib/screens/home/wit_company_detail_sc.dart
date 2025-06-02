@@ -35,7 +35,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
   TextEditingController _additionalRequirementsController = TextEditingController();
   String? _selectedDate; // ✅ 선택한 날짜 저장 변수
   bool _isExpanded = true;  //상품정보 접고 펄치기
-
+  List<String> _imageUrls = []; //카테고리별 이미지 갯수
   // 텍스트 필드에 대한 FocusNode 추가
   final FocusNode _additionalFocusNode = FocusNode();
 
@@ -80,26 +80,53 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
     }
   }
 
+  // 2025-06-01: Java에서 Map 형태로 내려온 응답에 맞게 수정
   Future<void> getCategoryInfo(String categoryId) async {
     String restId = "getCategoryInfo";
     categoryInfo = null;
-    print("카테고리 번호가?? = "+categoryId);
+    List<Category>? imageList; // 🆕 이미지 리스트 변수
+    print("카테고리 번호가?? = $categoryId");
     final param = jsonEncode({"categoryId": categoryId});
+
     try {
       final response = await sendPostRequest(restId, param);
 
-      if (response != null && response is List<dynamic> && response.isNotEmpty) {
-        setState(() {
-          categoryInfo = Category().parseCategoryList(response)?.first; // 서버에서 넘어온 첫 번째 데이터를 Category 객체로 변환
-          print('카테고리 정보: ${categoryInfo?.categoryNm}');
-        });
+      if (response != null && response is Map<String, dynamic>) {
+        final companyList = response["companyList"];
+        final companyImageList = response["companyImageList"]; // 🆕 이미지 리스트 추출
+
+        if (companyList is List && companyList.isNotEmpty) {
+          setState(() {
+            categoryInfo = Category().parseCategoryList(companyList)?.first;
+            print('카테고리 정보: ${categoryInfo?.categoryNm}');
+          });
+        } else {
+          print('회사 리스트가 비어 있습니다.');
+        }
+
+        if (companyImageList is List && companyImageList.isNotEmpty) {
+          setState(() {
+            _imageUrls = companyImageList
+                .map((e) => '$apiUrl${e["imagePath"]?.toString() ?? ''}')
+                .where((url) => url.isNotEmpty)
+                .toList();
+
+            print('🔽 서버에서 받은 이미지 리스트: $_imageUrls');
+          });
+        } else {
+          print('회사 이미지 리스트가 비어 있습니다.');
+        }
+
       } else {
-        print('카테고리 정보가 없습니다.');
+        print('응답이 Map 형식이 아닙니다.');
       }
     } catch (e) {
       print('카테고리 정보 조회 중 오류 발생: $e');
     }
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -228,11 +255,7 @@ class _DetailCompanyState extends State<DetailCompany> with TickerProviderStateM
       builder: (BuildContext context, StateSetter setState) {
 
         // 2025-05-26: 이미지 리스트로 변경하여 7개 이미지 순차 출력
-        final List<String> imageUrls = List.generate(
-          7,
-              (index) => '$apiUrl/WIT/Board/clean0${index + 1}.png',
-        );
-
+        final List<String> imageUrls = _imageUrls;
         List<double?> fullHeights = List.filled(imageUrls.length, null);
         bool imagesLoaded = false;
 

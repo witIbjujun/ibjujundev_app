@@ -6,6 +6,7 @@ import 'package:witibju/screens/home/widgets/wit_home_bottom_nav_bar.dart';
 import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
+import 'package:witibju/screens/home/wit_requestBest_detail.dart';
 import 'package:witibju/screens/home/wit_request_detail.dart';
 
 import '../../util/wit_api_ut.dart';
@@ -303,21 +304,33 @@ class SectionWidget extends StatelessWidget {
     } else {
       textToShow = items.first.reqContents;
     }
-
     return GestureDetector(
       onTap: () {
         print('SectionWidget tapped');
         if (items.isNotEmpty) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => RequestDetailScreen(
-                categoryId: items.first.categoryId,
-                reqNo: items.first.reqNo,
-                companyCnt: items.first.companyCnt,
+          if (items.first.reqGubun == "T") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RequestBestDetailScreen(
+                  categoryId: items.first.categoryId,
+                  reqNo: items.first.reqNo,
+                  companyCnt: items.first.companyCnt,
+                ),
               ),
-            ),
-          );
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => RequestDetailScreen(
+                  categoryId: items.first.categoryId,
+                  reqNo: items.first.reqNo,
+                  companyCnt: items.first.companyCnt,
+                ),
+              ),
+            );
+          }
         }
       },
       child: Container(
@@ -341,26 +354,39 @@ class SectionWidget extends StatelessWidget {
 
                 // 🔸 전체 카드 클릭 영역
                 GestureDetector(
+                  // 2025-06-02: 받은 견적 없을 때 예외 처리 포함한 조건 분기
                   onTap: () {
                     print('SectionWidget tapped');
                     if (items.isNotEmpty && items.first.companyCnt != "0") {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => RequestDetailScreen(
-                            categoryId: items.first.categoryId,
-                            reqNo: items.first.reqNo,
-                            companyCnt: items.first.companyCnt,
+                      if (items.first.reqGubun == "T") {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RequestBestDetailScreen(
+                              categoryId: items.first.categoryId,
+                              reqNo: items.first.reqNo,
+                              companyCnt: items.first.companyCnt,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RequestDetailScreen(
+                              categoryId: items.first.categoryId,
+                              reqNo: items.first.reqNo,
+                              companyCnt: items.first.companyCnt,
+                            ),
+                          ),
+                        );
+                      }
                     } else {
-                    DialogUtils.showIPhoneAlertDialog(
+                      DialogUtils.showIPhoneAlertDialog(
                         context: context,
                         title: '',
                         content: '받은 견적이 없습니다.',
                       );
-
                     }
                   },
                   child: Container(

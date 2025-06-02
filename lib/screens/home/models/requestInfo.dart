@@ -12,6 +12,7 @@ class RequestInfo {
     this.companyNm = '',
     this.rate = '',
     this.reqContents = '',
+    this.inProgress = '',
     this.timeAgo = '',
     this.estimateAmount = '',
     this.estimateContents = '',
@@ -29,6 +30,7 @@ class RequestInfo {
   String reqGubun;
   String reqDate;
   String reqDateInfo;
+  String inProgress;
   String reqStateNm;
   String reqState;
   String companyId;
@@ -63,6 +65,7 @@ class RequestInfo {
         categoryId: requestInfo['categoryId'] ?? '',
         categoryNm: requestInfo['categoryNm'] ?? '',
         companyNm: requestInfo['companyNm'] ?? '',
+        inProgress: requestInfo['inProgress'] ?? '',
         rate: requestInfo['rate'] ?? '',
         seq: requestInfo['seq'] ?? '',
         timeAgo: requestInfo['timeAgo'] ?? '',

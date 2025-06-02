@@ -5,6 +5,7 @@ import 'package:witibju/screens/home/widgets/wit_home_widgets.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import '../../util/wit_api_ut.dart';
 import '../chat/CustomChatScreen.dart';
+import '../seller/wit_common_imageViewer_sc.dart';
 import '../seller/wit_seller_profile_child_view_sc.dart';
 import '../seller/wit_seller_profile_view_sc.dart';
 import 'models/requestInfo.dart';
@@ -159,10 +160,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
               endIndent: 16,      // 🔹 오른쪽 간격
             ),
 
-            /// 🔹 중단 영역 - 가로 스크롤 유지
+            /// 🔹 중단 영역 - 카드 가로 스크롤 유지
             Container(
               color: Colors.white,
-              height: MediaQuery.of(context).size.height * 0.28,
+              height: MediaQuery.of(context).size.height * 0.30,
               padding: const EdgeInsets.all(13.0),
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -178,7 +179,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       });
                     },
                     child: Container(
-                      height: MediaQuery.of(context).size.width * 0.35,
+                      height: MediaQuery.of(context).size.width * 0.40,
                       width: MediaQuery.of(context).size.width * 0.38,
                       margin: const EdgeInsets.symmetric(horizontal: 8.0),
                       decoration: BoxDecoration(
@@ -193,14 +194,16 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                           alignment: Alignment.center,
                         ),
                       ),
+                      ///이미지 위에 채우기
                       child: _buildTagInfoOverlay(request, isSelected),
                     ),
+
                   );
                 },
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 2),
             const Divider(
               color: Colors.grey, // 🔹 색상: 회색
               thickness: 1,       // 🔹 두께: 1px
@@ -211,9 +214,53 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             /// 🔹 하단 영역 - 상세 정보
             Container(
               color: Colors.white,
-              //margin: const EdgeInsets.symmetric(horizontal: 16.0), // 🔹 좌우폭 상단과 동일하게 설정
               child: _buildRequestDetail(_selectedRequest ?? requests.first),
             ),
+
+            const SizedBox(height: 4),
+            const Divider(
+              color: Colors.grey, // 🔹 색상: 회색
+              thickness: 1,       // 🔹 두께: 1px
+              indent: 16,         // 🔹 왼쪽 간격
+              endIndent: 16,      // 🔹 오른쪽 간격
+            ),
+
+            ///판매자가 등록한 사진
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: SizedBox(
+                height: 120, // 이미지 높이에 맞게 설정 (원하는 만큼 조정)
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    CommonImageViewer(
+                      key: ValueKey("${_selectedRequest?.reqNo}_${_selectedRequest?.seq}"),
+                      estNo: _selectedRequest?.reqNo ?? '',
+                      seq: _selectedRequest?.seq ?? '',
+                      imageGubun: 'RQ01',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 4),
+            const Divider(
+              color: Colors.grey, // 🔹 색상: 회색
+              thickness: 1,       // 🔹 두께: 1px
+              indent: 16,         // 🔹 왼쪽 간격
+              endIndent: 16,      // 🔹 오른쪽 간격
+            ),
+            /// 판매자 프로필
+            Container(
+              color: Colors.white,
+              child: SellerProfileChildView(
+                key: ValueKey((_selectedRequest ?? requests.first).companyId), // ✅ 핵심
+                sllrNo: (_selectedRequest ?? requests.first).companyId,
+                appbarYn: "N",
+              ),
+            ),
+
           ],
         ),
       ),
@@ -226,7 +273,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
           child: SizedBox(
             height: 48,
             child: ElevatedButton(
-              onPressed: _selectedRequest!.reqState != '10'
+              onPressed: _selectedRequest!.inProgress == 'YES'
                   ? () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -240,9 +287,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
               }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: _selectedRequest!.reqState == '70'
-                    ? Colors.grey[400] // 🔹 상태가 70이면 회색
-                    : Colors.black,    // 🔹 그 외엔 검정
+                backgroundColor: _getButtonColor(
+                  _selectedRequest!.reqState,
+                  _selectedRequest!.inProgress,
+                ), // 🔹 색상도 함수로 분리
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -289,11 +337,27 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     );
   }
 
+  Color? _getButtonColor(String reqState, String inProgress) {
+    print("🧾 버튼 상태 확인 - reqState: $reqState, inProgress: $inProgress"); // ✅ 로그 추가
+    if (reqState == '70' || inProgress == 'NO') {
+      print("🧾 버튼 상태 확인 요기111111");
+      return Colors.grey[400];
+    } else {
+      print("🧾 버튼 상태 확인 요기222222222222");
+      return Colors.black;
+    }
+  }
+
   /// 🔹 이미지 위에 정보 오버레이
+  // 2025-06-01: 진행중 텍스트 조건부 표시 추가
   Widget _buildTagInfoOverlay(RequestInfo request, bool isSelected) {
     String companyName = request.companyNm.length > 8
         ? request.companyNm.substring(0, 8) + '...'
         : request.companyNm;
+
+    final bool isInProgress = request.inProgress == "YES" &&
+        int.tryParse(request.reqState) != null &&
+        int.parse(request.reqState) > 20;
 
     return Container(
       padding: const EdgeInsets.all(8.0),
@@ -308,24 +372,37 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  companyName,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: Colors.black,
-                    /*shadows: const [
-                      Shadow(
-                        offset: Offset(1, 1),
-                        blurRadius: 2.0,
-                        color: Colors.black45,
+                Row(
+                  children: [
+                    Text(
+                      companyName,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: Colors.black,
                       ),
-                    ],*/
-                  ),
-                  overflow: TextOverflow.ellipsis,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(width: 6.0),
+                    if (isInProgress)
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Text(
+                          '진행중',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(height: 10.0),
-
                 _buildTag('# 견적 ${request.estimateAmount.isEmpty || request.estimateAmount == "-" ? '-' : FormatUtils.formatCurrency(request.estimateAmount) + ' 원'}'),
                 const SizedBox(height: 10.0),
                 _buildTag('# 시공건수 11건'),
@@ -335,14 +412,18 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             ),
           ),
 
-          /// 🔹 왼쪽 하단: 별점 + 인증 아이콘
+          /// 🔹 왼쪽 하단: 인증 + 평점
           Positioned(
             bottom: 0,
             left: 0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// ⭐️ 별 + 평점 한 줄
+                Image.asset(
+                  'assets/home/confirmok.png',
+                  height: 13,
+                ),
+                const SizedBox(height: 4.0),
                 Row(
                   children: [
                     Image.asset('assets/home/star.png', width: 16, height: 16),
@@ -364,12 +445,6 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4), // 별점과 인증 사이 간격
-                // ✅ 인증완료 아이콘
-                Image.asset(
-                  'assets/home/confirmok.png',
-                  height: 13,
-                ),
               ],
             ),
           ),
@@ -377,8 +452,6 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
       ),
     );
   }
-
-
 
   /**
    * 테두리 글씨
@@ -412,13 +485,15 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   }
 
   /**
-   * 최하단 상세보기
+   * 선택시 최하단 상세보기
    */
   Widget _buildRequestDetail(RequestInfo request) {
     // 🔹 companyNm과 estimateContents 값 확인 로그 추가
     print("🔹 Company Name: ${request.companyNm}");
+    print("🔹 Company companyId: ${request.companyId}");
     print("🔹 Estimate Contents: ${request.estimateContents}");
-
+    print("🔹 Estimate Contents: ${request.inProgress}");
+    print("🔹🔹🔹 Estimate reqState: ${request.reqState}");
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16),
       padding: EdgeInsets.all(16),
@@ -492,92 +567,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
             request.estimateContents,
             style: const TextStyle(fontSize: 14, height: 1.5),
           ),
-
-          SizedBox(height: 10),
-
-          // 👉 아래처럼 수정 (2025-05-31)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            //child: SellerProfileContent(sllrNo: request.companyId),
-            child: SellerProfileChildView(sllrNo: request.companyId, appbarYn: "N"),
-
-          ),
         ],
       ),
-    );
-  }
-
-  // 2025.04.16: 진행 요청 시 updateRequestState 호출 후 CustomChatScreen 이동 처리
-  void _handleRequestAction(RequestInfo request) async {
-    String? clerkNo = await secureStorage.read(key: 'clerkNo'); // 🔹 스토리지에서 clerkNo 읽기
-    print('🧪 선택된 request.seq: ${request.seq}');
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.black,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          title: Text(
-            '작업 진행',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Text(
-            '${request.companyNm} 업체에 작업을 진행하시겠습니까?',
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                '취소',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              onPressed: () async {
-                //Navigator.pop(context); // 다이얼로그 닫기
-
-                /// ✅ Chat 화면으로 이동
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => CustomChatScreen(
-                      request.reqNo,
-                      request.seq,
-                      "userView",
-                    ),
-                  ),
-                );
-              },
-              child: const Text(
-                '확인',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }
