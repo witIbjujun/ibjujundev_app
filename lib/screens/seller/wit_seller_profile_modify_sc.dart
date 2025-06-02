@@ -78,6 +78,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String? imageUrl1 = "";
   File? imageFile2;
   String? imageUrl2 = "";
+  String? selectedYear;
+  List<Map<String, String>> selectedServiceList = []; // 코드 저장용 리스트
 
   /* 이미지추가 S */
   List<File> _sellerImages = [];
@@ -506,6 +508,47 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
 
   void _addServiceWithAsPeriod() {
     if (selectedServiceType != null && selectedAsPeriod != null) {
+      final selectedItem = categoryList.firstWhere(
+            (item) => item['categoryId'] == selectedServiceType,
+        orElse: () => {'categoryNm': '서비스 없음', 'categoryId': null},
+      );
+
+      final selectedAsItem = asList.firstWhere(
+            (item) => item['cd'] == selectedAsPeriod,
+        orElse: () => {'cdNm': 'AS 기간 없음', 'cd': null},
+      );
+
+      if (selectedItem['categoryId'] != null && selectedAsItem['cd'] != null) {
+        String combinedDisplay =
+            '${selectedItem['categoryNm']} / ${selectedAsItem['cdNm']}';
+        String combinedCd =
+            '${selectedItem['categoryId']}/${selectedAsItem['cd']}';
+
+        bool alreadyExists =
+        selectedServiceWithAsPeriod.contains(combinedDisplay);
+
+        if (!alreadyExists) {
+          setState(() {
+            selectedServiceWithAsPeriod.add(combinedDisplay);
+            selectedServiceTypes.add(combinedDisplay);
+            selectedServiceList.add({
+              'categoryId': selectedItem['categoryId'],
+              'asCd': selectedAsItem['cd']
+            }); // ✔️ 실제 값 저장
+
+            // 이건 UI용 드롭다운 초기화
+            selectedServiceType = null;
+            selectedAsPeriod = null;
+
+            // serviceErrorMessage = '';
+          });
+        }
+      }
+    }
+  }
+
+  /*void _addServiceWithAsPeriod() {
+    if (selectedServiceType != null && selectedAsPeriod != null) {
       String combinedService = '$selectedServiceType / $selectedAsPeriod';
       setState(() {
         selectedServiceTypes.add(combinedService);
@@ -513,7 +556,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         selectedAsPeriod = null; // 선택 후 초기화
       });
     }
-  }
+  }*/
 
   /*void verifyPhoneNumber() {
     // 인증 API 호출 로직
@@ -792,73 +835,68 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                        borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                        color: WitHomeTheme.white, // 배경색 하얗게
+                        border: Border.all(color: Colors.grey, width: 1),
+                        borderRadius: BorderRadius.circular(10),
+                        color: WitHomeTheme.white,
                       ),
-                      padding: EdgeInsets.only(left: 10), // 왼쪽 패딩 설정
+                      padding: EdgeInsets.only(left: 10),
                       child: DropdownButton<String>(
                         hint: Text(
                           '서비스 지역 선택',
                           style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                         ),
                         value: selectedLocation,
-                        isExpanded: true, // Dropdown이 가득 차게 설정
-                        underline: SizedBox(), // 기본 언더라인 제거
+                        isExpanded: true,
+                        underline: SizedBox(),
                         onChanged: (String? newValue) {
-                          setState(() {
-                            selectedLocation = newValue;
-                          });
+                          if (newValue != null) {
+                            setState(() {
+                              selectedLocation = newValue;
+                              _addLocation(); // 선택 시 바로 추가
+                            });
+                          }
                         },
                         items: areaList.map<DropdownMenuItem<String>>((item) {
                           return DropdownMenuItem<String>(
                             value: item['cd'],
-                            child: Text(item['cdNm']),
+                            child: Container(
+                              color: WitHomeTheme.white,
+                              child: Text(item['cdNm']),
+                            ),
                           );
                         }).toList(),
-                        dropdownColor: WitHomeTheme.wit_white, // 드롭다운 메뉴 배경색
-
+                        dropdownColor: WitHomeTheme.white,
                       ),
                     ),
                   ),
-                  SizedBox(width: 8), // 버튼과의 간격
-                  Container(
-                    height: 48, // 드롭다운과 높이를 맞추기 위해 설정
-                    child: ElevatedButton(
-                      onPressed: _addLocation,
-                      child: Text(
-                        '선택',
-                        style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: WitHomeTheme.wit_black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // 선택 버튼 제거 가능
                 ],
               ),
+
 // 선택된 지역 표시
               Wrap(
                 spacing: 8.0,
-                children: selectedLocations.map((location) => Container(
+                children: selectedLocations
+                    .map((location) => Container(
                   height: 48, // 선택된 지역의 높이를 선택 버튼과 맞춤
                   child: Chip(
                     label: Text(
                       location['cdNm'],
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_black),
-                    ), // cdNm 값을 가져옴
+                      style: WitHomeTheme.title.copyWith(
+                          fontSize: 14, color: WitHomeTheme.wit_black),
+                    ),
+                    // cdNm 값을 가져옴
                     deleteIcon: Icon(Icons.close),
-                    backgroundColor: WitHomeTheme.wit_white, // 배경색을 하얀색으로 설정
+                    backgroundColor: WitHomeTheme.wit_white,
+                    // 배경색을 하얀색으로 설정
                     onDeleted: () {
                       setState(() {
                         selectedLocations.remove(location);
                       });
                     },
                   ),
-                )).toList(),
+                ))
+                    .toList(),
               ),
 
               SizedBox(height: 10),
@@ -882,8 +920,10 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                        borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                        border: Border.all(color: Colors.grey, width: 1),
+                        // 회색 테두리
+                        borderRadius: BorderRadius.circular(10),
+                        // 모서리 둥글게
                         color: WitHomeTheme.white, // 배경색 하얗게
                       ),
                       padding: EdgeInsets.only(left: 10), // 왼쪽 패딩 설정
@@ -893,31 +933,32 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                           style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                         ),
                         value: selectedServiceType,
-                        isExpanded: true, // Dropdown이 가득 차게 설정
-                        underline: SizedBox(), // 기본 언더라인 제거
+                        isExpanded: true,
+                        // Dropdown이 가득 차게 설정
+                        underline: SizedBox(),
+                        // 기본 언더라인 제거
                         onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            setState(() {
-                              selectedServiceType = newValue;
-                              final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == newValue);
-                              selectedServiceTypes.add(selectedItem2['categoryNm']);
-                              // AS 기간과 함께 선택된 경우 추가
-                              if (selectedAsPeriod != null) {
-                                selectedServiceWithAsPeriod.add('${selectedItem2['categoryNm']} / ${asList.firstWhere((item) => item['cd'] == selectedAsPeriod)['cdNm']}');
-                              }
-                            });
-                          }
+                          setState(() {
+                            selectedServiceType = newValue;
+
+                            // 자동 추가 조건 확인
+                            if (newValue != null && selectedAsPeriod != null) {
+                              _addServiceWithAsPeriod();
+                            }
+                          });
                         },
-                        items: categoryList.map<DropdownMenuItem<String>>((item) {
+                        items:
+                        categoryList.map<DropdownMenuItem<String>>((item) {
                           return DropdownMenuItem<String>(
                             value: item['categoryId'],
-                            child: Text(item['categoryNm'],
-                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                            child: Text(
+                              item['categoryNm'],
+                              style:
+                              WitHomeTheme.subtitle.copyWith(fontSize: 16),
                             ),
                           );
                         }).toList(),
                         dropdownColor: WitHomeTheme.wit_white, // 드롭다운 메뉴 배경색
-
                       ),
                     ),
                   ),
@@ -925,8 +966,10 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                        borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                        border: Border.all(color: Colors.grey, width: 1),
+                        // 회색 테두리
+                        borderRadius: BorderRadius.circular(10),
+                        // 모서리 둥글게
                         color: WitHomeTheme.white, // 배경색 하얗게
                       ),
                       padding: EdgeInsets.only(left: 10), // 왼쪽 패딩 설정
@@ -936,39 +979,48 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                           style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
                         ),
                         value: selectedAsPeriod,
-                        isExpanded: true, // Dropdown이 가득 차게 설정
-                        underline: SizedBox(), // 기본 언더라인 제거
+                        isExpanded: true,
+                        // Dropdown이 가득 차게 설정
+                        underline: SizedBox(),
+                        // 기본 언더라인 제거
                         onChanged: (String? newValue) {
                           setState(() {
                             selectedAsPeriod = newValue;
-                            // AS 기간과 서비스 품목이 함께 선택된 경우 추가
-                            if (selectedServiceType != null) {
-                              final selectedItem2 = categoryList.firstWhere((item) => item['categoryId'] == selectedServiceType);
-                              selectedServiceWithAsPeriodCd = '${selectedItem2['categoryId']}/${asList.firstWhere((item) => item['cd'] == newValue)['cd']}';
-                              selectedServiceWithAsPeriod.add(
-                                  '${selectedItem2['categoryNm']} ( ${asList.firstWhere((item) => item['cd'] == newValue)['cdNm']} )'
-                              );
+
+                            if (newValue == "01") {
+                              selectedYear = '1';
+                            } else if (newValue == "02") {
+                              selectedYear = '2';
+                            } else {
+                              selectedYear = '0';
+                            }
+
+                            // 자동 추가 조건 확인
+                            if (selectedServiceType != null &&
+                                newValue != null) {
+                              _addServiceWithAsPeriod();
                             }
                           });
                         },
                         items: asList.map<DropdownMenuItem<String>>((item) {
                           return DropdownMenuItem<String>(
                             value: item['cd'],
-                            child: Text(item['cdNm'],
-                              style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                            child: Text(
+                              item['cdNm'],
+                              style:
+                              WitHomeTheme.subtitle.copyWith(fontSize: 16),
                             ),
                           );
                         }).toList(),
                         dropdownColor: WitHomeTheme.wit_white, // 드롭다운 메뉴 배경색
-
                       ),
                     ),
                   ),
-                  SizedBox(width: 8), // 드롭다운과 선택 버튼 사이의 간격
+                  /*SizedBox(width: 8), // 드롭다운과 선택 버튼 사이의 간격
                   Container(
                     height: 48, // 드롭다운과 높이를 맞추기 위해 설정
                     child: ElevatedButton(
-                      onPressed: _addServiceWithAsPeriod,
+                      onPressed: _showAsPeriodDialogOrAddService,
                       child: Text(
                         '선택',
                         style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
@@ -980,29 +1032,41 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                         ),
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               ),
 
 // 선택된 서비스와 AS 기간 표시
               Wrap(
                 spacing: 8.0,
-                children: selectedServiceWithAsPeriod.map((service) => Container(
+                children: selectedServiceWithAsPeriod
+                    .map((service) => Container(
                   height: 48, // 선택된 서비스의 높이를 선택 버튼과 맞춤
                   child: Chip(
-                    label: Text(
-                      service,
-                      style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_black),
-                    ),
-                    deleteIcon: Icon(Icons.close),
-                    backgroundColor: WitHomeTheme.wit_white, // 배경색을 하얀색으로 설정
-                    onDeleted: () {
-                      setState(() {
-                        selectedServiceWithAsPeriod.remove(service);
-                      });
-                    },
+                      label: Text(
+                        service,
+                        style: WitHomeTheme.title.copyWith(
+                            fontSize: 14, color: WitHomeTheme.wit_black),
+                      ),
+                      deleteIcon: Icon(Icons.close),
+                      backgroundColor: WitHomeTheme.wit_white,
+                      // 배경색을 하얀색으로 설정
+                      onDeleted: () {
+                        setState(() {
+                          // UI에서 해당 항목 삭제
+                          selectedServiceWithAsPeriod.remove(service);
+
+                          // selectedServiceList에서도 해당 항목 삭제
+                          selectedServiceList.removeWhere((item) {
+                            // 삭제하려는 서비스명과 매칭되는 항목 삭제
+                            // combinedDisplay와 매칭되는 항목을 삭제
+                            return '${item['categoryId']}/${item['asCd']}' == service;
+                          });
+                        });
+                      }
                   ),
-                )).toList(),
+                ))
+                    .toList(),
               ),
 
               SizedBox(height: 3),
@@ -1759,15 +1823,17 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       serviceArea = ''; // 기본값 설정
     }
 
-    List<String> parts = selectedServiceWithAsPeriodCd.split('/');
+    // List<String> parts = selectedServiceWithAsPeriodCd.split('/');
+    // String serviceItem = parts[0]; // 'CATE001'
+    // String asGbn = parts[1];       // '01'
 
-// 각각의 변수에 할당
-    String serviceItem = parts[0]; // 'CATE001'
-    String asGbn = parts[1];       // '01'
+    // 각각의 변수에 할당
+    String saveServiceItemCd = selectedServiceList.first['categoryId'] ?? '';
+    String saveAsGbn = selectedServiceList.first['asCd'] ?? '';
 
     print("update serviceArea: " + serviceArea);
-    print("update serviceItem: " + serviceItem);
-    print("update asGbn: " + asGbn);
+    print("update serviceItem: " + saveServiceItemCd);
+    print("update asGbn: " + saveAsGbn);
 
 
 
@@ -1776,7 +1842,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       "sllrNo": widget.sllrNo,
       "storeName": storeName,
       "serviceArea": serviceArea,
-      "serviceItem": serviceItem,
+      "serviceItem": saveServiceItemCd,
       "itemPrice1": itemPrice1,
       "itemPrice2": itemPrice2,
       "itemPrice3": itemPrice3,
@@ -1789,7 +1855,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       "zipCode": zipCode,
       "address1": address1,
       "address2": address2,
-      "asGbn": asGbn,
+      "asGbn": saveAsGbn,
       "openDate": openDate,
       "categoryContent" : categoryContent,
       "fileInfo1": fileInfo1,
