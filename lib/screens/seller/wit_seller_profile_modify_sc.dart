@@ -85,20 +85,13 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   List<File> _profileImages = [];
   final ImagePicker _picker = ImagePicker();
 
-  /*Future<void> _pickImages(ImageSource source) async {
-    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
-    if (pickedFiles != null) {
-      setState(() {
-        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
-      });
-    }
-  }*/
-
   Future<void> _pickImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
-        _sellerImages.add(File(pickedFile.path));
+        if (_sellerImages.length < 5) {
+          _sellerImages.add(File(pickedFile.path));
+        }
       });
     }
   }
@@ -107,7 +100,9 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     final XFile? pickedFile2 = await _picker.pickImage(source: source);
     if (pickedFile2 != null) {
       setState(() {
-        _bizImages.add(File(pickedFile2.path));
+        if (_bizImages.length < 1) {
+          _bizImages.add(File(pickedFile2.path));
+        }
       });
     }
   }
@@ -116,7 +111,48 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     final XFile? pickedFile3 = await _picker.pickImage(source: source);
     if (pickedFile3 != null) {
       setState(() {
-        _profileImages.add(File(pickedFile3.path));
+        if (_profileImages.length < 1) {
+          _profileImages.add(File(pickedFile3.path));
+        }
+      });
+    }
+  }
+
+  Future<void> _pickMultiImages() async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        for (final xfile in pickedFiles) {
+          if (_sellerImages.length < 5) {
+            _sellerImages.add(File(xfile.path));
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> _pickMultiImages2() async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        for (final xfile in pickedFiles) {
+          if (_bizImages.length < 1) {
+            _bizImages.add(File(xfile.path));
+          }
+        }
+      });
+    }
+  }
+
+  Future<void> _pickMultiImages3() async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        for (final xfile in pickedFiles) {
+          if (_profileImages.length < 1) {
+            _profileImages.add(File(xfile.path));
+          }
+        }
       });
     }
   }
@@ -1956,7 +1992,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 title: Text('갤러리에서 선택',
                     style: WitHomeTheme.title),
                 onTap: () {
-                  _pickImage(ImageSource.gallery);
+                  _pickMultiImages();
                   Navigator.pop(context);
                 },
               ),
@@ -1991,7 +2027,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 title: Text('갤러리에서 선택',
                     style: WitHomeTheme.title),
                 onTap: () {
-                  _pickImage2(ImageSource.gallery);
+                  _pickMultiImages2();
                   Navigator.pop(context);
                 },
               ),
@@ -2025,7 +2061,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 title: Text('갤러리에서 선택',
                     style: WitHomeTheme.title),
                 onTap: () {
-                  _pickImage3(ImageSource.gallery);
+                  _pickMultiImages3();
                   Navigator.pop(context);
                 },
               ),
@@ -2045,46 +2081,4 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     );
   }
 
-  // [유틸] 갤러리, 카메라 피커 호출
-  /*Future<void> _pickImage(ImageSource source, index) async {
-
-    final XFile? pickedFile = await _picker.pickImage(source: source);
-
-    if (pickedFile != null) {
-
-      setState(() {
-        if (index == 1) {
-          isImgLoading1 = true;
-        } else {
-          isImgLoading2 = true;
-        }
-      });
-
-      // 이미지 파일을 바이트로 읽기
-      final bytes = await File(pickedFile.path).readAsBytes();
-
-      // 이미지 디코딩
-      img.Image? image = img.decodeImage(bytes);
-
-      // 이미지 오른쪽으로 90도 회전
-      img.Image rotatedImage = img.copyRotate(image!, angle: 360);
-
-      // 회전된 이미지를 파일로 저장
-      final rotatedFile = File(pickedFile.path);
-      await rotatedFile.writeAsBytes(img.encodeJpg(rotatedImage));
-
-      setState(() {
-        if (index == 1) {
-          isImgLoading1 = false;
-          imageFile1 = rotatedFile;
-          imageUrl1 = "";
-        }
-        if (index == 2) {
-          isImgLoading2 = false;
-          imageFile2 = rotatedFile;
-          imageUrl2 = null;
-        }
-      });
-    }
-  }*/
 }
