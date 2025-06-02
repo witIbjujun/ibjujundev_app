@@ -992,7 +992,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
       "asGbn": saveAsGbn,
       "regiLevel": "01",
       "clerkNo": clerkNo,
-      "fileInfo": fileInfo
+      "fileInfo3": fileInfo
     });
 
     // API 호출

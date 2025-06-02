@@ -25,7 +25,6 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
   TextEditingController sllrContentController = TextEditingController();
   TextEditingController sllrImageController = TextEditingController();
   String errorMessage = ''; // 판매자명 오류 메시지 변수
-  List<dynamic> bizImageList = [];
   List<String> fileDelInfo = [];
 
 
@@ -33,6 +32,34 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
   void initState() {
     super.initState();
     getSellerInfo(widget.sllrNo);
+  }
+
+  /* 이미지추가 S */
+  List<File> _images = [];
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        if (_images.length < 5) {
+          _images.add(File(pickedFile.path));
+        }
+      });
+    }
+  }
+
+  Future<void> _pickMultiImages() async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+      setState(() {
+        for (final xfile in pickedFiles) {
+          if (_images.length < 5) {
+            _images.add(File(xfile.path));
+          }
+        }
+      });
+    }
   }
 
   Future<void> getSellerInfo(sllrNo) async {
@@ -93,33 +120,7 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
 
   }
 
-  /* 이미지추가 S */
-  List<File> _images = [];
-  final ImagePicker _picker = ImagePicker();
 
-  Future<void> _pickImage(ImageSource source) async {
-    final XFile? pickedFile = await _picker.pickImage(source: source);
-    if (pickedFile != null) {
-      setState(() {
-        if (_images.length < 5) {
-          _images.add(File(pickedFile.path));
-        }
-      });
-    }
-  }
-
-  Future<void> _pickMultiImages() async {
-    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
-    if (pickedFiles != null && pickedFiles.isNotEmpty) {
-      setState(() {
-        for (final xfile in pickedFiles) {
-          if (_images.length < 5) {
-            _images.add(File(xfile.path));
-          }
-        }
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -402,9 +403,9 @@ class SellerProfileInsertContentsState extends State<SellerProfileInsertContents
     // PARAM
     final param = jsonEncode({
       "sllrContent": sllrContent,
-      "fileInfo": fileInfo,
       "sllrNo": widget.sllrNo,
       "regiLevel": "02",
+      "fileInfo1": fileInfo,
     });
 
     // API 호출
