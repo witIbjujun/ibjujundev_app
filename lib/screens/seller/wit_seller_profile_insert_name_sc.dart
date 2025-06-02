@@ -970,11 +970,11 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
       saveServiceAreaCd = selectedLocations.first['cd']; // 선택된 서비스 지역의 cd
     }
 
-    // AS 기간과 서비스 품목을 선택하고 처리
-    List<String> parts = selectedServiceWithAsPeriodCd.split('/');
+    String saveServiceItemCd = selectedServiceList.first['categoryId'] ?? '';
+    String saveAsGbn = selectedServiceList.first['asCd'] ?? '';
 
-    String saveServiceItemCd = ''; // 서비스 품목 ID 초기화
-    String saveAsGbn = ''; // AS 기간 초기화
+/*    // AS 기간과 서비스 품목을 선택하고 처리
+    List<String> parts = selectedServiceWithAsPeriodCd.split('/');
 
     if (parts.length > 0) {
       saveServiceItemCd = parts[0].trim(); // 서비스 품목 ID
@@ -982,7 +982,7 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
 
     if (parts.length > 1) {
       saveAsGbn = parts[1].trim(); // AS 기간
-    }
+    }*/
 
     // PARAM
     final param = jsonEncode({
