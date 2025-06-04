@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/seller/wit_seller_card_register_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_grouppurchase_list_sc.dart';
 import 'package:witibju/screens/seller/wit_seller_schedule_list_sc.dart';
@@ -50,9 +51,9 @@ class SellerProfileDetail extends StatefulWidget {
 class SellerProfileDetailState extends State<SellerProfileDetail>
     with RouteAware {
   dynamic sellerInfo;
+  dynamic sllrNo;
   String storeName = "";
   Map cashInfo = {};
-  dynamic sllrNo; // 새로운 sllrNo 변수 추가
   final TextEditingController _sllrNoController =
   TextEditingController(); // 입력 필드 컨트롤러
   late final DateTime? _selectedDate; // 선택된 날짜를 여기에 설정
@@ -60,36 +61,26 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
 
   // 아파트구독 리스트
   List<dynamic> subscribeAptList = [];
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
-
-    sllrNo = widget.sllrNo.toString(); // 초기값 설정
     // 초기화 메서드 호출
     fetchData();
   }
 
-  void fetchData() {
-    // sllrNo가 설정된 경우에만 데이터를 가져옴
+  Future<void> fetchData() async {
+    sllrNo = await secureStorage.read(key: 'sllrNo');
     if (sllrNo != null) {
-      // API 호출 등의 초기화 로직 구현
-      getSellerInfo(sllrNo);
-      getSubscribeAptList(sllrNo);
-      // getCashInfo(sllrNo); // 초기화 시 캐시정보를 가져옵
+      await getSellerInfo();
+      await getSubscribeAptList();
     }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!); // Route 감시 시작
-  }
-
-  @override
-  void dispose() {
-    routeObserver.unsubscribe(this); // Route 감시 해제
-    super.dispose();
   }
 
   @override
@@ -98,8 +89,12 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
     fetchData();
   }
 
-  Future<void> getSellerInfo(dynamic sllrNo) async {
+  Future<void> getSellerInfo() async {
     String restId = "getSellerInfo";
+
+    if (sllrNo == null) {
+      sllrNo = await secureStorage.read(key: 'sllrNo');
+    }
 
     // PARAM
     final param = jsonEncode({
@@ -123,7 +118,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
   }
 
   // 아파트 구독 리스트
-  Future<void> getSubscribeAptList(dynamic sllrNo) async {
+  Future<void> getSubscribeAptList() async {
     String restId = "getSubscribeAptList";
 
     // PARAM
@@ -189,13 +184,13 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
         backgroundColor: WitHomeTheme.wit_white, // Scaffold의 배경색을 하얀색으로 설정
         resizeToAvoidBottomInset: false,
         appBar: SellerAppBar(
-          sllrNo: widget.sllrNo,
-          onSllrNoChanged: (newSllrNo) {
+          sllrNo: sllrNo,
+          /*onSllrNoChanged: (newSllrNo) {
             setState(() {
               sllrNo = newSllrNo; // sllrNo 업데이트
               fetchData();
             });
-          },
+          },*/
         ),
         body: Container(
             child: SingleChildScrollView(
@@ -484,7 +479,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                                   return Scaffold(
                                     body: Container(
                                       child: TableCalenderMain(
-                                          stat: "", sllrNo: widget.sllrNo.toString()),
+                                          stat: "", sllrNo: sllrNo),
                                     ),
                                   );
                                 },

@@ -1003,6 +1003,11 @@ class SellerProfileInsertNameState extends State<SellerProfileInsertName> {
 
       dynamic sllrNo = response; // response에서 ID 값을 가져옴
 
+      // 세션변수에 담음
+      await secureStorage.write(key: 'sllrNo', value: sllrNo.toString());
+
+      String? sllrNo111 = await secureStorage.read(key: 'sllrNo');
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("파트너 프로필이 성공적으로 저장되었습니다.")),
       );
