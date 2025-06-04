@@ -15,6 +15,7 @@ import 'package:kpostal/kpostal.dart';
 import '../../util/wit_code_ut.dart';
 import '../board/wit_board_detail_sc.dart';
 import '../common/wit_ImageViewer_sc.dart';
+import '../common/wit_calendarDialog.dart';
 import '../common/wit_common_widget.dart';
 import '../home/wit_home_theme.dart';
 
@@ -524,7 +525,7 @@ class SellerProfileInsertBizInfoState
               Row(
                 children: [
                   Text(
-                    '개업일자 ',
+                    '개업일자',
                     style: WitHomeTheme.title.copyWith(fontSize: 16),
                   ),
                   Icon(
@@ -535,28 +536,31 @@ class SellerProfileInsertBizInfoState
                 ],
               ),
               SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                padding: const EdgeInsets.all(0), // 내부 여백
-                child: TextField(
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                  controller: openDateController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '개업일자를 입력하세요', // 힌트 텍스트
-                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(6.0),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              openDate ?? "날짜 선택",
+                              style: const TextStyle(fontSize: 16.0),
+                            ),
+                            const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  onChanged: (text) {
-                    setState(() {
-                      // 텍스트가 변경될 때마다 오류 메시지 초기화
-                      openDateErrorMessage = '';
-                    });
-                  },
-                ),
+                ],
               ),
               // 오류 메시지 표시
               if (openDateErrorMessage.isNotEmpty)
@@ -1049,5 +1053,24 @@ class SellerProfileInsertBizInfoState
         );
       },
     );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? selectedDate = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (context) => CustomCalendarBottomSheet(title: '개업일자', allowPastDates: true),
+
+    );
+
+    if (selectedDate != null) {
+      setState(() {
+        openDate =
+        "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}";
+      });
+    }
   }
 }

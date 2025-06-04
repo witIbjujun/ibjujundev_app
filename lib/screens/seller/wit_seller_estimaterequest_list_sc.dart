@@ -204,7 +204,7 @@ class EstimateItem extends StatelessWidget {
                             builder: (context) => EstimateRequestDetail(
                               estNo: request['estNo'],
                               seq: request['seq'],
-                              sllrNo: sllrNo,
+                              // sllrNo: sllrNo,
                             ),
                           ),
                         );

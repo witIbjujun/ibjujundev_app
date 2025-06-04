@@ -365,7 +365,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
             children: [
               // 첫 번째 영역: 사업자 이미지 및 이름, 인증 정보
               _buildContainer(
-                title: '업체명',
+                // title: '업체명',
                 content: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -557,7 +557,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
                     children: [
                       Text(
                         "후기", // 제목 추가
-                        style: WitHomeTheme.title.copyWith(fontSize: 20),
+                        style: WitHomeTheme.title.copyWith(fontSize: 16),
                       ),
                       SizedBox(height: 10), // 제목과 사용자 정보 영역 간격
 
@@ -773,7 +773,7 @@ class SellerProfileViewState extends State<SellerProfileView> {
             if (title != null)
               Text(
                 title,
-                style: WitHomeTheme.title.copyWith(fontSize: 20),
+                style: WitHomeTheme.title.copyWith(fontSize: 16),
               ),
             SizedBox(height: 4),
             content,

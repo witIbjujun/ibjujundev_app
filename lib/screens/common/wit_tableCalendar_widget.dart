@@ -113,7 +113,7 @@ List<Widget> buildEventList(List<Event> events, BuildContext context, Future<voi
                               builder: (context) => EstimateRequestDetail(
                                 estNo: event.data["estNo"].toString(),
                                 seq: event.data["seq"].toString(),
-                                sllrNo: event.data["sllrNo"].toString(),
+                                // sllrNo: event.data["sllrNo"].toString(),
                               ),
                             ),
                           );

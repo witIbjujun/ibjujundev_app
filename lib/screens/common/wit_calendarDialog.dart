@@ -5,8 +5,14 @@ import '../home/wit_home_theme.dart';
 
 class CustomCalendarBottomSheet extends StatefulWidget {
   final String title; // ✅ 제목을 동적으로 받을 수 있도록 추가
+  final bool allowPastDates; // 👈 이걸 추가!
 
-  CustomCalendarBottomSheet({required this.title});
+  CustomCalendarBottomSheet(
+      {required this.title,
+        this.allowPastDates = false, // 기본값은 false
+      }
+  );
+
   @override
   _CustomCalendarBottomSheetState createState() => _CustomCalendarBottomSheetState();
 }
@@ -44,8 +50,7 @@ class _CustomCalendarBottomSheetState extends State<CustomCalendarBottomSheet> {
             focusedDay: _focusedDay,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             onDaySelected: (selectedDay, focusedDay) {
-              // 오늘 이전 날짜는 선택 못하게 막기
-              if (!isBeforeToday(selectedDay)) {
+              if (widget.allowPastDates || !isBeforeToday(selectedDay)) {
                 setState(() {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
@@ -53,8 +58,7 @@ class _CustomCalendarBottomSheetState extends State<CustomCalendarBottomSheet> {
               }
             },
             enabledDayPredicate: (day) {
-              // 오늘 이전 날짜는 비활성화
-              return !isBeforeToday(day);
+              return widget.allowPastDates || !isBeforeToday(day);
             },
             calendarFormat: CalendarFormat.month,
             headerStyle: HeaderStyle(
@@ -84,7 +88,7 @@ class _CustomCalendarBottomSheetState extends State<CustomCalendarBottomSheet> {
           // 확인 버튼
           ElevatedButton(
             onPressed: () {
-              if (_selectedDay != null) {
+              if (_selectedDay != null /* && (widget.allowPastDates || !isBeforeToday(_selectedDay!)) */) {
                 Navigator.pop(context, _selectedDay);
               }
             },

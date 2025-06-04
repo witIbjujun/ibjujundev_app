@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:witibju/screens/seller/wit_common_imageViewer_sc.dart';
@@ -30,10 +31,10 @@ final ImagePicker _picker = ImagePicker();
 class EstimateRequestDetail extends StatefulWidget {
   final String estNo;
   final String seq;
-  final String sllrNo;
+  // final String sllrNo;
 
   const EstimateRequestDetail(
-      {super.key, required this.estNo, required this.seq, required this.sllrNo});
+      {super.key, required this.estNo, required this.seq});
 
   @override
   State<StatefulWidget> createState() {
@@ -47,9 +48,12 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   TextEditingController itemPrice1Controller = TextEditingController();
   TextEditingController estimateContentController = TextEditingController();
   TextEditingController endReasonController = TextEditingController();
-
   String? contentError;
   String? priceError;
+
+  dynamic sllrNo;
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+
 
   Future<void> _pickImages(ImageSource source) async {
     final List<XFile>? pickedFiles = await _picker.pickMultiImage();
@@ -75,8 +79,16 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   @override
   void initState() {
     super.initState();
-    // 견적 상세 조회
-    getEstimateRequestInfoForSend(widget.estNo, widget.seq);
+    initAsync();
+  }
+
+  Future<void> initAsync() async {
+    if (sllrNo == null) {
+      sllrNo = await secureStorage.read(key: 'sllrNo');
+   }
+    else {
+    }
+    await getEstimateRequestInfoForSend(widget.estNo, widget.seq);
 
     estimateContentController.addListener(() {
       if (contentError != null &&
@@ -94,7 +106,6 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
         });
       }
     });
-
   }
 
   @override
@@ -105,9 +116,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     super.dispose();
   }
 
-  bool _isChecked = false; // 체크박스 상태 관리
+  //bool _isChecked = false; // 체크박스 상태 관리
 
-  void _onCheckboxChanged(bool? value) {
+  /*void _onCheckboxChanged(bool? value) {
     setState(() {
       _isChecked = value ?? false;
     });
@@ -116,9 +127,13 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
     if (_isChecked) {
       _loadProfile();
     }
-  }
+  }*/
 
-  void _loadProfile() {
+  Future<void> _loadProfile() async {
+    if (sllrNo == null) {
+      sllrNo = await secureStorage.read(key: 'sllrNo');
+    }
+
     // 여기에 프로필을 불러오는 로직 추가
     print("프로필을 불러옵니다."); // 예시로 콘솔에 출력
     getEstimateRequestInfoForSend(widget.estNo, widget.seq);
@@ -127,7 +142,9 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
 
   @override
   Widget build(BuildContext context) {
-
+    if (this.sllrNo == null) {
+      return Center(child: CircularProgressIndicator()); // 또는 SizedBox.shrink()
+    }
 
     String estNo = estimateRequestInfoForSend['estNo'] ?? "";
     String seq = estimateRequestInfoForSend['seq'] ?? "";
@@ -596,14 +613,28 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     ),
                   ),
                 ),
-                SizedBox(height: 10),
-                Text(
-                  "내 프로필",
-                  style: WitHomeTheme.title.copyWith(
-                    fontSize: 16,
-                    color: WitHomeTheme.wit_lightSteelBlue,
-                  ),
+                SizedBox(height: 20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "내 프로필",
+                      style: WitHomeTheme.title.copyWith(
+                        fontSize: 16,
+                        color: WitHomeTheme.wit_lightSteelBlue,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "* 프로필 정보가 견적요청시 전송됩니다.",
+                      style: WitHomeTheme.subtitle.copyWith(
+                        fontSize: 14,
+                        color: WitHomeTheme.wit_red,
+                      ),
+                    ),
+                  ],
                 ),
+
                 SizedBox(height: 10),
                 Container(
                   decoration: BoxDecoration(
@@ -611,13 +642,7 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
                     borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
                   ),
                   child: SellerProfileChildView(
-                      sllrNo: widget.sllrNo, appbarYn: "N"),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  "* 파트너님의 프로필 정보가 견적요청시 전송됩니다.",
-                  style: WitHomeTheme.subtitle
-                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                      sllrNo: this.sllrNo, appbarYn: "N"),
                 ),
                 //],
                 SizedBox(height: 20),
@@ -966,6 +991,11 @@ class EstimateRequestDetailState extends State<EstimateRequestDetail> {
   Future<void> getEstimateRequestInfoForSend(estNo, seq) async {
     // REST ID
     String restId = "getEstimateRequestInfoForSend";
+
+    if (sllrNo == null) {
+      sllrNo = await secureStorage.read(key: 'sllrNo');
+      print("sllrNo from secureStorage ::: $sllrNo");
+    }
 
     // PARAM
     final param = jsonEncode({

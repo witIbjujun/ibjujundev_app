@@ -948,7 +948,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                                 builder: (BuildContext context) {
                                   return Scaffold(
                                     body: Container(
-                                      child:Board( bordType: "GJ01"
+                                      child:Board( bordType: "GJ03"
                                           , bordTitle: "공지사항"
                                       ),
                                     ),

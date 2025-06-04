@@ -381,7 +381,7 @@ class BoardListView extends StatelessWidget {
                                                     if (value == "Detail") {
                                                       await Navigator.push(
                                                         context,
-                                                        SlideRoute(page: EstimateRequestDetail(estNo : boardInfo["reqNo"], seq: "1", sllrNo: boardInfo["sllrNo"])),
+                                                        SlideRoute(page: EstimateRequestDetail(estNo : boardInfo["reqNo"], seq: "1", )),
                                                       );
                                                     } else if (value == 'reply') {
                                                       showModalBottomSheet(
