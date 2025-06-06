@@ -93,31 +93,28 @@ class _BoardWriteState extends State<BoardWrite> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded( // 이 Expanded가 부모 위젯(예: Row/Column)의 남은 공간을 모두 차지합니다.
-              child: Padding( // 전체 내용에 패딩을 적용합니다.
+            Expanded(
+              child: Padding(
                 padding: EdgeInsets.all(20.0),
-                child: Column( // 이 Column이 Expanded가 제공하는 공간을 채웁니다.
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // --- 고정된 상단 요소들 ---
-                    // bordTypeGbn이 "UH"일 때의 요소들
                     if (bordTypeGbn == "UH")...[
-                      Center( // 가운데 정렬을 위해 Center로 감쌈
+                      Center(
                         child: Text(
-                          "이용 후기는 어떠셨나요?", // 별점 레이블
+                          "이용 후기는 어떠셨나요?",
                           style: WitHomeTheme.title,
                         ),
                       ),
                       SizedBox(height: 10),
-                      Center( // 가운데 정렬을 위해 Center로 감쌈
+                      Center(
                         child: Row(
-                          mainAxisSize: MainAxisSize.min, // Row의 크기를 자식 크기에 맞게 최소화
+                          mainAxisSize: MainAxisSize.min,
                           children: List.generate(5, (index) => _buildStar(index)),
                         ),
                       ),
                       SizedBox(height: 20),
                     ],
-                    // bordTypeGbn이 "UH"가 아닐 때의 제목 입력 필드
                     if (bordTypeGbn != "UH")...[
                       Text(
                         "제목",
