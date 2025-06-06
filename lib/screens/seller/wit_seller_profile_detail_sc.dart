@@ -605,7 +605,9 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                                     ),*/
                                     body: Container(
                                       child: EstimateRequestList(
-                                          stat: '10', sllrNo: sllrNo.toString()), // 리스트를 추가
+                                          stat: '10'
+                                          //, sllrNo: sllrNo.toString()
+                                      ), // 리스트를 추가
                                     ),
                                   );
                                 },
@@ -669,7 +671,7 @@ class SellerProfileDetailState extends State<SellerProfileDetail>
                                     ),*/
                                     body: Container(
                                       child: EstimateRequestList(
-                                          stat: '', sllrNo: sllrNo.toString()), // 리스트를 추가
+                                          stat: ''), // 리스트를 추가
                                     ),
                                   );
                                 },

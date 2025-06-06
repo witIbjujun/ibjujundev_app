@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:witibju/screens/seller/wit_seller_estimaterequest_detail_sc.dart';
 import '../../util/wit_api_ut.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
@@ -9,9 +10,8 @@ import '../chat/CustomChatScreen.dart';
 
 class EstimateRequestList extends StatefulWidget {
   final String stat; // stat을 멤버 변수로 추가
-  final String sllrNo; // sllrNo를 멤버 변수로 추가
 
-  const EstimateRequestList({Key? key, required this.stat, required this.sllrNo}) : super(key: key);
+  const EstimateRequestList({Key? key, required this.stat}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -22,12 +22,21 @@ class EstimateRequestList extends StatefulWidget {
 class EstimateRequestListState extends State<EstimateRequestList> {
   List<dynamic> estimateRequestList = [];
   bool isLoading = true; // 로딩 상태 추가
+  dynamic sllrNo;
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
     // 견적리스트 조회
-    getEstimateRequestList();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    sllrNo = await secureStorage.read(key: 'sllrNo');
+    if (sllrNo != null) {
+      await getEstimateRequestList();
+    }
   }
 
   @override
@@ -80,7 +89,7 @@ class EstimateRequestListState extends State<EstimateRequestList> {
   Widget buildEstimateItem(dynamic request, BuildContext context) {
     return EstimateItem(
       request: request,
-      sllrNo: widget.sllrNo,
+      sllrNo: sllrNo,
       onExpandToggle: (bool isExpanded) {
         setState(() {
           request['isExpanded'] = isExpanded; // 상태를 업데이트
@@ -93,13 +102,13 @@ class EstimateRequestListState extends State<EstimateRequestList> {
   Future<void> getEstimateRequestList() async {
     // REST ID
     String restId = "getEstimateRequestList";
-    print('sllrNo: ' + widget.sllrNo);
+    print('sllrNo: ' + sllrNo);
     print('stat: ' + widget.stat);
 
     // PARAM
     final param = jsonEncode({
       "stat": widget.stat, // stat을 사용하여 API에 전달
-      "sllrNo": widget.sllrNo,
+      "sllrNo": sllrNo,
       // "reqGubun" : ""
     });
 

@@ -56,7 +56,7 @@ class FirebasePushHandler {
       print("🚀 SellerProfileDetail 화면으로 이동 시작");
       navigatorKey.currentState?.push(
         MaterialPageRoute(
-          builder: (_) => EstimateRequestList(stat: '', sllrNo: '242'),
+          builder: (_) => EstimateRequestList(stat: ''),
         ),
       );
     }else  if (screen == 'EstimateScreen') {
