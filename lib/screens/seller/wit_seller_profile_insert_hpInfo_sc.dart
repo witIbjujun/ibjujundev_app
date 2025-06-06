@@ -139,7 +139,7 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
                   setState(() {
                     //isCertified = true;
                     // 인증완료로 데이터 값 수정
-                    updateCertificationYn(hp1Controller.text);
+                    updateHpCertificationYn(hp1Controller.text);
                   });
                 } else {
                   print('인증 실패: ${result['error_msg']}');
@@ -152,9 +152,9 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
   }
 
   // [서비스] 핸드폰 인증
-  Future<void> updateCertificationYn(String hp1) async {
+  Future<void> updateHpCertificationYn(String hp1) async {
     // REST ID
-    String restId = "updateCertificationYn";
+    String restId = "updateHpCertificationYn";
     // PARAM
     final param = jsonEncode({
       "sllrNo" : widget.sllrNo,

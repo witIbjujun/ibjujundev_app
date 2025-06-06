@@ -496,13 +496,14 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     await getSellerInfo();  }
 
   // [서비스] 공통코드 조회
-  Future<void> updateCertificationYn() async {
+  Future<void> updateHpCertificationYn() async {
     // REST ID
-    String restId = "updateCertificationYn";
+    String restId = "updateHpCertificationYn";
 
     // PARAM
     final param = jsonEncode({
         "sllrNo" : widget.sllrNo,
+        "hp" : hp1Controller.text,
     });
 
     // API 호출 (바로견적 설정 정보 조회)
@@ -615,7 +616,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                   setState(() {
                     //isCertified = true;
                     // 인증완료로 데이터 값 수정
-                    updateCertificationYn();
+                    updateHpCertificationYn();
                   });
                 } else {
                   print('인증 실패: ${result['error_msg']}');
