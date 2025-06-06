@@ -73,7 +73,7 @@ class SellerAppBarState extends State<SellerAppBar> with RouteAware {
 
   Future<void> initAsync() async {
     if (sllrNo == null) {
-      await secureStorage.write(key: 'sllrNo', value: "241");
+      // await secureStorage.write(key: 'sllrNo', value: "");
       sllrNo = await secureStorage.read(key: 'sllrNo');
       print("sllrNo from secureStorage ::: $sllrNo");
     }
