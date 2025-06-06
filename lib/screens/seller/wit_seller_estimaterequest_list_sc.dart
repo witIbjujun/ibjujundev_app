@@ -204,57 +204,65 @@ class EstimateItem extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 상태 텍스트
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EstimateRequestDetail(
-                              estNo: request['estNo'],
-                              seq: request['seq'],
-                              // sllrNo: sllrNo,
-                            ),
-                          ),
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(0),
-                        ),
-                      ),
-                      child: Text(
-                        request['stat'] ?? '',
-                        style: WitHomeTheme.title.copyWith(fontSize: 14, color: WitHomeTheme.wit_lightBlue),
-                      ),
-                    ),
-
-                    // stat이 10이나 20이 아니면 메시지 보기 버튼 보여주기
-                    if (request['reqState'] != "10" && request['reqState'] != "20")
-                      ElevatedButton(
+                    // 상태 텍스트 버튼 (파란색, 고정 너비)
+                    SizedBox(
+                      width: 120, // 원하는 고정 너비
+                      child: ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CustomChatScreen(
-                                request["estNo"], // 첫 번째 인자: 요청 번호
-                                request["seq"], // 두 번째 인자: 시퀀스 (chatId)
-                                "sellerView", // 세 번째 인자: 뷰 타입
+                              builder: (context) => EstimateRequestDetail(
+                                estNo: request['estNo'],
+                                seq: request['seq'],
                               ),
                             ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
                           minimumSize: Size(50, 36),
-                          backgroundColor: WitHomeTheme.wit_lightGreen,
+                          backgroundColor: WitHomeTheme.wit_lightBlue,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         child: Text(
-                          '메시지 보기',
-                          style: WitHomeTheme.subtitle.copyWith(fontSize: 12, color: Colors.white),
+                          request['stat'] ?? '',
+                          style: WitHomeTheme.title.copyWith(fontSize: 14, color: Colors.white),
+                        ),
+                      ),
+                    ),
+
+                    // SizedBox(height: 4),
+
+                    // 메시지 보기 버튼 (초록색, 고정 너비)
+                    if (request['reqState'] != "10" && request['reqState'] != "20")
+                      SizedBox(
+                        width: 120, // 위 버튼과 동일한 고정 너비
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomChatScreen(
+                                  request["estNo"],
+                                  request["seq"],
+                                  "sellerView",
+                                ),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: Size(50, 36),
+                            backgroundColor: WitHomeTheme.wit_lightGreen,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            '메시지 보기',
+                            style: WitHomeTheme.title.copyWith(fontSize: 14, color: Colors.white),
+                          ),
                         ),
                       ),
                   ],
