@@ -127,16 +127,23 @@ class BoardDetailState extends State<BoardDetail> {
                           height: 1,
                           color: WitHomeTheme.wit_extraLightGrey,
                         ),
+                        if (commentList.length > 0) ...[
+                          SizedBox(height: 10),
+                          CommentCount(
+                            count: commentList.length,
+                          ),
+                          SizedBox(height: 5),
+                          CommentList(
+                            commentList: commentList,
+                            loginClerkNo : loginClerkNo,
+                            endCommentInfo : endCommentInfo,
+                          ),
+                          Container(
+                            height: 1,
+                            color: WitHomeTheme.wit_extraLightGrey,
+                          ),
+                        ],
                         SizedBox(height: 10),
-                        CommentCount(
-                          count: commentList.length,
-                        ),
-                        SizedBox(height: 5),
-                        CommentList(
-                          commentList: commentList,
-                          loginClerkNo : loginClerkNo,
-                          endCommentInfo : endCommentInfo,
-                        ),
                         CommentInput(
                           commentController: commentController,
                           saveCommentInfo: saveCommentInfo,

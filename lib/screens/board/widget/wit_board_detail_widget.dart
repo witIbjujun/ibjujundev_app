@@ -391,7 +391,7 @@ class CommentInput extends StatelessWidget {
             maxLength: 100,
             decoration: InputDecoration(
               hintText: isEmpty ? "첫 댓글을 남겨보세요" : "댓글을 남겨보세요",
-              hintStyle: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
+              hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_gray),
               border: InputBorder.none,
               filled: true,
               fillColor: WitHomeTheme.wit_white,
@@ -408,8 +408,18 @@ class CommentInput extends StatelessWidget {
           ),
           child: IconButton(
             icon: Icon(Icons.send, size: 25, color: WitHomeTheme.wit_white),
-            onPressed: () => saveCommentInfo(),
             tooltip: '댓글 보내기',
+            onPressed: () async {
+              if(commentController.text.trim() == "") {
+                alertDialog.show(context: context, title: "알림", content: "댓글을 입력해주세요.");
+                return;
+              }
+              bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "저장 하시겠습니까?");
+              if (isConfirmed == true) {
+                saveCommentInfo();
+              }
+
+            },
           ),
         ),
       ],
