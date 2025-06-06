@@ -117,7 +117,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                         SizedBox(height: 15), // 아이콘과 텍스트 사이의 간격
                         Text(
                           "하자 등록 [" + widget.checkInfoLv3["inspNm"] + "]",
-                          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+                          style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_white, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -217,6 +217,7 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                         height: 100,
                         child: TextField(
                           controller: _checkComtController,
+                          maxLength: 500,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: WitHomeTheme.wit_gray),
@@ -228,6 +229,8 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
                               borderSide: BorderSide(color: WitHomeTheme.wit_gray),
                             ),
                             contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                            hintText: "하자 내용을 입력해주세요.",
+                            hintStyle: WitHomeTheme.caption
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -465,7 +468,12 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
   // [유틸] 갤러리, 카메라 피커 호출
   Future<void> _pickImage(ImageSource source, index) async {
 
-    final XFile? pickedFile = await _picker.pickImage(source: source);
+    final XFile? pickedFile = await _picker.pickImage(
+      source: source,
+      maxHeight: 1200,
+      maxWidth: 1200,
+      imageQuality: 30,
+    );
 
     if (pickedFile != null) {
 
@@ -477,28 +485,15 @@ class _ExamplePhotoPopupState extends State<ExamplePhotoPopup> {
         }
       });
 
-      // 이미지 파일을 바이트로 읽기
-      final bytes = await File(pickedFile.path).readAsBytes();
-
-      // 이미지 디코딩
-      img.Image? image = img.decodeImage(bytes);
-
-      // 이미지 오른쪽으로 90도 회전
-      img.Image rotatedImage = img.copyRotate(image!, angle: 360);
-
-      // 회전된 이미지를 파일로 저장
-      final rotatedFile = File(pickedFile.path);
-      await rotatedFile.writeAsBytes(img.encodeJpg(rotatedImage));
-
       setState(() {
         if (index == 1) {
           isImgLoading1 = false;
-          imageFile1 = rotatedFile;
+          imageFile1 = File(pickedFile.path);
           imageUrl1 = "";
         }
         if (index == 2) {
           isImgLoading2 = false;
-          imageFile2 = rotatedFile;
+          imageFile2 = File(pickedFile.path);
           imageUrl2 = null;
         }
       });

@@ -5,8 +5,6 @@ import 'package:witibju/screens/home/wit_home_theme.dart';
 
 import '../../common/wit_ImageViewer_sc.dart';
 import '../../common/wit_common_widget.dart';
-import '../../home/login/wit_user_login.dart';
-import '../../home/login/wit_user_loginStep.dart';
 import '../../home/widgets/wit_home_widgets.dart';
 
 /**
@@ -64,7 +62,7 @@ class _CheckListDetailViewState extends State<CheckListDetailView> {
             ),
             Expanded(
               child: Container(
-                color: WitHomeTheme.wit_white, // 배경색을 흰색으로 설정
+                color: WitHomeTheme.wit_white,
                 child: ListView.builder(
                   controller: _scrollController,
                   itemCount: widget.checkListByLv3.length,
@@ -223,19 +221,6 @@ class ExpandableItem extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
 
-                        print("TEST!");
-                        print("TEST!");
-                        print("TEST!");
-                        print("TEST!");
-                        print("TEST!");
-                        print("TEST!");
-                        print("TEST!");
-                        print("TEST!");
-                        print("TEST!");
-                        print("TEST!");
-
-
-
                         if (loginClerkNo == null || loginClerkNo == "") {
                           alertDialog.show(context: context, title: "알림", content: "로그인이 필요합니다.");
                           return;
@@ -261,14 +246,14 @@ class ExpandableItem extends StatelessWidget {
                       },
                       child: Image.network(
                         apiUrl + "/WIT/checkList/글쓰기.png",
-                        width: 28,
-                        height: 28,
+                        width: 25,
+                        height: 25,
                         fit: BoxFit.cover,
                         errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
                           return Image.network(
                             apiUrl + "/WIT/checkList/없음.png",
-                            width: 30,
-                            height: 30,
+                            width: 25,
+                            height: 25,
                             fit: BoxFit.cover,
                           );
                         },
@@ -318,8 +303,8 @@ class ExpandableItem extends StatelessWidget {
                               : checkInfoLv3["checkYn"] == "N" && checkInfoLv3["checkDate"] != null
                               ? apiUrl + "/WIT/checkList/정상버튼.png"
                               : apiUrl + "/WIT/checkList/정상버튼.png",
-                          width: 37,
-                          height: 37,
+                          width: 30,
+                          height: 30,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -449,7 +434,7 @@ class ExpandableItem extends StatelessWidget {
                         padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
                         child: Text(
                           checkInfoLv3["inspComt"] ?? "",
-                          style: WitHomeTheme.subtitle,
+                          style: WitHomeTheme.caption,
                         ),
                       ),
                       Container(height: 10),
