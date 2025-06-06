@@ -162,11 +162,11 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
     });
 
     // API 호출 (바로견적 설정 정보 조회)
-    final _certificationYn = await sendPostRequest(restId, param);
+    final _hpcertificationYn = await sendPostRequest(restId, param);
 
     // 결과 셋팅
     // 결과 셋팅
-    if (_certificationYn != null) {
+    if (_hpcertificationYn != null) {
       setState(() {
         isCertified = true;
       });

@@ -210,7 +210,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         serviceArea = sellerInfo['serviceArea'] ?? '';
         serviceItem = sellerInfo['serviceItem'] ?? '';
         asGbn = sellerInfo['asGbn'] ?? '';
-        if(sellerInfo['certificationYn'] == 'Y') {
+        if(sellerInfo['hpCertificationYn'] == 'Y') {
           isCertified = true;
         }
 
@@ -507,11 +507,11 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     });
 
     // API 호출 (바로견적 설정 정보 조회)
-    final _certificationYn = await sendPostRequest(restId, param);
+    final _hpCertificationYn = await sendPostRequest(restId, param);
 
     // 결과 셋팅
     // 결과 셋팅
-    if (_certificationYn != null) {
+    if (_hpCertificationYn != null) {
       setState(() {
         isCertified = true;
       });
