@@ -232,6 +232,33 @@ class SellerProfileInsertBizInfoState
     }
   }
 
+
+  // 사업자 등록 불량 여부 체크
+  Future<void> getBizCertificationAllowYn() async {
+    String restId = "getBizCertificationAllowYn";
+
+    String storeCode = _firstController.text +
+        _secondController.text +
+        _thirdController.text;
+
+    // PARAM
+    final param = jsonEncode({
+      "storeCode": storeCode,
+    });
+
+    // API 호출 (게시판 상세 조회)
+    final result = await sendPostRequest(restId, param);
+
+    if (result['allowYn'] == "N") {
+      alertDialog.show(context: context,
+          title: "알림",
+          content: "등록이 불가능한 사업자번호입니다.\n관리자에게 문의해주세요.");
+    } else {
+      // 값이 없을 때 수행할 작업
+      saveSellerBizImage();
+    }
+  }
+
   // 사업자 등록증 이미지 저장
   Future<void> saveSellerBizImage() async {
     // 이미지 확인
@@ -239,48 +266,35 @@ class SellerProfileInsertBizInfoState
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("사업자등록증을 첨부해주세요.")));
     } else {
-      final fileInfo = await sendFilePostRequest("fileUpload", _images2);
-      if (fileInfo == "FAIL") {
+      final fileInfo2 = await sendFilePostRequest("fileUpload", _images2);
+      if (fileInfo2 == "FAIL") {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("사업자등록증 업로드 실패")));
       } else {
-        String restId = "saveSellerBizImage";
-
-        print("여기 : " + sellerInfo["sllrNo"].toString());
-
-        // PARAM
-        final param = jsonEncode({
-          "sllrNo": widget.sllrNo,
-          "fileInfo": fileInfo,
-        });
-
-        // API 호출 (게시판 상세 조회)
-        final _bizImageList = await sendPostRequest(restId, param);
-
-        if (_bizImageList > 0) {
-          // 값이 있을 때 수행할 작업
-          /*ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("사업자 등록증이 첨부가 성공하였습니다.")),
-          );*/
-
-          updateBizCertification();
+        final fileInfo2 = await sendFilePostRequest("fileUpload", _images2);
+        if (fileInfo2 == "FAIL") {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
         } else {
-          // 값이 없을 때 수행할 작업
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("사업자 등록증 첨부가 실패하였습니다.")),
-          );
-        }
+          // 파일 업로드 성공 후 프로필 업데이트 호출
 
-        // 결과 셋팅
-        /*setState(() {
-          bizImageList = _bizImageList;
-        });*/
+          String name = nameController.text;
+          String ceoName = ceoNameController.text;
+          String email = emailController.text;
+          String openDate = openDateController.text;
+          String storeCode = _firstController.text +
+              _secondController.text +
+              _thirdController.text;
+
+          // 이미지 저장 후 프로필 업데이트
+          await updateSellerProfile(
+                          name, ceoName, email, storeCode, openDate, fileInfo2);
+        }
       }
     }
   }
 
   // [서비스] 사업자 인증 상태 수정
-  Future<void> updateBizCertification() async {
+  /*Future<void> updateBizCertification() async {
     // REST ID
     String restId = "updateBizCertification";
 
@@ -294,28 +308,25 @@ class SellerProfileInsertBizInfoState
     final response = await sendPostRequest(restId, param);
 
     if (response != null) {
-      print("API 호출 성공");
+      updateSellerProfile(name, ceoName, email, storeCode, openDate, fileInfo2);
       // 인증 상태만 변경 (sellerInfo는 로컬 변수 또는 상태 관리에 따라 다르게 처리 가능)
-      setState(() {
+     *//* setState(() {
         setState(() {
           bizCertification = "01";
           sellerInfo["bizCertification"] = "01";
           buttonText = "요청중";
           bizCertErrorMessage = ""; // 에러 메시지 제거
         });
-      });
+      });*//*
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("사업자 인증 요청이 성공하였습니다.")),
-      );
+
     } else {
-      print("API 호출 실패");
       // 오류 처리
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("사업자 인증 요청이 실패했습니다.")),
+        SnackBar(content: Text("파트너 사업자 정보 등록이 실패하였습니다.")),
       );
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -689,7 +700,7 @@ class SellerProfileInsertBizInfoState
                       style: WitHomeTheme.title.copyWith(fontSize: 16),
                     ),
                   ),
-                  SizedBox(width: 16.0), // 버튼 간격
+                  /*SizedBox(width: 16.0), // 버튼 간격
 
                   ElevatedButton(
                     onPressed: (sellerInfo != null &&
@@ -717,7 +728,7 @@ class SellerProfileInsertBizInfoState
                       disabledForegroundColor:
                           WitHomeTheme.wit_white, // 비활성화 텍스트 색상
                     ),
-                  ),
+                  ),*/
                 ],
               ),
               SizedBox(
@@ -893,7 +904,7 @@ class SellerProfileInsertBizInfoState
 
                       bool isNameValid = nameController.text.isNotEmpty;
                       bool isCeoName = ceoNameController.text.isNotEmpty;
-                      bool isOpenDate = openDateController.text.isNotEmpty;
+                      bool isOpenDate = openDate != null && openDate!.isNotEmpty;
                       // 사업자번호 각 필드 체크
                       bool isStoreCodeValid = _firstController.text.length == 3 &&
                           _secondController.text.length == 2 &&
@@ -901,7 +912,6 @@ class SellerProfileInsertBizInfoState
 
                       bool isEmail = emailController.text.isNotEmpty;
                       bool isEmailValidFormat = emailRegex.hasMatch(emailController.text);
-                      bool isBizCertValid = sellerInfo['bizCertification'] == '01';
 
                       if (!isEmail) {
                         emailErrorMessage = '대표 이메일을 입력해주세요.';
@@ -924,11 +934,6 @@ class SellerProfileInsertBizInfoState
                       if (!isStoreCodeValid) {
                         storeCodeErrorMessage = '사업자등록번호를 입력해주세요.'; // 오류 메시지 설정
                       }
-                      if (!isBizCertValid) {
-                        setState(() {
-                          bizCertErrorMessage = '사업자 인증 요청을 해주세요.';
-                        });
-                      }
                     });
 
                     if (nameErrorMessage.isEmpty &&
@@ -938,18 +943,11 @@ class SellerProfileInsertBizInfoState
                         storeCodeErrorMessage.isEmpty&&
                         bizCertErrorMessage.isEmpty
                     ) {
-                      // 사업자 프로필 변경 로직
-                      String name = nameController.text;
-                      String ceoName = ceoNameController.text;
-                      String email = emailController.text;
-                      String openDate = openDateController.text;
-                      String storeCode = _firstController.text +
-                          _secondController.text +
-                          _thirdController.text;
 
+                      await getBizCertificationAllowYn();
                       // 이미지 저장 후 프로필 업데이트
-                      await updateSellerProfile(
-                          name, ceoName, email, storeCode, openDate);
+                      /*await updateSellerProfile(
+                          name, ceoName, email, storeCode, openDate);*/
                     }
                   },
                   child: Text(
@@ -979,6 +977,7 @@ class SellerProfileInsertBizInfoState
     dynamic email,
     dynamic storeCode,
     dynamic openDate,
+    dynamic fileInfo2,
     // dynamic categoryContent,
   ) async {
     // REST ID
@@ -991,8 +990,10 @@ class SellerProfileInsertBizInfoState
       "ceoName": ceoName,
       "email": email,
       "storeCode": storeCode,
-      "openDate": openDate,
-      "regiLevel": "03"
+      "openDate": openDate?.replaceAll('.', '') ?? '',
+      "regiLevel": "03",
+      "fileInfo2" : fileInfo2,
+      "bizCertification": "01",
 //      "categoryContent" : categoryContent,
     });
 
@@ -1056,21 +1057,27 @@ class SellerProfileInsertBizInfoState
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    DateTime? selectedDate = await showModalBottomSheet(
+    var result = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
       builder: (context) => CustomCalendarBottomSheet(title: '개업일자', allowPastDates: true),
-
     );
 
-    if (selectedDate != null) {
+    if (result != null) {
       setState(() {
-        openDate =
-        "${selectedDate.year}.${selectedDate.month.toString().padLeft(2, '0')}.${selectedDate.day.toString().padLeft(2, '0')}";
+        // 타입 캐스팅을 안전하게 처리
+        if (result is DateTime) {
+          openDate = "${result.year}.${result.month.toString().padLeft(2, '0')}.${result.day.toString().padLeft(2, '0')}";
+          openDateController.text = openDate!;
+        } else if (result is String) {
+          openDate = result;
+          openDateController.text = result;
+        }
       });
     }
   }
+
 }
