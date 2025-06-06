@@ -17,18 +17,14 @@ import 'package:witibju/screens/seller/wit_seller_profile_detail_sc.dart';
 import 'package:witibju/screens/home/wit_home_sc.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 
-/// 앱 전역에 선언된 RouteObserver 인스턴스를 가져옵니다.
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 class SellerAppBar extends StatefulWidget implements PreferredSizeWidget {
   final dynamic sllrNo;
-  //final Function(dynamic) onSllrNoChanged;
 
   const SellerAppBar({
     super.key,
     required this.sllrNo,
-    // , required this.onSllrNoChanged,
-    // required this.onSllrNoChanged,
   });
 
   @override
@@ -42,14 +38,12 @@ class SellerAppBarState extends State<SellerAppBar> with RouteAware {
   dynamic sellerInfo;
   String storeName = "";
   dynamic sllrNo;
-  // late final Function(dynamic) onSllrNoChanged;
   final TextEditingController _sllrNoController = TextEditingController();
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
-    // onSllrNoChanged = widget.onSllrNoChanged;
     initAsync();
   }
 
@@ -68,12 +62,12 @@ class SellerAppBarState extends State<SellerAppBar> with RouteAware {
   @override
   void didPopNext() {
     print("뒤로 오면서 sllrNo 재조회");
-    initAsync(); // sllrNo와 판매자 정보 다시 조회
+    initAsync();
   }
 
   Future<void> initAsync() async {
     if (sllrNo == null) {
-      await secureStorage.write(key: 'sllrNo', value: "260");
+      // await secureStorage.write(key: 'sllrNo', value: "241");
       sllrNo = await secureStorage.read(key: 'sllrNo');
       print("sllrNo from secureStorage ::: $sllrNo");
     }
@@ -86,10 +80,8 @@ class SellerAppBarState extends State<SellerAppBar> with RouteAware {
     if (sllrNo == null) {
       sllrNo = await secureStorage.read(key: 'sllrNo');
       print("getSellerInfo에서 sllrNo 다시 읽음: $sllrNo");
-    }
-    else {
-      print("sllrNosllrNosllrNo: " + sllrNo);
-
+    } else {
+      print("sllrNosllrNosllrNo: $sllrNo");
     }
 
     final param = jsonEncode({"sllrNo": sllrNo});
@@ -127,7 +119,7 @@ class SellerAppBarState extends State<SellerAppBar> with RouteAware {
       centerTitle: true,
       backgroundColor: WitHomeTheme.wit_white,
       actions: [
-        /*Padding(
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: SizedBox(
             width: 100,
@@ -144,18 +136,24 @@ class SellerAppBarState extends State<SellerAppBar> with RouteAware {
           ),
         ),
         IconButton(
-          onPressed: () {
+          onPressed: () async {
             final newSllrNo = _sllrNoController.text;
             if (newSllrNo.isNotEmpty) {
+              await secureStorage.write(key: 'sllrNo', value: newSllrNo);
               setState(() {
-                sllrNo = int.tryParse(newSllrNo);
-                // widget.onSllrNoChanged(sllrNo);
+                sllrNo = newSllrNo;
               });
-              getSellerInfo();
+              await getSellerInfo();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => SellerProfileDetail(sllrNo: newSllrNo)),
+              ).then((_) {
+                initAsync();
+              });
             }
           },
           icon: Icon(Icons.search, color: WitHomeTheme.wit_black),
-        ),*/
+        ),
         IconButton(
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
@@ -164,27 +162,28 @@ class SellerAppBarState extends State<SellerAppBar> with RouteAware {
         ),
         IconButton(
           padding: const EdgeInsets.only(right: 20.0),
-          onPressed: () {
+          onPressed: () async {
+            final latestSllrNo = await secureStorage.read(key: 'sllrNo');
             final regiLevel = sellerInfo?['regiLevel'];
             late Widget targetScreen;
 
             if (regiLevel == null) {
               targetScreen = SellerProfileInsertName();
             } else if (regiLevel == '01') {
-              targetScreen = SellerProfileInsertContents(sllrNo: sellerInfo['sllrNo'].toString());
+              targetScreen = SellerProfileInsertContents(sllrNo: latestSllrNo);
             } else if (regiLevel == '02') {
-              targetScreen = SellerProfileInsertBizInfo(sllrNo: sellerInfo['sllrNo'].toString());
+              targetScreen = SellerProfileInsertBizInfo(sllrNo: latestSllrNo);
             } else if (regiLevel == '03') {
-              targetScreen = SellerProfileInsertHpInfo(sllrNo: sellerInfo['sllrNo'].toString());
+              targetScreen = SellerProfileInsertHpInfo(sllrNo: latestSllrNo);
             } else {
-              targetScreen = SellerProfileDetail(sllrNo: sellerInfo['sllrNo'].toString());
+              targetScreen = SellerProfileDetail(sllrNo: latestSllrNo);
             }
 
             Navigator.push(
               context,
               MaterialPageRoute(builder: (_) => targetScreen),
             ).then((_) {
-              initAsync(); // 돌아오면 다시 seller 정보 갱신
+              initAsync();
             });
           },
           icon: Image.asset('assets/home/message.png', width: 30, height: 30),
