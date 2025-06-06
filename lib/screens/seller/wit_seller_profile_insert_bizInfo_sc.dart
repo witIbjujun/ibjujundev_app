@@ -95,7 +95,6 @@ class SellerProfileInsertBizInfoState
   String storeCodeErrorMessage = '';
   String bizCertErrorMessage = '';
 
-
   @override
   void initState() {
     super.initState();
@@ -112,7 +111,8 @@ class SellerProfileInsertBizInfoState
     super.dispose();
   }
 
-  void _handleInputChange(TextEditingController controller, int maxLength, FocusNode nextFocus) {
+  void _handleInputChange(
+      TextEditingController controller, int maxLength, FocusNode nextFocus) {
     if (controller.text.length == maxLength) {
       nextFocus.requestFocus();
     }
@@ -148,9 +148,9 @@ class SellerProfileInsertBizInfoState
 
         storeCode = sellerInfo['storeCode'] ?? '';
         if (storeCode.length == 10) {
-          _firstController.text = storeCode.substring(0, 3);  // 앞 3자리
+          _firstController.text = storeCode.substring(0, 3); // 앞 3자리
           _secondController.text = storeCode.substring(3, 5); // 그다음 2자리
-          _thirdController.text = storeCode.substring(5);     // 마지막 5자리
+          _thirdController.text = storeCode.substring(5); // 마지막 5자리
         } else {
           _firstController.clear();
           _secondController.clear();
@@ -198,10 +198,10 @@ class SellerProfileInsertBizInfoState
     // 결과 셋팅
     setState(() {
       bizImageList.clear();
-      bizImageList = _bizImageList.where((item) => item['bizCd']?.toString() == 'SR02').toList();
-
+      bizImageList = _bizImageList
+          .where((item) => item['bizCd']?.toString() == 'SR02')
+          .toList();
     });
-
   }
 
   /* 이미지추가 S */
@@ -232,14 +232,12 @@ class SellerProfileInsertBizInfoState
     }
   }
 
-
   // 사업자 등록 불량 여부 체크
   Future<void> getBizCertificationAllowYn() async {
     String restId = "getBizCertificationAllowYn";
 
-    String storeCode = _firstController.text +
-        _secondController.text +
-        _thirdController.text;
+    String storeCode =
+        _firstController.text + _secondController.text + _thirdController.text;
 
     // PARAM
     final param = jsonEncode({
@@ -250,7 +248,8 @@ class SellerProfileInsertBizInfoState
     final result = await sendPostRequest(restId, param);
 
     if (result['allowYn'] == "N") {
-      alertDialog.show(context: context,
+      alertDialog.show(
+          context: context,
           title: "알림",
           content: "등록이 불가능한 사업자번호입니다.\n관리자에게 문의해주세요.");
     } else {
@@ -273,7 +272,8 @@ class SellerProfileInsertBizInfoState
       } else {
         final fileInfo2 = await sendFilePostRequest("fileUpload", _images2);
         if (fileInfo2 == "FAIL") {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text("파일 업로드 실패")));
         } else {
           // 파일 업로드 성공 후 프로필 업데이트 호출
 
@@ -287,89 +287,74 @@ class SellerProfileInsertBizInfoState
 
           // 이미지 저장 후 프로필 업데이트
           await updateSellerProfile(
-                          name, ceoName, email, storeCode, openDate, fileInfo2);
+              name, ceoName, email, storeCode, openDate, fileInfo2);
         }
       }
     }
   }
 
-  // [서비스] 사업자 인증 상태 수정
-  /*Future<void> updateBizCertification() async {
-    // REST ID
-    String restId = "updateBizCertification";
-
-    // PARAM
-    final param = jsonEncode({
-      "sllrNo": sellerInfo["sllrNo"],
-      "bizCertification": "01",
-    });
-
-    // API 호출 (사업자 인증 상태 수정)
-    final response = await sendPostRequest(restId, param);
-
-    if (response != null) {
-      updateSellerProfile(name, ceoName, email, storeCode, openDate, fileInfo2);
-      // 인증 상태만 변경 (sellerInfo는 로컬 변수 또는 상태 관리에 따라 다르게 처리 가능)
-     *//* setState(() {
-        setState(() {
-          bizCertification = "01";
-          sellerInfo["bizCertification"] = "01";
-          buttonText = "요청중";
-          bizCertErrorMessage = ""; // 에러 메시지 제거
-        });
-      });*//*
-
-
-    } else {
-      // 오류 처리
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("파트너 사업자 정보 등록이 실패하였습니다.")),
-      );
-    }
-  }*/
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: WitHomeTheme.wit_white,
-      appBar: AppBar(
-        backgroundColor: WitHomeTheme.wit_black,
-        iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
-        title: Text(
-          '파트너 사업자 정보 등록',
-          style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: List.generate(4, (index) {
-                  return Expanded(
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 18.0,
-                          backgroundColor: 2 == index
-                              ? WitHomeTheme.wit_lightGreen
-                              : WitHomeTheme.wit_gray,
-                          child: Text(
-                            '${index + 1}',
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                      ],
-                    ),
-                  );
-                }),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (!didPop) {
+          bool isConfirmed = await ConfimDialog.show(
+              context: context,
+              title: "확인",
+              content: "조금만 더 입력하면\n파트너 등록이 끝납니다.\n정말 나가시겠어요?");
+          if (isConfirmed == true) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    SellerProfileDetail(sllrNo: widget.sllrNo),
               ),
-              const Divider(height: 32.0),
-              /*Container(
+              (route) => false, // 뒤로가기로 다시 못 돌아오게 루트만 남김
+            );
+          }
+        }
+      },
+      child: Scaffold(
+        backgroundColor: WitHomeTheme.wit_white,
+        appBar: AppBar(
+          backgroundColor: WitHomeTheme.wit_black,
+          iconTheme: const IconThemeData(color: WitHomeTheme.wit_white),
+          title: Text(
+            '파트너 사업자 정보 등록',
+            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white),
+          ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(4, (index) {
+                    return Expanded(
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 18.0,
+                            backgroundColor: 2 == index
+                                ? WitHomeTheme.wit_lightGreen
+                                : WitHomeTheme.wit_gray,
+                            child: Text(
+                              '${index + 1}',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+                const Divider(height: 32.0),
+                /*Container(
                 width: double.infinity, // 넓이를 최대로 설정
                 padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
                 decoration: BoxDecoration(
@@ -382,325 +367,338 @@ class SellerProfileInsertBizInfoState
                   style: WitHomeTheme.title.copyWith(fontSize: 16),
                 ),
               ),*/
-              Container(
-                width: double.infinity, // 넓이를 최대로 설정
-                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.wit_lightGreen,
-                  //Colors.lightGreen[100], // 연한 녹색 배경
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                Container(
+                  width: double.infinity, // 넓이를 최대로 설정
+                  padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
+                  decoration: BoxDecoration(
+                    color: WitHomeTheme.wit_lightGreen,
+                    //Colors.lightGreen[100], // 연한 녹색 배경
+                    borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                  ),
+                  child: Text(
+                    '사업자정보를 입력해주세요~\n견적요청시 사장님 회사를 돋보이게\n뱃지도 달아드려요~',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
                 ),
-                child: Text(
-                  '사업자정보를 입력해주세요~\n견적요청시 사장님 회사를 돋보이게\n뱃지도 달아드려요~',
-                  style: WitHomeTheme.title.copyWith(fontSize: 16),
-                ),
-              ),
 
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Text(
-                    '사업자명 ',
-                    style: WitHomeTheme.title.copyWith(fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.red,
-                    size: 16,
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                padding: const EdgeInsets.all(0), // 내부 여백
-                child: TextField(
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '사업자명을 입력하세요', // 힌트 텍스트
-                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      // 텍스트가 변경될 때마다 오류 메시지 초기화
-                      nameErrorMessage = '';
-                    });
-                  },
-                ),
-              ),
-              // 오류 메시지 표시
-              if (nameErrorMessage.isNotEmpty)
-                Text(
-                  nameErrorMessage,
-                  style: WitHomeTheme.subtitle
-                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Text(
-                    '대표자명 ',
-                    style: WitHomeTheme.title.copyWith(fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.red,
-                    size: 16,
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                padding: const EdgeInsets.all(0), // 내부 여백
-                child: TextField(
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                  controller: ceoNameController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '대표자명을 입력하세요', // 힌트 텍스트
-                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      // 텍스트가 변경될 때마다 오류 메시지 초기화
-                      ceoErrorMessage = '';
-                    });
-                  },
-                ),
-              ),
-              // 오류 메시지 표시
-              if (ceoErrorMessage.isNotEmpty)
-                Text(
-                  ceoErrorMessage,
-                  style: WitHomeTheme.subtitle
-                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Text(
-                    '대표 이메일 ',
-                    style: WitHomeTheme.title.copyWith(fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.red,
-                    size: 16,
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                padding: const EdgeInsets.all(0), // 내부 여백
-                child: TextField(
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '대표 이메일을 입력하세요', // 힌트 텍스트
-                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      // 텍스트가 변경될 때마다 오류 메시지 초기화
-                      emailErrorMessage = '';
-                    });
-                  },
-                ),
-              ),
-              // 오류 메시지 표시
-              if (emailErrorMessage.isNotEmpty)
-                Text(
-                  emailErrorMessage,
-                  style: WitHomeTheme.subtitle
-                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Text(
-                    '개업일자',
-                    style: WitHomeTheme.title.copyWith(fontSize: 16),
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.red,
-                    size: 16,
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => _selectDate(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(6.0),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              openDate ?? "날짜 선택",
-                              style: const TextStyle(fontSize: 16.0),
-                            ),
-                            const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              // 오류 메시지 표시
-              if (openDateErrorMessage.isNotEmpty)
-                Text(
-                  openDateErrorMessage,
-                  style: WitHomeTheme.subtitle
-                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                ),
-              SizedBox(height: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        '사업자등록번호 ',
-                        style: WitHomeTheme.title.copyWith(fontSize: 16),
-                      ),
-                      Icon(
-                        Icons.star,
-                        color: Colors.red,
-                        size: 16,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: TextField(
-                          controller: _firstController,
-                          focusNode: _firstFocus,
-                          keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
-                          maxLength: 3,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          decoration: InputDecoration(
-                            counterText: '',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                          ),
-                          onChanged: (value) {
-                            _handleInputChange(_firstController, 3, _secondFocus);
-                            setState(() {
-                              storeCodeErrorMessage = '';
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text('-'),
-                      SizedBox(width: 8),
-                      Expanded(
-                        flex: 2,
-                        child: TextField(
-                          controller: _secondController,
-                          focusNode: _secondFocus,
-                          keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
-                          maxLength: 2,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          decoration: InputDecoration(
-                            counterText: '',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                          ),
-                          onChanged: (value) {
-                            _handleInputChange(_secondController, 2, _thirdFocus);
-                            setState(() {
-                              storeCodeErrorMessage = '';
-                            });
-                          },
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      Text('-'),
-                      SizedBox(width: 8),
-                      Expanded(
-                        flex: 4,
-                        child: TextField(
-                          controller: _thirdController,
-                          focusNode: _thirdFocus,
-                          keyboardType: TextInputType.numberWithOptions(decimal: false, signed: false),
-                          maxLength: 5,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          decoration: InputDecoration(
-                            counterText: '',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            contentPadding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              storeCodeErrorMessage = '';
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  // 오류 메시지 표시
-                  if (storeCodeErrorMessage.isNotEmpty)
+                SizedBox(height: 8),
+                Row(
+                  children: [
                     Text(
-                      storeCodeErrorMessage,
-                      style: WitHomeTheme.subtitle
-                          .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
-                    ),
-                ],
-              ),
-
-              SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      '사업자 등록증 사본',
+                      '사업자명 ',
                       style: WitHomeTheme.title.copyWith(fontSize: 16),
                     ),
+                    Icon(
+                      Icons.star,
+                      color: Colors.red,
+                      size: 16,
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: WitHomeTheme.white, // 배경색을 하얀색으로
+                    border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                    borderRadius: BorderRadius.circular(10), // 모서리 둥글게
                   ),
-                  /*SizedBox(width: 16.0), // 버튼 간격
+                  padding: const EdgeInsets.all(0), // 내부 여백
+                  child: TextField(
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none, // 기본 테두리 제거
+                      hintText: '사업자명을 입력하세요', // 힌트 텍스트
+                      contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                    ),
+                    onChanged: (text) {
+                      setState(() {
+                        // 텍스트가 변경될 때마다 오류 메시지 초기화
+                        nameErrorMessage = '';
+                      });
+                    },
+                  ),
+                ),
+                // 오류 메시지 표시
+                if (nameErrorMessage.isNotEmpty)
+                  Text(
+                    nameErrorMessage,
+                    style: WitHomeTheme.subtitle
+                        .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      '대표자명 ',
+                      style: WitHomeTheme.title.copyWith(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.star,
+                      color: Colors.red,
+                      size: 16,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: WitHomeTheme.white, // 배경색을 하얀색으로
+                    border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                    borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                  ),
+                  padding: const EdgeInsets.all(0), // 내부 여백
+                  child: TextField(
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                    controller: ceoNameController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none, // 기본 테두리 제거
+                      hintText: '대표자명을 입력하세요', // 힌트 텍스트
+                      contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                    ),
+                    onChanged: (text) {
+                      setState(() {
+                        // 텍스트가 변경될 때마다 오류 메시지 초기화
+                        ceoErrorMessage = '';
+                      });
+                    },
+                  ),
+                ),
+                // 오류 메시지 표시
+                if (ceoErrorMessage.isNotEmpty)
+                  Text(
+                    ceoErrorMessage,
+                    style: WitHomeTheme.subtitle
+                        .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      '대표 이메일 ',
+                      style: WitHomeTheme.title.copyWith(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.star,
+                      color: Colors.red,
+                      size: 16,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Container(
+                  decoration: BoxDecoration(
+                    color: WitHomeTheme.white, // 배경색을 하얀색으로
+                    border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                    borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                  ),
+                  padding: const EdgeInsets.all(0), // 내부 여백
+                  child: TextField(
+                    style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none, // 기본 테두리 제거
+                      hintText: '대표 이메일을 입력하세요', // 힌트 텍스트
+                      contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+                    ),
+                    onChanged: (text) {
+                      setState(() {
+                        // 텍스트가 변경될 때마다 오류 메시지 초기화
+                        emailErrorMessage = '';
+                      });
+                    },
+                  ),
+                ),
+                // 오류 메시지 표시
+                if (emailErrorMessage.isNotEmpty)
+                  Text(
+                    emailErrorMessage,
+                    style: WitHomeTheme.subtitle
+                        .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      '개업일자',
+                      style: WitHomeTheme.title.copyWith(fontSize: 16),
+                    ),
+                    Icon(
+                      Icons.star,
+                      color: Colors.red,
+                      size: 16,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _selectDate(context),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12.0, horizontal: 12.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(6.0),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                openDate ?? "날짜 선택",
+                                style: const TextStyle(fontSize: 16.0),
+                              ),
+                              const Icon(Icons.keyboard_arrow_down,
+                                  color: Colors.grey),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // 오류 메시지 표시
+                if (openDateErrorMessage.isNotEmpty)
+                  Text(
+                    openDateErrorMessage,
+                    style: WitHomeTheme.subtitle
+                        .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                  ),
+                SizedBox(height: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '사업자등록번호 ',
+                          style: WitHomeTheme.title.copyWith(fontSize: 16),
+                        ),
+                        Icon(
+                          Icons.star,
+                          color: Colors.red,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: TextField(
+                            controller: _firstController,
+                            focusNode: _firstFocus,
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: false, signed: false),
+                            maxLength: 3,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              counterText: '',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 8),
+                            ),
+                            onChanged: (value) {
+                              _handleInputChange(
+                                  _firstController, 3, _secondFocus);
+                              setState(() {
+                                storeCodeErrorMessage = '';
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Text('-'),
+                        SizedBox(width: 8),
+                        Expanded(
+                          flex: 2,
+                          child: TextField(
+                            controller: _secondController,
+                            focusNode: _secondFocus,
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: false, signed: false),
+                            maxLength: 2,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              counterText: '',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 8),
+                            ),
+                            onChanged: (value) {
+                              _handleInputChange(
+                                  _secondController, 2, _thirdFocus);
+                              setState(() {
+                                storeCodeErrorMessage = '';
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Text('-'),
+                        SizedBox(width: 8),
+                        Expanded(
+                          flex: 4,
+                          child: TextField(
+                            controller: _thirdController,
+                            focusNode: _thirdFocus,
+                            keyboardType: TextInputType.numberWithOptions(
+                                decimal: false, signed: false),
+                            maxLength: 5,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              counterText: '',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 8),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                storeCodeErrorMessage = '';
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    // 오류 메시지 표시
+                    if (storeCodeErrorMessage.isNotEmpty)
+                      Text(
+                        storeCodeErrorMessage,
+                        style: WitHomeTheme.subtitle.copyWith(
+                            fontSize: 14, color: WitHomeTheme.wit_red),
+                      ),
+                  ],
+                ),
+
+                SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '사업자 등록증 사본',
+                        style: WitHomeTheme.title.copyWith(fontSize: 16),
+                      ),
+                    ),
+                    /*SizedBox(width: 16.0), // 버튼 간격
 
                   ElevatedButton(
                     onPressed: (sellerInfo != null &&
@@ -729,241 +727,259 @@ class SellerProfileInsertBizInfoState
                           WitHomeTheme.wit_white, // 비활성화 텍스트 색상
                     ),
                   ),*/
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Padding( // 버튼 주변에 가로 패딩 적용 및 상하 여백 추가
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        if (_images2.length >= 1) {
-                          alertDialog.show(context: context, title:"알림", content: "이미지는 최대 1건\n입력 가능합니다.");
-                          return;
-                        }
-                        _showImagePickerOptions2();
-                      },
-                      child: Container(
-                        width: 85,
-                        height: 85,
-                        decoration: BoxDecoration(
-                          color: WitHomeTheme.wit_white,
-                          border: Border.all(width: 1, color: WitHomeTheme.wit_lightgray),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.add_a_photo, size: 40, color: WitHomeTheme.wit_gray),
-                            SizedBox(height: 4),
-                            Text(
-                              '${_images2.length}/1',
-                              style: WitHomeTheme.subtitle,
-                            ),
-                          ],
-                        ),
-                        alignment: Alignment.center,
-                      ),
-                    ),
-                    SizedBox(width: 15),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            if (_images2.isNotEmpty) ...[
-                              Row(
-                                children: _images2.asMap().entries.map((entry) {
-                                  int index = entry.key;
-                                  var image = entry.value;
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(12.0),
-                                          child: Image.file(
-                                            image,
-                                            width: 85,
-                                            height: 85,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Positioned(
-                                          right: -7,
-                                          top: -7,
-                                          child: IconButton(
-                                            icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
-                                            onPressed: () {
-                                              setState(() {
-                                                _images2.removeAt(index);
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ],
-                            if (bizImageList != null && bizImageList!.isNotEmpty) ...[
-                              Row(
-                                children: bizImageList!.map((item) {
-                                  var image = apiUrl + item["imagePath"];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(12.0),
-                                          child: Image.network(
-                                            image,
-                                            width: 85,
-                                            height: 85,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Positioned(
-                                          right: -7,
-                                          top: -7,
-                                          child: IconButton(
-                                            icon: Icon(Icons.close, color: WitHomeTheme.wit_red),
-                                            onPressed: () {
-                                              setState(() {
-                                                fileDelInfo.add(item["imagePath"]);
-                                                bizImageList!.remove(item);
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ),
-              ),
-              if (bizCertErrorMessage.isNotEmpty)
+                SizedBox(
+                  height: 10,
+                ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(
-                    bizCertErrorMessage,
-                    style: WitHomeTheme.subtitle
-                        .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),                  ),
-                ),
-
-              SizedBox(height: 6),
-              Container(
-                width: double.infinity, // 넓이를 최대로 설정
-                padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
-                decoration: BoxDecoration(
-                  color: Colors.grey[200], // 배경색을 하얀색으로
-                  //border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                child: Text(
-                  '* 사업자 인증 후 전문업체 뱃지가 표시됩니다.',
-                  style: WitHomeTheme.title.copyWith(fontSize: 16),
-                ),
-              ),
-              SizedBox(height: 20),
-
-              Center(
-                // Center 위젯으로 버튼을 감싸서 가운데 정렬
-                child: ElevatedButton(
-                  onPressed: () async {
-                    // 이메일 형식 체크
-                    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-
-                    emailErrorMessage = '';
-                    // ...다른 에러 메시지 초기화
-
-
-                    
-                    
-                    setState(() {
-                      nameErrorMessage = ''; // 오류 메시지 초기화
-                      ceoErrorMessage = '';
-                      emailErrorMessage = '';
-                      openDateErrorMessage = '';
-                      storeCodeErrorMessage = '';
-                      bizCertErrorMessage = '';
-
-                      bool isNameValid = nameController.text.isNotEmpty;
-                      bool isCeoName = ceoNameController.text.isNotEmpty;
-                      bool isOpenDate = openDate != null && openDate!.isNotEmpty;
-                      // 사업자번호 각 필드 체크
-                      bool isStoreCodeValid = _firstController.text.length == 3 &&
-                          _secondController.text.length == 2 &&
-                          _thirdController.text.length == 5;
-
-                      bool isEmail = emailController.text.isNotEmpty;
-                      bool isEmailValidFormat = emailRegex.hasMatch(emailController.text);
-
-                      if (!isEmail) {
-                        emailErrorMessage = '대표 이메일을 입력해주세요.';
-                      } else if (!isEmailValidFormat) {
-                        emailErrorMessage = '이메일 형식을 확인해주세요.';
-                      }
-
-                      if (!isNameValid) {
-                        nameErrorMessage = '사업자명을 입력해주세요.'; // 오류 메시지 설정
-                      }
-                      if (!isCeoName) {
-                        ceoErrorMessage = '대표자명을 입력해주세요.'; // 오류 메시지 설정
-                      }
-                      if (!isEmail) {
-                        emailErrorMessage = '대표 이메일을 입력해주세요.'; // 오류 메시지 설정
-                      }
-                      if (!isOpenDate) {
-                        openDateErrorMessage = '개업일자를 입력해주세요.'; // 오류 메시지 설정
-                      }
-                      if (!isStoreCodeValid) {
-                        storeCodeErrorMessage = '사업자등록번호를 입력해주세요.'; // 오류 메시지 설정
-                      }
-                    });
-
-                    if (nameErrorMessage.isEmpty &&
-                        ceoErrorMessage.isEmpty &&
-                        emailErrorMessage.isEmpty &&
-                        openDateErrorMessage.isEmpty &&
-                        storeCodeErrorMessage.isEmpty&&
-                        bizCertErrorMessage.isEmpty
-                    ) {
-
-                      await getBizCertificationAllowYn();
-                      // 이미지 저장 후 프로필 업데이트
-                      /*await updateSellerProfile(
-                          name, ceoName, email, storeCode, openDate);*/
-                    }
-                  },
-                  child: Text(
-                    '다음',
-                    style: WitHomeTheme.title
-                        .copyWith(fontSize: 14, color: WitHomeTheme.wit_white),
+                  // 버튼 주변에 가로 패딩 적용 및 상하 여백 추가
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (_images2.length >= 1) {
+                            alertDialog.show(
+                                context: context,
+                                title: "알림",
+                                content: "이미지는 최대 1건\n입력 가능합니다.");
+                            return;
+                          }
+                          _showImagePickerOptions2();
+                        },
+                        child: Container(
+                          width: 85,
+                          height: 85,
+                          decoration: BoxDecoration(
+                            color: WitHomeTheme.wit_white,
+                            border: Border.all(
+                                width: 1, color: WitHomeTheme.wit_lightgray),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.add_a_photo,
+                                  size: 40, color: WitHomeTheme.wit_gray),
+                              SizedBox(height: 4),
+                              Text(
+                                '${_images2.length}/1',
+                                style: WitHomeTheme.subtitle,
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                        ),
+                      ),
+                      SizedBox(width: 15),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              if (_images2.isNotEmpty) ...[
+                                Row(
+                                  children:
+                                      _images2.asMap().entries.map((entry) {
+                                    int index = entry.key;
+                                    var image = entry.value;
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                            child: Image.file(
+                                              image,
+                                              width: 85,
+                                              height: 85,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            right: -7,
+                                            top: -7,
+                                            child: IconButton(
+                                              icon: Icon(Icons.close,
+                                                  color: WitHomeTheme.wit_red),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _images2.removeAt(index);
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                              if (bizImageList != null &&
+                                  bizImageList!.isNotEmpty) ...[
+                                Row(
+                                  children: bizImageList!.map((item) {
+                                    var image = apiUrl + item["imagePath"];
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
+                                      child: Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                            child: Image.network(
+                                              image,
+                                              width: 85,
+                                              height: 85,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            right: -7,
+                                            top: -7,
+                                            child: IconButton(
+                                              icon: Icon(Icons.close,
+                                                  color: WitHomeTheme.wit_red),
+                                              onPressed: () {
+                                                setState(() {
+                                                  fileDelInfo
+                                                      .add(item["imagePath"]);
+                                                  bizImageList!.remove(item);
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: WitHomeTheme.wit_lightGreen,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                ),
+                if (bizCertErrorMessage.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      bizCertErrorMessage,
+                      style: WitHomeTheme.subtitle
+                          .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                    ),
+                  ),
+
+                SizedBox(height: 6),
+                Container(
+                  width: double.infinity, // 넓이를 최대로 설정
+                  padding: EdgeInsets.all(16.0), // 텍스트 주변에 여백 추가
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    // 배경색을 하얀색으로
+                    //border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
+                    borderRadius: BorderRadius.circular(10), // 모서리 둥글게
+                  ),
+                  child: Text(
+                    '* 사업자 인증 후 전문업체 뱃지가 표시됩니다.',
+                    style: WitHomeTheme.title.copyWith(fontSize: 16),
+                  ),
+                ),
+                SizedBox(height: 20),
+
+                Center(
+                  // Center 위젯으로 버튼을 감싸서 가운데 정렬
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // 이메일 형식 체크
+                      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+
+                      emailErrorMessage = '';
+                      // ...다른 에러 메시지 초기화
+
+                      setState(() {
+                        nameErrorMessage = ''; // 오류 메시지 초기화
+                        ceoErrorMessage = '';
+                        emailErrorMessage = '';
+                        openDateErrorMessage = '';
+                        storeCodeErrorMessage = '';
+                        bizCertErrorMessage = '';
+
+                        bool isNameValid = nameController.text.isNotEmpty;
+                        bool isCeoName = ceoNameController.text.isNotEmpty;
+                        bool isOpenDate =
+                            openDate != null && openDate!.isNotEmpty;
+                        // 사업자번호 각 필드 체크
+                        bool isStoreCodeValid =
+                            _firstController.text.length == 3 &&
+                                _secondController.text.length == 2 &&
+                                _thirdController.text.length == 5;
+
+                        bool isEmail = emailController.text.isNotEmpty;
+                        bool isEmailValidFormat =
+                            emailRegex.hasMatch(emailController.text);
+
+                        if (!isEmail) {
+                          emailErrorMessage = '대표 이메일을 입력해주세요.';
+                        } else if (!isEmailValidFormat) {
+                          emailErrorMessage = '이메일 형식을 확인해주세요.';
+                        }
+
+                        if (!isNameValid) {
+                          nameErrorMessage = '사업자명을 입력해주세요.'; // 오류 메시지 설정
+                        }
+                        if (!isCeoName) {
+                          ceoErrorMessage = '대표자명을 입력해주세요.'; // 오류 메시지 설정
+                        }
+                        if (!isEmail) {
+                          emailErrorMessage = '대표 이메일을 입력해주세요.'; // 오류 메시지 설정
+                        }
+                        if (!isOpenDate) {
+                          openDateErrorMessage = '개업일자를 입력해주세요.'; // 오류 메시지 설정
+                        }
+                        if (!isStoreCodeValid) {
+                          storeCodeErrorMessage =
+                              '사업자등록번호를 입력해주세요.'; // 오류 메시지 설정
+                        }
+                      });
+
+                      if (nameErrorMessage.isEmpty &&
+                          ceoErrorMessage.isEmpty &&
+                          emailErrorMessage.isEmpty &&
+                          openDateErrorMessage.isEmpty &&
+                          storeCodeErrorMessage.isEmpty &&
+                          bizCertErrorMessage.isEmpty) {
+                        await getBizCertificationAllowYn();
+                        // 이미지 저장 후 프로필 업데이트
+                        /*await updateSellerProfile(
+                          name, ceoName, email, storeCode, openDate);*/
+                      }
+                    },
+                    child: Text(
+                      '다음',
+                      style: WitHomeTheme.title.copyWith(
+                          fontSize: 14, color: WitHomeTheme.wit_white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: WitHomeTheme.wit_lightGreen,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -992,7 +1008,7 @@ class SellerProfileInsertBizInfoState
       "storeCode": storeCode,
       "openDate": openDate?.replaceAll('.', '') ?? '',
       "regiLevel": "03",
-      "fileInfo2" : fileInfo2,
+      "fileInfo2": fileInfo2,
       "bizCertification": "01",
 //      "categoryContent" : categoryContent,
     });
@@ -1063,14 +1079,16 @@ class SellerProfileInsertBizInfoState
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
       ),
-      builder: (context) => CustomCalendarBottomSheet(title: '개업일자', allowPastDates: true),
+      builder: (context) =>
+          CustomCalendarBottomSheet(title: '개업일자', allowPastDates: true),
     );
 
     if (result != null) {
       setState(() {
         // 타입 캐스팅을 안전하게 처리
         if (result is DateTime) {
-          openDate = "${result.year}.${result.month.toString().padLeft(2, '0')}.${result.day.toString().padLeft(2, '0')}";
+          openDate =
+              "${result.year}.${result.month.toString().padLeft(2, '0')}.${result.day.toString().padLeft(2, '0')}";
           openDateController.text = openDate!;
         } else if (result is String) {
           openDate = result;
@@ -1079,5 +1097,4 @@ class SellerProfileInsertBizInfoState
       });
     }
   }
-
 }
