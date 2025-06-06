@@ -129,14 +129,18 @@ class SellerProfileInsertContentsState
       canPop: false,
       onPopInvoked: (didPop) async {
         if (!didPop) {
-          bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "조금만 더 입력하면\n파트너 등록이 끝납니다.\n정말 나가시겠어요?");
+          bool isConfirmed = await ConfimDialog.show(
+              context: context,
+              title: "확인",
+              content: "잠깐만요!\n파트너 등록이 거의 완료되었어요.\n이 화면을 나가시겠습니까?");
           if (isConfirmed == true) {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => SellerProfileDetail(sllrNo: widget.sllrNo),
+                builder: (context) =>
+                    SellerProfileDetail(sllrNo: widget.sllrNo),
               ),
-                  (route) => false, // 뒤로가기로 다시 못 돌아오게 루트만 남김
+              (route) => false, // 뒤로가기로 다시 못 돌아오게 루트만 남김
             );
           }
         }
