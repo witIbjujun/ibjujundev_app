@@ -41,6 +41,8 @@ class BoardState extends State<Board> {
   TextEditingController _searchController = TextEditingController();
   // 페이징 컨트롤러
   ScrollController _scrollController = ScrollController();
+  // 댓글 컨트롤러
+  final TextEditingController replyController = TextEditingController();
   // 페이징 로딩 여부
   bool isLoading = false;
   // 페이징 시작 번호
@@ -101,6 +103,7 @@ class BoardState extends State<Board> {
             loginSllrNo: loginSllrNo,
             emptyDataFlag: emptyDataFlag,
             saveCommentInfo: saveCommentInfo,
+            replyController: replyController,
           ),
         ),
       ),
@@ -130,7 +133,7 @@ class BoardState extends State<Board> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                Icons.add,
+                Icons.edit_note,
                 color: WitHomeTheme.wit_white,
                 size: 35,
               )

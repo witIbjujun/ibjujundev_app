@@ -76,7 +76,8 @@ class BoardDetailState extends State<BoardDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(boardTitle, style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
+        title: Text(boardTitle == "" ? "게시판 상세" : boardTitle,
+            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
         iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
         backgroundColor: WitHomeTheme.wit_black,
       ),
@@ -101,16 +102,16 @@ class BoardDetailState extends State<BoardDetail> {
                         callBack: reSearch,
                         bordKeyGbn: bordTypeGbn,
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       UserInfo(
                         boardDetailInfo: boardDetailInfo,
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       Container(
                         height: 1,
                         color: WitHomeTheme.wit_extraLightGrey,
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 10),
                       ContentDisplay(
                         content: boardDetailInfo["bordContent"] ?? "",
                         imgCnt: boardDetailImageList.length,
@@ -119,18 +120,17 @@ class BoardDetailState extends State<BoardDetail> {
                         ImageListDisplay(
                           boardDetailImageList: boardDetailImageList,
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 10),
                       ] else ...[],
                       if (bordTypeGbn != "UH" && bordTypeGbn != "GJ")...[
                         Container(
                           height: 1,
                           color: WitHomeTheme.wit_extraLightGrey,
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 10),
                         CommentCount(
                           count: commentList.length,
                         ),
-
                         SizedBox(height: 5),
                         CommentList(
                           commentList: commentList,

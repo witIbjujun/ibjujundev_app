@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:witibju/screens/board/widget/wit_board_report_widget.dart'; // 현재 사용되지 않음
 
 import '../../util/wit_api_ut.dart';
 import '../common/wit_common_widget.dart';
@@ -55,57 +54,49 @@ class BoardReportState extends State<BoardReport> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("신고하기",
-            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)),
+            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)
+        ),
         iconTheme: IconThemeData(color: WitHomeTheme.wit_white),
         backgroundColor: WitHomeTheme.wit_black,
       ),
       backgroundColor: WitHomeTheme.wit_white,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(15.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 제목과 작성자 정보 표시 영역
               if (bordTypeGbn != "UH") ...[
-                Text(
-                  '제목  :  ' + widget.boardInfo["bordTitle"], // 작성자 정보 표시
-                  style: WitHomeTheme.title,
+                Text('제목  :  ' + widget.boardInfo["bordTitle"], // 작성자 정보 표시
+                  style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                   maxLines: 1,
                 ),
               ] else ...[
-                Text(
-                  '내용  :  ' + widget.boardInfo["bordContent"], // 작성자 정보 표시
-                  style: WitHomeTheme.title,
+                Text('내용  :  ' + widget.boardInfo["bordContent"], // 작성자 정보 표시
+                  style: WitHomeTheme.caption,
                   maxLines: 1,
                 ),
               ],
               SizedBox(height: 5), // 제목과 작성자 사이 간격
-              Text(
-                '작성자  :  ' + widget.boardInfo["creUserNm"], // 작성자 정보 표시
-                style: WitHomeTheme.subtitle,
+              Text('작성자  :  ' + widget.boardInfo["creUserNm"], // 작성자 정보 표시
+                style: WitHomeTheme.caption,
                 maxLines: 1,
               ),
-
               Divider(height: 30, thickness: 1), // 정보와 신고 사유 사이 구분선
-
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 신고 사유 선택 영역
                       Text(
                         '* 사유 선택 (필수)',
-                        style: WitHomeTheme.title,
+                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
-
-                      // RadioListTile에 dense: true 속성 추가
+                      SizedBox(height: 5),
                       ..._reportReasons.map((reason) {
                         return RadioListTile<String>(
                           title: Text(reason),
@@ -120,41 +111,40 @@ class BoardReportState extends State<BoardReport> {
                           contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                         );
                       }).toList(),
-                      SizedBox(height: 10),
-                      Text(
-                        '상세 사유',
-                        style: WitHomeTheme.title,
+                      SizedBox(height: 20),
+                      Text('상세 사유',
+                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 5),
                       TextField(
                         controller: _detailController,
                         maxLines: 3,
+                        maxLength: 1000,
                         decoration: InputDecoration(
                           hintText: '신고 내용을 자세히 입력해 주세요.',
+                          hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
                           border: OutlineInputBorder(),
                         ),
                       ),
                       SizedBox(height: 20),
-
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: submitReport,
+                          onPressed: () async {
+                            bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "신고 하시겠습니까?");
+                            if (isConfirmed == true) {
+                              submitReport();
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: WitHomeTheme.wit_lightGreen,
-                            // horizontal: 0으로 설정하거나 완전히 제거하여 가로 패딩 제거
-                            // vertical 값을 줄여 세로 높이 조절 (예: 15 -> 10)
                             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
+                            backgroundColor: WitHomeTheme.wit_lightGreen
                           ),
-                          child: Text(
-                            '신고하기',
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: WitHomeTheme.wit_white
-                            ),
+                          child: Text('신고하기',
+                            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_white)
                           ),
                         ),
                       ),
@@ -202,6 +192,7 @@ class BoardReportState extends State<BoardReport> {
     final result = await sendPostRequest(restId, param);
 
     if (result == 1) {
+      Navigator.pop(context);
       Navigator.pop(context);
       alertDialog.show(context: context, title: "알림", content: "신고 성공 하였습니다.");
     } else if (result == -2) {

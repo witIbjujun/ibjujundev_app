@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:witibju/screens/board/widget/wit_board_replywrite_pop.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:witibju/util/wit_code_ut.dart';
@@ -121,6 +122,7 @@ class BoardListView extends StatelessWidget {
   final String loginSllrNo;
   final bool emptyDataFlag;
   final Function saveCommentInfo;
+  final TextEditingController replyController;
 
   BoardListView({
     required this.boardList,
@@ -131,13 +133,11 @@ class BoardListView extends StatelessWidget {
     required this.loginSllrNo,
     required this.emptyDataFlag,
     required this.saveCommentInfo,
+    required this.replyController,
   });
 
   @override
   Widget build(BuildContext context) {
-
-    // 댓글 컨트롤러
-    final TextEditingController replyController = TextEditingController();
 
     return SafeArea(
       child: Scrollbar(
@@ -156,26 +156,25 @@ class BoardListView extends StatelessWidget {
                   child: Container(
                     color: WitHomeTheme.wit_white,
                     height: MediaQuery.of(context).size.height * 0.5,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            size: 48,
-                            color: WitHomeTheme.wit_lightgray,
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            "조회된 값이 없습니다",
-                            style: WitHomeTheme.headline.copyWith(color: WitHomeTheme.wit_black),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            "다른 조건으로 다시 검색해 보세요.",
-                            style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
-                          ),
-                        ],
+                    child: Container(
+                      color: WitHomeTheme.wit_white,
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.info_outline,
+                              size: 48,
+                              color: WitHomeTheme.wit_lightgray,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              "조회된 값이 없습니다",
+                              style: WitHomeTheme.title.copyWith(color: WitHomeTheme.wit_black),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -195,7 +194,7 @@ class BoardListView extends StatelessWidget {
                             child: Column(
                             children: [
                               ListTile(
-                                contentPadding: EdgeInsets.fromLTRB(17, 7, 17, 7),
+                                contentPadding: EdgeInsets.fromLTRB(15, 1, 15, 1),
                                 title: Row(
                                   children: [
                                     Expanded(
@@ -221,7 +220,7 @@ class BoardListView extends StatelessWidget {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: 10),
+                                            SizedBox(height: 7),
                                             Row(
                                               children: [
                                                 Expanded(
@@ -322,7 +321,7 @@ class BoardListView extends StatelessWidget {
                       int starCount = int.tryParse((boardInfo["stsfRate"]?.toString() ?? '0')) ?? 0;
                       String starString = "";
                       if (starCount != 0) {
-                        starString = "    " + ("⭐" * starCount);
+                        starString = ("⭐" * starCount);
                       }
 
                       String imgStr = boardInfo["imagePath"] ?? "";
@@ -331,11 +330,10 @@ class BoardListView extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         child: Container(
-                          padding: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(0),
                           decoration: BoxDecoration(
-                            color: Colors.grey[100],
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.grey[300]!),
+                            color: WitHomeTheme.wit_white,
+                            borderRadius: BorderRadius.circular(0),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,18 +341,12 @@ class BoardListView extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(10), // Container 자체 패딩
                                 decoration: BoxDecoration(
-                                  color: WitHomeTheme.wit_extraLightGrey,
-                                  borderRadius: BorderRadius.circular(10),
+                                  color: WitHomeTheme.wit_white,
+                                  borderRadius: BorderRadius.circular(0),
                                 ),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(width: 5),
-                                    CircleAvatar(
-                                      radius: 20,
-                                      backgroundImage: proFlieImage.getImageProvider(boardInfo["profileImg"] ?? ""),
-                                    ),
-                                    SizedBox(width: 10),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,21 +354,36 @@ class BoardListView extends StatelessWidget {
                                         children: [
                                           Row(
                                             children: [
-                                              Expanded( // Text가 남은 공간을 모두 차지하도록 하여 PopupMenuButton을 오른쪽으로 밉니다.
-                                                child: Text(
-                                                  // 'bordKeyGbn' 변수를 사용하는 것으로 가정하고 수정했습니다.
-                                                  (boardInfo['aptNm'] ?? "") + " - " + (boardInfo['ctgrNm'] ?? ""), // null 처리 추가
-                                                  style: WitHomeTheme.title.copyWith(
-                                                    fontSize: 14,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
+                                              CircleAvatar(
+                                                radius: 20,
+                                                backgroundImage: proFlieImage.getImageProvider(boardInfo["profileImg"] ?? ""),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      (boardInfo['aptNm'] ?? "") + " - " + (boardInfo['ctgrNm'] ?? ""),
+                                                      style: WitHomeTheme.subtitle.copyWith(
+                                                          overflow: TextOverflow.ellipsis,
+                                                          fontWeight: FontWeight.bold
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 5),
+                                                    Text(
+                                                      boardInfo['creUserNm'] + "    " + boardInfo['creDateTxt'] + "    " + "${starString}",
+                                                      style: WitHomeTheme.caption,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                               if (bordTypeGbn == "UH")
                                                 PopupMenuButton<String>(
                                                   icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
                                                   color: WitHomeTheme.wit_white,
-                                                  iconSize: 25.0,
+                                                  iconSize: 20.0,
                                                   onSelected: (value) async {
                                                     if (value == "Detail") {
                                                       await Navigator.push(
@@ -414,19 +421,39 @@ class BoardListView extends StatelessWidget {
                                                       if(boardInfo["sllrNo"] == loginSllrNo)...[
                                                         PopupMenuItem<String>(
                                                           value: 'Detail',
-                                                          child: Text('상세보기', style: WitHomeTheme.subtitle),
+                                                          child: Row( // 아이콘과 텍스트를 가로로 배치하기 위해 Row 사용
+                                                            children: [
+                                                              Icon(
+                                                                Icons.sticky_note_2_outlined, // 신고 아이콘
+                                                                color: WitHomeTheme.wit_lightGreen, // 아이콘 색상
+                                                                size: 20, // 아이콘 크기 (조절 가능)
+                                                              ),
+                                                              SizedBox(width: 8), // 아이콘과 텍스트 사이 간격
+                                                              Text(
+                                                                '상세보기',
+                                                                style: WitHomeTheme.caption, // 텍스트 스타일
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ],
-                                                      /*if(boardInfo["sllrNo"] == loginSllrNo && boardInfo['commentCnt'] == 0)...[
-                                                        PopupMenuItem<String>(
-                                                          value: 'reply',
-                                                          child: Text('댓글작성', style: WitHomeTheme.subtitle),
-                                                        ),
-                                                      ],*/
-                                                      if(boardInfo["sllrNo"] != loginSllrNo)...[
+                                                      if(boardInfo["sllrNo"] == loginSllrNo)...[
                                                         PopupMenuItem<String>(
                                                           value: 'report',
-                                                          child: Text('신고하기', style: WitHomeTheme.subtitle),
+                                                          child: Row( // 아이콘과 텍스트를 가로로 배치하기 위해 Row 사용
+                                                            children: [
+                                                              Icon(
+                                                                Icons.report_rounded, // 신고 아이콘
+                                                                color: WitHomeTheme.wit_lightCoral, // 아이콘 색상
+                                                                size: 20, // 아이콘 크기 (조절 가능)
+                                                              ),
+                                                              SizedBox(width: 8), // 아이콘과 텍스트 사이 간격
+                                                              Text(
+                                                                '신고하기',
+                                                                style: WitHomeTheme.caption, // 텍스트 스타일
+                                                              ),
+                                                            ],
+                                                          ),
                                                         ),
                                                       ],
                                                     ];
@@ -434,47 +461,30 @@ class BoardListView extends StatelessWidget {
                                                 ),
                                             ],
                                           ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                boardInfo['creUserNm'] + "    " + boardInfo['creDateTxt'],
-                                                style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                              ),
-                                              Text(
-                                                "${starString}",
-                                                style: WitHomeTheme.title.copyWith(fontSize: 18),
-                                              ),
-                                            ],
-                                          ),
                                         ],
                                       ),
                                     ),
-                                    SizedBox(width: 10),
                                   ],
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(height: 10),
-
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            boardInfo['bordContent'].trim() ?? '',
-                                            style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                          ),
-                                        ),
-                                      ],
+                                    Container(
+                                      constraints: BoxConstraints(
+                                        minHeight: 70,
+                                      ),
+                                      child: Text(
+                                        boardInfo['bordContent'].trim() ?? '',
+                                        style: WitHomeTheme.caption,
+                                      ),
                                     ),
                                     if (imgList.isNotEmpty) ...[
                                       SizedBox(height: 10),
                                       Container(
-                                        height: 80,
+                                        height: 55,
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           itemCount: imgList.length,
@@ -490,8 +500,8 @@ class BoardListView extends StatelessWidget {
                                                 );
                                               },
                                               child: Container(
-                                                width: 80,
-                                                height: 80,
+                                                width: 55,
+                                                height: 55,
                                                 margin: EdgeInsets.only(right: 8),
                                                 decoration: BoxDecoration(
                                                   borderRadius: BorderRadius.circular(8),
@@ -508,58 +518,48 @@ class BoardListView extends StatelessWidget {
                                     ],
                                     SizedBox(height: 10),
                                     if (boardInfo['commentCnt'] > 0)...[
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: WitHomeTheme.wit_extraLightGrey,
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  "사장님 - ",
-                                                  style: WitHomeTheme.title,
+                                      SizedBox(height: 5),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                "사장님 - ",
+                                                style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  boardInfo['cmmtcreDateTxt'] ?? "",
+                                                  style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                                                 ),
-                                                Expanded(
-                                                  child: Text(
-                                                    boardInfo['cmmtcreDateTxt'] ?? "",
-                                                    style: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_gray),
-                                                  ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 10),
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  boardInfo['cmmtContent'].trim(),
+                                                  style: WitHomeTheme.caption,
+                                                  softWrap: true,
                                                 ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 10),
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    boardInfo['cmmtContent'].trim(),
-                                                    style: WitHomeTheme.subtitle.copyWith(fontSize: 14),
-                                                    softWrap: true,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                       SizedBox(height: 10),
                                     ] else if (boardInfo["sllrNo"] == loginSllrNo)... [
                                       Container(
                                         decoration: BoxDecoration(
                                           color: WitHomeTheme.wit_white, // 배경색
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(10.0),
-                                            bottom: Radius.circular(10.0),
-                                          ),
                                         ),
                                         child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(10, 2, 5, 2),
+                                          padding: const EdgeInsets.fromLTRB(5, 2, 0, 0),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
@@ -571,24 +571,24 @@ class BoardListView extends StatelessWidget {
                                                       controller: replyController,
                                                       decoration: InputDecoration(
                                                         hintText: "후기 댓글을 입력해주세요",
-                                                        hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
-                                                        border: InputBorder.none, // 밑줄 제거
-                                                        focusedBorder: InputBorder.none,
-                                                        enabledBorder: InputBorder.none,
+                                                        hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_gray),
+                                                        border: InputBorder.none,
                                                         contentPadding: EdgeInsets.symmetric(vertical: 12.0),
+                                                        counterText: "",
                                                       ),
+                                                      maxLength: 1000,
+                                                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
                                                       style: WitHomeTheme.subtitle,
                                                       maxLines: null,
-                                                      keyboardType: TextInputType.multiline,
                                                     ),
                                                   ),
                                                   TextButton(
                                                     style: TextButton.styleFrom(
                                                       backgroundColor: WitHomeTheme.wit_lightBlue,
                                                       shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(10),
+                                                        borderRadius: BorderRadius.circular(5),
                                                       ),
-                                                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                                      padding: EdgeInsets.symmetric(horizontal: 15),
                                                       minimumSize: Size(0, 40),
                                                     ),
                                                     onPressed: () async {
@@ -608,6 +608,10 @@ class BoardListView extends StatelessWidget {
                                     ],
                                   ],
                                 ),
+                              ),
+                              Container( // 추가하려는 구분선 부분 시작
+                                height: 1,
+                                color: WitHomeTheme.wit_lightgray,
                               ),
                             ],
                           ),

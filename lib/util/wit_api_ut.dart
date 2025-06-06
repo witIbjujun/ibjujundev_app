@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:witibju/util/wit_code_ut.dart';
-import 'package:witibju/util/wit_common_ut.dart';
 import 'package:dio/dio.dart';
 
 /**
@@ -57,13 +56,11 @@ Future<dynamic> sendFilePostRequest(String restId, List<File> fileList) async {
 
   // 파일 리스트를 순회하면서 파일 추가
   for (var file in fileList) {
-    // 이미지 압축
-    File compressedFile = await compressImage(file);
 
     // 압축된 파일 추가
     formData.files.add(MapEntry(
       "images", // 필드 이름
-      await MultipartFile.fromFile(compressedFile.path), // MultipartFile 생성
+      await MultipartFile.fromFile(file.path), // MultipartFile 생성
     ));
   }
 

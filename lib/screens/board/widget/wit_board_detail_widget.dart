@@ -44,7 +44,7 @@ class TitleAndMenu extends StatelessWidget {
         ),
         if (bordKeyGbn != "GJ") ...[
           PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray),
+            icon: Icon(Icons.more_vert, color: WitHomeTheme.wit_gray, size: 20,),
             color: WitHomeTheme.wit_white,
             onSelected: (value) async {
               if (value == 'edit') {
@@ -81,9 +81,7 @@ class TitleAndMenu extends StatelessWidget {
                 await Navigator.push(
                   context,
                   SlideRoute(page: BoardReport(boardInfo: boardDetailInfo)),
-                ).then((_) {
-                  callBack();
-                });
+                );
               }
             },
             itemBuilder: (BuildContext context) {
@@ -91,24 +89,57 @@ class TitleAndMenu extends StatelessWidget {
                 if (boardDetailInfo["creUser"] == loginClerkNo && (bordKeyGbn != "UH" && bordKeyGbn != "GJ"))...[
                   PopupMenuItem<String>(
                     value: 'edit',
-                    child: Text('수정하기',
-                      style: WitHomeTheme.subtitle,
+                    child: Row( // 아이콘과 텍스트를 가로로 배치하기 위해 Row 사용
+                      children: [
+                        Icon(
+                          Icons.edit_note_rounded, // 신고 아이콘
+                          color: WitHomeTheme.wit_lightBlue, // 아이콘 색상
+                          size: 20, // 아이콘 크기 (조절 가능)
+                        ),
+                        SizedBox(width: 8), // 아이콘과 텍스트 사이 간격
+                        Text(
+                          '수정하기',
+                          style: WitHomeTheme.caption, // 텍스트 스타일
+                        ),
+                      ],
                     ),
                   ),
                 ],
                 if (boardDetailInfo["creUser"] == loginClerkNo) ...[
                   PopupMenuItem<String>(
                     value: 'delete',
-                    child: Text('삭제하기',
-                      style: WitHomeTheme.subtitle,
+                    child: Row( // 아이콘과 텍스트를 가로로 배치하기 위해 Row 사용
+                      children: [
+                        Icon(
+                          Icons.delete, // 신고 아이콘
+                          color: WitHomeTheme.wit_lightBlue, // 아이콘 색상
+                          size: 20, // 아이콘 크기 (조절 가능)
+                        ),
+                        SizedBox(width: 8), // 아이콘과 텍스트 사이 간격
+                        Text(
+                          '삭제하기',
+                          style: WitHomeTheme.caption, // 텍스트 스타일
+                        ),
+                      ],
                     ),
                   ),
                 ],
                 if (boardDetailInfo["creUser"] != loginClerkNo) ...[
                   PopupMenuItem<String>(
                     value: 'report',
-                    child: Text('신고하기',
-                      style: WitHomeTheme.subtitle,
+                    child: Row( // 아이콘과 텍스트를 가로로 배치하기 위해 Row 사용
+                      children: [
+                        Icon(
+                          Icons.report_rounded, // 신고 아이콘
+                          color: WitHomeTheme.wit_lightCoral, // 아이콘 색상
+                          size: 20, // 아이콘 크기 (조절 가능)
+                        ),
+                        SizedBox(width: 8), // 아이콘과 텍스트 사이 간격
+                        Text(
+                          '신고하기',
+                          style: WitHomeTheme.caption, // 텍스트 스타일
+                        ),
+                      ],
                     ),
                   ),
                 ]
@@ -151,6 +182,7 @@ class UserInfo extends StatelessWidget {
               "${boardDetailInfo["creUserNm"] ?? "익명"}",
               style: WitHomeTheme.subtitle,
             ),
+            SizedBox(height: 3),
             Row(
               children: [
                 Text(
@@ -297,14 +329,13 @@ class CommentList extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 4),
                     Text(
                       commentList[index]["cmmtContent"] ?? "",
                       style: WitHomeTheme.subtitle,
                     ),
                     SizedBox(height: 4),
                     Text(
-                      (commentList[index]["creUserNm"] ?? "익명") + " | " + (commentList[index]["creDateTxt"] ?? ""),
+                      (commentList[index]["creUserNm"] ?? "익명") + "  " + (commentList[index]["creDateTxt"] ?? ""),
                       style: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_gray),
                     ),
                   ],
@@ -312,12 +343,21 @@ class CommentList extends StatelessWidget {
               ),
               if (commentList[index]["creUser"] == loginClerkNo)...[
                 IconButton(
-                  icon: Icon(Icons.delete, color: WitHomeTheme.wit_gray), // 휴지통 아이콘
+                  icon: Icon(Icons.delete, color: WitHomeTheme.wit_lightBlue), // 휴지통 아이콘
+                  tooltip: "삭제하기",
                   onPressed: () async {
-                    bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "선택하신 댓글을 삭제하시겠습니까?");
+                    bool isConfirmed = await ConfimDialog.show(context: context, title: "확인", content: "댓글을 삭제하시겠습니까?");
                     if (isConfirmed == true) {
                       endCommentInfo(commentList[index]);
                     }
+                  },
+                ),
+              ] else ...[
+                IconButton(
+                  icon: Icon(Icons.report_rounded, color: WitHomeTheme.wit_lightCoral),
+                  tooltip: "신고하기",
+                  onPressed: () async {
+                    
                   },
                 ),
               ]
@@ -348,15 +388,19 @@ class CommentInput extends StatelessWidget {
         Expanded(
           child: TextField(
             controller: commentController,
+            maxLength: 100,
             decoration: InputDecoration(
               hintText: isEmpty ? "첫 댓글을 남겨보세요" : "댓글을 남겨보세요",
+              hintStyle: WitHomeTheme.title.copyWith(fontWeight: FontWeight.normal),
               border: InputBorder.none,
               filled: true,
               fillColor: WitHomeTheme.wit_white,
-              contentPadding: EdgeInsets.symmetric(vertical: 13, horizontal: 16),
+              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+              counterText: "",
             ),
           ),
         ),
+        SizedBox(width: 5),
         Container(
           decoration: BoxDecoration(
             color: WitHomeTheme.wit_gray,

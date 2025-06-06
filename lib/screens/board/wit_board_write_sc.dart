@@ -46,6 +46,8 @@ class _BoardWriteState extends State<BoardWrite> {
   final ImagePicker _picker = ImagePicker();
   // 별점 상태 변수 (0: 선택 안됨, 1~5: 선택된 별점)
   int starRating = 0;
+  // 사진 최대 건수
+  int maxPhotoCnt = 5;
 
   @override
   void initState() {
@@ -91,70 +93,77 @@ class _BoardWriteState extends State<BoardWrite> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(
-              child: SingleChildScrollView( // 화면 전체 스크롤을 위해 Column을 SingleChildScrollView로 감쌉니다.
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (bordTypeGbn == "UH")...[
-                        Center( // 이 부분을 Center로 감싸서 가운데 정렬
-                          child: Text(
-                            "이용 후기는 어떠셨나요?", // 별점 레이블
-                            style: WitHomeTheme.title,
-                          ),
-                        ),
-                        SizedBox(height: 10),
-                        Center( // 이 부분을 Center로 감싸서 가운데 정렬
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: List.generate(5, (index) => _buildStar(index)),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                      ],
-                      if (bordTypeGbn != "UH")...[
-                        Text(
-                          "제목",
+            Expanded( // 이 Expanded가 부모 위젯(예: Row/Column)의 남은 공간을 모두 차지합니다.
+              child: Padding( // 전체 내용에 패딩을 적용합니다.
+                padding: EdgeInsets.all(20.0),
+                child: Column( // 이 Column이 Expanded가 제공하는 공간을 채웁니다.
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // --- 고정된 상단 요소들 ---
+                    // bordTypeGbn이 "UH"일 때의 요소들
+                    if (bordTypeGbn == "UH")...[
+                      Center( // 가운데 정렬을 위해 Center로 감쌈
+                        child: Text(
+                          "이용 후기는 어떠셨나요?", // 별점 레이블
                           style: WitHomeTheme.title,
                         ),
-                        TextField(
-                          controller: _titleController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "제목을 입력하세요",
-                            hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
-                          ),
-                          style: WitHomeTheme.subtitle,
-                          maxLines: 1,
-                        ),
-                        SizedBox(height: 10),
-                        ],
-                      Container(
-                        height: 1,
-                        color: WitHomeTheme.wit_extraLightGrey,
                       ),
                       SizedBox(height: 10),
-                      if (bordTypeGbn == "UH")...[
-                        Text("후기 작성", style: WitHomeTheme.title),
-                      ] else ...[
-                        Text("내용", style: WitHomeTheme.title),
-                      ],
+                      Center( // 가운데 정렬을 위해 Center로 감쌈
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, // Row의 크기를 자식 크기에 맞게 최소화
+                          children: List.generate(5, (index) => _buildStar(index)),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                    ],
+                    // bordTypeGbn이 "UH"가 아닐 때의 제목 입력 필드
+                    if (bordTypeGbn != "UH")...[
+                      Text(
+                        "제목",
+                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),
+                      ),
                       TextField(
-                          controller: _contentController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "내용을 입력하세요",
-                            hintStyle: WitHomeTheme.subtitle.copyWith(color: WitHomeTheme.wit_lightgray),
-                          ),
-                          style: WitHomeTheme.subtitle,
-                          maxLines: null, // 자동 조절
-                          minLines: 15,
-                          keyboardType: TextInputType.multiline,
+                        controller: _titleController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "제목을 입력하세요",
+                          hintStyle: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_lightgray),
+                          counterText: "",
+                        ),
+                        style: WitHomeTheme.subtitle,
+                        maxLines: 1,
+                        maxLength: 30,
                       ),
                     ],
-                  ),
+                    Container(
+                      height: 1,
+                      color: WitHomeTheme.wit_extraLightGrey,
+                    ),
+                    SizedBox(height: 10),
+                    if (bordTypeGbn == "UH")...[
+                      Text("후기 작성",
+                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),),
+                    ] else ...[
+                      Text("내용",
+                        style: WitHomeTheme.subtitle.copyWith(fontWeight: FontWeight.bold),),
+                    ],
+                    Expanded(
+                      child: TextField(
+                        controller: _contentController,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "내용을 입력하세요",
+                          hintStyle: WitHomeTheme.caption.copyWith(color: WitHomeTheme.wit_lightgray),
+                        ),
+                        style: WitHomeTheme.subtitle,
+                        maxLines: null,
+                        maxLength: 1000,
+                        keyboardType: TextInputType.multiline,
+                        expands: true,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -165,11 +174,11 @@ class _BoardWriteState extends State<BoardWrite> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      if (_images.length >= 5) {
-                        alertDialog.show(context: context, title:"알림", content: "이미지는 최대 5건\n입력 가능합니다.");
+                      if (_images.length >= maxPhotoCnt) {
+                        alertDialog.show(context: context, title:"알림", content: "이미지는 최대 " + maxPhotoCnt.toString() + "건\n입력 가능합니다.");
                         return;
                       }
-                      _showImagePickerOptions();
+                      _showImagePickerOptions(maxPhotoCnt);
                     },
                     child: Container(
                       width: 75,
@@ -187,8 +196,8 @@ class _BoardWriteState extends State<BoardWrite> {
                           Icon(Icons.add_a_photo, size: 30, color: WitHomeTheme.wit_gray),
                           SizedBox(height: 4),
                           Text(
-                            '${_images.length}/5',
-                            style: WitHomeTheme.subtitle,
+                            '${_images.length}/' + maxPhotoCnt.toString(),
+                            style: WitHomeTheme.caption,
                           ),
                         ],
                       ),
@@ -411,7 +420,7 @@ class _BoardWriteState extends State<BoardWrite> {
   }
 
   // [팝업] 갤러리, 카메라 팝업 호출
-  void _showImagePickerOptions() {
+  void _showImagePickerOptions(int maxCnt) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -420,18 +429,18 @@ class _BoardWriteState extends State<BoardWrite> {
           child: Column(
             children: [
               ListTile(
-                leading: Icon(Icons.photo),
-                title: Text('갤러리에서 선택'),
+                leading: Icon(Icons.photo,size: 30),
+                title: Text('갤러리에서 선택', style: WitHomeTheme.subtitle),
                 onTap: () {
-                  _pickMultiImages();
+                  _pickMultiImages(maxCnt);
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.camera),
-                title: Text('사진 찍기'),
+                leading: Icon(Icons.camera,size: 30),
+                title: Text('사진 찍기', style: WitHomeTheme.subtitle),
                 onTap: () {
-                  _pickImage(ImageSource.camera);
+                  _pickImage(ImageSource.camera, maxCnt);
                   Navigator.pop(context);
                 },
               ),
@@ -442,8 +451,14 @@ class _BoardWriteState extends State<BoardWrite> {
     );
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final XFile? pickedFile = await _picker.pickImage(source: source);
+  Future<void> _pickImage(ImageSource source, int maxCnt) async {
+    final XFile? pickedFile = await _picker.pickImage(
+      source: source,
+      maxHeight: 1200,
+      maxWidth: 1200,
+      imageQuality: 30,
+    );
+
     if (pickedFile != null) {
       setState(() {
         if (_images.length < 5) {
@@ -453,8 +468,12 @@ class _BoardWriteState extends State<BoardWrite> {
     }
   }
 
-  Future<void> _pickMultiImages() async {
-    final List<XFile>? pickedFiles = await _picker.pickMultiImage();
+  Future<void> _pickMultiImages(int maxCnt) async {
+    final List<XFile>? pickedFiles = await _picker.pickMultiImage(
+      maxHeight: 1200,
+      maxWidth: 1200,
+      imageQuality: 30,
+    );
     if (pickedFiles != null && pickedFiles.isNotEmpty) {
       setState(() {
         for (final xfile in pickedFiles) {
