@@ -458,7 +458,7 @@ class _BoardWriteState extends State<BoardWrite> {
 
     if (pickedFile != null) {
       setState(() {
-        if (_images.length < 5) {
+        if (_images.length < maxCnt) {
           _images.add(File(pickedFile.path));
         }
       });
@@ -474,7 +474,7 @@ class _BoardWriteState extends State<BoardWrite> {
     if (pickedFiles != null && pickedFiles.isNotEmpty) {
       setState(() {
         for (final xfile in pickedFiles) {
-          if (_images.length < 5) {
+          if (_images.length < maxCnt) {
             _images.add(File(xfile.path));
           }
         }
