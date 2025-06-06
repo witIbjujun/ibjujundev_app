@@ -21,6 +21,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:witibju/screens/home/wit_home_theme.dart';
 import 'package:image/image.dart' as img;
 
+import '../common/wit_calendarDialog.dart';
 import '../common/wit_common_widget.dart';
 import '../home/wit_home_theme.dart';
 import 'package:portone_flutter/iamport_certification.dart';
@@ -210,12 +211,10 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         serviceArea = sellerInfo['serviceArea'] ?? '';
         serviceItem = sellerInfo['serviceItem'] ?? '';
         asGbn = sellerInfo['asGbn'] ?? '';
+
         if(sellerInfo['hpCertification'] == 'Y') {
           isCertified = true;
         }
-
-        print("serviceItem : " + serviceItem);
-        print("asGbn : " + asGbn);
 
         // 선택된 지역이 있으면 selectedLocations에 추가
         if (serviceArea.isNotEmpty) {
@@ -369,6 +368,8 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
   String? selectedLocation;
   String? selectedServiceType;
   String? selectedAsPeriod;
+
+  String openDateErrorMessage = '';
 
   // 샘플 이미지 경로
   final List<String> sampleImages = [
@@ -1375,7 +1376,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
               Row(
                 children: [
                   Text(
-                    '개업일자 ',
+                    '개업일자',
                     style: WitHomeTheme.title.copyWith(fontSize: 16),
                   ),
                   Icon(
@@ -1386,29 +1387,39 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
                 ],
               ),
               SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  color: WitHomeTheme.white, // 배경색을 하얀색으로
-                  border: Border.all(color: Colors.grey, width: 1), // 회색 테두리
-                  borderRadius: BorderRadius.circular(10), // 모서리 둥글게
-                ),
-                padding: const EdgeInsets.all(0), // 내부 여백
-                child: TextField(
-                  style: WitHomeTheme.subtitle.copyWith(fontSize: 16),
-                  controller: openDateController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none, // 기본 테두리 제거
-                    hintText: '개업일자를 입력하세요', // 힌트 텍스트
-                    contentPadding: EdgeInsets.only(left: 10), // 왼쪽 패딩만 설정
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => _selectDate(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(6.0),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              openDate ?? "날짜 선택",
+                              style: const TextStyle(fontSize: 16.0),
+                            ),
+                            const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  /*onChanged: (text) {
-                    setState(() {
-                      // 텍스트가 변경될 때마다 오류 메시지 초기화
-                      openDateErrorMessage = '';
-                    });
-                  },*/
-                ),
+                ],
               ),
+              // 오류 메시지 표시
+              if (openDateErrorMessage.isNotEmpty)
+                Text(
+                  openDateErrorMessage,
+                  style: WitHomeTheme.subtitle
+                      .copyWith(fontSize: 14, color: WitHomeTheme.wit_red),
+                ),
               SizedBox(height: 10),
 
               Column(
@@ -2102,7 +2113,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
       "address1": address1,
       "address2": address2,
       "asGbn": saveAsGbn,
-      "openDate": openDate,
+      "openDate": openDate?.replaceAll('.', '') ?? '',
       "categoryContent" : categoryContent,
       "fileInfo1": fileInfo1,
       "fileInfo2": fileInfo2,
@@ -2400,4 +2411,27 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
     );
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    var result = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16.0)),
+      ),
+      builder: (context) => CustomCalendarBottomSheet(title: '개업일자', allowPastDates: true),
+    );
+
+    if (result != null) {
+      setState(() {
+        // 타입 캐스팅을 안전하게 처리
+        if (result is DateTime) {
+          openDate = "${result.year}.${result.month.toString().padLeft(2, '0')}.${result.day.toString().padLeft(2, '0')}";
+          openDateController.text = openDate!;
+        } else if (result is String) {
+          openDate = result;
+          openDateController.text = result;
+        }
+      });
+    }
+  }
 }
