@@ -210,7 +210,7 @@ class SellerProfileModifyState extends State<SellerProfileModify> {
         serviceArea = sellerInfo['serviceArea'] ?? '';
         serviceItem = sellerInfo['serviceItem'] ?? '';
         asGbn = sellerInfo['asGbn'] ?? '';
-        if(sellerInfo['hpCertificationYn'] == 'Y') {
+        if(sellerInfo['hpCertification'] == 'Y') {
           isCertified = true;
         }
 

@@ -81,7 +81,10 @@ class SellerProfileInsertHpInfoState extends State<SellerProfileInsertHpInfo> {
     if (response != null) {
       setState(() {
         sellerInfo = response;
-        if(sellerInfo['certificationYn'] == 'Y') {
+
+        print("1223213321:" + sellerInfo['hpCertification'].toString());
+
+        if(sellerInfo['hpCertification'] == 'Y') {
           isCertified = true;
         }
         hp = sellerInfo['hp'] ?? '';

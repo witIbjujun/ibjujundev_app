@@ -943,18 +943,6 @@ class SellerProfileInsertBizInfoState
                         storeCodeErrorMessage.isEmpty&&
                         bizCertErrorMessage.isEmpty
                     ) {
-                      // 사업자 프로필 변경 로직
-                      String name = nameController.text;
-                      String ceoName = ceoNameController.text;
-                      String email = emailController.text;
-                      String openDate = openDateController.text;
-                      String storeCode = _firstController.text +
-                          _secondController.text +
-                          _thirdController.text;
-
-
-                      print("1212121221 : " + openDate);
-
 
                       await getBizCertificationAllowYn();
                       // 이미지 저장 후 프로필 업데이트
@@ -1005,6 +993,7 @@ class SellerProfileInsertBizInfoState
       "openDate": openDate?.replaceAll('.', '') ?? '',
       "regiLevel": "03",
       "fileInfo2" : fileInfo2,
+      "bizCertification": "01",
 //      "categoryContent" : categoryContent,
     });
 
